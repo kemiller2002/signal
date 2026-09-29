@@ -1,0 +1,17 @@
+name: Praxis CI batching baseline
+on:
+  pull_request:
+  push:
+permissions:
+  contents: read
+concurrency:
+  group: praxis-ci-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for commit batch
+        run: sleep 600
+      - uses: actions/checkout@v4
+      - run: test -s AGENTS.md
