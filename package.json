@@ -1,0 +1,18 @@
+{
+  "name": "echelon-signal",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@echelon-foundry/design-system": "https://github.com/kemiller2002/echelon-design-system/releases/download/v0.1.0/echelon-foundry-design-system-0.1.0.tgz",
+    "@echelon-foundry/typescript-wasm-kernel": "0.6.2"
+  },
+  "scripts": {
+    "build:baseline": "dotnet build src/Echelon.Signal.Host.Wasm/Echelon.Signal.Host.Wasm.fsproj --nologo",
+    "test": "npm run test:baseline",
+    "test:baseline": "dotnet run --project tests/Echelon.Signal.Tests/Echelon.Signal.Tests.fsproj --configuration Release"
+  }
+}

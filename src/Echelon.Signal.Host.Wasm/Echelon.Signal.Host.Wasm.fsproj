@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Echelon.Signal.Semantic/Echelon.Signal.Semantic.fsproj" />
+    <ProjectReference Include="../Echelon.Signal.Engine/Echelon.Signal.Engine.fsproj" />
+    <ProjectReference Include="../Echelon.Signal.Application/Echelon.Signal.Application.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Boundary.fs" />
+  </ItemGroup>
+</Project>

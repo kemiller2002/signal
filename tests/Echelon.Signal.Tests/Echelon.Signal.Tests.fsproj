@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Echelon.Signal.Semantic/Echelon.Signal.Semantic.fsproj" />
+    <ProjectReference Include="../../src/Echelon.Signal.Engine/Echelon.Signal.Engine.fsproj" />
+    <ProjectReference Include="../../src/Echelon.Signal.Application/Echelon.Signal.Application.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+</Project>
