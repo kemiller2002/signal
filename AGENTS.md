@@ -113,3 +113,7 @@ Apply these boundaries:
 - Tests must prove declared boundaries actually use Aegis and use replaceable/collector sinks for deterministic assertions.
 
 The authoritative repository-wide requirement is ARX-015. The administrator-specific requirement is ADM-077.
+
+## CI observation discipline
+
+Commit and push incremental recovery points. Keep working after pushes when independent work remains. Do not wait for remote CI after every push. Check remote CI at the final implementation boundary by default, or earlier only when the result is needed to proceed safely. Ordinary commit-driven CI should wait for a 10-minute quiet period so nearby commits batch together.
