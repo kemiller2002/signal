@@ -12,6 +12,7 @@
   },
   "scripts": {
     "build:baseline": "dotnet build src/Echelon.Signal.Host.Wasm/Echelon.Signal.Host.Wasm.fsproj --nologo",
+    "test": "npm run test:baseline",
     "test:baseline": "dotnet run --project tests/Echelon.Signal.Tests/Echelon.Signal.Tests.fsproj --configuration Release"
   }
 }
