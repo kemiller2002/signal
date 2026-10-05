@@ -1,11 +1,8 @@
 {
   "configurationVersion": 1,
   "boundary": {
-    "engine": [
-      "src/Echelon.Signal.Engine"
-    ],
-    "kernel": [
-      "src/Echelon.Signal.Browser"
-    ]
+    "notApplicable": {
+      "rationale": "No engine or kernel source exists yet: src/Echelon.Signal.Engine and src/Echelon.Signal.Browser hold only README.md, so there is nothing for Limen to check. The charter still makes Signal an F#/.NET WebAssembly application behind Limen; when the first engine source lands, replace this declaration with boundary.engine [src/Echelon.Signal.Engine] and boundary.kernel [src/Echelon.Signal.Browser] (backlog WI-0022)."
+    }
   }
 }

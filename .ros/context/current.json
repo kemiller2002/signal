@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "agent:chatgpt",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-09-22T22:12:02.000Z",
+  "updatedAt": "2026-10-05T18:08:30.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -136,6 +136,115 @@
       "telemetryExecutionIds": [
         "EXE-20260922T221202958Z-57a84c17"
       ]
+    },
+    {
+      "id": "LIMEN-0-7-0",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": ".echelon/limen.json"
+        },
+        {
+          "type": "implementation",
+          "path": ".github/workflows/limen-verify.yml"
+        },
+        {
+          "type": "implementation",
+          "path": ".github/workflows/echelon-verification.yml"
+        }
+      ],
+      "updatedAt": "2026-10-05T17:02:03Z",
+      "telemetryExecutionIds": [
+        "EXE-20261005T170118223Z-a5ec3c69"
+      ],
+      "completedAt": "2026-10-05T17:02:03Z"
+    },
+    {
+      "id": "WI-0021",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "limen.config.json"
+        },
+        {
+          "type": "tests",
+          "path": ".github/workflows/limen-verify.yml"
+        }
+      ],
+      "updatedAt": "2026-10-05T17:03:36Z",
+      "telemetryExecutionIds": [
+        "EXE-20261005T170319798Z-18f702d2"
+      ],
+      "completedAt": "2026-10-05T17:03:36Z"
+    },
+    {
+      "id": "LIMEN-0-7-0-FND",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": ".echelon/foundations.json"
+        }
+      ],
+      "updatedAt": "2026-10-05T17:13:58Z",
+      "telemetryExecutionIds": [
+        "EXE-20261005T171358315Z-663793b9"
+      ],
+      "completedAt": "2026-10-05T17:13:58Z"
+    },
+    {
+      "id": "LIMEN-0-7-0-VERIFIER",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": ".github/workflows/echelon-foundations.yml"
+        },
+        {
+          "type": "tests",
+          "path": ".github/workflows/echelon-foundations.yml"
+        }
+      ],
+      "updatedAt": "2026-10-05T18:00:43.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261005T180028765Z-8c68b35f"
+      ],
+      "completedAt": "2026-10-05T18:00:43.000Z"
+    },
+    {
+      "id": "FOUNDATIONS-APPLICABILITY",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": ".echelon/foundations.json"
+        },
+        {
+          "type": "implementation",
+          "path": "research/decisions/DF-SIGNAL-FND-2026-0001--aegis-forma-folio-not-yet-applicable.md"
+        },
+        {
+          "type": "tests",
+          "path": ".github/workflows/echelon-foundations.yml"
+        }
+      ],
+      "updatedAt": "2026-10-05T18:08:30.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261005T180726659Z-f05708ab"
+      ],
+      "completedAt": "2026-10-05T18:08:30.000Z"
     }
   ]
 }

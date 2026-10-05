@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 21,
+  "nextSeq": 26,
   "items": [
     {
       "id": "WI-0001",
@@ -478,6 +478,86 @@
       "createdBy": "agent:chatgpt",
       "source": "github-issue",
       "sourceReference": "https://github.com/kemiller2002/echelon-signal/issues/5"
+    },
+    {
+      "id": "WI-0021",
+      "title": "Resolve Limen 0.7.0 LIMEN012: no engine source under src/Echelon.Signal.Engine, so strict verify is not-configured (exit 8)",
+      "description": null,
+      "tags": [
+        "limen,boundary"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-10-05T17:02:03.454Z",
+      "updatedAt": "2026-10-05T17:03:36Z",
+      "createdBy": "unknown",
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0022",
+      "title": "Replace limen.config.json boundary.notApplicable with engine/kernel paths (src/Echelon.Signal.Engine, src/Echelon.Signal.Browser) when the first F# WASM engine source lands",
+      "description": null,
+      "tags": [
+        "limen"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-05T17:03:26.636Z",
+      "updatedAt": "2026-10-05T17:03:26.636Z",
+      "createdBy": "unknown",
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0023",
+      "title": "Restore Aegis to required: true in .echelon/foundations.json, with EchelonFoundry.Aegis.Core, real boundary usage and aegis-boundaries.json, in the change that adds the first .NET/F# host or operational boundary (DF-SIGNAL-FND-2026-0001)",
+      "description": null,
+      "tags": [
+        "foundations"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-05T18:08:16.406Z",
+      "updatedAt": "2026-10-05T18:08:16.406Z",
+      "createdBy": "unknown",
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0024",
+      "title": "Restore Forma to required: true in .echelon/foundations.json, with the pinned @echelon-foundry/design-system, in the change that adds the first interactive browser surface (DF-SIGNAL-FND-2026-0001)",
+      "description": null,
+      "tags": [
+        "foundations"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-05T18:08:16.798Z",
+      "updatedAt": "2026-10-05T18:08:16.798Z",
+      "createdBy": "unknown",
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0025",
+      "title": "Restore Folio to required: true in .echelon/foundations.json, with the pinned @echelon-foundry/print-components, in the change that adds the first report or document output (DF-SIGNAL-FND-2026-0001)",
+      "description": null,
+      "tags": [
+        "foundations"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-05T18:08:17.113Z",
+      "updatedAt": "2026-10-05T18:08:17.113Z",
+      "createdBy": "unknown",
+      "source": "manual",
+      "sourceReference": null
     }
   ]
 }
