@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "agent:chatgpt",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-05T17:02:03Z",
+  "updatedAt": "2026-10-05T17:03:36Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -161,6 +161,27 @@
         "EXE-20261005T170118223Z-a5ec3c69"
       ],
       "completedAt": "2026-10-05T17:02:03Z"
+    },
+    {
+      "id": "WI-0021",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "limen.config.json"
+        },
+        {
+          "type": "tests",
+          "path": ".github/workflows/limen-verify.yml"
+        }
+      ],
+      "updatedAt": "2026-10-05T17:03:36Z",
+      "telemetryExecutionIds": [
+        "EXE-20261005T170319798Z-18f702d2"
+      ],
+      "completedAt": "2026-10-05T17:03:36Z"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 22,
+  "nextSeq": 23,
   "items": [
     {
       "id": "WI-0001",
@@ -487,10 +487,26 @@
         "limen,boundary"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-05T17:02:03.454Z",
-      "updatedAt": "2026-10-05T17:02:03.454Z",
+      "updatedAt": "2026-10-05T17:03:36Z",
+      "createdBy": "unknown",
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0022",
+      "title": "Replace limen.config.json boundary.notApplicable with engine/kernel paths (src/Echelon.Signal.Engine, src/Echelon.Signal.Browser) when the first F# WASM engine source lands",
+      "description": null,
+      "tags": [
+        "limen"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-05T17:03:26.636Z",
+      "updatedAt": "2026-10-05T17:03:26.636Z",
       "createdBy": "unknown",
       "source": "manual",
       "sourceReference": null
