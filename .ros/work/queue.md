@@ -3,7 +3,8 @@
 | ID | Work | Status | Tags | Priority |
 |---|---|---|---|---|
 | ECHELON-UPGRADE-2026-09-21 | Reconcile current Echelon engineering capabilities | complete | tooling,ordo,ros,limen | high |
-| GH-5 | Prepare Signal implementation baseline | ready | readiness,bootstrap | high |
+| GH-5 | Prepare Signal implementation baseline | active | readiness,bootstrap | high |
+| LIMEN-0-7-0 | LIMEN-0-7-0 | active |  |  |
 | ROS-INSTALL-1-2-1-main-16-1 | ROS-INSTALL-1-2-1-main-16-1 | complete |  |  |
 | SIGNAL-FRAMEWORK-2026-09-22 | Finalize Echelon Signal current ROS, Ordo SDE, and Limen baseline | complete | framework, migration, ros, ordo, limen | high |
 | SIGNAL-SCORING-SELECTORS-2026-09-22 | Complete scoring and selector requirements catalog | complete | requirements, scoring, selectors, web-components | high |
@@ -29,3 +30,4 @@
 | WI-0018 | Storage migration, backup, schema evolution, and operational recovery | captured | admin, migration, backup, recovery | high |
 | WI-0019 | Administrator sandbox, synthetic data, advanced analytics extensions, and phase boundary | captured | admin, sandbox, synthetic-data, experiments | medium |
 | WI-0020 | Administrator cross-cutting verification, performance, and acceptance program | captured | admin, testing, performance, acceptance | high |
+| WI-0021 | Resolve Limen 0.7.0 LIMEN012: no engine source under src/Echelon.Signal.Engine, so strict verify is not-configured (exit 8) | captured | limen,boundary | high |

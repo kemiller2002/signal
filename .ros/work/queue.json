@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 21,
+  "nextSeq": 22,
   "items": [
     {
       "id": "WI-0001",
@@ -478,6 +478,22 @@
       "createdBy": "agent:chatgpt",
       "source": "github-issue",
       "sourceReference": "https://github.com/kemiller2002/echelon-signal/issues/5"
+    },
+    {
+      "id": "WI-0021",
+      "title": "Resolve Limen 0.7.0 LIMEN012: no engine source under src/Echelon.Signal.Engine, so strict verify is not-configured (exit 8)",
+      "description": null,
+      "tags": [
+        "limen,boundary"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-05T17:02:03.454Z",
+      "updatedAt": "2026-10-05T17:02:03.454Z",
+      "createdBy": "unknown",
+      "source": "manual",
+      "sourceReference": null
     }
   ]
 }
