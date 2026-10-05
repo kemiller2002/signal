@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "agent:chatgpt",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-05T18:00:43.000Z",
+  "updatedAt": "2026-10-05T18:08:30.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -220,6 +220,31 @@
         "EXE-20261005T180028765Z-8c68b35f"
       ],
       "completedAt": "2026-10-05T18:00:43.000Z"
+    },
+    {
+      "id": "FOUNDATIONS-APPLICABILITY",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": ".echelon/foundations.json"
+        },
+        {
+          "type": "implementation",
+          "path": "research/decisions/DF-SIGNAL-FND-2026-0001--aegis-forma-folio-not-yet-applicable.md"
+        },
+        {
+          "type": "tests",
+          "path": ".github/workflows/echelon-foundations.yml"
+        }
+      ],
+      "updatedAt": "2026-10-05T18:08:30.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261005T180726659Z-f05708ab"
+      ],
+      "completedAt": "2026-10-05T18:08:30.000Z"
     }
   ]
 }
