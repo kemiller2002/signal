@@ -1,15 +1,16 @@
 ---
 id: DF-SIGNAL-FND-2026-0001
 title: Aegis, Forma and Folio are declared not yet applicable until Signal has the boundary each one governs
-status: accepted
-version: 1.0.0
+status: superseded
+version: 1.0.1
 created: 2026-10-05
 updated: 2026-10-05
 owners:
   - repository-governance
 review_cycle: on-trigger
 supersedes: []
-superseded_by: []
+superseded_by:
+  - DF-SIGNAL-FND-2026-0002
 related_documents:
   - .echelon/foundations.json
   - docs/requirements/ECHELON-SHARED-APPLICATION-FOUNDATIONS.md
@@ -22,7 +23,7 @@ tags: [governance, foundations, aegis, forma, folio, applicability]
 # DF-SIGNAL-FND-2026-0001 — Aegis, Forma and Folio are not yet applicable
 
 - **Date:** 2026-10-05
-- **Status:** accepted
+- **Status:** superseded by [`DF-SIGNAL-FND-2026-0002`](DF-SIGNAL-FND-2026-0002--build-signal-on-the-full-echelon-foundation-stack.md) (2026-10-05). The owner directed that every Echelon application be built the same way: "we want all apps built the same way … Apply it to signal and chrona too." Kept for history; it no longer governs.
 - **Decision type:** applicability declaration (temporary, with restoration triggers)
 - **Work item:** `FOUNDATIONS-APPLICABILITY`
 

@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Signal · Assessment</title>
+<link rel="icon" href="data:," />
+<link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+<!-- Structure and presentation only. Every value below is projected by the F#
+     engine (src/Echelon.Signal.Engine) through Limen's data-* bindings, and
+     every control sends a named event back to it. Forma owns presentation (its
+     CSS and the inert <ef-*> authoring wrappers around native HTML); Folio
+     owns the print surface. Neither decides anything: Signal owns meaning. -->
+<main class="app ef-stack">
+  <header class="ef-record-header page-header">
+    <div class="ef-record-header__main">
+      <div class="ef-record-header__title">
+        <div><span class="ef-record-header__type">Signal</span><h1 data-text="assessmentTitle"></h1></div>
+      </div>
+      <p id="assessment-version" data-text="assessmentVersion"></p>
+    </div>
+  </header>
+
+  <!-- Unexpected operational failure (Aegis) is its own presentation. An
+       expected refusal (questions still unanswered) is an ordinary alert. -->
+  <template data-if="hasOperationalFault">
+    <ef-fault-inline class="ef-component-tag">
+      <div class="ef-fault ef-fault--inline operational-fault" id="operational-fault"
+           data-ef-intent="inline" data-ef-severity="error" role="alert"
+           aria-labelledby="operational-fault-title">
+        <div class="ef-fault__marker" aria-hidden="true">!</div>
+        <div class="ef-fault__body">
+          <p class="ef-fault__severity">Operational error</p>
+          <p class="ef-fault__title" id="operational-fault-title"><strong data-text="operationalFaultTitle"></strong></p>
+          <p class="ef-fault__message" data-text="operationalFaultMessage"></p>
+          <p class="ef-fault-reference">Reference <code data-text="operationalFaultReference"></code></p>
+        </div>
+      </div>
+    </ef-fault-inline>
+  </template>
+
+  <template data-if="responding">
+    <section id="questions" class="ef-stack" aria-labelledby="questions-title">
+      <h2 id="questions-title">Questions</h2>
+      <p class="ef-field__description">Answer for the last eight weeks. If you do not know, have not observed it, or it does not apply, say so: those answers are not counted as zero.</p>
+
+      <div class="ef-survey-progress">
+        <div class="ef-survey-progress__header">
+          <span class="ef-survey-progress__label" id="progress-label">Progress</span>
+          <span class="ef-survey-progress__value" id="progress" data-text="progress"></span>
+        </div>
+        <progress class="ef-survey-progress__bar" data-bind-value="answeredCount" data-bind-max="itemCount" aria-labelledby="progress-label"></progress>
+      </div>
+
+      <template data-if="hasRefusal">
+        <ef-alert class="ef-component-tag">
+          <aside id="refusal" class="ef-alert" role="alert" data-tone="attention">
+            <div class="ef-alert__icon" aria-hidden="true">!</div>
+            <p id="refusal-message" data-text="refusal"></p>
+          </aside>
+        </ef-alert>
+      </template>
+
+      <form id="answers" class="ef-stack" data-event="resultsRequested">
+        <template data-each="items" data-key="id">
+          <section class="ef-question" data-bind-data-item="id" data-bind-data-answer-state="answerState">
+            <header class="ef-question__header">
+              <span class="ef-question__number" aria-hidden="true" data-text="number"></span>
+              <p class="ef-question__help" data-text="dimension"></p>
+            </header>
+            <div class="ef-question__body">
+              <fieldset class="ef-ordinal-scale ef-ordinal-scale--5">
+                <legend class="ef-ordinal-scale__legend" data-text="prompt"></legend>
+                <div class="ef-ordinal-scale__options">
+                  <label class="ef-ordinal-option">
+                    <input type="radio" value="0" data-event="answered" data-bind-name="group" data-bind-checked="is0" />
+                    <span class="ef-ordinal-option__marker" aria-hidden="true">0</span>
+                    <span class="ef-ordinal-option__label">Never or almost never</span>
+                  </label>
+                  <label class="ef-ordinal-option">
+                    <input type="radio" value="1" data-event="answered" data-bind-name="group" data-bind-checked="is1" />
+                    <span class="ef-ordinal-option__marker" aria-hidden="true">1</span>
+                    <span class="ef-ordinal-option__label">Rarely</span>
+                  </label>
+                  <label class="ef-ordinal-option">
+                    <input type="radio" value="2" data-event="answered" data-bind-name="group" data-bind-checked="is2" />
+                    <span class="ef-ordinal-option__marker" aria-hidden="true">2</span>
+                    <span class="ef-ordinal-option__label">Sometimes</span>
+                  </label>
+                  <label class="ef-ordinal-option">
+                    <input type="radio" value="3" data-event="answered" data-bind-name="group" data-bind-checked="is3" />
+                    <span class="ef-ordinal-option__marker" aria-hidden="true">3</span>
+                    <span class="ef-ordinal-option__label">Often</span>
+                  </label>
+                  <label class="ef-ordinal-option">
+                    <input type="radio" value="4" data-event="answered" data-bind-name="group" data-bind-checked="is4" />
+                    <span class="ef-ordinal-option__marker" aria-hidden="true">4</span>
+                    <span class="ef-ordinal-option__label">Almost always</span>
+                  </label>
+                </div>
+                <div class="ef-special-choices" aria-label="Other responses">
+                  <label class="ef-special-choice">
+                    <input type="radio" value="dont-know" data-event="answered" data-bind-name="group" data-bind-checked="isDontKnow" />
+                    <span>Don't know</span>
+                  </label>
+                  <label class="ef-special-choice">
+                    <input type="radio" value="not-observed" data-event="answered" data-bind-name="group" data-bind-checked="isNotObserved" />
+                    <span>Not observed</span>
+                  </label>
+                  <label class="ef-special-choice">
+                    <input type="radio" value="not-applicable" data-event="answered" data-bind-name="group" data-bind-checked="isNotApplicable" />
+                    <span>Not applicable</span>
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+          </section>
+        </template>
+        <div class="ef-cluster">
+          <button id="see-results" type="submit">See results</button>
+        </div>
+      </form>
+    </section>
+  </template>
+
+  <template data-if="reviewing">
+    <section id="results" class="ef-stack" aria-labelledby="results-title">
+      <div class="ef-cluster results-header">
+        <h2 id="results-title">Results</h2>
+        <span class="ef-status-lozenge" id="scored-count" role="status" data-text="scoredCount"></span>
+      </div>
+      <ef-data-grid class="ef-component-tag">
+        <div class="ef-data-grid" role="region" tabindex="0" aria-labelledby="results-title">
+          <table>
+            <thead>
+              <tr><th scope="col">Dimension</th><th scope="col">Score (0-100)</th><th scope="col">Coverage</th><th scope="col">Note</th></tr>
+            </thead>
+            <tbody id="results-body">
+              <template data-each="results" data-key="id">
+                <tr data-bind-data-dimension="id">
+                  <td data-label="Dimension" data-text="dimension"></td>
+                  <td data-label="Score"><span class="ef-status-lozenge" data-bind-data-state="scoreState" data-text="score"></span></td>
+                  <td data-label="Coverage" data-text="coverage"></td>
+                  <td data-label="Note" data-text="note"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </ef-data-grid>
+      <p id="methodology" class="ef-field__description" data-text="methodology"></p>
+      <div class="ef-cluster">
+        <button id="edit-answers" type="button" data-event="editRequested">Edit answers</button>
+        <button id="start-over" type="button" data-event="restarted">Start over</button>
+      </div>
+      <p class="ef-field__description">Print this page for the result report.</p>
+    </section>
+  </template>
+
+  <!-- Folio's print surface: the same projected results and answers, as a
+       report. It adds no meaning and never rescores. -->
+  <ef-print-document class="print-surface">
+    <ef-print-header>
+      <header>
+        <p>Signal result report</p>
+        <h1 data-text="assessmentTitle"></h1>
+        <p data-text="assessmentVersion"></p>
+      </header>
+    </ef-print-header>
+    <ef-print-section>
+      <section>
+        <h2>Results at a glance</h2>
+        <ef-print-table>
+          <table>
+            <thead>
+              <tr><th scope="col">Dimension</th><th scope="col">Score (0-100)</th><th scope="col">Coverage</th><th scope="col">Note</th></tr>
+            </thead>
+            <tbody>
+              <template data-each="results" data-key="id">
+                <tr>
+                  <td data-text="dimension"></td>
+                  <td data-text="score"></td>
+                  <td data-text="coverage"></td>
+                  <td data-text="note"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </ef-print-table>
+      </section>
+    </ef-print-section>
+    <ef-print-section>
+      <section>
+        <h2>Result integrity</h2>
+        <p><span data-text="scoredCount"></span> · <span data-text="progress"></span></p>
+        <h2>Scoring and methodology</h2>
+        <p data-text="methodology"></p>
+      </section>
+    </ef-print-section>
+    <ef-print-section>
+      <section>
+        <h2>Responses</h2>
+        <ef-print-table>
+          <table>
+            <thead>
+              <tr><th scope="col">#</th><th scope="col">Dimension</th><th scope="col">Statement</th><th scope="col">Answer</th></tr>
+            </thead>
+            <tbody>
+              <template data-each="items" data-key="id">
+                <tr>
+                  <td data-text="number"></td>
+                  <td data-text="dimension"></td>
+                  <td data-text="prompt"></td>
+                  <td data-text="answerLabel"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </ef-print-table>
+      </section>
+    </ef-print-section>
+    <ef-print-footer>
+      <footer>
+        <span>Signal · <span data-text="assessmentVersion"></span></span>
+        <ef-print-page-number></ef-print-page-number>
+      </footer>
+    </ef-print-footer>
+  </ef-print-document>
+</main>
+<script type="module" src="./main.js"></script>
+</body>
+</html>

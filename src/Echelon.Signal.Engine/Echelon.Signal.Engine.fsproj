@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Limen engine: the authority side of Signal's browser boundary. Pure F#:
+       the assessment, its scoring, the respondent session's transitions and
+       the view projection. No browser, network, clock or file-system access,
+       and no package dependencies beyond FSharp.Core. -->
+
+  <ItemGroup>
+    <Compile Include="View.fs" />
+    <Compile Include="Assessment.fs" />
+    <Compile Include="Pilot.fs" />
+    <Compile Include="Session.fs" />
+  </ItemGroup>
+
+</Project>

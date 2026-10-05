@@ -1,0 +1,39 @@
+{
+  "$comment": "Signal operational failure boundaries. Expected outcomes (asking for results with questions still unanswered, a dimension with too few numeric answers to score) remain typed engine outcomes shown as ordinary page content and are not Aegis faults. See src/Echelon.Signal.Application/Boundary.fs.",
+  "schema": "aegis/boundaries/v1",
+  "application": "Signal",
+  "boundaries": [
+    {
+      "name": "Limen engine message dispatch (assessment page)",
+      "kind": "ui-interop",
+      "owner": "Echelon.Signal.Application",
+      "codes": [
+        "SIGNAL.BOUNDARY.MESSAGE_INVALID",
+        "SIGNAL.BOUNDARY.UNEXPECTED"
+      ],
+      "guarded": true,
+      "$comment": "Every kernel message is parsed and dispatched inside Aegis.capture (Wire.handle). A message that is not the Limen shape the engine relies on, or that names an item or answer code the assessment does not define, is MESSAGE_INVALID. Programming defects (for example an event name index.html sends that the engine does not know) keep Aegis fail-loud semantics and surface as a Limen bridge error."
+    },
+    {
+      "name": "Browser DOM and print",
+      "kind": "browser-capability",
+      "owner": "Limen BrowserKernel",
+      "codes": [],
+      "guarded": false,
+      "$comment": "Execution occurs browser-side (DOM projection, the browser's print). The slice requests no Limen effect; this declaration does not pretend the .NET Aegis runtime guards JavaScript."
+    }
+  ],
+  "persistence": {
+    "sinks": [
+      {
+        "name": "stderr",
+        "kind": "console",
+        "level": "optional",
+        "durable": false
+      }
+    ],
+    "requiredDurableStorage": false,
+    "fallbackBehaviour": "Aegis sink failures are contained by the configured fallback; Signal does not treat diagnostic persistence as business success.",
+    "retentionPolicy": "No durable Aegis sink is configured; in the browser the standard-error sink writes to the console."
+  }
+}

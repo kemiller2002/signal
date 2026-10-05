@@ -2,9 +2,9 @@
   "schemaVersion": "1.0.0",
   "protocolVersion": "1.0.0",
   "repository": "echelon-signal",
-  "actor": "agent:chatgpt",
+  "actor": "agent:claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-05T18:08:30.000Z",
+  "updatedAt": "2026-10-05T23:36:22.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -245,6 +245,218 @@
         "EXE-20261005T180726659Z-f05708ab"
       ],
       "completedAt": "2026-10-05T18:08:30.000Z"
+    },
+    {
+      "id": "WI-0022",
+      "type": "feature",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "limen.config.json"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/Boundary.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "aegis-boundaries.json"
+        },
+        {
+          "type": "implementation",
+          "path": "web/index.html"
+        },
+        {
+          "type": "implementation",
+          "path": "web-kernel/limen-wasm.js"
+        },
+        {
+          "type": "implementation",
+          "path": ".echelon/foundations.json"
+        },
+        {
+          "type": "implementation",
+          "path": "research/decisions/DF-SIGNAL-FND-2026-0002--build-signal-on-the-full-echelon-foundation-stack.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/FoundationsConformanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/BoundaryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/assessment.spec.js"
+        }
+      ],
+      "updatedAt": "2026-10-05T23:36:22.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261005T232410810Z-818a3d9f"
+      ],
+      "completedAt": "2026-10-05T23:36:22.000Z"
+    },
+    {
+      "id": "WI-0023",
+      "type": "feature",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "limen.config.json"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/Boundary.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "aegis-boundaries.json"
+        },
+        {
+          "type": "implementation",
+          "path": "web/index.html"
+        },
+        {
+          "type": "implementation",
+          "path": "web-kernel/limen-wasm.js"
+        },
+        {
+          "type": "implementation",
+          "path": ".echelon/foundations.json"
+        },
+        {
+          "type": "implementation",
+          "path": "research/decisions/DF-SIGNAL-FND-2026-0002--build-signal-on-the-full-echelon-foundation-stack.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/FoundationsConformanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/BoundaryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/assessment.spec.js"
+        }
+      ],
+      "updatedAt": "2026-10-05T23:36:22.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261005T232410930Z-0e1a90b3"
+      ],
+      "completedAt": "2026-10-05T23:36:22.000Z"
+    },
+    {
+      "id": "WI-0024",
+      "type": "feature",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "limen.config.json"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/Boundary.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "aegis-boundaries.json"
+        },
+        {
+          "type": "implementation",
+          "path": "web/index.html"
+        },
+        {
+          "type": "implementation",
+          "path": "web-kernel/limen-wasm.js"
+        },
+        {
+          "type": "implementation",
+          "path": ".echelon/foundations.json"
+        },
+        {
+          "type": "implementation",
+          "path": "research/decisions/DF-SIGNAL-FND-2026-0002--build-signal-on-the-full-echelon-foundation-stack.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/FoundationsConformanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/BoundaryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/assessment.spec.js"
+        }
+      ],
+      "updatedAt": "2026-10-05T23:36:22.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261005T232411236Z-980c0c08"
+      ],
+      "completedAt": "2026-10-05T23:36:22.000Z"
+    },
+    {
+      "id": "WI-0025",
+      "type": "feature",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "limen.config.json"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/Boundary.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "aegis-boundaries.json"
+        },
+        {
+          "type": "implementation",
+          "path": "web/index.html"
+        },
+        {
+          "type": "implementation",
+          "path": "web-kernel/limen-wasm.js"
+        },
+        {
+          "type": "implementation",
+          "path": ".echelon/foundations.json"
+        },
+        {
+          "type": "implementation",
+          "path": "research/decisions/DF-SIGNAL-FND-2026-0002--build-signal-on-the-full-echelon-foundation-stack.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/FoundationsConformanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/BoundaryTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/assessment.spec.js"
+        }
+      ],
+      "updatedAt": "2026-10-05T23:36:22.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261005T232411456Z-7df71645"
+      ],
+      "completedAt": "2026-10-05T23:36:22.000Z"
     }
   ]
 }

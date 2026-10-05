@@ -3,7 +3,7 @@
 | ID | Work | Status | Tags | Priority |
 |---|---|---|---|---|
 | ECHELON-UPGRADE-2026-09-21 | Reconcile current Echelon engineering capabilities | complete | tooling,ordo,ros,limen | high |
-| FOUNDATIONS-APPLICABILITY | FOUNDATIONS-APPLICABILITY | active |  |  |
+| FOUNDATIONS-APPLICABILITY | FOUNDATIONS-APPLICABILITY | complete |  |  |
 | GH-5 | Prepare Signal implementation baseline | active | readiness,bootstrap | high |
 | LIMEN-0-7-0 | LIMEN-0-7-0 | complete |  |  |
 | LIMEN-0-7-0-FND | LIMEN-0-7-0-FND | complete |  |  |
@@ -34,7 +34,7 @@
 | WI-0019 | Administrator sandbox, synthetic data, advanced analytics extensions, and phase boundary | captured | admin, sandbox, synthetic-data, experiments | medium |
 | WI-0020 | Administrator cross-cutting verification, performance, and acceptance program | captured | admin, testing, performance, acceptance | high |
 | WI-0021 | Resolve Limen 0.7.0 LIMEN012: no engine source under src/Echelon.Signal.Engine, so strict verify is not-configured (exit 8) | complete | limen,boundary | high |
-| WI-0022 | Replace limen.config.json boundary.notApplicable with engine/kernel paths (src/Echelon.Signal.Engine, src/Echelon.Signal.Browser) when the first F# WASM engine source lands | captured | limen | medium |
-| WI-0023 | Restore Aegis to required: true in .echelon/foundations.json, with EchelonFoundry.Aegis.Core, real boundary usage and aegis-boundaries.json, in the change that adds the first .NET/F# host or operational boundary (DF-SIGNAL-FND-2026-0001) | captured | foundations | medium |
-| WI-0024 | Restore Forma to required: true in .echelon/foundations.json, with the pinned @echelon-foundry/design-system, in the change that adds the first interactive browser surface (DF-SIGNAL-FND-2026-0001) | captured | foundations | medium |
-| WI-0025 | Restore Folio to required: true in .echelon/foundations.json, with the pinned @echelon-foundry/print-components, in the change that adds the first report or document output (DF-SIGNAL-FND-2026-0001) | captured | foundations | medium |
+| WI-0022 | Replace limen.config.json boundary.notApplicable with engine/kernel paths (src/Echelon.Signal.Engine, src/Echelon.Signal.Browser) when the first F# WASM engine source lands | complete | limen | medium |
+| WI-0023 | Restore Aegis to required: true in .echelon/foundations.json, with EchelonFoundry.Aegis.Core, real boundary usage and aegis-boundaries.json, in the change that adds the first .NET/F# host or operational boundary (DF-SIGNAL-FND-2026-0001) | complete | foundations | medium |
+| WI-0024 | Restore Forma to required: true in .echelon/foundations.json, with the pinned @echelon-foundry/design-system, in the change that adds the first interactive browser surface (DF-SIGNAL-FND-2026-0001) | complete | foundations | medium |
+| WI-0025 | Restore Folio to required: true in .echelon/foundations.json, with the pinned @echelon-foundry/print-components, in the change that adds the first report or document output (DF-SIGNAL-FND-2026-0001) | complete | foundations | medium |

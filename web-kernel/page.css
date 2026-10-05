@@ -1,0 +1,46 @@
+/* Page composition. Every control, colour, focus ring, question, scale,
+   alert, fault, table and status cue comes from Forma (imported by
+   styles.css); this file only lays the page out. State cues are data-*
+   attributes set by the engine, matched here, never inline styles (Limen
+   refuses style bindings). */
+
+/* Projected `hidden` must win over any display a Forma layout gives a child. */
+[hidden] {
+  display: none !important;
+}
+
+.app {
+  max-inline-size: 60rem;
+  margin-inline: auto;
+  padding: clamp(1rem, 4vw, 2rem) 1rem 4rem;
+}
+
+.page-header h1,
+.results-header h2 {
+  margin: 0;
+}
+
+.results-header {
+  align-items: baseline;
+}
+
+/* Folio's document is a projection of the same results; on screen the
+   interactive surface is the presentation. */
+.print-surface {
+  display: none;
+}
+
+@media print {
+  .app {
+    max-inline-size: none;
+    padding: 0;
+  }
+
+  .app > :not(.print-surface) {
+    display: none !important;
+  }
+
+  .print-surface {
+    display: block;
+  }
+}
