@@ -191,6 +191,37 @@ jobs:
 
           exit 0
 
+      # Runs before the .NET step: the .NET foundations conformance tests read
+      # the installed npm foundations (Forma, Folio, Limen), so they must be
+      # installed first, as build.yml does.
+      - name: Build and test Node application when present
+        shell: bash
+        run: |
+          set +e
+          if [ ! -f package.json ]; then
+            echo "UNAVAILABLE: no root package.json exists yet" | tee $EVIDENCE_DIR/node-application.txt
+            echo "0" > $EVIDENCE_DIR/node-install.exit
+            echo "0" > $EVIDENCE_DIR/node-test.exit
+            echo "not-present" > $EVIDENCE_DIR/node.state
+            exit 0
+          fi
+
+          echo "present" > $EVIDENCE_DIR/node.state
+
+          if [ -f package-lock.json ]; then
+            npm ci > $EVIDENCE_DIR/node-install.txt 2>&1
+          else
+            npm install --ignore-scripts > $EVIDENCE_DIR/node-install.txt 2>&1
+          fi
+          echo "$?" > $EVIDENCE_DIR/node-install.exit
+          cat $EVIDENCE_DIR/node-install.txt
+
+          npm test > $EVIDENCE_DIR/node-test.txt 2>&1
+          echo "$?" > $EVIDENCE_DIR/node-test.exit
+          cat $EVIDENCE_DIR/node-test.txt
+
+          exit 0
+
       - name: Build and test .NET when present
         shell: bash
         run: |
@@ -222,34 +253,6 @@ jobs:
           dotnet test "$target" --configuration Release --no-build --nologo > $EVIDENCE_DIR/dotnet-test.txt 2>&1
           echo "$?" > $EVIDENCE_DIR/dotnet-test.exit
           cat $EVIDENCE_DIR/dotnet-test.txt
-
-          exit 0
-
-      - name: Build and test Node application when present
-        shell: bash
-        run: |
-          set +e
-          if [ ! -f package.json ]; then
-            echo "UNAVAILABLE: no root package.json exists yet" | tee $EVIDENCE_DIR/node-application.txt
-            echo "0" > $EVIDENCE_DIR/node-install.exit
-            echo "0" > $EVIDENCE_DIR/node-test.exit
-            echo "not-present" > $EVIDENCE_DIR/node.state
-            exit 0
-          fi
-
-          echo "present" > $EVIDENCE_DIR/node.state
-
-          if [ -f package-lock.json ]; then
-            npm ci > $EVIDENCE_DIR/node-install.txt 2>&1
-          else
-            npm install --ignore-scripts > $EVIDENCE_DIR/node-install.txt 2>&1
-          fi
-          echo "$?" > $EVIDENCE_DIR/node-install.exit
-          cat $EVIDENCE_DIR/node-install.txt
-
-          npm test > $EVIDENCE_DIR/node-test.txt 2>&1
-          echo "$?" > $EVIDENCE_DIR/node-test.exit
-          cat $EVIDENCE_DIR/node-test.txt
 
           exit 0
 
