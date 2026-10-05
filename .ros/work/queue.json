@@ -503,10 +503,10 @@
         "limen"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-05T17:03:26.636Z",
-      "updatedAt": "2026-10-05T17:03:26.636Z",
+      "updatedAt": "2026-10-05T23:36:22.000Z",
       "createdBy": "unknown",
       "source": "manual",
       "sourceReference": null
@@ -519,10 +519,10 @@
         "foundations"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-05T18:08:16.406Z",
-      "updatedAt": "2026-10-05T18:08:16.406Z",
+      "updatedAt": "2026-10-05T23:36:22.000Z",
       "createdBy": "unknown",
       "source": "manual",
       "sourceReference": null
@@ -535,10 +535,10 @@
         "foundations"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-05T18:08:16.798Z",
-      "updatedAt": "2026-10-05T18:08:16.798Z",
+      "updatedAt": "2026-10-05T23:36:22.000Z",
       "createdBy": "unknown",
       "source": "manual",
       "sourceReference": null
@@ -551,10 +551,10 @@
         "foundations"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-05T18:08:17.113Z",
-      "updatedAt": "2026-10-05T18:08:17.113Z",
+      "updatedAt": "2026-10-05T23:36:22.000Z",
       "createdBy": "unknown",
       "source": "manual",
       "sourceReference": null

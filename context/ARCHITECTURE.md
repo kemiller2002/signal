@@ -2,7 +2,16 @@
 
 ## Current architecture
 
-No product architecture has been accepted.
+The first slice (a respondent completing the first three SDRA dimensions and
+printing the result report) is built the same way as the other Echelon
+applications; see `DF-SIGNAL-FND-2026-0002`:
+
+| Tier | Path | Role |
+|---|---|---|
+| Limen engine (pure) | `src/Echelon.Signal.Engine` | Assessment, scoring, session transitions, view projection. |
+| Limen engine (application) | `src/Echelon.Signal.Application` | Limen protocol, handshake, Aegis boundary. |
+| Limen kernel (WASM shim) | `src/Echelon.Signal.Browser` | One `[JSExport]`; no decisions. |
+| Limen kernel (browser) | `web-kernel/`, `web/` | `BrowserKernel` start-up; Forma markup and Folio print surface. |
 
 The repository currently separates:
 
