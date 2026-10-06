@@ -2,9 +2,9 @@
   "schemaVersion": "1.0.0",
   "protocolVersion": "1.0.0",
   "repository": "echelon-signal",
-  "actor": "agent:claude",
+  "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-06T10:06:24.000Z",
+  "updatedAt": "2026-10-06T12:33:57.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -490,6 +490,55 @@
         "EXE-20261006T100620698Z-0505f664"
       ],
       "completedAt": "2026-10-06T10:06:24.000Z"
+    },
+    {
+      "id": "WI-0027",
+      "type": "mechanical",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": ".echelon/ros.json"
+        },
+        {
+          "type": "implementation",
+          "path": ".echelon/sde.json"
+        },
+        {
+          "type": "implementation",
+          "path": ".github/workflows/echelon-verification.yml"
+        },
+        {
+          "type": "documentation",
+          "path": "AGENTS.md"
+        }
+      ],
+      "updatedAt": "2026-10-06T12:33:57.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261006T123017186Z-be275251"
+      ],
+      "latestCheckpoint": {
+        "id": "14d9665bb1d9a5648ae1dd15",
+        "recordedAt": "2026-10-06T12:33:56.000Z",
+        "executionId": "EXE-20261006T123017186Z-be275251",
+        "repository": "echelon-signal",
+        "branch": "chore/praxis-3.7.1",
+        "commit": "f405989431253a2f626883b1e645b93f5c44781a",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "chore/praxis-3.7.1",
+        "remoteCommit": "f405989431253a2f626883b1e645b93f5c44781a",
+        "summary": "upgrade applied, verified, pushed",
+        "nextAction": "complete, PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-06T12:33:57.000Z"
     }
   ]
 }
