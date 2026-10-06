@@ -41,3 +41,4 @@
 | WI-0026 | Upgrade to Forma 0.4.1 and Limen 0.7.1 and remove the unchecked-radio workaround | complete | foundations, limen | high |
 | WI-0027 | Move Signal to Praxis 3.7.1 (ROS -> Praxis rename) and Ordo 1.4.0 | complete | praxis, ordo, toolchain | medium |
 | WI-0028 | Move signal to Ordo 1.4.1 | complete | ordo, toolchain | medium |
+| WI-0029 | Move signal to Praxis 3.7.2, Ordo 1.4.2, Visual Engineering 1.0.1 and adopt Conditor | complete |  | medium |

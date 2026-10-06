@@ -114,7 +114,7 @@ jobs:
       # (.echelon/ros.json), installing it on first use with only a POSIX
       # shell and curl. That release also carries the `echelon` installer,
       # which installs the Ordo release pinned in .echelon/toolchain.json.
-      - name: Current Praxis 3.7.1 verification and upgrade plan
+      - name: Current Pinned Praxis verification and upgrade plan
         shell: bash
         run: |
           set +e
@@ -308,10 +308,10 @@ jobs:
             echo "| legacy ROS registry check | $(read_code legacy-ros-registry-check) |"
             echo "| legacy ROS registry build | $(read_code legacy-ros-registry-build) |"
             echo "| legacy ROS validate | $(read_code legacy-ros-validate) |"
-            echo "| Praxis 3.7.1 version probe | $(read_code praxis-current-version) |"
-            echo "| Praxis 3.7.1 status | $(read_code praxis-current-status) |"
-            echo "| Praxis 3.7.1 upgrade dry-run | $(read_code praxis-upgrade-plan) |"
-            echo "| Praxis 3.7.1 verify strict | $(read_code praxis-current-verify) |"
+            echo "| Pinned Praxis version probe | $(read_code praxis-current-version) |"
+            echo "| Pinned Praxis status | $(read_code praxis-current-status) |"
+            echo "| Pinned Praxis upgrade dry-run | $(read_code praxis-upgrade-plan) |"
+            echo "| Pinned Praxis verify strict | $(read_code praxis-current-verify) |"
             echo "| Ordo (pinned) install | $(read_code ordo-install) |"
             echo "| Ordo (pinned) status | $(read_code ordo-status) |"
             echo "| Ordo (pinned) init dry-run | $(read_code ordo-init-plan) |"
