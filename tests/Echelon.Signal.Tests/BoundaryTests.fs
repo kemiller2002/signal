@@ -82,23 +82,26 @@ let ``an answer event reaches the session and the reply projects it`` () =
     Assert.Equal("1 of 15 answered", text "progress" reply)
 
 [<Fact>]
-let ``an unchecked radio says nothing about the answer; a checked one sets it`` () =
+let ``submitting re-sends the checked radios, and the answers survive`` () =
     let _, aegis = collector ()
 
-    // What the kernel sends when a form holding the radios is submitted: every
-    // radio of the item, the unchecked ones with checked=false.
+    // What Limen 0.7.1 sends when the form holding the radios is submitted:
+    // only the checked radio of each answered item, each with checked=true,
+    // then the form's own event.
     let _, reply =
         run
             aegis
             [ initialize
               eventWith "answered" (Some "CORE-001") (Some "3") (Some true)
-              eventWith "answered" (Some "CORE-001") (Some "0") (Some false)
-              eventWith "answered" (Some "CORE-002") (Some "dont-know") (Some false) ]
+              eventWith "answered" (Some "CORE-002") (Some "dont-know") (Some true)
+              eventWith "answered" (Some "CORE-001") (Some "3") (Some true)
+              eventWith "answered" (Some "CORE-002") (Some "dont-know") (Some true)
+              event "resultsRequested" None None ]
 
     let row id = (viewOf reply).["items"].AsArray() |> Seq.find (fun r -> r.["id"].GetValue<string>() = id)
     Assert.Equal("3", (row "CORE-001").["answer"].GetValue<string>())
-    Assert.Equal("", (row "CORE-002").["answer"].GetValue<string>())
-    Assert.Equal("1 of 15 answered", text "progress" reply)
+    Assert.Equal("dont-know", (row "CORE-002").["answer"].GetValue<string>())
+    Assert.Equal("2 of 15 answered", text "progress" reply)
 
 [<Fact>]
 let ``asking for results too early is a typed refusal: shown as an alert, never an Aegis fault`` () =

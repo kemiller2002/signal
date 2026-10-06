@@ -164,11 +164,11 @@ jobs:
 
           exit 0
 
-      - name: Limen 0.7.0 verification
+      - name: Limen 0.7.1 verification
         shell: bash
         run: |
           set +e
-          PKG="@echelon-foundry/limen@0.7.0"
+          PKG="@echelon-foundry/limen@0.7.1"
 
           npx --yes --package="$PKG" limen --version > $EVIDENCE_DIR/limen-version.txt 2>&1
           echo "$?" > $EVIDENCE_DIR/limen-version.exit
@@ -306,9 +306,9 @@ jobs:
             echo "| SDE 1.3.0 status | $(read_code sde-status) |"
             echo "| SDE 1.3.0 init dry-run | $(read_code sde-init-plan) |"
             echo "| SDE 1.3.0 verify | $(read_code sde-verify) |"
-            echo "| Limen 0.7.0 status | $(read_code limen-status) |"
-            echo "| Limen 0.7.0 init dry-run | $(read_code limen-init-plan) |"
-            echo "| Limen 0.7.0 verify strict | $(read_code limen-verify) |"
+            echo "| Limen 0.7.1 status | $(read_code limen-status) |"
+            echo "| Limen 0.7.1 init dry-run | $(read_code limen-init-plan) |"
+            echo "| Limen 0.7.1 verify strict | $(read_code limen-verify) |"
             echo "| .NET build | $(read_code dotnet-build) |"
             echo "| .NET test | $(read_code dotnet-test) |"
             echo "| Node install | $(read_code node-install) |"

@@ -29,28 +29,20 @@ let private itemOf (session: Session.Session) (key: string) =
     else
         raise (MalformedInput("$.event.key", $"an item of {session.Assessment.Id}, not '{key}'"))
 
-/// An event as the wire reads it: the item key, the value and, for a radio,
-/// whether it is now checked.
-type Fields =
-    { Key: string
-      Value: string
-      Checked: bool option }
+/// An event as the wire reads it: the item key and the value.
+type Fields = { Key: string; Value: string }
 
 /// Every event the page may send, so a test can hold index.html to it. An
-/// event can carry no message: the kernel also reports a radio that is
-/// *not* checked (for example when the form is submitted), and an unchecked
-/// choice says nothing about the item's answer.
-let events: Map<string, Session.Session -> Fields -> Msg option> =
+/// `answered` event always comes from a checked radio: the browser fires
+/// `change` only on the radio being checked, and on submit Limen (0.7.1 and
+/// later) re-sends only the controls a native submission would include,
+/// which leaves out unchecked radios (limen#80/#81).
+let events: Map<string, Session.Session -> Fields -> Msg> =
     Map.ofList
-        [ "answered",
-          (fun session fields ->
-              match fields.Checked with
-              | Some false -> None
-              | Some true
-              | None -> Some(Answered(itemOf session fields.Key, answerOf fields.Value)))
-          "resultsRequested", (fun _ _ -> Some ResultsRequested)
-          "editRequested", (fun _ _ -> Some EditRequested)
-          "restarted", (fun _ _ -> Some Restarted) ]
+        [ "answered", (fun session fields -> Answered(itemOf session fields.Key, answerOf fields.Value))
+          "resultsRequested", (fun _ _ -> ResultsRequested)
+          "editRequested", (fun _ _ -> EditRequested)
+          "restarted", (fun _ _ -> Restarted) ]
 
 let private message (session: Session.Session) (name: string) (fields: Fields) =
     match events |> Map.tryFind name with
@@ -77,15 +69,12 @@ let private step (state: State) (inbound: Inbound) =
     let next, handshake =
         match inbound with
         | Initialize offer -> state.Session, offer |> Option.map answer
-        | Event(name, key, value, isChecked) ->
+        | Event(name, key, value) ->
             let fields =
                 { Key = defaultArg key ""
-                  Value = defaultArg value ""
-                  Checked = isChecked }
+                  Value = defaultArg value "" }
 
-            match message state.Session name fields with
-            | Some msg -> update msg state.Session, None
-            | None -> state.Session, None
+            update (message state.Session name fields) state.Session, None
         | LocationChanged -> state.Session, None
 
     let state = { state with Session = next }
