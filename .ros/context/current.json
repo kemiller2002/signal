@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-06T13:53:24.000Z",
+  "updatedAt": "2026-10-06T13:54:33.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -543,13 +543,47 @@
     {
       "id": "WI-0028",
       "type": "mechanical",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-06T13:53:24.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": ".echelon/toolchain.json"
+        },
+        {
+          "type": "implementation",
+          "path": ".echelon/sde.json"
+        },
+        {
+          "type": "tests",
+          "path": ".github/workflows/praxis-validation.yml"
+        }
+      ],
+      "updatedAt": "2026-10-06T13:54:33.000Z",
       "telemetryExecutionIds": [
         "EXE-20261006T135324556Z-8b66e57a"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "387fd8877849cffe27fc7511",
+        "recordedAt": "2026-10-06T13:54:32.000Z",
+        "executionId": "EXE-20261006T135324556Z-8b66e57a",
+        "repository": "echelon-signal",
+        "branch": "chore/ordo-1.4.1",
+        "commit": "c25b9bd689d6dc4cf28856a17e1e2020a9114d45",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "chore/ordo-1.4.1",
+        "remoteCommit": "c25b9bd689d6dc4cf28856a17e1e2020a9114d45",
+        "summary": "Ordo 1.4.1 applied, verified, pushed",
+        "nextAction": "complete, PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-06T13:54:33.000Z"
     }
   ]
 }
