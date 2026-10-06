@@ -139,7 +139,7 @@ jobs:
 
           exit 0
 
-      - name: Ordo 1.4.0 verification
+      - name: Ordo verification (toolchain pin)
         shell: bash
         run: |
           set +e
@@ -312,10 +312,10 @@ jobs:
             echo "| Praxis 3.7.1 status | $(read_code praxis-current-status) |"
             echo "| Praxis 3.7.1 upgrade dry-run | $(read_code praxis-upgrade-plan) |"
             echo "| Praxis 3.7.1 verify strict | $(read_code praxis-current-verify) |"
-            echo "| Ordo 1.4.0 install | $(read_code ordo-install) |"
-            echo "| Ordo 1.4.0 status | $(read_code ordo-status) |"
-            echo "| Ordo 1.4.0 init dry-run | $(read_code ordo-init-plan) |"
-            echo "| Ordo 1.4.0 verify strict | $(read_code ordo-verify) |"
+            echo "| Ordo (pinned) install | $(read_code ordo-install) |"
+            echo "| Ordo (pinned) status | $(read_code ordo-status) |"
+            echo "| Ordo (pinned) init dry-run | $(read_code ordo-init-plan) |"
+            echo "| Ordo (pinned) verify strict | $(read_code ordo-verify) |"
             echo "| Limen 0.7.1 status | $(read_code limen-status) |"
             echo "| Limen 0.7.1 init dry-run | $(read_code limen-init-plan) |"
             echo "| Limen 0.7.1 verify strict | $(read_code limen-verify) |"
