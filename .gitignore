@@ -45,3 +45,6 @@ obj/
 build/
 test-results/
 playwright-report/
+
+# Praxis runtime locks (transient, per checkout)
+.ros/locks/

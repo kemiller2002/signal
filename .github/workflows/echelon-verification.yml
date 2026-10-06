@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   verify:
-    name: ROS Ordo Limen and repository verification
+    name: Praxis Ordo Limen and repository verification
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -76,7 +76,7 @@ jobs:
           cat $EVIDENCE_DIR/git-diff-check.txt
           exit 0
 
-      - name: Repository ROS validation
+      - name: Repository Praxis validation
         shell: bash
         run: |
           set +e
@@ -110,57 +110,66 @@ jobs:
 
           exit 0
 
-      - name: Current ROS 3.1.4 verification and upgrade plan
+      # ./praxis runs the Praxis release this repository pins
+      # (.echelon/ros.json), installing it on first use with only a POSIX
+      # shell and curl. That release also carries the `echelon` installer,
+      # which installs the Ordo release pinned in .echelon/toolchain.json.
+      - name: Current Praxis 3.7.1 verification and upgrade plan
         shell: bash
         run: |
           set +e
-          PKG="@echelon-foundry/repository-operating-system@3.1.4"
+          ./praxis --version > $EVIDENCE_DIR/praxis-current-version.txt 2>&1
+          echo "$?" > $EVIDENCE_DIR/praxis-current-version.exit
+          cat $EVIDENCE_DIR/praxis-current-version.txt
 
-          npx --yes --package="$PKG" ros --version > $EVIDENCE_DIR/ros-current-version.txt 2>&1
-          echo "$?" > $EVIDENCE_DIR/ros-current-version.exit
-          cat $EVIDENCE_DIR/ros-current-version.txt
+          ./praxis status --json > $EVIDENCE_DIR/praxis-current-status.json 2> $EVIDENCE_DIR/praxis-current-status.stderr
+          echo "$?" > $EVIDENCE_DIR/praxis-current-status.exit
+          cat $EVIDENCE_DIR/praxis-current-status.stderr
+          cat $EVIDENCE_DIR/praxis-current-status.json
 
-          npx --yes --package="$PKG" ros status --json > $EVIDENCE_DIR/ros-current-status.json 2> $EVIDENCE_DIR/ros-current-status.stderr
-          echo "$?" > $EVIDENCE_DIR/ros-current-status.exit
-          cat $EVIDENCE_DIR/ros-current-status.stderr
-          cat $EVIDENCE_DIR/ros-current-status.json
+          ./praxis upgrade --dry-run --json > $EVIDENCE_DIR/praxis-upgrade-plan.json 2> $EVIDENCE_DIR/praxis-upgrade-plan.stderr
+          echo "$?" > $EVIDENCE_DIR/praxis-upgrade-plan.exit
+          cat $EVIDENCE_DIR/praxis-upgrade-plan.stderr
+          cat $EVIDENCE_DIR/praxis-upgrade-plan.json
 
-          npx --yes --package="$PKG" ros upgrade --dry-run --json > $EVIDENCE_DIR/ros-upgrade-plan.json 2> $EVIDENCE_DIR/ros-upgrade-plan.stderr
-          echo "$?" > $EVIDENCE_DIR/ros-upgrade-plan.exit
-          cat $EVIDENCE_DIR/ros-upgrade-plan.stderr
-          cat $EVIDENCE_DIR/ros-upgrade-plan.json
-
-          npx --yes --package="$PKG" ros verify --strict --json > $EVIDENCE_DIR/ros-current-verify.json 2> $EVIDENCE_DIR/ros-current-verify.stderr
-          echo "$?" > $EVIDENCE_DIR/ros-current-verify.exit
-          cat $EVIDENCE_DIR/ros-current-verify.stderr
-          cat $EVIDENCE_DIR/ros-current-verify.json
+          ./praxis verify --strict --json > $EVIDENCE_DIR/praxis-current-verify.json 2> $EVIDENCE_DIR/praxis-current-verify.stderr
+          echo "$?" > $EVIDENCE_DIR/praxis-current-verify.exit
+          cat $EVIDENCE_DIR/praxis-current-verify.stderr
+          cat $EVIDENCE_DIR/praxis-current-verify.json
 
           exit 0
 
-      - name: Ordo SDE 1.3.0 verification
+      - name: Ordo 1.4.0 verification
         shell: bash
         run: |
           set +e
-          PKG="@echelon-foundry/sde@1.3.0"
+          ORDO_VERSION="$(sed -n 's/.*"ordo"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' .echelon/toolchain.json | head -n 1)"
+          PRAXIS_VERSION="$(./praxis --version | sed -n 's/^praxis //p')"
+          ECHELON="${ECHELON_HOME:-$HOME/.echelon}/tools/praxis/$PRAXIS_VERSION/echelon"
+          ORDO="${ECHELON_HOME:-$HOME/.echelon}/bin/ordo"
 
-          npx --yes --package="$PKG" sde --version > $EVIDENCE_DIR/sde-version.txt 2>&1
-          echo "$?" > $EVIDENCE_DIR/sde-version.exit
-          cat $EVIDENCE_DIR/sde-version.txt
+          "$ECHELON" install ordo "$ORDO_VERSION" > $EVIDENCE_DIR/ordo-install.txt 2>&1
+          echo "$?" > $EVIDENCE_DIR/ordo-install.exit
+          cat $EVIDENCE_DIR/ordo-install.txt
 
-          npx --yes --package="$PKG" sde status --json > $EVIDENCE_DIR/sde-status.json 2> $EVIDENCE_DIR/sde-status.stderr
-          echo "$?" > $EVIDENCE_DIR/sde-status.exit
-          cat $EVIDENCE_DIR/sde-status.stderr
-          cat $EVIDENCE_DIR/sde-status.json
+          "$ORDO" --version > $EVIDENCE_DIR/ordo-version.txt 2>&1
+          echo "$?" > $EVIDENCE_DIR/ordo-version.exit
+          cat $EVIDENCE_DIR/ordo-version.txt
 
-          npx --yes --package="$PKG" sde init --dry-run --json > $EVIDENCE_DIR/sde-init-plan.json 2> $EVIDENCE_DIR/sde-init-plan.stderr
-          echo "$?" > $EVIDENCE_DIR/sde-init-plan.exit
-          cat $EVIDENCE_DIR/sde-init-plan.stderr
-          cat $EVIDENCE_DIR/sde-init-plan.json
+          "$ORDO" status --json > $EVIDENCE_DIR/ordo-status.json 2> $EVIDENCE_DIR/ordo-status.stderr
+          echo "$?" > $EVIDENCE_DIR/ordo-status.exit
+          cat $EVIDENCE_DIR/ordo-status.stderr
+          cat $EVIDENCE_DIR/ordo-status.json
 
-          npx --yes --package="$PKG" sde verify --strict --json > $EVIDENCE_DIR/sde-verify.json 2> $EVIDENCE_DIR/sde-verify.stderr
-          echo "$?" > $EVIDENCE_DIR/sde-verify.exit
-          cat $EVIDENCE_DIR/sde-verify.stderr
-          cat $EVIDENCE_DIR/sde-verify.json
+          "$ORDO" init --dry-run --json > $EVIDENCE_DIR/ordo-init-plan.json 2> $EVIDENCE_DIR/ordo-init-plan.stderr
+          echo "$?" > $EVIDENCE_DIR/ordo-init-plan.exit
+          cat $EVIDENCE_DIR/ordo-init-plan.stderr
+          cat $EVIDENCE_DIR/ordo-init-plan.json
+
+          "$ORDO" verify --strict --json > $EVIDENCE_DIR/ordo-verify.json 2> $EVIDENCE_DIR/ordo-verify.stderr
+          echo "$?" > $EVIDENCE_DIR/ordo-verify.exit
+          cat $EVIDENCE_DIR/ordo-verify.stderr
+          cat $EVIDENCE_DIR/ordo-verify.json
 
           exit 0
 
@@ -299,13 +308,14 @@ jobs:
             echo "| legacy ROS registry check | $(read_code legacy-ros-registry-check) |"
             echo "| legacy ROS registry build | $(read_code legacy-ros-registry-build) |"
             echo "| legacy ROS validate | $(read_code legacy-ros-validate) |"
-            echo "| ROS 3.1.4 version probe | $(read_code ros-current-version) |"
-            echo "| ROS 3.1.4 status | $(read_code ros-current-status) |"
-            echo "| ROS 3.1.4 upgrade dry-run | $(read_code ros-upgrade-plan) |"
-            echo "| ROS 3.1.4 verify strict | $(read_code ros-current-verify) |"
-            echo "| SDE 1.3.0 status | $(read_code sde-status) |"
-            echo "| SDE 1.3.0 init dry-run | $(read_code sde-init-plan) |"
-            echo "| SDE 1.3.0 verify | $(read_code sde-verify) |"
+            echo "| Praxis 3.7.1 version probe | $(read_code praxis-current-version) |"
+            echo "| Praxis 3.7.1 status | $(read_code praxis-current-status) |"
+            echo "| Praxis 3.7.1 upgrade dry-run | $(read_code praxis-upgrade-plan) |"
+            echo "| Praxis 3.7.1 verify strict | $(read_code praxis-current-verify) |"
+            echo "| Ordo 1.4.0 install | $(read_code ordo-install) |"
+            echo "| Ordo 1.4.0 status | $(read_code ordo-status) |"
+            echo "| Ordo 1.4.0 init dry-run | $(read_code ordo-init-plan) |"
+            echo "| Ordo 1.4.0 verify strict | $(read_code ordo-verify) |"
             echo "| Limen 0.7.1 status | $(read_code limen-status) |"
             echo "| Limen 0.7.1 init dry-run | $(read_code limen-init-plan) |"
             echo "| Limen 0.7.1 verify strict | $(read_code limen-verify) |"
@@ -354,9 +364,9 @@ jobs:
           }
 
           require_zero "Repository whitespace check" "git-diff-check"
-          require_zero "Repository ROS validation" "legacy-ros-validate"
-          require_zero "Current ROS strict verification" "ros-current-verify"
-          require_zero "SDE verification" "sde-verify"
+          require_zero "Repository Praxis validation" "legacy-ros-validate"
+          require_zero "Current Praxis strict verification" "praxis-current-verify"
+          require_zero "Ordo strict verification" "ordo-verify"
           require_zero "Limen strict verification" "limen-verify"
           require_zero ".NET build when present" "dotnet-build"
           require_zero ".NET tests when present" "dotnet-test"

@@ -39,3 +39,4 @@
 | WI-0024 | Restore Forma to required: true in .echelon/foundations.json, with the pinned @echelon-foundry/design-system, in the change that adds the first interactive browser surface (DF-SIGNAL-FND-2026-0001) | complete | foundations | medium |
 | WI-0025 | Restore Folio to required: true in .echelon/foundations.json, with the pinned @echelon-foundry/print-components, in the change that adds the first report or document output (DF-SIGNAL-FND-2026-0001) | complete | foundations | medium |
 | WI-0026 | Upgrade to Forma 0.4.1 and Limen 0.7.1 and remove the unchecked-radio workaround | complete | foundations, limen | high |
+| WI-0027 | Move Signal to Praxis 3.7.1 (ROS -> Praxis rename) and Ordo 1.4.0 | ready | praxis, ordo, toolchain | medium |
