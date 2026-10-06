@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "tool": "limen",
   "package": "@echelon-foundry/limen",
-  "installedVersion": "0.7.0",
+  "installedVersion": "0.7.1",
   "configurationVersion": 1,
   "managedArtifacts": [
     {
@@ -15,7 +15,7 @@
       "path": "limen.config.json",
       "ownership": "user-owned",
       "disposition": "installed",
-      "sha256": "62b736d4a9da750d298405bf21488d8bc4eb9a1ca3689f46fe8ad806a88cc356"
+      "sha256": "2001c54386e5ee47f691d7a6ec11294f4cdbfa190743080111e166d5d550c84c"
     }
   ]
 }

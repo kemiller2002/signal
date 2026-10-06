@@ -6,7 +6,7 @@
 /// pack, so the kernel can only send it the handshake, events and location
 /// changes. Anything else is not a message this engine could have caused.
 ///
-/// See the `protocol` export of `@echelon-foundry/limen` (0.7.0).
+/// See the `protocol` export of `@echelon-foundry/limen` (0.7.1).
 module Echelon.Signal.Application.Limen
 
 open System.Text.Json
@@ -34,8 +34,8 @@ let ProtocolMinor = 4
 [<NoComparison; NoEquality>]
 type Inbound =
     | Initialize of handshake: JsonNode option
-    /// `isChecked` is the radio or checkbox state (protocol 1.2), when sent.
-    | Event of name: string * key: string option * value: string option * isChecked: bool option
+    /// The page reads no `checked` state (protocol 1.2): see `Wire.events`.
+    | Event of name: string * key: string option * value: string option
     | LocationChanged
 
 /// Reads one message from the kernel.
@@ -50,8 +50,7 @@ let decode (messageJson: string) =
         Event(
             required "name" "$.event" asString event,
             optional "key" "$.event" asString event,
-            optional "value" "$.event" asString event,
-            optional "checked" "$.event" asBool event
+            optional "value" "$.event" asString event
         )
     | "LocationChanged" -> LocationChanged
     // The engine requests no effect and negotiates no capability, so neither

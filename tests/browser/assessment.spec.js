@@ -78,6 +78,30 @@ test("answering every question shows scored results, and missing data is not zer
   await expect(choice(page, "CORE-007", "dont-know")).not.toBeChecked();
 });
 
+// Submitting the form re-sends its controls before the form's own event.
+// Limen 0.7.0 re-sent every radio, unchecked ones included, as an answer;
+// 0.7.1 re-sends only the checked radio of each group (limen#80/#81), so the
+// page reads every answer event as the answer, with no `checked` filter.
+test("answers survive submitting the form, refused or accepted", async ({ assessment: page }) => {
+  const VALUES = ["0", "1", "2", "3", "4", "dont-know", "not-observed", "not-applicable"];
+  const chosen = ITEMS.map((item, i) => [item, VALUES[i % VALUES.length]]);
+  const checkedValues = () => page.locator('#answers input[type="radio"]:checked').evaluateAll((radios) =>
+    radios.map((radio) => [radio.closest("section").dataset.item, radio.value]));
+
+  for (const [item, value] of chosen.slice(0, 7)) await answer(page, item, value);
+  await page.click("#see-results");
+  await expect(page.locator("#refusal-message")).toHaveText(/^8 questions still need an answer\./);
+  await expect(page.locator("#progress")).toHaveText("7 of 15 answered");
+  expect(await checkedValues()).toEqual(chosen.slice(0, 7));
+
+  for (const [item, value] of chosen.slice(7)) await answer(page, item, value);
+  await page.click("#see-results");
+  await expect.poll(() => resultRows(page)).toHaveLength(3);
+  await page.click("#edit-answers");
+  await expect(page.locator("#progress")).toHaveText("15 of 15 answered");
+  expect(await checkedValues()).toEqual(chosen);
+});
+
 test("the print surface is Folio's document, projecting the same results", async ({ assessment: page }) => {
   for (const item of ITEMS) await answer(page, item, "2");
   await page.click("#see-results");
