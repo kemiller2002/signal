@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-07T21:03:18.000Z",
+  "updatedAt": "2026-10-07T21:10:16.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -671,6 +671,47 @@
         }
       },
       "completedAt": "2026-10-07T21:03:18.000Z"
+    },
+    {
+      "id": "WI-0031",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/UrlState.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/UrlStateTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-07T21:10:16.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261007T210824175Z-6cc61316"
+      ],
+      "latestCheckpoint": {
+        "id": "2d1fb5f4c8f29b5d9d7928fe",
+        "recordedAt": "2026-10-07T21:10:15.000Z",
+        "executionId": "EXE-20261007T210824175Z-6cc61316",
+        "repository": "echelon-signal",
+        "branch": "feat/url-state-codec",
+        "commit": "16668803885da202917af1a4ddb3fae01eb940ae",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feat/url-state-codec",
+        "remoteCommit": "16668803885da202917af1a4ddb3fae01eb940ae",
+        "summary": "Canonical hash and URL codec implemented with tests",
+        "nextAction": "Complete WI-0031, open PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-07T21:10:16.000Z"
     }
   ]
 }
