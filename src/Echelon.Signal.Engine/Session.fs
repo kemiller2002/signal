@@ -9,6 +9,7 @@ module Echelon.Signal.Engine.Session
 open System.Globalization
 open Echelon.Signal.Engine.View
 open Echelon.Signal.Engine.Assessment
+open Echelon.Signal.Engine.UrlState
 
 type Phase =
     /// The respondent is answering.
@@ -16,25 +17,43 @@ type Phase =
     /// Every item has an answer and the results are shown.
     | Reviewing
 
+[<NoComparison>]
 type Session =
     { Assessment: Assessment
+      /// What the response is bound to (an invitation, or nothing). It
+      /// travels in the URL with the answers.
+      Binding: Binding
       Answers: Answers
       Phase: Phase
       /// Why the last request to see results was refused, if it was.
-      Refusal: string option }
+      Refusal: string option
+      /// Why saved answers in the link could not be restored, if they could not.
+      Notice: string option }
 
+/// The envelope the live URL carries for this session.
+let envelope (session: Session) =
+    { Binding = session.Binding
+      Answers = session.Answers }
+
+[<NoComparison>]
 type Msg =
     /// An item's answer was chosen; None clears it.
     | Answered of itemId: string * answer: Answer option
     | ResultsRequested
     | EditRequested
     | Restarted
+    /// The URL carried saved answers that were read (LURL-001 resume).
+    | Resumed of Envelope
+    /// The URL carried saved answers that could not be read.
+    | ResumeRefused of DecodeError
 
 let start (assessment: Assessment) =
     { Assessment = assessment
+      Binding = Unbound
       Answers = Map.empty
       Phase = Responding
-      Refusal = None }
+      Refusal = None
+      Notice = None }
 
 /// Whether `itemId` names an item of this session's assessment.
 let knows (session: Session) (itemId: string) =
@@ -67,7 +86,18 @@ let update (msg: Msg) (session: Session) =
                         $"""{plural missing.Length "question still needs" "questions still need"} an answer. "Don't know", "Not observed" and "Not applicable" are answers too."""
                     ) }
     | EditRequested -> { session with Phase = Responding; Refusal = None }
-    | Restarted -> start session.Assessment
+    // Starting over clears the answers, not the invitation they answer.
+    | Restarted -> { start session.Assessment with Binding = session.Binding }
+    | Resumed envelope ->
+        { session with
+            Binding = envelope.Binding
+            Answers = envelope.Answers |> Map.filter (fun itemId _ -> knows session itemId)
+            Phase = Responding
+            Refusal = None
+            Notice = None }
+    | ResumeRefused error ->
+        { session with
+            Notice = Some $"{describe error} Your earlier answers were not restored, and nothing was guessed." }
 
 // ---------------------------------------------------------------------------
 // Projection.
@@ -144,6 +174,8 @@ let view (session: Session) : View =
       "progress", Value(Text $"{answered} of {assessment.Items.Length} answered")
       "answeredCount", Value(Number(float answered))
       "itemCount", Value(Number(float assessment.Items.Length))
+      "hasNotice", Value(Flag session.Notice.IsSome)
+      "notice", Value(Text(session.Notice |> Option.defaultValue ""))
       "hasRefusal", Value(Flag session.Refusal.IsSome)
       "refusal", Value(Text(session.Refusal |> Option.defaultValue ""))
       "items", Items(assessment.Items |> List.mapi (itemRow session))

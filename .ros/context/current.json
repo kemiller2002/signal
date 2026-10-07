@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-07T21:10:16.000Z",
+  "updatedAt": "2026-10-07T21:15:57.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -712,6 +712,47 @@
         }
       },
       "completedAt": "2026-10-07T21:10:16.000Z"
+    },
+    {
+      "id": "WI-0032",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/LiveUrl.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/LiveUrlTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-07T21:15:57.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261007T211514928Z-fe57318e"
+      ],
+      "latestCheckpoint": {
+        "id": "4f671c8b35f9b8b5a14b3c5a",
+        "recordedAt": "2026-10-07T21:15:56.000Z",
+        "executionId": "EXE-20261007T211514928Z-fe57318e",
+        "repository": "echelon-signal",
+        "branch": "feat/live-url",
+        "commit": "ef315a7840e17d516233a68f406c6a11ed1fc093",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feat/live-url",
+        "remoteCommit": "ef315a7840e17d516233a68f406c6a11ed1fc093",
+        "summary": "Live URL sync implemented and tested (unit + browser)",
+        "nextAction": "Complete WI-0032",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-07T21:15:57.000Z"
     }
   ]
 }

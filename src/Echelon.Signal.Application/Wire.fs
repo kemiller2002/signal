@@ -54,31 +54,106 @@ let private message (session: Session.Session) (name: string) (fields: Fields) =
 // One kernel message in, one reply out.
 // ---------------------------------------------------------------------------
 
+[<NoComparison>]
 type State =
     { Session: Session.Session
-      Fault: FaultView option }
+      Fault: FaultView option
+      /// The browser URL as last reported (or as last requested).
+      Location: Location option
+      /// Navigation effects requested and not yet answered.
+      Pending: Set<string>
+      NextCorrelation: int
+      /// Set when the browser refused to update the URL: the link no longer
+      /// carries the latest answers, and the respondent is told so.
+      UrlNotice: string option }
 
 let initial =
     { Session = start Pilot.assessment
-      Fault = None }
+      Fault = None
+      Location = None
+      Pending = Set.empty
+      NextCorrelation = 1
+      UrlNotice = None }
 
-let render (state: State) (handshake: Handshake option) =
-    encode (view state.Session @ faultView state.Fault) handshake
+/// The live-URL notice's named values.
+let urlNoticeView (notice: string option) : Echelon.Signal.Engine.View.View =
+    [ "hasUrlNotice", Echelon.Signal.Engine.View.Value(Echelon.Signal.Engine.View.Flag notice.IsSome)
+      "urlNotice", Echelon.Signal.Engine.View.Value(Echelon.Signal.Engine.View.Text(defaultArg notice "")) ]
+
+let render (state: State) (effects: Effect list) (handshake: Handshake option) =
+    encode (view state.Session @ urlNoticeView state.UrlNotice @ faultView state.Fault) effects handshake
+
+/// Applies what a URL says about saved answers (LURL-001 resume). A URL
+/// whose saved answers equal the session's changes nothing.
+let private resumeFrom (location: Location) (session: Session.Session) =
+    match LiveUrl.read session.Assessment location.Hash with
+    | LiveUrl.NoSavedState -> session
+    | LiveUrl.Saved envelope when envelope = Session.envelope session -> session
+    | LiveUrl.Saved envelope -> update (Resumed envelope) session
+    | LiveUrl.Unreadable error -> update (ResumeRefused error) session
+
+/// Keeps the URL equal to the session (LURL-001): when the fragment the
+/// session implies differs from the URL's, one `replace` is requested, so
+/// answering never adds history entries.
+let private synchronize (state: State) =
+    match state.Location with
+    | None -> state, []
+    | Some location ->
+        let fragment = LiveUrl.fragment state.Session.Assessment (Session.envelope state.Session)
+
+        if fragment = location.Hash then
+            state, []
+        else
+            let id = $"url-{state.NextCorrelation}"
+            let url = LiveUrl.urlFor state.Session.Assessment location.Path location.Query (Session.envelope state.Session)
+
+            { state with
+                Location = Some { location with Hash = fragment }
+                Pending = state.Pending.Add id
+                NextCorrelation = state.NextCorrelation + 1 },
+            [ ReplaceUrl(id, url) ]
 
 let private step (state: State) (inbound: Inbound) =
-    let next, handshake =
+    let state, effects, handshake =
         match inbound with
-        | Initialize offer -> state.Session, offer |> Option.map answer
+        | Initialize(offer, location) ->
+            let session =
+                match location with
+                | Some l -> resumeFrom l state.Session
+                | None -> state.Session
+
+            { state with Session = session; Location = location }, [], offer |> Option.map answer
         | Event(name, key, value) ->
             let fields =
                 { Key = defaultArg key ""
                   Value = defaultArg value "" }
 
-            update (message state.Session name fields) state.Session, None
-        | LocationChanged -> state.Session, None
+            let next, effects = synchronize { state with Session = update (message state.Session name fields) state.Session }
+            next, effects, None
+        | LocationChanged location ->
+            { state with
+                Session = resumeFrom location state.Session
+                Location = Some location },
+            [],
+            None
+        | NavigationResult(id, _) when not (state.Pending.Contains id) ->
+            // A result for a navigation this engine did not request, or one it
+            // already heard: stale or forged, never applied (ARX-007).
+            raise (MalformedInput("$.result.correlationId", $"a pending navigation, not '{id}'"))
+        | NavigationResult(id, outcome) ->
+            let state = { state with Pending = state.Pending.Remove id }
 
-    let state = { state with Session = next }
-    state, render state handshake
+            match outcome with
+            | NavigationSucceeded location -> { state with Location = Some location; UrlNotice = None }, [], None
+            | NavigationDispatched -> state, [], None
+            | NavigationFailed _ ->
+                { state with
+                    UrlNotice =
+                        Some "This page's address could not be updated, so a copy of the link would not include your latest answers. Your answers on this page are unchanged." },
+                [],
+                None
+
+    state, render state effects handshake
 
 /// Handles one kernel message under the Aegis boundary. A fault leaves the
 /// session as it was and is shown until the next message.
@@ -89,4 +164,4 @@ let handle (aegis: AegisConfig) (state: State) (messageJson: string) =
     | Ok result -> result
     | Result.Error fault ->
         let faulted = { state with Fault = Some fault }
-        faulted, render faulted None
+        faulted, render faulted [] None

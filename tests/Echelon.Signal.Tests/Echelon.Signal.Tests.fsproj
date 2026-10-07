@@ -17,6 +17,7 @@
     <Compile Include="BindingAgreementTests.fs" />
     <Compile Include="GapAnalysisTests.fs" />
     <Compile Include="UrlStateTests.fs" />
+    <Compile Include="LiveUrlTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

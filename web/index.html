@@ -41,6 +41,25 @@
     </ef-fault-inline>
   </template>
 
+  <!-- Saved answers in the link that could not be restored, and a link the
+       browser would not update: ordinary notices, not operational faults. -->
+  <template data-if="hasNotice">
+    <ef-alert class="ef-component-tag">
+      <aside id="resume-notice" class="ef-alert" role="status" data-tone="attention">
+        <div class="ef-alert__icon" aria-hidden="true">!</div>
+        <p id="resume-notice-message" data-text="notice"></p>
+      </aside>
+    </ef-alert>
+  </template>
+  <template data-if="hasUrlNotice">
+    <ef-alert class="ef-component-tag">
+      <aside id="url-notice" class="ef-alert" role="status" data-tone="attention">
+        <div class="ef-alert__icon" aria-hidden="true">!</div>
+        <p id="url-notice-message" data-text="urlNotice"></p>
+      </aside>
+    </ef-alert>
+  </template>
+
   <template data-if="responding">
     <section id="questions" class="ef-stack" aria-labelledby="questions-title">
       <h2 id="questions-title">Questions</h2>
