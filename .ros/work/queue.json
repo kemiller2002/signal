@@ -654,10 +654,10 @@
         "requirements,gap-analysis"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-07T21:00:37.340Z",
-      "updatedAt": "2026-10-07T21:00:47.000Z",
+      "updatedAt": "2026-10-07T21:03:18.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
