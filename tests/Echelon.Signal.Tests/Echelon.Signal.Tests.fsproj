@@ -20,6 +20,7 @@
     <Compile Include="LiveUrlTests.fs" />
     <Compile Include="SubmissionTests.fs" />
     <Compile Include="ImportTests.fs" />
+    <Compile Include="ScoringTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

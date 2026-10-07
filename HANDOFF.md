@@ -2,33 +2,54 @@
 
 ## Objective
 
-Bootstrap Echelon Signal as a greenfield Repository Operating System pilot.
+Build Signal toward the charter's first bounded outcome (template, live URL,
+anonymous finalization, import, deterministic results) on the declared
+foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
 
-## Current state
+## Current state (2026-10-07)
 
-- ROS 1.2.1-main.16.1 greenfield profile installed on 2026-08-31.
-- Project charter is a draft.
-- No first vertical slice, evidence record, hypothesis, or experiment has been
-  accepted.
-- The operating system is under evaluation.
+- Requirement coverage is tracked per requirement group in
+  [`docs/requirements/implementation-gap-analysis.md`](docs/requirements/implementation-gap-analysis.md)
+  (baseline and current columns; `GapAnalysisTests` holds the counts to the
+  rows). Ledger groups: 5 tested, 63 partial, 114 missing, 1 n/a (baseline
+  0 / 39 / 143 / 1).
+- Engine (`src/Echelon.Signal.Engine`, pure F#):
+  - `Scoring`: built-in scoring catalog as data (WI-0035).
+  - `Assessment`, `Pilot`: the SDRA pilot, scored through the catalog.
+  - `Canonical`: canonical template form and TemplateHash (WI-0031).
+  - `UrlState`: ResponseEncodingVersion 1 envelope codec (WI-0031).
+  - `LiveUrl`: fragment-first live URL and resume decisions (WI-0032).
+  - `Submission`: identified/anonymous finalization (WI-0033).
+  - `Import`, `Aggregation`: import pipeline and SurveyGroupResult (WI-0034).
+  - `Session`: respondent state machine and view.
+- Application (`src/Echelon.Signal.Application`): Limen protocol (navigation
+  replace and clipboard writeText effects), Aegis dispatch boundary, the
+  entropy edge.
+- The respondent page keeps the URL equal to the answers, resumes from it,
+  and lets an invited respondent submit and copy the submission link.
+- There is no administrator UI yet: import and aggregation are domain
+  functions with tests only.
 
 ## Validation
 
-Run:
-
 ```bash
-./ros registry check
-./ros validate
+dotnet build Echelon.Signal.sln -c Release
+dotnet test Echelon.Signal.sln --no-build -c Release
+npm run build:wasm && npx playwright test
+./praxis validate
 ```
 
 ## Unresolved questions
 
-1. What concrete communication problem and user should the first slice serve?
-2. What baseline workflow will be used for comparison?
-3. What data, privacy, safety, and accessibility constraints apply?
-4. Which outcome would distinguish useful engineering from additional process?
+1. Where invitation links are minted: an administrator surface (WI-0011)
+   must create `AnonymousInvitation`/`IdentifiedInvitation` envelopes.
+2. Whether entropy should move from the WASM runtime's CSPRNG to a
+   negotiated Limen entropy capability pack (ARX-004).
+3. Measured URL budgets for 25-200 item surveys (CAN-004 §26).
 
 ## Next action
 
-Complete `PROJECT-CHARTER.md`, choose the first bounded outcome, and record its
-baseline and acceptance criteria in `context/CURRENT-STATE.md`.
+Highest-value remaining gaps, in order: administrator import UI and storage
+(WI-0011, WI-0012, WI-0013) over the existing `Import`/`Aggregation` core;
+template authoring/publication (WI-0003); flow, validation and
+recommendations (WI-0006); report data contract (WI-0009, SRPP).
