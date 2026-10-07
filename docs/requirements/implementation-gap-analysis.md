@@ -88,7 +88,7 @@ Everything else stays assigned to the work items the ledger already names
 | ACR-001 | partial | partial | Completion = every item answered (`Session.update ResultsRequested`, `SessionTests`). No flow, branching, derived facts or cross-question validation. | WI-0006 |
 | ACR-002 | missing | missing | No respondent/subject/role or group dependency semantics. | WI-0005 |
 | ACR-003 | missing | missing | No template lineage, compatibility or capability metadata. | WI-0003 |
-| ACR-004 | missing | missing | No URL payload, version or integrity policy. | WI-0031 |
+| ACR-004 | missing | partial | No URL payload, version or integrity policy. **WI-0031:** integrity-only policy with corruption reported separately from template mismatch and impossible content (`UrlStateTests`). Signed (authenticity) policy not built. | WI-0031 |
 | ACR-005 | missing | missing | Import-side replay/revision not built. | WI-0034 |
 | ACR-006 | partial | partial | Accessible presentation via Forma components, native radios, labelled progress; Playwright suite. No localization or randomization constraints. | WI-0003, WI-0010 |
 | ACR-007 | missing | missing | No recommendation/action rules. | WI-0006 |
@@ -103,7 +103,7 @@ Everything else stays assigned to the work items the ledger already names
 | CAN-001 | partial | partial | `Assessment`, `Dimension`, `Item`, `Answer` types exist; no selectors or compatibility metadata. | WI-0002 |
 | CAN-002 | partial | partial | Mean scoring and deterministic evaluation; no facts, flow, validation rules or recommendations. | WI-0006, WI-0007 |
 | CAN-003 | missing | missing | No instance, group or template reference. | WI-0033 |
-| CAN-004 | missing | missing | No answer encoding, versioning, integrity or submission hash. | WI-0031 |
+| CAN-004 | missing | partial | No answer encoding, versioning, integrity or submission hash. **WI-0031:** bit packing, base64url, ResponseEncodingVersion 1, truncated-SHA-256 integrity, golden vector (`UrlStateTests`). Measured URL budgets and the import-side SubmissionHash remain. | WI-0031 |
 | CAN-005 | missing | missing | No publication validation or canonical publishing. | WI-0003 |
 | CAN-006 | partial | partial | `DimensionResult` carries coverage separately from score; no canonical survey result or explainability. | WI-0007 |
 | CAN-007 | partial | partial | Unit and browser tests exist; no representative fixture corpus or reproducibility checks. | WI-0010 |
@@ -111,7 +111,7 @@ Everything else stays assigned to the work items the ledger already names
 | LURL-001 | missing | missing | Session state lives only in the WASM process; the URL never changes. | WI-0032 |
 | LURL-002 | missing | missing | No anonymous finalization. | WI-0033 |
 | LURL-003 | missing | missing | No administrator import. | WI-0034 |
-| LURL-004 | missing | missing | No encoding infrastructure or round-trip property. | WI-0031 |
+| LURL-004 | missing | partial | No encoding infrastructure or round-trip property. **WI-0031:** deterministic compact versioned codec; 500-sample seeded round-trip property for every binding (`UrlStateTests`). Incremental evaluation remains. | WI-0031 |
 | LURL-005 | missing | missing | End-to-end lifecycle depends on LURL-001 through LURL-004. | WI-0032, WI-0034 |
 | RPT-001 | partial | partial | Engine projects results; page and Folio print render them without recalculation. No report block model. | WI-0009 |
 | RPT-002 | partial | partial | Coverage and methodology are separate from the score (`Session.view`, print surface). No header/aggregate blocks. | WI-0009 |
@@ -122,7 +122,7 @@ Everything else stays assigned to the work items the ledger already names
 | ANS-001 | partial | partial | Unanswered, don't know, not observed and not applicable are distinct (`AssessmentTests`); no URL state. | WI-0031 |
 | ANS-002 | partial | partial | One selector preset (five-point frequency). | WI-0004 |
 | ANS-003 | partial | partial | Mean only; no direct/reverse/binary/weighted/mapped/normalized catalog. | WI-0035 |
-| ANS-004 | missing | missing | No bit packing, cardinality or special-state encoding. | WI-0031 |
+| ANS-004 | missing | partial | No bit packing, cardinality or special-state encoding. **WI-0031:** fixed-width bit packing from template cardinality (4 bits for 8 answers plus not-answered), special states encoded distinctly, `UrlState`, `UrlStateTests`. Separate presence bitmaps and other primitives' cardinality remain. | WI-0031 |
 | ANS-005 | partial | partial | Scoring is separate from answers and presentation; no explicit scoring declarations. | WI-0035 |
 | ALG-001 | partial | partial | Mean of a dimension only. | WI-0035 |
 | ALG-002 | missing | missing | No advanced algorithms. | WI-0007 |
@@ -137,15 +137,15 @@ Everything else stays assigned to the work items the ledger already names
 | AUT-007 | missing | missing | No authoring invariants. | WI-0003 |
 | URLC-001 | partial | partial | No server-side respondent state exists (true by construction); the URL transport does not. | WI-0032 |
 | URLC-002 | missing | missing | No logical response/portable submission distinction. | WI-0033 |
-| URLC-003 | missing | missing | No portable envelope or explicit decode errors. | WI-0031, WI-0033 |
+| URLC-003 | missing | partial | No portable envelope or explicit decode errors. **WI-0031:** self-contained versioned envelope with explicit errors for every URLC-003 §6 case (`DecodeError`, `UrlStateTests`). Optional admin persistence remains. | WI-0031, WI-0033 |
 | URLC-004 | missing | missing | No revised canonical entities. | WI-0002 |
-| URLC-005 | missing | missing | No URL artifact. | WI-0031, WI-0033 |
+| URLC-005 | missing | partial | No URL artifact. **WI-0031:** the URL artifact format exists. | WI-0031, WI-0033 |
 | ID-001 | missing | missing | No instance identity. | WI-0033 |
 | ID-002 | missing | missing | No anonymous submission. | WI-0033 |
 | ID-003 | missing | missing | No counts or import-side deduplication. | WI-0034 |
 | ID-004 | missing | missing | No identity model. | WI-0033 |
-| VER-001 | partial | partial | Assessment `Id` and `Version`; no TemplateHash. | WI-0031 |
-| VER-002 | missing | missing | No canonical hashing or compact reference. | WI-0031 |
+| VER-001 | partial | partial | Assessment `Id` and `Version`; no TemplateHash. **WI-0031:** deterministic TemplateHash added. | WI-0031 |
+| VER-002 | missing | partial | No canonical hashing or compact reference. **WI-0031:** canonical form v1 and SHA-256 TemplateHash with golden vector; 8-byte compact reference verified on decode (`Canonical`, `UrlStateTests`). Immutable publication lifecycle remains (WI-0003). | WI-0031 |
 | VER-003 | missing | missing | No instance runtime information. | WI-0003 |
 | VER-004 | partial | partial | Dimensions and prompts; no pagination or navigation policy. | WI-0003 |
 | VER-005 | partial | partial | Dimension (section) scoring; no survey-level hierarchy or applicability. | WI-0007 |
@@ -161,7 +161,7 @@ Everything else stays assigned to the work items the ledger already names
 | ARX-003 | partial | partial | F# authority through Limen, tested (`BoundaryTests`, Playwright). Navigation, clipboard and entropy not yet used. | WI-0032 |
 | ARX-004 | missing | missing | No focus, entropy or clock capability. | WI-0033 |
 | ARX-005 | missing | missing | No execution plan or incremental evaluator. | WI-0010 |
-| ARX-006 | partial | partial | Rounding is explicit and tested; no canonical bytes or layered hashes. | WI-0031 |
+| ARX-006 | partial | partial | Rounding is explicit and tested; no canonical bytes or layered hashes. **WI-0031:** exact canonical bytes and golden hash/envelope vectors. Layered semantic/presentation/report hashes remain. | WI-0031 |
 | ARX-007 | missing | missing | No URL state, so no fragment placement or multi-tab semantics. | WI-0032 |
 | ARX-008 | missing | missing | No import state machine or idempotency. | WI-0034 |
 | ARX-009 | partial | partial | No PII is collected (closed-ended answers only); no anonymity hardening. | WI-0033 |
@@ -234,4 +234,13 @@ group, which also needs storage, UI and concurrency.
 
 ## Coverage after this programme
 
-Filled in as WI-0031 through WI-0035 land.
+Counts of the **Current** column, recomputed by each change that updates it
+(`GapAnalysisTests` holds them to the rows).
+
+| Corpus | Groups | Current tested | Current partial | Current missing | n/a |
+|---|---:|---:|---:|---:|---:|
+| Core survey engine | 72 | 0 | 31 | 41 | 0 |
+| Advanced stress trial | 15 | 0 | 8 | 7 | 0 |
+| Administrator console | 77 | 0 | 1 | 76 | 0 |
+| Scoring and selector completeness | 19 | 0 | 6 | 12 | 1 |
+| **Ledger total** | **183** | **0** | **46** | **136** | **1** |

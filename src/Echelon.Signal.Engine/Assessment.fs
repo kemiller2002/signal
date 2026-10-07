@@ -84,6 +84,11 @@ let private codes =
 let parseAnswer (code: string) : Answer option =
     codes |> List.tryFind (fst >> (=) code) |> Option.map snd
 
+/// Every answer, in a fixed order. The order is part of the template's
+/// canonical form and of the URL encoding layout (`UrlState`): position `i`
+/// is encoded as state `i + 1`, and state 0 is "not answered".
+let answerDomain: Answer list = codes |> List.map snd
+
 /// The page code for an answer; `parseAnswer (answerCode a) = Some a`.
 let answerCode (answer: Answer) =
     codes |> List.find (snd >> (=) answer) |> fst
