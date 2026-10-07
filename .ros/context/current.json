@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-07T21:16:42.000Z",
+  "updatedAt": "2026-10-07T21:21:41.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -757,13 +757,43 @@
     {
       "id": "WI-0033",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-07T21:16:42.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/Submission.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/SubmissionTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-07T21:21:41.000Z",
       "telemetryExecutionIds": [
         "EXE-20261007T211642649Z-ec082004"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "a8f02cf7f5fb7847eb10474f",
+        "recordedAt": "2026-10-07T21:21:40.000Z",
+        "executionId": "EXE-20261007T211642649Z-ec082004",
+        "repository": "echelon-signal",
+        "branch": "feat/finalization",
+        "commit": "a8de661c5d246b9008d9d769c72d68e39cf3546f",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feat/finalization",
+        "remoteCommit": "a8de661c5d246b9008d9d769c72d68e39cf3546f",
+        "summary": "Finalization implemented and tested",
+        "nextAction": "Complete WI-0033",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-07T21:21:41.000Z"
     }
   ]
 }
