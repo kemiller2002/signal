@@ -34,7 +34,7 @@ let private viewNames (view: View) =
     |> Set.ofList
 
 let private faultNames =
-    Echelon.Signal.Application.Boundary.faultView None @ Echelon.Signal.Application.Wire.urlNoticeView None
+    Echelon.Signal.Application.Boundary.faultView None @ Echelon.Signal.Application.Wire.wireView None None ""
     |> List.map fst
     |> Set.ofList
 
@@ -45,7 +45,8 @@ let ``the page binds only what its engine projects and sends only what it handle
     Assert.Empty(Set.difference (boundKeys html) offered)
     // Every event the page can send is one the engine handles, and every
     // event the engine handles is one the page can send.
-    Assert.Equal<Set<string>>(Echelon.Signal.Application.Wire.events |> Map.keys |> Set.ofSeq, attributeValues "data-event" html)
+    let handled = Echelon.Signal.Application.Wire.events |> Map.keys |> Set.ofSeq |> Set.add Echelon.Signal.Application.Wire.CopyRequested
+    Assert.Equal<Set<string>>(handled, attributeValues "data-event" html)
 
 [<Fact>]
 let ``every answer choice on the page is a code the engine reads`` () =

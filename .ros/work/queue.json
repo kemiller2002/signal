@@ -723,10 +723,10 @@
         "identity,anonymity,submission"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-07T21:00:44.621Z",
-      "updatedAt": "2026-10-07T21:00:44.621Z",
+      "updatedAt": "2026-10-07T21:21:41.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

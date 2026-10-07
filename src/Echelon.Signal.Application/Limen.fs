@@ -2,10 +2,11 @@
 /// and writes it: the kernel's messages in, the engine's view and handshake
 /// answer out. Mechanics only; no Signal decision is made here.
 ///
-/// Signal requests one Core effect, a Navigation `replace` that keeps the
-/// live URL equal to the respondent's state (LURL-001), and negotiates no
+/// Signal requests two Core effects, a Navigation `replace` that keeps the
+/// live URL equal to the respondent's state (LURL-001) and a Clipboard
+/// `writeText` that copies a finalized submission link, and negotiates no
 /// capability pack. The kernel can therefore send it the handshake, events,
-/// location changes and navigation results. Anything else is not a message
+/// location changes, and navigation and clipboard results. Anything else is not a message
 /// this engine could have caused.
 ///
 /// See the `protocol` export of `@echelon-foundry/limen` (0.7.1).
@@ -35,7 +36,8 @@ let ProtocolMinor = 4
 
 /// The browser's URL, split mechanically by the kernel (`BrowserLocation`).
 type Location =
-    { Path: string
+    { Origin: string
+      Path: string
       Query: string
       Hash: string }
 
@@ -52,16 +54,21 @@ type Inbound =
     | Event of name: string * key: string option * value: string option
     | LocationChanged of Location
     | NavigationResult of correlationId: string * outcome: NavigationOutcome
+    /// A Clipboard writeText outcome: Ok, or the failure reason.
+    | ClipboardResult of correlationId: string * outcome: Result<unit, string>
 
 /// An effect the engine asks the kernel to perform.
 type Effect =
     /// Replace the current history entry's URL (same-origin, root-relative).
     | ReplaceUrl of correlationId: string * url: string
+    /// Write text to the clipboard (write-only by design in Limen).
+    | CopyText of correlationId: string * text: string
 
 let private location (path: string) (node: JsonNode) =
     let o = asObject path node
 
-    { Path = required "path" path asString o
+    { Origin = required "origin" path asString o
+      Path = required "path" path asString o
       Query = required "query" path asString o
       Hash = required "hash" path asString o }
 
@@ -95,9 +102,19 @@ let decode (messageJson: string) =
                 | other -> raise (MalformedInput("$.result.outcome.kind", $"a navigation outcome, not '{other}'"))
 
             NavigationResult(required "correlationId" "$.result" asString result, read)
-        // The engine requests only navigation, so no other result can answer
-        // anything it asked.
-        | _ -> raise (MalformedInput("$.result.kind", "a result for an effect this engine requests (NavigationResult)"))
+        | "ClipboardResult" ->
+            let outcome = required "outcome" "$.result" asObject result
+
+            let read =
+                match required "kind" "$.result.outcome" asString outcome with
+                | "Success" -> Ok()
+                | "Failure" -> Error(required "reason" "$.result.outcome" asString outcome)
+                | other -> raise (MalformedInput("$.result.outcome.kind", $"a clipboard outcome, not '{other}'"))
+
+            ClipboardResult(required "correlationId" "$.result" asString result, read)
+        // The engine requests only navigation and clipboard writes, so no
+        // other result can answer anything it asked.
+        | _ -> raise (MalformedInput("$.result.kind", "a result for an effect this engine requests (NavigationResult, ClipboardResult)"))
     | "CapabilityFact" -> raise (MalformedInput("$.kind", "a message this engine can receive, not a fact for a capability it never negotiated"))
     | other -> raise (MalformedInput("$.kind", $"a known message kind, not '{other}'"))
 
@@ -194,6 +211,13 @@ let encode (view: View) (effects: Effect list) (handshake: Handshake option) =
                 writer.WriteString("operation", "replace")
                 writer.WriteString("correlationId", correlationId)
                 writer.WriteString("url", url)
+                writer.WriteEndObject()
+            | CopyText(correlationId, text) ->
+                writer.WriteStartObject()
+                writer.WriteString("kind", "Clipboard")
+                writer.WriteString("correlationId", correlationId)
+                writer.WriteString("operation", "writeText")
+                writer.WriteString("text", text)
                 writer.WriteEndObject()
 
         writer.WriteEndArray()

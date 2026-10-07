@@ -149,3 +149,35 @@ test("a damaged link restores nothing and says so, without an operational fault"
   await expect(page.locator("#progress")).toHaveText("0 of 15 answered");
   await expect(page.locator("#operational-fault")).toHaveCount(0);
 });
+
+// LURL-002 / ID-002: an anonymous invitation link carries the instance while
+// answering; submitting replaces it with a fresh anonymous id, and the
+// submission link (the page URL) no longer contains the instance.
+const ANONYMOUS_INVITATION = "#r=AQSV3vb9UTM28AoLDA0ODxAREhMUFRYXGBlkZWZnaGlqa2xtbm9wcXJzAA8AAAAAAAAAAGf0i7E";
+const INSTANCE_BYTES_B64 = "CgsMDQ4PEBESExQVFhcYGQ"; // the invitation's instance id
+
+test("an invited respondent submits anonymously and copies an unlinkable link", async ({ page, context }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto(`/web/index.html${ANONYMOUS_INVITATION}`);
+  await expect(page.locator("html")).toHaveAttribute("data-kernel", "running");
+  for (const item of ITEMS) await answer(page, item, "3");
+  await page.click("#see-results");
+  await page.click("#submit-answers");
+
+  await expect(page.locator("#submitted")).toBeVisible();
+  await expect(page.locator("#submission-kind")).toHaveText("anonymous");
+  const link = await page.locator("#submission-link").inputValue();
+  expect(link).toBe(page.url());
+  expect(new URL(link).hash).not.toBe(ANONYMOUS_INVITATION);
+  // The instance id's bytes are absent: decode the fragment in the browser.
+  const containsInstance = await page.evaluate(([hash, instance]) => {
+    const toBytes = (b64) => Uint8Array.from(atob(b64.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((b64.length + 3) % 4)), (c) => c.charCodeAt(0));
+    const payload = toBytes(hash.slice(3)), needle = toBytes(instance);
+    return payload.some((_, i) => needle.every((b, j) => payload[i + j] === b));
+  }, [new URL(link).hash, INSTANCE_BYTES_B64]);
+  expect(containsInstance).toBe(false);
+
+  await page.click("#copy-link");
+  await expect(page.locator("#copy-notice")).toHaveText(/copied/);
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(link);
+});

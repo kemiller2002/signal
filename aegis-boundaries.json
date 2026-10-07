@@ -15,12 +15,12 @@
       "$comment": "Every kernel message is parsed and dispatched inside Aegis.capture (Wire.handle). A message that is not the Limen shape the engine relies on, or that names an item or answer code the assessment does not define, is MESSAGE_INVALID. Programming defects (for example an event name index.html sends that the engine does not know) keep Aegis fail-loud semantics and surface as a Limen bridge error."
     },
     {
-      "name": "Browser DOM, print and history navigation",
+      "name": "Browser DOM, print, history navigation and clipboard",
       "kind": "browser-capability",
       "owner": "Limen BrowserKernel",
       "codes": [],
       "guarded": false,
-      "$comment": "Execution occurs browser-side (DOM projection, the browser's print, history.replaceState for the live URL). The engine requests one Limen effect, a Navigation replace (LURL-001); its Failure outcome is a typed notice to the respondent, not an Aegis fault, and a result for a navigation the engine did not request is MESSAGE_INVALID at the dispatch boundary. This declaration does not pretend the .NET Aegis runtime guards JavaScript."
+      "$comment": "Execution occurs browser-side (DOM projection, the browser's print, history.replaceState for the live URL). The engine requests two Limen effects, a Navigation replace (LURL-001) and a Clipboard writeText of the finalized submission link; their Failure outcomes are typed notices to the respondent, not Aegis faults, and a result for an effect the engine did not request (or already heard) is MESSAGE_INVALID at the dispatch boundary. This declaration does not pretend the .NET Aegis runtime guards JavaScript."
     }
   ],
   "persistence": {
