@@ -32,21 +32,32 @@ let private itemOf (session: Session.Session) (key: string) =
 /// An event as the wire reads it: the item key and the value.
 type Fields = { Key: string; Value: string }
 
+/// What the application edge supplies to turn an event into a message.
+[<NoComparison; NoEquality>]
+type Edge =
+    { /// Fresh cryptographically secure bytes for an anonymous submission id.
+      Entropy: unit -> byte[] }
+
 /// Every event the page may send, so a test can hold index.html to it. An
 /// `answered` event always comes from a checked radio: the browser fires
 /// `change` only on the radio being checked, and on submit Limen (0.7.1 and
 /// later) re-sends only the controls a native submission would include,
 /// which leaves out unchecked radios (limen#80/#81).
-let events: Map<string, Session.Session -> Fields -> Msg> =
+let events: Map<string, Edge -> Session.Session -> Fields -> Msg> =
     Map.ofList
-        [ "answered", (fun session fields -> Answered(itemOf session fields.Key, answerOf fields.Value))
-          "resultsRequested", (fun _ _ -> ResultsRequested)
-          "editRequested", (fun _ _ -> EditRequested)
-          "restarted", (fun _ _ -> Restarted) ]
+        [ "answered", (fun _ session fields -> Answered(itemOf session fields.Key, answerOf fields.Value))
+          "resultsRequested", (fun _ _ _ -> ResultsRequested)
+          "editRequested", (fun _ _ _ -> EditRequested)
+          "restarted", (fun _ _ _ -> Restarted)
+          "submitRequested", (fun edge _ _ -> SubmitRequested(edge.Entropy())) ]
 
-let private message (session: Session.Session) (name: string) (fields: Fields) =
+/// Events the wire handles itself (effects, not session transitions).
+[<Literal>]
+let CopyRequested = "copyRequested"
+
+let private message (edge: Edge) (session: Session.Session) (name: string) (fields: Fields) =
     match events |> Map.tryFind name with
-    | Some make -> make session fields
+    | Some make -> make edge session fields
     // index.html and the engine disagree: a defect, not an operational failure.
     | None -> invalidOp $"The assessment page sent an event the engine does not know: '{name}'"
 
@@ -54,7 +65,7 @@ let private message (session: Session.Session) (name: string) (fields: Fields) =
 // One kernel message in, one reply out.
 // ---------------------------------------------------------------------------
 
-[<NoComparison>]
+[<NoComparison; NoEquality>]
 type State =
     { Session: Session.Session
       Fault: FaultView option
@@ -65,23 +76,50 @@ type State =
       NextCorrelation: int
       /// Set when the browser refused to update the URL: the link no longer
       /// carries the latest answers, and the respondent is told so.
-      UrlNotice: string option }
+      UrlNotice: string option
+      /// The outcome of the last copy of the submission link, if any.
+      CopyNotice: string option
+      Edge: Edge }
 
-let initial =
+/// The secure default edge: .NET's CSPRNG, which in the browser is the Web
+/// Crypto `getRandomValues` source (ARX-004).
+let secureEdge =
+    { Entropy = fun () -> System.Security.Cryptography.RandomNumberGenerator.GetBytes UrlState.IdLength }
+
+let initialWith (edge: Edge) =
     { Session = start Pilot.assessment
       Fault = None
       Location = None
       Pending = Set.empty
       NextCorrelation = 1
-      UrlNotice = None }
+      UrlNotice = None
+      CopyNotice = None
+      Edge = edge }
 
-/// The live-URL notice's named values.
-let urlNoticeView (notice: string option) : Echelon.Signal.Engine.View.View =
-    [ "hasUrlNotice", Echelon.Signal.Engine.View.Value(Echelon.Signal.Engine.View.Flag notice.IsSome)
-      "urlNotice", Echelon.Signal.Engine.View.Value(Echelon.Signal.Engine.View.Text(defaultArg notice "")) ]
+let initial = initialWith secureEdge
+
+/// The full URL of a finalized submission, which the respondent sends to
+/// the administrator; empty until the response is submitted.
+let submissionLink (state: State) =
+    match state.Location with
+    | Some location when state.Session.Phase = Submitted ->
+        location.Origin + LiveUrl.urlFor state.Session.Assessment location.Path location.Query (Session.envelope state.Session)
+    | _ -> ""
+
+/// The wire's own named values: URL and copy notices, and the submission link.
+let wireView (urlNotice: string option) (copyNotice: string option) (link: string) : Echelon.Signal.Engine.View.View =
+    let value = Echelon.Signal.Engine.View.Value
+    let flag = Echelon.Signal.Engine.View.Flag
+    let text = Echelon.Signal.Engine.View.Text
+
+    [ "hasUrlNotice", value (flag urlNotice.IsSome)
+      "urlNotice", value (text (defaultArg urlNotice ""))
+      "hasCopyNotice", value (flag copyNotice.IsSome)
+      "copyNotice", value (text (defaultArg copyNotice ""))
+      "submissionLink", value (text link) ]
 
 let render (state: State) (effects: Effect list) (handshake: Handshake option) =
-    encode (view state.Session @ urlNoticeView state.UrlNotice @ faultView state.Fault) effects handshake
+    encode (view state.Session @ wireView state.UrlNotice state.CopyNotice (submissionLink state) @ faultView state.Fault) effects handshake
 
 /// Applies what a URL says about saved answers (LURL-001 resume). A URL
 /// whose saved answers equal the session's changes nothing.
@@ -128,12 +166,41 @@ let private step (state: State) (inbound: Inbound) =
                 { Key = defaultArg key ""
                   Value = defaultArg value "" }
 
-            let next, effects = synchronize { state with Session = update (message state.Session name fields) state.Session }
-            next, effects, None
+            if name = CopyRequested then
+                match submissionLink state with
+                | "" -> state, [], None // nothing to copy until submitted
+                | link ->
+                    let id = $"copy-{state.NextCorrelation}"
+
+                    { state with
+                        Pending = state.Pending.Add id
+                        NextCorrelation = state.NextCorrelation + 1
+                        CopyNotice = None },
+                    [ CopyText(id, link) ],
+                    None
+            else
+                let next, effects =
+                    synchronize { state with Session = update (message state.Edge state.Session name fields) state.Session }
+
+                next, effects, None
         | LocationChanged location ->
             { state with
                 Session = resumeFrom location state.Session
                 Location = Some location },
+            [],
+            None
+        | ClipboardResult(id, _) when not (state.Pending.Contains id) ->
+            raise (MalformedInput("$.result.correlationId", $"a pending clipboard write, not '{id}'"))
+        | ClipboardResult(id, outcome) ->
+            let notice =
+                match outcome with
+                | Ok() -> "Submission link copied. Send it to the person who invited you."
+                | Error "denied" -> "The browser did not allow copying. Select the link and copy it yourself, or try again."
+                | Error _ -> "The link could not be copied. Select it and copy it yourself."
+
+            { state with
+                Pending = state.Pending.Remove id
+                CopyNotice = Some notice },
             [],
             None
         | NavigationResult(id, _) when not (state.Pending.Contains id) ->

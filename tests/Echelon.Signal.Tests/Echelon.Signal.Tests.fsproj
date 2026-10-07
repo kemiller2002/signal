@@ -18,6 +18,7 @@
     <Compile Include="GapAnalysisTests.fs" />
     <Compile Include="UrlStateTests.fs" />
     <Compile Include="LiveUrlTests.fs" />
+    <Compile Include="SubmissionTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

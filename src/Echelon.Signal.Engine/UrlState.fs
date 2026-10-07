@@ -8,7 +8,9 @@
 /// Byte layout, version 1 (all integers big-endian):
 ///
 ///   [0]        ResponseEncodingVersion (1)
-///   [1]        binding kind (see `Binding`)
+///   [1]        binding kind: 0 unbound, 1 identified invitation,
+///              2 identified submission, 3 anonymous submission,
+///              4 anonymous invitation
 ///   [2..9]     TemplateReference: first 8 bytes of the TemplateHash
 ///   [...]      binding identifiers, 16 bytes each, in the order listed
 ///   [2 bytes]  item count (the template's, so cardinality is checked)
@@ -105,8 +107,13 @@ module OpaqueId =
 type Binding =
     /// A live response with no invitation (the open pilot page).
     | Unbound
-    /// A live response to an invitation: instance and group (LURL-002 §13).
-    | Invitation of instance: OpaqueId * group: OpaqueId
+    /// A live response to an invitation in an identified group: instance
+    /// and group (LURL-002 §19).
+    | IdentifiedInvitation of instance: OpaqueId * group: OpaqueId
+    /// A live response to an invitation in an anonymous group. The instance
+    /// is present while answering, for resume, and is removed at
+    /// finalization (LURL-002 §13, §16).
+    | AnonymousInvitation of instance: OpaqueId * group: OpaqueId
     /// A finalized identified submission (LURL-002 §19).
     | Identified of instance: OpaqueId * group: OpaqueId
     /// A finalized anonymous submission: a fresh unlinkable id and the group,
@@ -116,14 +123,16 @@ type Binding =
 let private kindOf =
     function
     | Unbound -> 0uy
-    | Invitation _ -> 1uy
+    | IdentifiedInvitation _ -> 1uy
     | Identified _ -> 2uy
     | Anonymous _ -> 3uy
+    | AnonymousInvitation _ -> 4uy
 
 let private idsOf =
     function
     | Unbound -> []
-    | Invitation(a, b)
+    | IdentifiedInvitation(a, b)
+    | AnonymousInvitation(a, b)
     | Identified(a, b)
     | Anonymous(a, b) -> [ a; b ]
 
@@ -133,7 +142,8 @@ let private idCount =
     | 0uy -> Some 0
     | 1uy
     | 2uy
-    | 3uy -> Some 2
+    | 3uy
+    | 4uy -> Some 2
     | _ -> None
 
 [<NoComparison>]
@@ -230,7 +240,8 @@ let decode (assessment: Assessment) (text: string) : Result<Envelope, DecodeErro
 
                     let binding =
                         match bytes[1] with
-                        | 1uy -> Invitation(idAt 0, idAt 1)
+                        | 1uy -> IdentifiedInvitation(idAt 0, idAt 1)
+                        | 4uy -> AnonymousInvitation(idAt 0, idAt 1)
                         | 2uy -> Identified(idAt 0, idAt 1)
                         | 3uy -> Anonymous(idAt 0, idAt 1)
                         | _ -> Unbound

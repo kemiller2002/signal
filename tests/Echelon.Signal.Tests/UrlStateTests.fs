@@ -16,7 +16,8 @@ let private id (seed: byte) = (OpaqueId.ofBytes (Array.init 16 (fun i -> seed + 
 
 let private bindings =
     [ Unbound
-      Invitation(id 1uy, id 40uy)
+      IdentifiedInvitation(id 1uy, id 40uy)
+      AnonymousInvitation(id 4uy, id 40uy)
       Identified(id 2uy, id 40uy)
       Anonymous(id 3uy, id 40uy) ]
 
@@ -133,7 +134,7 @@ let ``the payload carries no question ids, labels or results`` () =
 // Explicit failure (URLC-003 §6, ACR-004).
 // ---------------------------------------------------------------------------
 
-let private sample = encode pilot { Binding = Invitation(id 1uy, id 40uy); Answers = Map.ofList [ "CORE-003", Rated Often; "CORE-015", Withheld DontKnow ] }
+let private sample = encode pilot { Binding = IdentifiedInvitation(id 1uy, id 40uy); Answers = Map.ofList [ "CORE-003", Rated Often; "CORE-015", Withheld DontKnow ] }
 
 [<Fact>]
 let ``text that is not canonical unpadded base64url is refused`` () =

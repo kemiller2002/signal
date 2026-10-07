@@ -16,6 +16,8 @@ type Phase =
     | Responding
     /// Every item has an answer and the results are shown.
     | Reviewing
+    /// The response was finalized into a submission: sealed, read-only.
+    | Submitted
 
 [<NoComparison>]
 type Session =
@@ -46,6 +48,10 @@ type Msg =
     | Resumed of Envelope
     /// The URL carried saved answers that could not be read.
     | ResumeRefused of DecodeError
+    /// Finalize into a submission. The bytes are fresh cryptographically
+    /// secure entropy from the application edge; only an anonymous group
+    /// uses them (`Submission.finalize`).
+    | SubmitRequested of entropy: byte[]
 
 let start (assessment: Assessment) =
     { Assessment = assessment
@@ -64,6 +70,12 @@ let private plural count singular pluralForm =
 
 let update (msg: Msg) (session: Session) =
     match msg with
+    // A submission is sealed: only a different URL (resume) replaces it.
+    | Answered _
+    | ResultsRequested
+    | EditRequested
+    | Restarted
+    | SubmitRequested _ when session.Phase = Submitted -> session
     | Answered(itemId, _) when not (knows session itemId) -> session
     | Answered(itemId, Some answer) ->
         { session with
@@ -92,9 +104,19 @@ let update (msg: Msg) (session: Session) =
         { session with
             Binding = envelope.Binding
             Answers = envelope.Answers |> Map.filter (fun itemId _ -> knows session itemId)
-            Phase = Responding
+            Phase = if Submission.isFinal envelope then Submitted else Responding
             Refusal = None
             Notice = None }
+    | SubmitRequested entropy ->
+        match Submission.finalize session.Assessment entropy (envelope session) with
+        | Ok submission ->
+            { session with
+                Binding = submission.Binding
+                Phase = Submitted
+                Refusal = None }
+        | Error refusal ->
+            { session with
+                Refusal = Some(Submission.describe refusal) }
     | ResumeRefused error ->
         { session with
             Notice = Some $"{describe error} Your earlier answers were not restored, and nothing was guessed." }
@@ -162,6 +184,14 @@ let private scoredCount results =
         | Unscored _ -> false)
     |> List.length
 
+let private invited =
+    function
+    | IdentifiedInvitation _
+    | AnonymousInvitation _ -> true
+    | Unbound
+    | Identified _
+    | Anonymous _ -> false
+
 let view (session: Session) : View =
     let assessment = session.Assessment
     let answered = assessment.Items.Length - (unanswered assessment session.Answers).Length
@@ -171,6 +201,17 @@ let view (session: Session) : View =
       "assessmentVersion", Value(Text $"{assessment.Id} {assessment.Version}")
       "responding", Value(Flag(session.Phase = Responding))
       "reviewing", Value(Flag(session.Phase = Reviewing))
+      "submitted", Value(Flag(session.Phase = Submitted))
+      "canSubmit", Value(Flag(session.Phase = Reviewing && invited session.Binding))
+      "submissionKind",
+      Value(
+          Text(
+              match session.Binding with
+              | Anonymous _ -> "anonymous"
+              | Identified _ -> "identified"
+              | _ -> ""
+          )
+      )
       "progress", Value(Text $"{answered} of {assessment.Items.Length} answered")
       "answeredCount", Value(Number(float answered))
       "itemCount", Value(Number(float assessment.Items.Length))

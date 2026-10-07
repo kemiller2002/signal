@@ -12,6 +12,7 @@
     <Compile Include="Canonical.fs" />
     <Compile Include="UrlState.fs" />
     <Compile Include="LiveUrl.fs" />
+    <Compile Include="Submission.fs" />
     <Compile Include="Session.fs" />
   </ItemGroup>
 

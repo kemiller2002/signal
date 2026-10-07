@@ -173,8 +173,30 @@
       <div class="ef-cluster">
         <button id="edit-answers" type="button" data-event="editRequested">Edit answers</button>
         <button id="start-over" type="button" data-event="restarted">Start over</button>
+        <template data-if="canSubmit">
+          <button id="submit-answers" type="button" data-event="submitRequested">Submit answers</button>
+        </template>
       </div>
       <p class="ef-field__description">Print this page for the result report.</p>
+    </section>
+  </template>
+
+  <!-- A finalized submission: sealed, with the link the respondent sends. An
+       anonymous link carries a fresh identifier and no invitation. -->
+  <template data-if="submitted">
+    <section id="submitted" class="ef-stack" aria-labelledby="submitted-title">
+      <h2 id="submitted-title">Submitted</h2>
+      <p>Your answers are final. Send this link to the person who invited you; it holds your answers and nothing that identifies you. Submission type: <strong id="submission-kind" data-text="submissionKind"></strong>.</p>
+      <label class="ef-field">
+        <span class="ef-field__label">Submission link</span>
+        <input id="submission-link" type="text" readonly data-bind-value="submissionLink" />
+      </label>
+      <div class="ef-cluster">
+        <button id="copy-link" type="button" data-event="copyRequested">Copy link</button>
+      </div>
+      <template data-if="hasCopyNotice">
+        <p id="copy-notice" role="status" data-text="copyNotice"></p>
+      </template>
     </section>
   </template>
 

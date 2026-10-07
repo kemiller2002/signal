@@ -67,7 +67,7 @@ let ``a URL without saved answers is a fresh start, and unreadable answers are n
 [<Fact>]
 let ``resuming restores answers and binding; starting over keeps the invitation`` () =
     let id seed = (OpaqueId.ofBytes (Array.create 16 seed)).Value
-    let envelope = { Binding = Invitation(id 1uy, id 2uy); Answers = Map.ofList [ "CORE-004", Withheld NotObserved ] }
+    let envelope = { Binding = IdentifiedInvitation(id 1uy, id 2uy); Answers = Map.ofList [ "CORE-004", Withheld NotObserved ] }
     let resumed = Session.start pilot |> Session.update (Session.Resumed envelope)
     Assert.Equal(envelope, Session.envelope resumed)
     let restarted = resumed |> Session.update Session.Restarted
