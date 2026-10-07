@@ -700,10 +700,10 @@
         "url-state,limen,respondent"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-07T21:00:44.304Z",
-      "updatedAt": "2026-10-07T21:15:14.000Z",
+      "updatedAt": "2026-10-07T21:15:57.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

@@ -44,7 +44,7 @@
 | WI-0029 | Move signal to Praxis 3.7.2, Ordo 1.4.2, Visual Engineering 1.0.1 and adopt Conditor | complete |  | medium |
 | WI-0030 | Requirement gap analysis: compare every requirement group against code and tests | complete | requirements,gap-analysis | high |
 | WI-0031 | Template canonical hash and versioned URL answer-state codec (VER-002, ARX-006, LURL-004, ANS-004, CAN-004, ACR-004, URLC-003) | complete | encoding,url-state,versioning | high |
-| WI-0032 | Live respondent URL synchronization through Limen navigation (LURL-001, ARX-007, URLC-001) | ready | url-state,limen,respondent | high |
+| WI-0032 | Live respondent URL synchronization through Limen navigation (LURL-001, ARX-007, URLC-001) | complete | url-state,limen,respondent | high |
 | WI-0033 | Portable submission finalization: identified and anonymous with unlinkable entropy (ID-002, ID-004, LURL-002, URLC-003) | captured | identity,anonymity,submission | high |
 | WI-0034 | Administrator import pipeline, deduplication and SurveyResult/SurveyGroupResult aggregation (ARP-001, ARP-002, LURL-003, ARX-008, ID-003) | captured | admin,import,aggregation | high |
 | WI-0035 | Standard built-in scoring catalog with explicit missing policy (ANS-003, SCS-002, SCS-003, SCS-005, SCS-008, ALG-001) | captured | scoring | high |
