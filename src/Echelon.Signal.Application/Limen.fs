@@ -2,9 +2,11 @@
 /// and writes it: the kernel's messages in, the engine's view and handshake
 /// answer out. Mechanics only; no Signal decision is made here.
 ///
-/// Signal's first slice requests no effects and negotiates no capability
-/// pack, so the kernel can only send it the handshake, events and location
-/// changes. Anything else is not a message this engine could have caused.
+/// Signal requests one Core effect, a Navigation `replace` that keeps the
+/// live URL equal to the respondent's state (LURL-001), and negotiates no
+/// capability pack. The kernel can therefore send it the handshake, events,
+/// location changes and navigation results. Anything else is not a message
+/// this engine could have caused.
 ///
 /// See the `protocol` export of `@echelon-foundry/limen` (0.7.1).
 module Echelon.Signal.Application.Limen
@@ -31,19 +33,44 @@ let core =
 [<Literal>]
 let ProtocolMinor = 4
 
+/// The browser's URL, split mechanically by the kernel (`BrowserLocation`).
+type Location =
+    { Path: string
+      Query: string
+      Hash: string }
+
+/// A Navigation effect's outcome (`NavigationOutcome`).
+type NavigationOutcome =
+    | NavigationSucceeded of Location
+    | NavigationDispatched
+    | NavigationFailed of reason: string
+
 [<NoComparison; NoEquality>]
 type Inbound =
-    | Initialize of handshake: JsonNode option
+    | Initialize of handshake: JsonNode option * location: Location option
     /// The page reads no `checked` state (protocol 1.2): see `Wire.events`.
     | Event of name: string * key: string option * value: string option
-    | LocationChanged
+    | LocationChanged of Location
+    | NavigationResult of correlationId: string * outcome: NavigationOutcome
+
+/// An effect the engine asks the kernel to perform.
+type Effect =
+    /// Replace the current history entry's URL (same-origin, root-relative).
+    | ReplaceUrl of correlationId: string * url: string
+
+let private location (path: string) (node: JsonNode) =
+    let o = asObject path node
+
+    { Path = required "path" path asString o
+      Query = required "query" path asString o
+      Hash = required "hash" path asString o }
 
 /// Reads one message from the kernel.
 let decode (messageJson: string) =
     let message = parse messageJson |> asObject "$"
 
     match required "kind" "$" asString message with
-    | "Initialize" -> Initialize(tryField "handshake" message)
+    | "Initialize" -> Initialize(tryField "handshake" message, optional "location" "$" location message)
     | "Event" ->
         let event = required "event" "$" asObject message
 
@@ -52,10 +79,25 @@ let decode (messageJson: string) =
             optional "key" "$.event" asString event,
             optional "value" "$.event" asString event
         )
-    | "LocationChanged" -> LocationChanged
-    // The engine requests no effect and negotiates no capability, so neither
-    // a result nor a capability fact can answer anything it asked.
-    | "EffectResult" -> raise (MalformedInput("$.kind", "a message this engine can receive, not an effect result it never requested"))
+    | "LocationChanged" -> LocationChanged(required "location" "$" location message)
+    | "EffectResult" ->
+        let result = required "result" "$" asObject message
+
+        match required "kind" "$.result" asString result with
+        | "NavigationResult" ->
+            let outcome = required "outcome" "$.result" asObject result
+
+            let read =
+                match required "kind" "$.result.outcome" asString outcome with
+                | "Success" -> NavigationSucceeded(required "location" "$.result.outcome" location outcome)
+                | "Dispatched" -> NavigationDispatched
+                | "Failure" -> NavigationFailed(required "reason" "$.result.outcome" asString outcome)
+                | other -> raise (MalformedInput("$.result.outcome.kind", $"a navigation outcome, not '{other}'"))
+
+            NavigationResult(required "correlationId" "$.result" asString result, read)
+        // The engine requests only navigation, so no other result can answer
+        // anything it asked.
+        | _ -> raise (MalformedInput("$.result.kind", "a result for an effect this engine requests (NavigationResult)"))
     | "CapabilityFact" -> raise (MalformedInput("$.kind", "a message this engine can receive, not a fact for a capability it never negotiated"))
     | other -> raise (MalformedInput("$.kind", $"a known message kind, not '{other}'"))
 
@@ -102,7 +144,7 @@ let answer (offer: JsonNode) =
         Accepted(min minor ProtocolMinor, contract)
 
 // ---------------------------------------------------------------------------
-// The engine's reply: view, no effects, and (to Initialize only) the handshake.
+// The engine's reply: view, effects, and (to Initialize only) the handshake.
 // ---------------------------------------------------------------------------
 
 let private writeScalar (writer: Utf8JsonWriter) =
@@ -136,13 +178,24 @@ let private writeView (writer: Utf8JsonWriter) (view: View) =
     writer.WriteEndObject()
 
 /// The engine's complete reply to one kernel message.
-let encode (view: View) (handshake: Handshake option) =
+let encode (view: View) (effects: Effect list) (handshake: Handshake option) =
     write (fun writer ->
         writer.WriteStartObject()
         writer.WritePropertyName "view"
         writeView writer view
         writer.WritePropertyName "effects"
         writer.WriteStartArray()
+
+        for effect in effects do
+            match effect with
+            | ReplaceUrl(correlationId, url) ->
+                writer.WriteStartObject()
+                writer.WriteString("kind", "Navigation")
+                writer.WriteString("operation", "replace")
+                writer.WriteString("correlationId", correlationId)
+                writer.WriteString("url", url)
+                writer.WriteEndObject()
+
         writer.WriteEndArray()
         writer.WritePropertyName "cancellations"
         writer.WriteStartArray()

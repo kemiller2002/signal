@@ -108,11 +108,11 @@ Everything else stays assigned to the work items the ledger already names
 | CAN-006 | partial | partial | `DimensionResult` carries coverage separately from score; no canonical survey result or explainability. | WI-0007 |
 | CAN-007 | partial | partial | Unit and browser tests exist; no representative fixture corpus or reproducibility checks. | WI-0010 |
 | CAN-008 | partial | partial | Deterministic interpreter for scoring only. | WI-0002 |
-| LURL-001 | missing | missing | Session state lives only in the WASM process; the URL never changes. | WI-0032 |
+| LURL-001 | missing | tested | Session state lives only in the WASM process; the URL never changes. **WI-0032:** every accepted change requests one Limen Navigation `replace` of the fragment (no new history entries); Initialize and LocationChanged resume from the URL; the URL holds only the envelope; completion stays derived (`LiveUrlTests`, Playwright live-URL tests). | WI-0032 |
 | LURL-002 | missing | missing | No anonymous finalization. | WI-0033 |
 | LURL-003 | missing | missing | No administrator import. | WI-0034 |
 | LURL-004 | missing | partial | No encoding infrastructure or round-trip property. **WI-0031:** deterministic compact versioned codec; 500-sample seeded round-trip property for every binding (`UrlStateTests`). Incremental evaluation remains. | WI-0031 |
-| LURL-005 | missing | missing | End-to-end lifecycle depends on LURL-001 through LURL-004. | WI-0032, WI-0034 |
+| LURL-005 | missing | partial | End-to-end lifecycle depends on LURL-001 through LURL-004. **WI-0032:** respondent half of the lifecycle (live URL, resume) is in place. | WI-0032, WI-0034 |
 | RPT-001 | partial | partial | Engine projects results; page and Folio print render them without recalculation. No report block model. | WI-0009 |
 | RPT-002 | partial | partial | Coverage and methodology are separate from the score (`Session.view`, print surface). No header/aggregate blocks. | WI-0009 |
 | RPT-003 | missing | missing | No comparisons, suppression or audit metadata. | WI-0009 |
@@ -135,7 +135,7 @@ Everything else stays assigned to the work items the ledger already names
 | AUT-005 | missing | missing | No template diff or publication transaction. | WI-0003 |
 | AUT-006 | missing | missing | No supersession or rollback. | WI-0003 |
 | AUT-007 | missing | missing | No authoring invariants. | WI-0003 |
-| URLC-001 | partial | partial | No server-side respondent state exists (true by construction); the URL transport does not. | WI-0032 |
+| URLC-001 | partial | tested | No server-side respondent state exists (true by construction); the URL transport does not. **WI-0032:** the URL is the transport and resume state; nothing respondent-side is persisted elsewhere (`LiveUrlTests`). | WI-0032 |
 | URLC-002 | missing | missing | No logical response/portable submission distinction. | WI-0033 |
 | URLC-003 | missing | partial | No portable envelope or explicit decode errors. **WI-0031:** self-contained versioned envelope with explicit errors for every URLC-003 §6 case (`DecodeError`, `UrlStateTests`). Optional admin persistence remains. | WI-0031, WI-0033 |
 | URLC-004 | missing | missing | No revised canonical entities. | WI-0002 |
@@ -158,11 +158,11 @@ Everything else stays assigned to the work items the ledger already names
 |---|---|---|---|---|
 | ARX-001 | partial | partial | CI runs Praxis validation, Limen verify, foundations and browser suites. Framework friction evidence not recorded. | WI-0010 |
 | ARX-002 | partial | partial | Session phases with legal transitions; no capability/obligation/unknown-effect model. | WI-0002 |
-| ARX-003 | partial | partial | F# authority through Limen, tested (`BoundaryTests`, Playwright). Navigation, clipboard and entropy not yet used. | WI-0032 |
+| ARX-003 | partial | partial | F# authority through Limen, tested (`BoundaryTests`, Playwright). Navigation, clipboard and entropy not yet used. **WI-0032:** Navigation now crosses the real F# WASM/Limen boundary with browser evidence. Clipboard and entropy remain. | WI-0032 |
 | ARX-004 | missing | missing | No focus, entropy or clock capability. | WI-0033 |
 | ARX-005 | missing | missing | No execution plan or incremental evaluator. | WI-0010 |
 | ARX-006 | partial | partial | Rounding is explicit and tested; no canonical bytes or layered hashes. **WI-0031:** exact canonical bytes and golden hash/envelope vectors. Layered semantic/presentation/report hashes remain. | WI-0031 |
-| ARX-007 | missing | missing | No URL state, so no fragment placement or multi-tab semantics. | WI-0032 |
+| ARX-007 | missing | partial | No URL state, so no fragment placement or multi-tab semantics. **WI-0032:** fragment-first placement, replace-not-push history, URL-authoritative LocationChanged, stale/unrequested navigation results refused (`LiveUrlTests`). Multi-tab divergence policy and leakage audit remain. | WI-0032 |
 | ARX-008 | missing | missing | No import state machine or idempotency. | WI-0034 |
 | ARX-009 | partial | partial | No PII is collected (closed-ended answers only); no anonymity hardening. | WI-0033 |
 | ARX-010 | missing | missing | No static analysis. | WI-0010 |
@@ -239,8 +239,8 @@ Counts of the **Current** column, recomputed by each change that updates it
 
 | Corpus | Groups | Current tested | Current partial | Current missing | n/a |
 |---|---:|---:|---:|---:|---:|
-| Core survey engine | 72 | 0 | 31 | 41 | 0 |
-| Advanced stress trial | 15 | 0 | 8 | 7 | 0 |
+| Core survey engine | 72 | 2 | 31 | 39 | 0 |
+| Advanced stress trial | 15 | 0 | 9 | 6 | 0 |
 | Administrator console | 77 | 0 | 1 | 76 | 0 |
 | Scoring and selector completeness | 19 | 0 | 6 | 12 | 1 |
-| **Ledger total** | **183** | **0** | **46** | **136** | **1** |
+| **Ledger total** | **183** | **2** | **47** | **133** | **1** |

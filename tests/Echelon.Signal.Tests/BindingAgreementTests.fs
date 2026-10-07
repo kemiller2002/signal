@@ -33,7 +33,10 @@ let private viewNames (view: View) =
         | Items items -> name :: (items |> List.collect (List.map fst)))
     |> Set.ofList
 
-let private faultNames = Echelon.Signal.Application.Boundary.faultView None |> List.map fst |> Set.ofList
+let private faultNames =
+    Echelon.Signal.Application.Boundary.faultView None @ Echelon.Signal.Application.Wire.urlNoticeView None
+    |> List.map fst
+    |> Set.ofList
 
 [<Fact>]
 let ``the page binds only what its engine projects and sends only what it handles`` () =

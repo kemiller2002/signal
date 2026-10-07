@@ -121,3 +121,31 @@ test("the print surface is Folio's document, projecting the same results", async
   await expect(page.locator(".print-surface ef-print-table").nth(1).locator("tbody tr")).toHaveCount(15);
   await expect(page.locator(".print-surface ef-print-table").nth(1).locator("tbody tr").first()).toContainText("Sometimes");
 });
+
+// LURL-001: the URL is the respondent's state. Each answer replaces the
+// current history entry (no new entries), the state lives in the fragment,
+// and reopening the URL resumes exactly the same answers.
+test("the live URL carries the answers, and reopening it resumes them", async ({ assessment: page }) => {
+  const historyLength = await page.evaluate(() => history.length);
+  await answer(page, "CORE-001", "3");
+  await answer(page, "CORE-007", "dont-know");
+  await expect.poll(() => new URL(page.url()).hash).toMatch(/^#r=[A-Za-z0-9_-]+$/);
+  expect(new URL(page.url()).search).toBe("");
+  expect(await page.evaluate(() => history.length)).toBe(historyLength);
+
+  const link = page.url();
+  await page.goto("about:blank");
+  await page.goto(link);
+  await expect(page.locator("html")).toHaveAttribute("data-kernel", "running");
+  await expect(page.locator("#progress")).toHaveText("2 of 15 answered");
+  await expect(choice(page, "CORE-001", "3")).toBeChecked();
+  await expect(choice(page, "CORE-007", "dont-know")).toBeChecked();
+});
+
+test("a damaged link restores nothing and says so, without an operational fault", async ({ page }) => {
+  await page.goto("/web/index.html#r=AQCV3vb9UTM28AAPFQAAAAAAAIC_qXEE");
+  await expect(page.locator("html")).toHaveAttribute("data-kernel", "running");
+  await expect(page.locator("#resume-notice-message")).toContainText("integrity check");
+  await expect(page.locator("#progress")).toHaveText("0 of 15 answered");
+  await expect(page.locator("#operational-fault")).toHaveCount(0);
+});
