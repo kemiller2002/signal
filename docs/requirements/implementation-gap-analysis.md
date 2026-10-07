@@ -121,10 +121,10 @@ Everything else stays assigned to the work items the ledger already names
 | RPT-006 | partial | partial | One individual report (screen and print). No group report or persistence parity. | WI-0009 |
 | ANS-001 | partial | partial | Unanswered, don't know, not observed and not applicable are distinct (`AssessmentTests`); no URL state. | WI-0031 |
 | ANS-002 | partial | partial | One selector preset (five-point frequency). | WI-0004 |
-| ANS-003 | partial | partial | Mean only; no direct/reverse/binary/weighted/mapped/normalized catalog. | WI-0035 |
+| ANS-003 | partial | partial | Mean only; no direct/reverse/binary/weighted/mapped/normalized catalog. **WI-0035:** `Scoring` catalog: direct, reverse, mapped/boolean, weighted, sum, mean, normalized, percentage scorers as data (`ScoringTests`). Multi-select scoring waits for a multi-select primitive. | WI-0035 |
 | ANS-004 | missing | partial | No bit packing, cardinality or special-state encoding. **WI-0031:** fixed-width bit packing from template cardinality (4 bits for 8 answers plus not-answered), special states encoded distinctly, `UrlState`, `UrlStateTests`. Separate presence bitmaps and other primitives' cardinality remain. | WI-0031 |
-| ANS-005 | partial | partial | Scoring is separate from answers and presentation; no explicit scoring declarations. | WI-0035 |
-| ALG-001 | partial | partial | Mean of a dimension only. | WI-0035 |
+| ANS-005 | partial | partial | Scoring is separate from answers and presentation; no explicit scoring declarations. **WI-0035:** the pilot's scoring is now an explicit catalog declaration (`Assessment.dimensionScorer`). | WI-0035 |
+| ALG-001 | partial | partial | Mean of a dimension only. **WI-0035:** the primary aggregate and normalization algorithms exist as built-ins. | WI-0035 |
 | ALG-002 | missing | missing | No advanced algorithms. | WI-0007 |
 | ALG-003 | missing | missing | No weakest-link or composition. | WI-0007 |
 | ALG-004 | missing | missing | No precompiled/custom boundary. | WI-0007 |
@@ -169,7 +169,7 @@ Everything else stays assigned to the work items the ledger already names
 | ARX-011 | partial | partial | Malformed-message tests and a real-browser suite; no differential/model-based tests. | WI-0010 |
 | ARX-012 | missing | partial | No derivation lineage. **WI-0034:** group lineage (template hash, sorted SubmissionHashes, policy, derivation hash) that changes exactly when accepted inputs change. Explanations and reason codes remain. | WI-0034 |
 | ARX-013 | missing | missing | No timers, pagination or banking. | WI-0004 |
-| ARX-014 | partial | partial | Scores are recomputed from answers on every view; no live display policy or AST. | WI-0007 |
+| ARX-014 | partial | partial | Scores are recomputed from answers on every view; no live display policy or AST. **WI-0035:** exhaustive differential test (all 59,049 answer combinations of a dimension) proves the catalog scorer equals the original hand-written scoring. | WI-0007 |
 | ARX-015 | partial | partial | Aegis at the kernel dispatch boundary with collector-sink tests. Other boundaries do not exist yet. | WI-0010 |
 
 ## Administrator console (ADM)
@@ -190,13 +190,13 @@ group, which also needs storage, UI and concurrency.
 | Group | Baseline | Current | Evidence or gap | Work items |
 |---|---|---|---|---|
 | SCS-001 | partial | partial | Closed-ended answers only, no free text or PII field. | WI-0010 |
-| SCS-002 | partial | partial | Mean only. | WI-0035 |
-| SCS-003 | missing | missing | No median/mode/trimmed mean. | WI-0035 |
+| SCS-002 | partial | partial | Mean only. **WI-0035:** DirectValue, BooleanMap/MappedChoice/ProgressStateMap (explicit maps), RawSum, CountAnswered, CountAtLeast, WeightedSum, Mean, WeightedMean, Median (even rule), Min, Max, PercentageOfMaximum (usable denominator), PercentageOfRange, LinearNormalize, LinearTransform, Reverse, Clamp, Floor, Ceiling, validated Banding, PassFail. CountSelected, PercentCorrect and Section/Domain/Profile/Composite built-ins remain. | WI-0035 |
+| SCS-003 | missing | partial | No median/mode/trimmed mean. **WI-0035:** Mode with explicit ties, TrimmedMean (rejects removing everything), CappedSum, TopN/BottomN, Difference, Ratio (zero denominator explicit), signed/absolute distance, proximity to target, Top/Bottom/Weighted-K box, favorable/unfavorable/net favorable, standard NPS. Balanced/weighted domain, composite index, bonus/penalty and negative marking remain. | WI-0035 |
 | SCS-004 | missing | missing | No answer-key or quiz scoring. | WI-0007 |
-| SCS-005 | missing | missing | No top-box or NPS. | WI-0035 |
+| SCS-005 | missing | partial | No top-box or NPS. **WI-0035:** top-box, top-K, bottom-K, weighted top-K, favorable rates and standard NPS on integer scales. Rating-selector presets remain. | WI-0035 |
 | SCS-006 | missing | missing | No ranking/allocation scoring. | WI-0007 |
 | SCS-007 | missing | missing | No benchmark transforms. | WI-0007 |
-| SCS-008 | partial | partial | Special states never count as zero; denominator and rounding stated. No configurable policy. | WI-0035 |
+| SCS-008 | partial | partial | Special states never count as zero; denominator and rounding stated. No configurable policy. **WI-0035:** declared Exclude/Substitute special-state policy, minimum observations, usable-item denominators, half-away-from-zero rounding, no NaN/Infinity. Provisional/final semantics remain. | WI-0035 |
 | SCS-009 | partial | partial | Ordinal-5 primitive only. | WI-0004 |
 | SCS-010 | partial | partial | Radio presentation only. | WI-0004 |
 | SCS-011 | missing | missing | No multi-choice. | WI-0004 |
@@ -242,5 +242,5 @@ Counts of the **Current** column, recomputed by each change that updates it
 | Core survey engine | 72 | 5 | 42 | 25 | 0 |
 | Advanced stress trial | 15 | 0 | 12 | 3 | 0 |
 | Administrator console | 77 | 0 | 1 | 76 | 0 |
-| Scoring and selector completeness | 19 | 0 | 6 | 12 | 1 |
-| **Ledger total** | **183** | **5** | **61** | **116** | **1** |
+| Scoring and selector completeness | 19 | 0 | 8 | 10 | 1 |
+| **Ledger total** | **183** | **5** | **63** | **114** | **1** |

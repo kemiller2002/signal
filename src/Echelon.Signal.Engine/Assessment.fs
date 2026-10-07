@@ -112,20 +112,36 @@ let itemsOf (assessment: Assessment) (dimension: Dimension) =
 let unanswered (assessment: Assessment) (answers: Answers) =
     assessment.Items |> List.filter (fun item -> not (answers.ContainsKey item.Id))
 
-/// Scores one dimension. Rounded to one decimal place, half away from zero,
-/// so the same answers always give the same printed number.
+/// The SDRA dimension scorer, declared from the built-in catalog rather than
+/// hand-written: the mean of numeric answers (0-4), normalized to 0-100,
+/// one decimal half away from zero; special answers are excluded, never
+/// zero, and fewer than the minimum is not scored.
+let dimensionScorer (assessment: Assessment) : Scoring.Scorer =
+    { Scale = Scoring.Direct
+      Aggregate = Scoring.Mean
+      Transforms = [ Scoring.LinearNormalize(0.0, 4.0, 0.0, 100.0) ]
+      Missing =
+        { MinimumObservations = assessment.MinimumNumericAnswers
+          Special = Scoring.Exclude }
+      Decimals = 1 }
+
+let observation (answer: Answer option) : Scoring.Observation =
+    match answer with
+    | Some(Rated frequency) -> Scoring.Numeric(float (frequencyValue frequency))
+    | Some(Withheld DontKnow) -> Scoring.Special Scoring.DontKnow
+    | Some(Withheld NotObserved) -> Scoring.Special Scoring.NotObserved
+    | Some(Withheld NotApplicable) -> Scoring.Special Scoring.NotApplicable
+    | None -> Scoring.Special Scoring.Unanswered
+
+/// Scores one dimension through the catalog scorer.
 let scoreDimension (assessment: Assessment) (answers: Answers) (dimension: Dimension) =
     let items = itemsOf assessment dimension
+    let observations = items |> List.map (fun item -> observation (answers.TryFind item.Id))
+    let numeric = items |> List.choose (fun item -> answers.TryFind item.Id |> Option.bind numericValue) |> List.length
 
-    let values =
-        items
-        |> List.choose (fun item -> answers.TryFind item.Id |> Option.bind numericValue)
-
-    if values.Length < assessment.MinimumNumericAnswers then
-        Unscored(values.Length, items.Length, assessment.MinimumNumericAnswers)
-    else
-        let mean = float (List.sum values) / float values.Length
-        Scored(Math.Round(mean / 4.0 * 100.0, 1, MidpointRounding.AwayFromZero), values.Length, items.Length)
+    match Scoring.evaluate (dimensionScorer assessment) observations with
+    | Scoring.Score(score, _, _) -> Scored(score, numeric, items.Length)
+    | Scoring.NotScored _ -> Unscored(numeric, items.Length, assessment.MinimumNumericAnswers)
 
 let score (assessment: Assessment) (answers: Answers) =
     assessment.Dimensions

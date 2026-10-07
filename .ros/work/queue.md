@@ -47,4 +47,4 @@
 | WI-0032 | Live respondent URL synchronization through Limen navigation (LURL-001, ARX-007, URLC-001) | complete | url-state,limen,respondent | high |
 | WI-0033 | Portable submission finalization: identified and anonymous with unlinkable entropy (ID-002, ID-004, LURL-002, URLC-003) | complete | identity,anonymity,submission | high |
 | WI-0034 | Administrator import pipeline, deduplication and SurveyResult/SurveyGroupResult aggregation (ARP-001, ARP-002, LURL-003, ARX-008, ID-003) | complete | admin,import,aggregation | high |
-| WI-0035 | Standard built-in scoring catalog with explicit missing policy (ANS-003, SCS-002, SCS-003, SCS-005, SCS-008, ALG-001) | captured | scoring | high |
+| WI-0035 | Standard built-in scoring catalog with explicit missing policy (ANS-003, SCS-002, SCS-003, SCS-005, SCS-008, ALG-001) | ready | scoring | high |

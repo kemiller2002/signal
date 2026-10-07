@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Compile Include="View.fs" />
+    <Compile Include="Scoring.fs" />
     <Compile Include="Assessment.fs" />
     <Compile Include="Pilot.fs" />
     <Compile Include="Canonical.fs" />
