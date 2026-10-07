@@ -13,6 +13,8 @@
     <Compile Include="UrlState.fs" />
     <Compile Include="LiveUrl.fs" />
     <Compile Include="Submission.fs" />
+    <Compile Include="Import.fs" />
+    <Compile Include="Aggregation.fs" />
     <Compile Include="Session.fs" />
   </ItemGroup>
 
