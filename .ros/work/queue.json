@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 30,
+  "nextSeq": 36,
   "items": [
     {
       "id": "WI-0001",
@@ -635,6 +635,144 @@
       "attachments": [],
       "createdAt": "2026-10-06T16:26:29.661Z",
       "updatedAt": "2026-10-06T16:30:38Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0030",
+      "title": "Requirement gap analysis: compare every requirement group against code and tests",
+      "description": null,
+      "tags": [
+        "requirements,gap-analysis"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-10-07T21:00:37.340Z",
+      "updatedAt": "2026-10-07T21:03:18.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0031",
+      "title": "Template canonical hash and versioned URL answer-state codec (VER-002, ARX-006, LURL-004, ANS-004, CAN-004, ACR-004, URLC-003)",
+      "description": null,
+      "tags": [
+        "encoding,url-state,versioning"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-07T21:00:43.976Z",
+      "updatedAt": "2026-10-07T21:00:43.976Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0032",
+      "title": "Live respondent URL synchronization through Limen navigation (LURL-001, ARX-007, URLC-001)",
+      "description": null,
+      "tags": [
+        "url-state,limen,respondent"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-07T21:00:44.304Z",
+      "updatedAt": "2026-10-07T21:00:44.304Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0033",
+      "title": "Portable submission finalization: identified and anonymous with unlinkable entropy (ID-002, ID-004, LURL-002, URLC-003)",
+      "description": null,
+      "tags": [
+        "identity,anonymity,submission"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-07T21:00:44.621Z",
+      "updatedAt": "2026-10-07T21:00:44.621Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0034",
+      "title": "Administrator import pipeline, deduplication and SurveyResult/SurveyGroupResult aggregation (ARP-001, ARP-002, LURL-003, ARX-008, ID-003)",
+      "description": null,
+      "tags": [
+        "admin,import,aggregation"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-07T21:00:44.931Z",
+      "updatedAt": "2026-10-07T21:00:44.931Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0035",
+      "title": "Standard built-in scoring catalog with explicit missing policy (ANS-003, SCS-002, SCS-003, SCS-005, SCS-008, ALG-001)",
+      "description": null,
+      "tags": [
+        "scoring"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-07T21:00:45.252Z",
+      "updatedAt": "2026-10-07T21:00:45.252Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
