@@ -1470,6 +1470,30 @@
       },
       "source": "manual",
       "sourceReference": null
+    },
+    {
+      "id": "WI-0063",
+      "title": "Accept DF-SIGNAL-2026-0002 answers 2-12 (coordinator, on the owner's standing instruction, 2026-10-08); Q1 stays open",
+      "description": "The coordinator accepted the proposed scoring answers 2-12 on the owner's standing instruction. Q1 (legacy Agile/SM360 formulas) stays open until the legacy surveys exist in the repository.",
+      "tags": [
+        "decisions",
+        "scoring"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-10-08T16:33:52.000Z",
+      "updatedAt": "2026-10-08T16:33:53.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
     }
   ]
 }

@@ -83,6 +83,20 @@
             "created"
           ],
           "reason": "Propose answers to the scoring design's 12 open questions ahead of WI-0044, pending owner confirmation"
+        },
+        "EXE-20261008T163354064Z-4de21669": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-08T16:34:02.940Z",
+          "operations": [
+            "modified"
+          ],
+          "reason": "Answers 2-12 accepted by the coordinator on the owner's standing instruction (2026-10-08); Q1 open"
         }
       }
     },
@@ -95,7 +109,7 @@
       "research/decisions/DF-SIGNAL-2026-0001--storage-through-arca-sign-in-through-fides-built-after-summa.md"
     ],
     "review_cycle": "on-trigger",
-    "status": "review",
+    "status": "accepted",
     "superseded_by": [],
     "supersedes": [],
     "tags": [
@@ -103,9 +117,9 @@
       "open-questions",
       "proposed"
     ],
-    "title": "Proposed answers to the scoring design's twelve open questions (proposed, pending owner confirmation)",
+    "title": "Answers to the scoring design's twelve open questions (2-12 accepted 2026-10-08; Q1 open)",
     "updated": "2026-10-08",
-    "version": "0.1.0"
+    "version": "1.0.0"
   },
   {
     "created": "2026-10-05",

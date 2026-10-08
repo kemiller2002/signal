@@ -1,8 +1,8 @@
 ---
 id: DF-SIGNAL-2026-0002
-title: "Proposed answers to the scoring design's twelve open questions (proposed, pending owner confirmation)"
-status: review
-version: 0.1.0
+title: "Answers to the scoring design's twelve open questions (2-12 accepted 2026-10-08; Q1 open)"
+status: accepted
+version: 1.0.0
 created: 2026-10-08
 updated: 2026-10-08
 owners:
@@ -30,14 +30,27 @@ provenance:
         model: unknown
         runtime: claude-code
       reason: "Propose answers to the scoring design's 12 open questions ahead of WI-0044, pending owner confirmation"
+    EXE-20261008T163354064Z-4de21669:
+      operations: [modified]
+      at: 2026-10-08T16:34:02.940Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Answers 2-12 accepted by the coordinator on the owner's standing instruction (2026-10-08); Q1 open"
 derived_from: [DF-SIGNAL-2026-0001]
 ---
 
-# DF-SIGNAL-2026-0002: proposed answers to the scoring open questions
+# DF-SIGNAL-2026-0002: answers to the scoring open questions
 
 - **Date:** 2026-10-08
-- **Status:** **proposed, pending owner confirmation** (Praxis record status `review`). These are
-  recommendations. None of them is an owner decision.
+- **Status:** **accepted for answers 2-12**; **Q1 open.** The coordinator
+  accepted the recommendations on 2026-10-08 on the owner's standing
+  instruction. Q1 stays open until the legacy Agile and Scrum Master 360
+  surveys exist in the repository. Version 0.1.0 of this record was the
+  proposal.
 - **Source:** §31 "Open Questions" of
   `input-documents/echelon-survey-scoring-expression-tree-approach.txt`. The
   design says these questions "should drive the final AST rather than adding
@@ -299,3 +312,12 @@ setting (an explanation-visibility option alongside ScoreDisplayPolicy).
   because of Q9.
 - When the owner confirms, this record's status moves from `review` (proposed) to
   `accepted`, and each answer is marked confirmed or amended.
+
+## Acceptance (2026-10-08)
+
+Answers 2-12 are **accepted**. The coordinator accepted them on 2026-10-08 on
+the owner's standing instruction. WI-0044 was built against them, so no
+change follows from the acceptance.
+
+Q1 is **open**. It is answered when the legacy surveys and their scoring code
+are in the repository and have been characterized (ETA §20).

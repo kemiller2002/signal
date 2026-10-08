@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T16:28:10.000Z",
+  "updatedAt": "2026-10-08T16:33:53.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -1434,6 +1434,17 @@
       },
       "completedAt": "2026-10-08T16:28:10.000Z",
       "conclusion": "Format-neutral reporting contract with exports and snapshots; 180/180 tests; Folio/HTML rendering in WI-0062"
+    },
+    {
+      "id": "WI-0063",
+      "type": "documentation",
+      "state": "active",
+      "semanticState": "active",
+      "evidence": [],
+      "updatedAt": "2026-10-08T16:33:53.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261008T163354064Z-4de21669"
+      ]
     }
   ]
 }
