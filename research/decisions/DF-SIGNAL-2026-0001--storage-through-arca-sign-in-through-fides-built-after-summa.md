@@ -2,7 +2,7 @@
 id: DF-SIGNAL-2026-0001
 title: Signal's administrator storage is implemented through Arca (no Strata), sign-in goes through Fides, and Signal is built after Chrona and Summa
 status: accepted
-version: 1.1.0
+version: 1.2.0
 created: 2026-10-08
 updated: 2026-10-08
 owners:
@@ -38,6 +38,16 @@ provenance:
         model: unknown
         runtime: claude-code
       reason: "Amendment 1: record the coordinator decision of 2026-10-08 pulling the pure-domain slices WI-0042..WI-0046 forward"
+    EXE-20261008T224935854Z-d024938c:
+      operations: [modified]
+      at: 2026-10-08T22:49:49.542Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Decision 5: record that Arca 0.3.0's IndexedDB write queue and read cache were evaluated and declined (WI-0074)"
 ---
 
 # DF-SIGNAL-2026-0001 — Storage through Arca, sign-in through Fides
@@ -62,6 +72,16 @@ provenance:
    Helix runs in parallel. Arca's and Fides's minimal slices come first.
 5. **Offline.** Signal does not opt in to Arca's offline write queue
    (ADM-070). It uses a read-only degraded mode.
+   - Arca 0.3.0's IndexedDB write queue and read cache (`EchelonFoundry.Arca.Limen`,
+     arca `docs/consuming-arca.md` section 5a) were evaluated on 2026-10-08
+     and declined (coordinator decision, WI-0074). Administrator data includes
+     per-respondent submissions, and report state was just reduced to
+     aggregates that pass the group's privacy rules (WI-0067). Caching that
+     data on the device in IndexedDB would undo the posture for little gain.
+     Conditor declares `arca` as a whole, so the package stays in the vendored
+     feed, pinned and unreferenced; no project may reference it without
+     revisiting this decision. `limen-fsharp` stays: the administrator routes
+     use `EchelonFoundry.Limen.Routing` (DF-SIGNAL-2026-0003).
 6. **PDFs.** Reports render through Folio.
 
 ## Amendment 1 (2026-10-08): pure-domain slices pulled forward
