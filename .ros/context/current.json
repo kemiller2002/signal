@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T22:38:18.000Z",
+  "updatedAt": "2026-10-08T22:44:01.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -2244,6 +2244,10 @@
           "path": "src/Echelon.Signal.Engine/TemplateDecode.fs"
         },
         {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/TemplateDecodeCore.fs"
+        },
+        {
           "type": "tests",
           "path": "tests/Echelon.Signal.Tests/TemplateStoreTests.fs"
         },
@@ -2252,12 +2256,32 @@
           "path": "tests/Echelon.Signal.Tests/TemplateDecodeTests.fs"
         }
       ],
-      "updatedAt": "2026-10-08T22:38:18.000Z",
+      "updatedAt": "2026-10-08T22:44:01.000Z",
       "telemetryExecutionIds": [
         "EXE-20261008T221100996Z-cb2be62d"
       ],
       "blockReason": "Waits on WI-0072 (echelon-current 1.12.0, Arca 0.3.0) before persisting the catalog through Arca",
-      "completedAt": "2026-10-08T22:38:18.000Z"
+      "latestCheckpoint": {
+        "id": "6b07d39f57e16ab9908f67bf",
+        "recordedAt": "2026-10-08T22:44:00.000Z",
+        "executionId": "EXE-20261008T221100996Z-cb2be62d",
+        "repository": "echelon-signal",
+        "branch": "feature/template-catalog",
+        "commit": "ec8a964fba21c4a083c33c2e4b05c8dab028400e",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feature/template-catalog",
+        "remoteCommit": "ec8a964fba21c4a083c33c2e4b05c8dab028400e",
+        "summary": "Template codec, TemplateRecord and TemplateStore over Arca with 9 new tests; 359 .NET and 22 browser tests pass; remainders captured as WI-0073",
+        "nextAction": "Complete with the branch's committed paths attributed (ROS_BASE_REF), push and merge PR #50",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T22:44:01.000Z"
     },
     {
       "id": "WI-0072",

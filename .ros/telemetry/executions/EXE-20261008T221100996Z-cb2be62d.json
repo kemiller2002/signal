@@ -4,7 +4,7 @@
   "workItemId": "WI-0057",
   "status": "finalized",
   "startedAt": "2026-10-08T22:11:00.996Z",
-  "finalizedAt": "2026-10-08T22:38:19.486Z",
+  "finalizedAt": "2026-10-08T22:44:02.329Z",
   "identity": {
     "provider": "anthropic",
     "model": null,
@@ -303,14 +303,14 @@
       "metricId": "time.wall_ms",
       "status": "derived",
       "reason": "normalized measurement recorded",
-      "discoveredAt": "2026-10-08T22:38:19.486Z",
+      "discoveredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "calculated",
         "name": "ros",
         "mechanism": "timestamp-difference"
       },
-      "lastAssessedAt": "2026-10-08T22:38:19.486Z",
-      "recordedAt": "2026-10-08T22:38:19.486Z",
+      "lastAssessedAt": "2026-10-08T22:44:02.329Z",
+      "recordedAt": "2026-10-08T22:44:02.329Z",
       "history": [
         {
           "status": "derived",
@@ -374,14 +374,14 @@
       "metricId": "time.blocked_ms",
       "status": "derived",
       "reason": "normalized measurement recorded",
-      "discoveredAt": "2026-10-08T22:38:19.486Z",
+      "discoveredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "calculated",
         "name": "ros-work-lifecycle",
         "mechanism": "block-resume-intervals"
       },
-      "lastAssessedAt": "2026-10-08T22:38:19.486Z",
-      "recordedAt": "2026-10-08T22:38:19.486Z",
+      "lastAssessedAt": "2026-10-08T22:44:02.329Z",
+      "recordedAt": "2026-10-08T22:44:02.329Z",
       "history": [
         {
           "status": "derived",
@@ -889,14 +889,14 @@
       "metricId": "git.ending_dirty_files",
       "status": "derived",
       "reason": "normalized measurement recorded",
-      "discoveredAt": "2026-10-08T22:38:19.486Z",
+      "discoveredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "ros-git",
         "name": "git-status",
         "mechanism": "porcelain-v1"
       },
-      "lastAssessedAt": "2026-10-08T22:38:19.486Z",
-      "recordedAt": "2026-10-08T22:38:19.486Z",
+      "lastAssessedAt": "2026-10-08T22:44:02.329Z",
+      "recordedAt": "2026-10-08T22:44:02.329Z",
       "history": [
         {
           "status": "derived",
@@ -916,14 +916,14 @@
       "metricId": "git.commits_created",
       "status": "derived",
       "reason": "normalized measurement recorded",
-      "discoveredAt": "2026-10-08T22:38:19.486Z",
+      "discoveredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "ros-git",
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "lastAssessedAt": "2026-10-08T22:38:19.486Z",
-      "recordedAt": "2026-10-08T22:38:19.486Z",
+      "lastAssessedAt": "2026-10-08T22:44:02.329Z",
+      "recordedAt": "2026-10-08T22:44:02.329Z",
       "history": [
         {
           "status": "derived",
@@ -943,14 +943,14 @@
       "metricId": "git.files_added",
       "status": "derived",
       "reason": "normalized measurement recorded",
-      "discoveredAt": "2026-10-08T22:38:19.486Z",
+      "discoveredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "ros-git",
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "lastAssessedAt": "2026-10-08T22:38:19.486Z",
-      "recordedAt": "2026-10-08T22:38:19.486Z",
+      "lastAssessedAt": "2026-10-08T22:44:02.329Z",
+      "recordedAt": "2026-10-08T22:44:02.329Z",
       "history": [
         {
           "status": "derived",
@@ -970,14 +970,14 @@
       "metricId": "git.files_modified",
       "status": "derived",
       "reason": "normalized measurement recorded",
-      "discoveredAt": "2026-10-08T22:38:19.486Z",
+      "discoveredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "ros-git",
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "lastAssessedAt": "2026-10-08T22:38:19.486Z",
-      "recordedAt": "2026-10-08T22:38:19.486Z",
+      "lastAssessedAt": "2026-10-08T22:44:02.329Z",
+      "recordedAt": "2026-10-08T22:44:02.329Z",
       "history": [
         {
           "status": "derived",
@@ -997,14 +997,14 @@
       "metricId": "git.files_deleted",
       "status": "derived",
       "reason": "normalized measurement recorded",
-      "discoveredAt": "2026-10-08T22:38:19.486Z",
+      "discoveredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "ros-git",
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "lastAssessedAt": "2026-10-08T22:38:19.486Z",
-      "recordedAt": "2026-10-08T22:38:19.486Z",
+      "lastAssessedAt": "2026-10-08T22:44:02.329Z",
+      "recordedAt": "2026-10-08T22:44:02.329Z",
       "history": [
         {
           "status": "derived",
@@ -1024,14 +1024,14 @@
       "metricId": "git.files_renamed",
       "status": "derived",
       "reason": "normalized measurement recorded",
-      "discoveredAt": "2026-10-08T22:38:19.486Z",
+      "discoveredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "ros-git",
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "lastAssessedAt": "2026-10-08T22:38:19.486Z",
-      "recordedAt": "2026-10-08T22:38:19.486Z",
+      "lastAssessedAt": "2026-10-08T22:44:02.329Z",
+      "recordedAt": "2026-10-08T22:44:02.329Z",
       "history": [
         {
           "status": "derived",
@@ -1051,14 +1051,14 @@
       "metricId": "git.binary_files_changed",
       "status": "derived",
       "reason": "normalized measurement recorded",
-      "discoveredAt": "2026-10-08T22:38:19.486Z",
+      "discoveredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "ros-git",
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "lastAssessedAt": "2026-10-08T22:38:19.486Z",
-      "recordedAt": "2026-10-08T22:38:19.486Z",
+      "lastAssessedAt": "2026-10-08T22:44:02.329Z",
+      "recordedAt": "2026-10-08T22:44:02.329Z",
       "history": [
         {
           "status": "derived",
@@ -1078,14 +1078,14 @@
       "metricId": "git.lines_added",
       "status": "derived",
       "reason": "normalized measurement recorded",
-      "discoveredAt": "2026-10-08T22:38:19.486Z",
+      "discoveredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "ros-git",
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "lastAssessedAt": "2026-10-08T22:38:19.486Z",
-      "recordedAt": "2026-10-08T22:38:19.486Z",
+      "lastAssessedAt": "2026-10-08T22:44:02.329Z",
+      "recordedAt": "2026-10-08T22:44:02.329Z",
       "history": [
         {
           "status": "derived",
@@ -1105,14 +1105,14 @@
       "metricId": "git.lines_deleted",
       "status": "derived",
       "reason": "normalized measurement recorded",
-      "discoveredAt": "2026-10-08T22:38:19.486Z",
+      "discoveredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "ros-git",
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "lastAssessedAt": "2026-10-08T22:38:19.486Z",
-      "recordedAt": "2026-10-08T22:38:19.486Z",
+      "lastAssessedAt": "2026-10-08T22:44:02.329Z",
+      "recordedAt": "2026-10-08T22:44:02.329Z",
       "history": [
         {
           "status": "derived",
@@ -1132,14 +1132,14 @@
       "metricId": "tests.added",
       "status": "derived",
       "reason": "normalized measurement recorded",
-      "discoveredAt": "2026-10-08T22:38:19.486Z",
+      "discoveredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "ros-git",
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "lastAssessedAt": "2026-10-08T22:38:19.486Z",
-      "recordedAt": "2026-10-08T22:38:19.486Z",
+      "lastAssessedAt": "2026-10-08T22:44:02.329Z",
+      "recordedAt": "2026-10-08T22:44:02.329Z",
       "history": [
         {
           "status": "derived",
@@ -1159,14 +1159,14 @@
       "metricId": "tests.modified",
       "status": "derived",
       "reason": "normalized measurement recorded",
-      "discoveredAt": "2026-10-08T22:38:19.486Z",
+      "discoveredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "ros-git",
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "lastAssessedAt": "2026-10-08T22:38:19.486Z",
-      "recordedAt": "2026-10-08T22:38:19.486Z",
+      "lastAssessedAt": "2026-10-08T22:44:02.329Z",
+      "recordedAt": "2026-10-08T22:44:02.329Z",
       "history": [
         {
           "status": "derived",
@@ -1186,14 +1186,14 @@
       "metricId": "tests.removed",
       "status": "derived",
       "reason": "normalized measurement recorded",
-      "discoveredAt": "2026-10-08T22:38:19.486Z",
+      "discoveredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "ros-git",
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "lastAssessedAt": "2026-10-08T22:38:19.486Z",
-      "recordedAt": "2026-10-08T22:38:19.486Z",
+      "lastAssessedAt": "2026-10-08T22:44:02.329Z",
+      "recordedAt": "2026-10-08T22:44:02.329Z",
       "history": [
         {
           "status": "derived",
@@ -1477,14 +1477,14 @@
       "metricId": "documentation.files_changed",
       "status": "derived",
       "reason": "normalized measurement recorded",
-      "discoveredAt": "2026-10-08T22:38:19.486Z",
+      "discoveredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "ros-git",
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "lastAssessedAt": "2026-10-08T22:38:19.486Z",
-      "recordedAt": "2026-10-08T22:38:19.486Z",
+      "lastAssessedAt": "2026-10-08T22:44:02.329Z",
+      "recordedAt": "2026-10-08T22:44:02.329Z",
       "history": [
         {
           "status": "derived",
@@ -1662,9 +1662,9 @@
       "schemaVersion": "1.0.0"
     },
     {
-      "measurementId": "MEAS-e5969754e9f1cb12e425b552",
+      "measurementId": "MEAS-54f52de3dac6c76c340145dc",
       "id": "time.wall_ms",
-      "value": 1638490,
+      "value": 1981333,
       "unit": "milliseconds",
       "currency": null,
       "quality": "derived",
@@ -1678,11 +1678,11 @@
         "name": "ros",
         "mechanism": "timestamp-difference"
       },
-      "collectedAt": "2026-10-08T22:38:19.486Z",
+      "collectedAt": "2026-10-08T22:44:02.329Z",
       "schemaVersion": "1.0.0"
     },
     {
-      "measurementId": "MEAS-c07a142fb8a8efed6989cdbf",
+      "measurementId": "MEAS-faa567246a5ca2c9fc7ba3ae",
       "id": "time.blocked_ms",
       "value": 495000,
       "unit": "milliseconds",
@@ -1698,11 +1698,11 @@
         "name": "ros-work-lifecycle",
         "mechanism": "block-resume-intervals"
       },
-      "collectedAt": "2026-10-08T22:38:19.486Z",
+      "collectedAt": "2026-10-08T22:44:02.329Z",
       "schemaVersion": "1.0.0"
     },
     {
-      "measurementId": "MEAS-a604a9cd4e7ba57ad38b7b66",
+      "measurementId": "MEAS-9ec0d63859eca852d7be1366",
       "id": "git.ending_dirty_files",
       "value": 0,
       "unit": "count",
@@ -1718,13 +1718,13 @@
         "name": "git-status",
         "mechanism": "porcelain-v1"
       },
-      "collectedAt": "2026-10-08T22:38:19.486Z",
+      "collectedAt": "2026-10-08T22:44:02.329Z",
       "schemaVersion": "1.0.0"
     },
     {
-      "measurementId": "MEAS-1fa82de95169e4462ac0157d",
+      "measurementId": "MEAS-97db87be50ad1688daad3cdc",
       "id": "git.commits_created",
-      "value": 4,
+      "value": 5,
       "unit": "count",
       "currency": null,
       "quality": "derived",
@@ -1738,11 +1738,11 @@
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "collectedAt": "2026-10-08T22:38:19.486Z",
+      "collectedAt": "2026-10-08T22:44:02.329Z",
       "schemaVersion": "1.0.0"
     },
     {
-      "measurementId": "MEAS-17511096d34d5f6f92c6396d",
+      "measurementId": "MEAS-b4b394c58c5853187626a7c5",
       "id": "git.files_added",
       "value": 9,
       "unit": "count",
@@ -1758,11 +1758,11 @@
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "collectedAt": "2026-10-08T22:38:19.486Z",
+      "collectedAt": "2026-10-08T22:44:02.329Z",
       "schemaVersion": "1.0.0"
     },
     {
-      "measurementId": "MEAS-ca54b9307334c1daa3e99082",
+      "measurementId": "MEAS-4afd454e19ab2bb3dceda6fc",
       "id": "git.files_modified",
       "value": 16,
       "unit": "count",
@@ -1778,11 +1778,11 @@
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "collectedAt": "2026-10-08T22:38:19.486Z",
+      "collectedAt": "2026-10-08T22:44:02.329Z",
       "schemaVersion": "1.0.0"
     },
     {
-      "measurementId": "MEAS-a8bcc6308359ca75c60e6f7b",
+      "measurementId": "MEAS-7d537bc23eac4374267834cd",
       "id": "git.files_deleted",
       "value": 2,
       "unit": "count",
@@ -1798,11 +1798,11 @@
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "collectedAt": "2026-10-08T22:38:19.486Z",
+      "collectedAt": "2026-10-08T22:44:02.329Z",
       "schemaVersion": "1.0.0"
     },
     {
-      "measurementId": "MEAS-bb2ccf9ea3b28c119b44a822",
+      "measurementId": "MEAS-b8d6c89c5fced2694e8550d9",
       "id": "git.files_renamed",
       "value": 0,
       "unit": "count",
@@ -1818,11 +1818,11 @@
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "collectedAt": "2026-10-08T22:38:19.486Z",
+      "collectedAt": "2026-10-08T22:44:02.329Z",
       "schemaVersion": "1.0.0"
     },
     {
-      "measurementId": "MEAS-27dada5378fd400c3ac8be61",
+      "measurementId": "MEAS-35eab76756e315b41f3b1fe1",
       "id": "git.binary_files_changed",
       "value": 5,
       "unit": "count",
@@ -1838,11 +1838,11 @@
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "collectedAt": "2026-10-08T22:38:19.486Z",
+      "collectedAt": "2026-10-08T22:44:02.329Z",
       "schemaVersion": "1.0.0"
     },
     {
-      "measurementId": "MEAS-1e349df048d59162a5eb9958",
+      "measurementId": "MEAS-b43e94a58aab140b131f2e0c",
       "id": "git.lines_added",
       "value": 1777,
       "unit": "lines",
@@ -1858,11 +1858,11 @@
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "collectedAt": "2026-10-08T22:38:19.486Z",
+      "collectedAt": "2026-10-08T22:44:02.329Z",
       "schemaVersion": "1.0.0"
     },
     {
-      "measurementId": "MEAS-e041488729b12785c97a7993",
+      "measurementId": "MEAS-1d377bec50fd2a6a8e076122",
       "id": "git.lines_deleted",
       "value": 62,
       "unit": "lines",
@@ -1878,11 +1878,11 @@
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "collectedAt": "2026-10-08T22:38:19.486Z",
+      "collectedAt": "2026-10-08T22:44:02.329Z",
       "schemaVersion": "1.0.0"
     },
     {
-      "measurementId": "MEAS-753af67ddbfac983f42b9179",
+      "measurementId": "MEAS-c48af08907bafef9e4c7a27f",
       "id": "tests.added",
       "value": 2,
       "unit": "count",
@@ -1898,11 +1898,11 @@
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "collectedAt": "2026-10-08T22:38:19.486Z",
+      "collectedAt": "2026-10-08T22:44:02.329Z",
       "schemaVersion": "1.0.0"
     },
     {
-      "measurementId": "MEAS-c09c7e6e26b35f1bba43c5a7",
+      "measurementId": "MEAS-b95c6e65812b97464ce4df43",
       "id": "tests.modified",
       "value": 1,
       "unit": "count",
@@ -1918,11 +1918,11 @@
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "collectedAt": "2026-10-08T22:38:19.486Z",
+      "collectedAt": "2026-10-08T22:44:02.329Z",
       "schemaVersion": "1.0.0"
     },
     {
-      "measurementId": "MEAS-482ffe35e9479d5465dbf9b8",
+      "measurementId": "MEAS-c0a251611c0ab162d21c6741",
       "id": "tests.removed",
       "value": 0,
       "unit": "count",
@@ -1938,11 +1938,11 @@
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "collectedAt": "2026-10-08T22:38:19.486Z",
+      "collectedAt": "2026-10-08T22:44:02.329Z",
       "schemaVersion": "1.0.0"
     },
     {
-      "measurementId": "MEAS-0b2888e07f9c33f386e89495",
+      "measurementId": "MEAS-d118898ff692915b62ebb7e7",
       "id": "documentation.files_changed",
       "value": 3,
       "unit": "count",
@@ -1958,7 +1958,7 @@
         "name": "git-diff",
         "mechanism": "git-diff-from-clean-execution-baseline"
       },
-      "collectedAt": "2026-10-08T22:38:19.486Z",
+      "collectedAt": "2026-10-08T22:44:02.329Z",
       "schemaVersion": "1.0.0"
     }
   ],
@@ -1997,13 +1997,13 @@
     },
     {
       "type": "execution.finalized",
-      "occurredAt": "2026-10-08T22:38:19.486Z",
+      "occurredAt": "2026-10-08T22:44:02.329Z",
       "source": {
         "type": "ros-clock",
         "name": "ros",
         "mechanism": "work-lifecycle"
       },
-      "eventId": "TEVT-ec3ac20446ee738340ae1aa9"
+      "eventId": "TEVT-8c62a4f465f1ab0e5acf45c9"
     }
   ],
   "repository": {
@@ -2019,7 +2019,7 @@
       "available": true,
       "repository": "echelon-signal",
       "branch": "feature/template-catalog",
-      "commit": "2cc5cb46f32a882d916157140e610966b0d2dab1",
+      "commit": "ec8a964fba21c4a083c33c2e4b05c8dab028400e",
       "dirty": false,
       "dirtyPaths": []
     },
@@ -2027,9 +2027,9 @@
       "available": true,
       "mechanism": "git-diff-from-clean-execution-baseline",
       "startCommit": "7f8e4b784d9386f4d59cdc7b672ef39041ea35b9",
-      "endCommit": "2cc5cb46f32a882d916157140e610966b0d2dab1",
+      "endCommit": "ec8a964fba21c4a083c33c2e4b05c8dab028400e",
       "branch": "feature/template-catalog",
-      "commits": 4,
+      "commits": 5,
       "counts": {
         "added": 9,
         "modified": 16,
@@ -2059,7 +2059,7 @@
     "acceptanceCriteria": [],
     "commits": [
       "7f8e4b784d9386f4d59cdc7b672ef39041ea35b9",
-      "2cc5cb46f32a882d916157140e610966b0d2dab1"
+      "ec8a964fba21c4a083c33c2e4b05c8dab028400e"
     ],
     "pullRequests": [],
     "experiments": [],
