@@ -10,6 +10,8 @@ open Microsoft.FSharp.Reflection
 open Echelon.Signal.Engine
 open Echelon.Signal.Engine.Responses
 open Echelon.Signal.Engine.RuleModel
+open Echelon.Signal.Engine.Primitives
+open Echelon.Signal.Engine.Selectors
 open Echelon.Signal.Engine.Template
 open Echelon.Signal.Engine.Layout
 open Echelon.Signal.Engine.Instance
@@ -139,10 +141,24 @@ let ``special states never become numbers`` () =
 [<Fact>]
 let ``no answer primitive can carry free text or personal data`` () =
     let cases = FSharpType.GetUnionCases(typeof<AnswerDefinition>) |> Array.map _.Name
-    Assert.Equal<string[]>([| "Boolean"; "Ordinal"; "SingleChoice" |], cases)
-    let fields = FSharpType.GetUnionCases(typeof<AnswerValue>) |> Array.collect (fun c -> c.GetFields()) |> Array.map _.PropertyType
-    // A choice carries an option id the template declared, never respondent text.
-    Assert.Equal<Type[]>([| typeof<bool>; typeof<int>; typeof<string> |], fields)
+
+    Assert.Equal<string[]>(
+        [| "Boolean"; "Ordinal"; "SingleChoice"; "MultiChoice"; "BoundedNumber"; "BoundedRange"; "Ranking"; "Allocation"; "BestWorst"; "Hierarchical"; "HierarchicalMulti" |],
+        cases
+    )
+
+    // Every string an answer carries is an option id the template declared:
+    // text the respondent typed is refused by every option-based primitive.
+    let o id : ChoiceOption = { Id = id; Label = id; Score = None }
+    let os = [ o "a"; o "b"; o "c" ]
+    let free = "jane.doe@example.com"
+    let refuses def value = Assert.True((Primitives.check def value).IsSome, $"%A{def} accepted %A{value}")
+    refuses (SingleChoice os) (Choice free)
+    refuses (MultiChoice { Options = os; Selection = AnyCount; Exclusive = []; WhenExclusive = RejectCombination }) (Choices(Set [ free ]))
+    refuses (Ranking { Options = os; Positions = None }) (Order [ free; "a"; "b" ])
+    refuses (Allocation { Options = os; Total = 3; Step = 1.0; ItemMinimum = 0; ItemMaximum = 3 }) (Allocated(Map [ free, 3 ]))
+    refuses (BestWorst os) (BestWorstPick(free, "a"))
+    refuses (Hierarchical([ { Option = o "a"; Parent = None } ], false)) (Choice free)
 
 [<Fact>]
 let ``pagination follows items per page, section overrides, breaks and new-page sections`` () =

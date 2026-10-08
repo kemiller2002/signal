@@ -15,6 +15,8 @@ module Echelon.Signal.Engine.Template
 open System
 open System.Text.RegularExpressions
 open Echelon.Signal.Engine.Responses
+open Echelon.Signal.Engine.Primitives
+open Echelon.Signal.Engine.Selectors
 open Echelon.Signal.Engine.RuleModel
 open Echelon.Signal.Engine.ResultModel
 
@@ -29,48 +31,6 @@ let EngineVersion = 1
 /// The response encoding the layout below is computed for (ResponseEncodingVersion).
 [<Literal>]
 let EncodingVersion = 1
-
-type ChoiceOption =
-    { Id: string
-      Label: string
-      /// The number this option contributes to scoring. A scored question
-      /// whose option has no score is a publication blocker ("mapped scores
-      /// complete"); an unscored question may leave it empty.
-      Score: float option }
-
-/// The answer primitive: what can be stored, independent of how it looks
-/// (CAN §6). Further primitives (multi-choice, bounded integer, ranking,
-/// allocation) are WI-0045.
-type AnswerDefinition =
-    /// Two states: false (0) and true (1).
-    | Boolean
-    /// `points` ordered values 0..points-1.
-    | Ordinal of points: int
-    /// One option, by id, from an ordered list.
-    | SingleChoice of options: ChoiceOption list
-
-/// Selector presets (CAN §7). A selector is presentation: labels and order
-/// for an answer primitive, never scoring.
-type SelectorPreset =
-    | YesNo
-    | Likert3
-    | Likert5
-    | Likert7
-    | Agreement5
-    | Frequency5
-    | Quality5
-    | Confidence5
-    | Satisfaction5
-    | Maturity5
-    | NumericRating
-    | SingleSelect
-    | ForcedChoice
-
-type Selector =
-    { Preset: SelectorPreset
-      /// One label per stored value, in value order. Empty for choice
-      /// selectors, whose options carry their own labels.
-      Labels: string list }
 
 type Question =
     { Id: string
@@ -113,13 +73,32 @@ type ProgressMode =
     | PageProgress
     | SectionProgress
 
+/// Forward-only progression (ARX-013): question and section revisit are
+/// configured independently and enforced by the engine (`Navigation`).
+type QuestionRevisit =
+    | AllowPreviousQuestions
+    | LockPreviousQuestionsAfterAdvance
+
+type SectionRevisit =
+    | AllowPreviousSections
+    | LockPreviousSectionsAfterExit
+
+type Revisit =
+    { Questions: QuestionRevisit
+      Sections: SectionRevisit }
+
+let fullRevisit =
+    { Questions = AllowPreviousQuestions
+      Sections = AllowPreviousSections }
+
 type Presentation =
     { ItemsPerPage: int option
       ShowQuestionNumbers: bool
       Progress: ProgressMode
       AllowBackNavigation: bool
       ReviewBeforeSubmit: bool
-      SectionStartsOnNewPage: bool }
+      SectionStartsOnNewPage: bool
+      Revisit: Revisit }
 
 /// Declared engine features (CAN §2). A template declares what it uses; an
 /// engine refuses what it does not support.
@@ -186,7 +165,8 @@ let defaultPresentation =
       Progress = QuestionProgress
       AllowBackNavigation = true
       ReviewBeforeSubmit = false
-      SectionStartsOnNewPage = false }
+      SectionStartsOnNewPage = false
+      Revisit = fullRevisit }
 
 let defaultSectionPresentation =
     { ItemsPerPage = None
@@ -216,13 +196,6 @@ let questions (content: Content) =
 let tryQuestion (content: Content) (id: string) =
     questions content |> List.tryFind (fun (_, q) -> q.Id = id) |> Option.map snd
 
-/// The number of stored values an answer primitive has (its cardinality).
-let cardinality =
-    function
-    | Boolean -> 2
-    | Ordinal points -> points
-    | SingleChoice options -> options.Length
-
 /// The scored questions of a section: the declared list, or every question.
 let scoredQuestions (section: Section) =
     match section.Scoring with
@@ -248,32 +221,33 @@ type AnswerProblem =
     | OutOfRange of questionId: string * value: int
     | UnknownOption of questionId: string * optionId: string
     | SpecialNotOffered of questionId: string * state: SpecialState
+    /// The value has the right shape but breaks the primitive's rules
+    /// (selection count, exclusivity, allocation total, ...).
+    | InvalidValue of questionId: string * reason: string
 
 let checkAnswer (content: Content) (questionId: string) (state: AnswerState) : AnswerProblem option =
     match tryQuestion content questionId with
     | None -> Some(UnknownQuestion questionId)
     | Some q ->
-        match state, q.Answer with
-        | Special s, _ when not (List.contains s q.SpecialStates) -> Some(SpecialNotOffered(questionId, s))
-        | Special _, _ -> None
-        | Value(Flag _), Boolean -> None
-        | Value(Point p), Ordinal points when p < 0 || p >= points -> Some(OutOfRange(questionId, p))
-        | Value(Point _), Ordinal _ -> None
-        | Value(Choice id), SingleChoice options when options |> List.exists (fun o -> o.Id = id) -> None
-        | Value(Choice id), SingleChoice _ -> Some(UnknownOption(questionId, id))
-        | Value _, _ -> Some(WrongPrimitive questionId)
+        match state with
+        | Special s when not (List.contains s q.SpecialStates) -> Some(SpecialNotOffered(questionId, s))
+        | Special _ -> None
+        | Value v ->
+            match Primitives.check q.Answer v, q.Answer, v with
+            | None, _, _ -> None
+            | Some _, Ordinal _, Point p -> Some(OutOfRange(questionId, p))
+            | Some _, (SingleChoice _ | Hierarchical _), Choice id when (options q.Answer |> List.forall (fun o -> o.Id <> id)) ->
+                Some(UnknownOption(questionId, id))
+            | Some _, _, _ when (toIndex q.Answer v).IsNone && not (Primitives.ofIndex q.Answer 0UL |> Option.exists (fun sample -> sample.GetType() = v.GetType())) ->
+                Some(WrongPrimitive questionId)
+            | Some reason, _, _ -> Some(InvalidValue(questionId, reason))
 
 let checkAnswers (content: Content) (answers: Answers) : AnswerProblem list =
     answers |> Map.toList |> List.choose (fun (id, state) -> checkAnswer content id state)
 
 /// The number an answered value contributes to scoring, before the scorer's
-/// item scale. None when a choice has no declared score.
-let numeric (question: Question) (value: AnswerValue) : float option =
-    match value, question.Answer with
-    | Flag b, _ -> Some(if b then 1.0 else 0.0)
-    | Point p, _ -> Some(float p)
-    | Choice id, SingleChoice options -> options |> List.tryFind (fun o -> o.Id = id) |> Option.bind _.Score
-    | Choice _, _ -> None
+/// item scale (`Primitives.numeric`).
+let numeric (question: Question) (value: AnswerValue) : float option = Primitives.numeric question.Answer value
 
 let observation (question: Question) (state: AnswerState option) : Scoring.Observation =
     match state with
@@ -281,10 +255,54 @@ let observation (question: Question) (state: AnswerState option) : Scoring.Obser
     | Some(Special DontKnow) -> Scoring.Special Scoring.DontKnow
     | Some(Special NotObserved) -> Scoring.Special Scoring.NotObserved
     | Some(Special NotApplicable) -> Scoring.Special Scoring.NotApplicable
+    | Some(Special Declined) -> Scoring.Special Scoring.Declined
     | Some(Value v) ->
         match numeric question v with
         | Some n -> Scoring.Numeric n
         | None -> Scoring.Special Scoring.Unanswered
+
+let private keyOf (content: Content) (q: Question) =
+    content.Results.ItemKeys |> List.tryFind (fun k -> k.Question = q.Id) |> Option.map _.Key
+
+/// The number an answer contributes under the template's item key, if it
+/// has one, else `numeric` (SCS-004, SCS-006).
+let keyedNumber (content: Content) (q: Question) (value: AnswerValue) : float option =
+    let indicator b = if b then 1.0 else 0.0
+
+    match keyOf content q, value, q.Answer with
+    | None, _, _ -> numeric q value
+    | Some(SingleKeyed k), Choice id, _ -> Some (Keyed.single k (Some id)).Final
+    | Some(MultiKeyed k), Choices ids, _ -> Some (Keyed.multi k ids).Final
+    | Some(RankKeyed(item, m)), Order ids, Ranking r -> Keyed.rank m r.Options.Length ids item
+    | Some(AllocationKeyed m), Allocated steps, Allocation a ->
+        match Keyed.allocation m (steps |> Map.map (fun _ n -> float n * a.Step)) with
+        | Scoring.Score(v, _, _) -> Some v
+        | Scoring.NotScored _ -> None
+    | Some(BestWorstKeyed(item, BestOnly)), BestWorstPick(b, _), _ -> Some(indicator (b = item))
+    | Some(BestWorstKeyed(item, WorstOnly)), BestWorstPick(_, w), _ -> Some(indicator (w = item))
+    | Some(BestWorstKeyed(item, BestMinusWorstOnly)), BestWorstPick(b, w), _ -> Some(indicator (b = item) - indicator (w = item))
+    | Some(RangeKeyed measure), TickRange(lo, hi), BoundedRange b ->
+        let low, high = tickValue b lo, tickValue b hi
+
+        Some(
+            match measure with
+            | RangeWidth -> high - low
+            | RangeMidpoint -> (low + high) / 2.0
+            | RangeLow -> low
+            | RangeHigh -> high
+        )
+    | Some _, _, _ -> None
+
+/// `observation` under the template's item keys: a declared blank score
+/// applies to an unanswered keyed question; everything else is unchanged.
+let observationIn (content: Content) (question: Question) (state: AnswerState option) : Scoring.Observation =
+    match keyOf content question, state with
+    | Some(SingleKeyed k), None -> Scoring.Numeric k.PointsBlank
+    | _, Some(Value v) ->
+        match keyedNumber content question v with
+        | Some n -> Scoring.Numeric n
+        | None -> Scoring.Special Scoring.Unanswered
+    | _ -> observation question state
 
 /// Section scores for a set of answers: the scoring preview (AUT-003 §22)
 /// and the deterministic evaluation fixtures assert against.
@@ -293,5 +311,5 @@ let scoreSections (content: Content) (answers: Answers) : (Section * Scoring.Out
     |> List.choose (fun section ->
         section.Scoring
         |> Option.map (fun scoring ->
-            let observations = scoredQuestions section |> List.map (fun q -> observation q (answers.TryFind q.Id))
+            let observations = scoredQuestions section |> List.map (fun q -> observationIn content q (answers.TryFind q.Id))
             section, Scoring.evaluate scoring.Scorer observations))

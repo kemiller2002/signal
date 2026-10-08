@@ -8,6 +8,8 @@ module Echelon.Signal.Engine.RuleChecks
 
 open Echelon.Signal.Engine.Responses
 open Echelon.Signal.Engine.RuleModel
+open Echelon.Signal.Engine.Primitives
+open Echelon.Signal.Engine.Selectors
 open Echelon.Signal.Engine.Template
 open Echelon.Signal.Engine.Findings
 
@@ -167,6 +169,10 @@ let private references (content: Content) =
           | AllowedRange(q, lo, hi) ->
               yield! checkRef v.Id (QuestionRef q)
               if lo > hi then block "RULE-TYPE" v.Id $"'{v.Id}' has an empty range."
+          | AnsweredBetween(ids, lo, hi) ->
+              yield! ids |> List.collect (QuestionRef >> checkRef v.Id)
+              if lo < 0 || lo > hi || hi > ids.Length then block "RULE-TYPE" v.Id $"'{v.Id}' has an impossible answered-count range."
+          | DistinctAnswers ids -> yield! ids |> List.collect (QuestionRef >> checkRef v.Id)
       for rec' in r.Recommendations do
           yield! conditions rec'.Id rec'.When
           yield! rec'.RelatedQuestion |> Option.toList |> List.collect (QuestionRef >> notScoredOk rec'.Id)
@@ -251,7 +257,9 @@ let private types (content: Content) =
           match v.Check with
           | RequiredWhen(_, c)
           | Prohibited c -> yield! check v.Id c
-          | AllowedRange _ -> ()
+          | AllowedRange _
+          | AnsweredBetween _
+          | DistinctAnswers _ -> ()
       for rec' in r.Recommendations do
           yield! check rec'.Id rec'.When ]
 

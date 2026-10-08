@@ -3,6 +3,8 @@
 /// pagination never changes the layout or scores.
 module Echelon.Signal.Engine.Layout
 
+open Echelon.Signal.Engine.Primitives
+open Echelon.Signal.Engine.Selectors
 open Echelon.Signal.Engine.Template
 
 // ---------------------------------------------------------------------------
@@ -62,17 +64,18 @@ let pages (content: Content) : Page list =
 /// then each offered special state, in `specialStates` order.
 type Slot =
     { QuestionId: string
-      States: int
+      States: uint64
       Bits: int }
 
-let private bitsFor states =
-    let rec go n = if (1 <<< n) >= states then n else go (n + 1)
+/// Bits for a slot holding `states` states (at least 1).
+let bitsFor (states: uint64) =
+    let rec go n = if n >= 63 || (1UL <<< n) >= states then n else go (n + 1)
     go 1
 
 let layout (content: Content) : Slot list =
     questions content
     |> List.map (fun (_, q) ->
-        let states = 1 + cardinality q.Answer + q.SpecialStates.Length
+        let states = 1UL + valueCount q.Answer + uint64 q.SpecialStates.Length
         { QuestionId = q.Id; States = states; Bits = bitsFor states })
 
 /// Bytes of a ResponseEncodingVersion 1 envelope around the answers: version

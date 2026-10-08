@@ -74,6 +74,12 @@ type ValidationCheck =
     | Prohibited of Condition
     /// The answer's number must lie in [minimum, maximum].
     | AllowedRange of questionId: string * minimum: float * maximum: float
+    /// Between `minimum` and `maximum` of the applicable questions must be
+    /// answered (matrix "at least / at most N rows", SCS-012).
+    | AnsweredBetween of questionIds: string list * minimum: int * maximum: int
+    /// No two of the questions may hold the same value (matrix one use per
+    /// column / forced ranking, SCS-012).
+    | DistinctAnswers of questionIds: string list
 
 type ValidationRule =
     { Id: string

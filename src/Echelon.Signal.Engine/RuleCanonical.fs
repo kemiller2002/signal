@@ -12,6 +12,7 @@ let specialName =
     | DontKnow -> "dont-know"
     | NotObserved -> "not-observed"
     | NotApplicable -> "not-applicable"
+    | Declined -> "declined"
 
 let private comparisonName =
     function
@@ -36,6 +37,31 @@ let private value (w: Utf8JsonWriter) (v: AnswerValue) =
     | Flag b -> w.WriteBoolean("flag", b)
     | Point p -> w.WriteNumber("point", p)
     | Choice id -> w.WriteString("choice", id)
+    | Choices ids ->
+        w.WriteStartArray "choices"
+        ids |> Set.iter w.WriteStringValue
+        w.WriteEndArray()
+    | Tick t -> w.WriteNumber("tick", t)
+    | TickRange(lo, hi) ->
+        w.WriteNumber("low", lo)
+        w.WriteNumber("high", hi)
+    | Order ids ->
+        w.WriteStartArray "order"
+        ids |> List.iter w.WriteStringValue
+        w.WriteEndArray()
+    | Allocated steps ->
+        w.WriteStartArray "allocated"
+
+        for KeyValue(id, n) in steps do
+            w.WriteStartArray()
+            w.WriteStringValue id
+            w.WriteNumberValue n
+            w.WriteEndArray()
+
+        w.WriteEndArray()
+    | BestWorstPick(b, worst) ->
+        w.WriteString("best", b)
+        w.WriteString("worst", worst)
 
     w.WriteEndObject()
 
@@ -171,6 +197,16 @@ let write (w: Utf8JsonWriter) (rules: RuleSet) =
             w.WriteString("range", q)
             w.WriteNumber("minimum", lo)
             w.WriteNumber("maximum", hi)
+        | AnsweredBetween(ids, lo, hi) ->
+            w.WriteStartArray "answeredBetween"
+            ids |> List.iter w.WriteStringValue
+            w.WriteEndArray()
+            w.WriteNumber("minimum", lo)
+            w.WriteNumber("maximum", hi)
+        | DistinctAnswers ids ->
+            w.WriteStartArray "distinct"
+            ids |> List.iter w.WriteStringValue
+            w.WriteEndArray()
 
         w.WriteString("message", r.Message)
         w.WriteEndObject())

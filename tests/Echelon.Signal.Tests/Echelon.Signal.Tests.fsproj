@@ -27,6 +27,9 @@
     <Compile Include="GroupsTests.fs" />
     <Compile Include="ScoringAstTests.fs" />
     <Compile Include="KeyedTests.fs" />
+    <Compile Include="PrimitivesTests.fs" />
+    <Compile Include="EncodingTests.fs" />
+    <Compile Include="StructureTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

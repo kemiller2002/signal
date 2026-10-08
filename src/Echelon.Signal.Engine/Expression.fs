@@ -13,6 +13,8 @@ module Echelon.Signal.Engine.Expression
 open System
 open Echelon.Signal.Engine.RuleModel
 open Echelon.Signal.Engine.ResultModel
+open Echelon.Signal.Engine.Primitives
+open Echelon.Signal.Engine.Selectors
 open Echelon.Signal.Engine.Template
 open Echelon.Signal.Engine.Findings
 

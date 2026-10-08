@@ -9,6 +9,8 @@ module Echelon.Signal.Engine.Drafts
 
 open Echelon.Signal.Engine.Responses
 open Echelon.Signal.Engine.RuleModel
+open Echelon.Signal.Engine.Primitives
+open Echelon.Signal.Engine.Selectors
 open Echelon.Signal.Engine.Template
 
 /// The published version a draft was derived from (AUT-001 §9).

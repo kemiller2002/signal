@@ -9,6 +9,8 @@ open Echelon.Signal.Engine
 open Echelon.Signal.Engine.Responses
 open Echelon.Signal.Engine.RuleModel
 open Echelon.Signal.Engine.ResultModel
+open Echelon.Signal.Engine.Primitives
+open Echelon.Signal.Engine.Selectors
 open Echelon.Signal.Engine.Template
 
 let private sdra = Pilot.content

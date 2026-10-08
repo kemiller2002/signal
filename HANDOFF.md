@@ -40,6 +40,14 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
     selector-scorer compatibility, the canonical SurveyResult with display
     policy, and group scoring (WI-0044), built against the proposed answers in
     DF-SIGNAL-2026-0002.
+  - `Primitives`, `Selectors`, `PrimitiveChecks`, `GenericEnvelope`,
+    `Matrix`, `Navigation`, `Banking`, `Timers`: every closed-ended answer
+    primitive with a bijective value index, the SCS-010 selector catalog and
+    SCS-018 component map, item keys that score them in sections, the
+    generic URL codec (bit-for-bit the SDRA layout for SDRA), invitations
+    bound to an exact version, matrices, forward-only navigation, seeded
+    banking and timers (WI-0045). The respondent page does not render
+    generic templates yet (WI-0057).
 - Application (`src/Echelon.Signal.Application`): Limen protocol (navigation
   replace and clipboard writeText effects), Aegis dispatch boundary, the
   entropy edge.
