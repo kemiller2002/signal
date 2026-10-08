@@ -813,10 +813,10 @@
         "ci,playwright,reliability"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T07:37:31.428Z",
-      "updatedAt": "2026-10-08T07:37:31.000Z",
+      "updatedAt": "2026-10-08T07:49:50.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

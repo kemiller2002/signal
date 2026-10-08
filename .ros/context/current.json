@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T07:37:31.000Z",
+  "updatedAt": "2026-10-08T07:49:50.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -942,13 +942,43 @@
     {
       "id": "WI-0037",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-08T07:37:31.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": ".github/workflows/build.yml"
+        },
+        {
+          "type": "tests",
+          "path": ".github/workflows/build.yml"
+        }
+      ],
+      "updatedAt": "2026-10-08T07:49:50.000Z",
       "telemetryExecutionIds": [
         "EXE-20261008T073732220Z-eb4a7882"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "275de98dbac1bf9f9683edfa",
+        "recordedAt": "2026-10-08T07:49:49.000Z",
+        "executionId": "EXE-20261008T073732220Z-eb4a7882",
+        "repository": "echelon-signal",
+        "branch": "fix/ci-browser-install-hang",
+        "commit": "e02b4033dffe655414ac5d714c89033f5d46bd1d",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "fix/ci-browser-install-hang",
+        "remoteCommit": "e02b4033dffe655414ac5d714c89033f5d46bd1d",
+        "summary": "Chromium install no longer runs apt on the normal path: browser cached by the lockfile's Playwright version, OS libraries proved offline with ldd, bounded fallback, 20-minute job ceiling. First push green (push and pull_request Build runs, 8 browser tests, cache saved).",
+        "nextAction": "Complete the work item, push the Praxis state for the second green CI run, then merge",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T07:49:50.000Z"
     }
   ]
 }
