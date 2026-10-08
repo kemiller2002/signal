@@ -1577,10 +1577,10 @@
         "signal"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-10-08T20:07:10.078Z",
-      "updatedAt": "2026-10-08T20:07:10.078Z",
+      "updatedAt": "2026-10-08T21:59:12.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

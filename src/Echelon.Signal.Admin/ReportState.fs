@@ -1,10 +1,12 @@
 /// AdminReportState and its persistence (ARP-003, ARP-004): the projection
 /// of a group's result that reports render from, and where it lives.
 ///
-/// - The state is a deterministic projection of the SurveyGroupResult plus
-///   what continuing to import needs (§54-57): the accepted identities with
-///   their SubmissionHashes and the incremental aggregation evidence. It is
-///   not a copy of the submissions: no answers, no raw URLs.
+/// - The state is a deterministic projection of the SurveyGroupResult that
+///   holds **only aggregates that pass the group's privacy rules**
+///   (WI-0067, DF-SIGNAL-2026-0004): counts, completion, section summaries,
+///   coverage, the weakest and strongest areas, and hashes. No answers, no
+///   URLs, no per-respondent scores and no identity keys. Below an anonymous
+///   group's minimum, only the counts remain.
 /// - **Persistence is chosen by size** (§45-47): a state whose encoded form
 ///   fits the administrator URL budget, less a safety margin, travels in the
 ///   URL (`EmbeddedInUrl`); a larger one is stored as an immutable record and
@@ -13,8 +15,8 @@
 /// - **Integrity** (§50): an embedded state carries a hash of its canonical
 ///   text; a reference carries the group and the stored state's hash, so a
 ///   tampered, truncated, wrong-group or unknown reference is refused.
-/// - **Resume** (§53): the decoded state rebuilds the incremental
-///   accumulator, so imports continue without the submissions.
+/// - **Continuing imports** reads the stored contributions, which rebuild
+///   the incremental accumulator (`GroupStore.openGroup`), not this state.
 ///
 /// Pure.
 module Echelon.Signal.Admin.ReportState
@@ -32,7 +34,7 @@ open Echelon.Signal.Admin.Codec
 
 /// The state's schema version.
 [<Literal>]
-let StateVersion = 1
+let StateVersion = 2
 
 /// One section (dimension) as reports summarize it (§34).
 type SectionSummary =
@@ -59,13 +61,7 @@ type AdminReportState =
       /// Share of answers that were non-numeric: coverage, not performance.
       Coverage: float option
       /// The group result's derivation hash: which inputs this reflects.
-      DerivationHash: string
-      /// SubmissionHash by accepted identity key, for duplicate prevention (§54-55).
-      Accepted: Map<string, string>
-      /// Incremental aggregation evidence, so imports can continue (§53).
-      Evidence: Map<string, Incremental.DimensionEvidence>
-      Answered: int
-      NonNumeric: int }
+      DerivationHash: string }
 
 /// The state for an accumulator, under a policy.
 let project (policy: Policy) (accumulator: Incremental.Accumulator) : AdminReportState =
@@ -89,6 +85,8 @@ let project (policy: Policy) (accumulator: Incremental.Accumulator) : AdminRepor
                   Suppressed = true })
 
     let scored = sections |> List.choose (fun s -> s.AggregateScore |> Option.map (fun score -> s.SectionId, score))
+    // Below an anonymous group's minimum nothing but the counts is reportable.
+    let withheld = sections |> List.exists _.Suppressed
 
     { ResultSchemaVersion = StateVersion
       Group = result.Group
@@ -101,31 +99,8 @@ let project (policy: Policy) (accumulator: Incremental.Accumulator) : AdminRepor
       WeakestArea = scored |> List.sortBy snd |> List.tryHead |> Option.map fst
       StrongestArea = scored |> List.sortByDescending snd |> List.tryHead |> Option.map fst
       Sections = sections
-      Coverage = result.NonNumericShare
-      DerivationHash = result.Lineage.DerivationHash
-      Accepted = accumulator.Accepted
-      Evidence = accumulator.Evidence
-      Answered = accumulator.Answered
-      NonNumeric = accumulator.NonNumeric }
-
-/// Why a stored or embedded state cannot be resumed against a group.
-type ResumeRefusal =
-    | OtherGroup
-    | OtherTemplate of stored: string * configured: string
-
-/// The accumulator a state stands for, to continue importing (§53).
-let resume (definition: GroupDefinition) (state: AdminReportState) : Result<Incremental.Accumulator, ResumeRefusal> =
-    if state.Group <> definition.Group then
-        Error OtherGroup
-    elif state.TemplateHash <> Canonical.templateHash definition.Template then
-        Error(OtherTemplate(state.TemplateHash, Canonical.templateHash definition.Template))
-    else
-        Ok
-            { Definition = definition
-              Accepted = state.Accepted
-              Evidence = state.Evidence
-              Answered = state.Answered
-              NonNumeric = state.NonNumeric }
+      Coverage = if withheld then None else result.NonNumericShare
+      DerivationHash = result.Lineage.DerivationHash }
 
 // ---- Canonical form -------------------------------------------------------------------------
 
@@ -161,16 +136,7 @@ let toJson (state: AdminReportState) =
                         "suppressed", Json.Bool s.Suppressed ])
           )
           "coverage", optional real state.Coverage
-          "derivation", Json.String state.DerivationHash
-          "identities", Json.objectOf (state.Accepted |> Map.toList |> List.map (fun (key, hash) -> key, Json.String hash))
-          "evidence",
-          Json.objectOf (
-              state.Evidence
-              |> Map.toList
-              |> List.map (fun (id, e) -> id, Json.objectOf [ "scores", Json.Array(e.Scores |> List.map real); "unscored", whole e.Unscored ])
-          )
-          "answered", whole state.Answered
-          "nonNumeric", whole state.NonNumeric ]
+          "derivation", Json.String state.DerivationHash ]
 
 let private realOf name value : Decoded<float> =
     text name value
@@ -182,19 +148,8 @@ let private realOf name value : Decoded<float> =
 let private optionalOf name decode value : Decoded<'a option> =
     field name value |> Result.bind (function Json.Null -> Ok None | _ -> decode name value |> Result.map Some)
 
-let private realValue (value: Json) =
-    match value with
-    | Json.String _ -> realOf "score" (Json.objectOf [ "score", value ])
-    | _ -> Error "a score is not text"
-
 /// A state from its canonical JSON value; every field checked.
 let ofJson (value: Json) : Decoded<AdminReportState> =
-    let members name =
-        field name value
-        |> Result.bind (function
-            | Json.Object found -> Ok found
-            | _ -> Error $"'{name}' is not an object")
-
     let section (s: Json) =
         match text "id" s, optionalOf "score" realOf s, integer "scored" s, integer "unscored" s, flag "suppressed" s with
         | Ok id, Ok score, Ok scored, Ok unscored, Ok suppressed ->
@@ -209,21 +164,6 @@ let ofJson (value: Json) : Decoded<AdminReportState> =
         | _, _, Error e, _, _
         | _, _, _, Error e, _
         | _, _, _, _, Error e -> Error e
-
-    let evidence =
-        members "evidence"
-        |> Result.bind (
-            traverse (fun (id, e) ->
-                match list "scores" realValue e, integer "unscored" e with
-                | Ok scores, Ok unscored when scores = List.sort scores -> Ok(id, ({ Scores = scores; Unscored = unscored }: Incremental.DimensionEvidence))
-                | Ok _, Ok _ -> Error "evidence scores are not in ascending order"
-                | Error e, _
-                | _, Error e -> Error e)
-        )
-
-    let identities =
-        members "identities"
-        |> Result.bind (traverse (fun (key, hash) -> match hash with Json.String h -> Ok(key, h) | _ -> Error "an identity's hash is not text"))
 
     let group =
         text "group" value
@@ -242,11 +182,10 @@ let ofJson (value: Json) : Decoded<AdminReportState> =
         both (flag "complete" value) (text "template" value),
         both (optionalOf "weakest" text value) (optionalOf "strongest" text value),
         both (list "sections" section value) (optionalOf "coverage" realOf value),
-        both (text "derivation" value) identities,
-        both evidence (both (integer "answered" value) (integer "nonNumeric" value))
+        text "derivation" value
     with
-    | Ok(version, _), _, _, _, _, _, _ when version <> StateVersion -> Error $"state version {version} is not {StateVersion}"
-    | Ok(version, group), Ok(mode, (expected, accepted)), Ok(complete, template), Ok(weakest, strongest), Ok(sections, coverage), Ok(derivation, identities), Ok(evidence, (answered, nonNumeric)) ->
+    | Ok(version, _), _, _, _, _, _ when version <> StateVersion -> Error $"state version {version} is not {StateVersion}"
+    | Ok(version, group), Ok(mode, (expected, accepted)), Ok(complete, template), Ok(weakest, strongest), Ok(sections, coverage), Ok derivation ->
         Ok
             { ResultSchemaVersion = version
               Group = group
@@ -259,18 +198,13 @@ let ofJson (value: Json) : Decoded<AdminReportState> =
               StrongestArea = strongest
               Sections = sections
               Coverage = coverage
-              DerivationHash = derivation
-              Accepted = Map.ofList identities
-              Evidence = Map.ofList evidence
-              Answered = answered
-              NonNumeric = nonNumeric }
-    | Error e, _, _, _, _, _, _
-    | _, Error e, _, _, _, _, _
-    | _, _, Error e, _, _, _, _
-    | _, _, _, Error e, _, _, _
-    | _, _, _, _, Error e, _, _
-    | _, _, _, _, _, Error e, _
-    | _, _, _, _, _, _, Error e -> Error e
+              DerivationHash = derivation }
+    | Error e, _, _, _, _, _
+    | _, Error e, _, _, _, _
+    | _, _, Error e, _, _, _
+    | _, _, _, Error e, _, _
+    | _, _, _, _, Error e, _
+    | _, _, _, _, _, Error e -> Error e
 
 /// The state's canonical text.
 let canonical (state: AdminReportState) = Json.canonicalText (toJson state)
