@@ -1430,10 +1430,10 @@
         "planning"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T16:19:54.000Z",
-      "updatedAt": "2026-10-08T16:19:55.000Z",
+      "updatedAt": "2026-10-08T16:20:17.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
