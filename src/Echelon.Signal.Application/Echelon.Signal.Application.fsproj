@@ -15,6 +15,7 @@
     <Compile Include="Identity.fs" />
     <Compile Include="Store.fs" />
     <Compile Include="GroupStore.fs" />
+    <Compile Include="TemplateStore.fs" />
     <Compile Include="GroupAdmin.fs" />
     <Compile Include="Bridge.fs" />
     <Compile Include="AdminProtocol.fs" />

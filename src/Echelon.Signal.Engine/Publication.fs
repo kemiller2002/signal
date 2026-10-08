@@ -4,8 +4,8 @@
 /// Publication is a pure function from a draft and the catalog of what is
 /// already published to a new immutable artifact and the next catalog, or a
 /// refusal that says exactly why. Nothing is stored here: persistence of the
-/// catalog is the storage slices' job (WI-0057, WI-0039), and it stores these
-/// values unchanged.
+/// catalog is `TemplateStore`'s job (WI-0057), and it stores these values
+/// unchanged.
 module Echelon.Signal.Engine.Publication
 
 open System

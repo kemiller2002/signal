@@ -23,7 +23,7 @@ let dispatch (messageJson: string) =
 // ---- The administrator page (web/admin/) ---------------------------------------------------
 
 /// The templates the administrator page can start groups from, until the
-/// stored catalog exists (WI-0057): the pilot.
+/// stored catalog (WI-0057) is wired into the page (WI-0073): the pilot.
 let private catalog: Echelon.Signal.Admin.AdminApp.CatalogEntry list =
     [ { Hash = Canonical.templateHash Pilot.assessment
         SurveyIdentifier = Pilot.assessment.Id

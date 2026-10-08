@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 73,
+  "nextSeq": 74,
   "items": [
     {
       "id": "WI-0001",
@@ -1332,10 +1332,10 @@
         "depends:arca"
       ],
       "priority": "medium",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T15:11:46.000Z",
-      "updatedAt": "2026-10-08T22:11:00.000Z",
+      "updatedAt": "2026-10-08T22:44:01.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1704,6 +1704,29 @@
       "attachments": [],
       "createdAt": "2026-10-08T22:12:04.106Z",
       "updatedAt": "2026-10-08T22:15:51.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0073",
+      "title": "Signal 05c: the template catalog's remaining wiring and authoring UI after WI-0057 (CAN-001, CAN-003, CAN-005, CAN-008, URLC-004, URLC-005, ACR-003, ACR-008, ACR-009, VER-001, VER-003, VER-004, VER-007, AUT-001..007, ARX-002, ARX-013, ARP-001, AST-005, ALG-004, ADM-046, ADM-055, SCS-010..014, SCS-017, SCS-018)",
+      "description": "WI-0057 stored the template catalog through Arca (TemplateRecord, TemplateStore) and read templates back from their canonical JSON (TemplateDecode). Remaining: resolving a group's exact template from the stored catalog at runtime instead of the pilot, and the catalog and draft screens (ADM-055); expression complexity limits when stored templates are loaded (ADM-046); test-mode/preview submission isolation and production import refusal (AUT-006 §60); preview mode on the respondent page and the respondent page paginating generic templates (AUT-003 §20, VER-004); locale and invitation expiry carriage (VER-003); DraftEditor/Reviewer/Publisher role separation in the authoring flow (AUT-006 §64); cross-device sample-URL checks (AUT-006 §§61-62); the import pipeline on generic templates carrying facts and recommendations (ARP-001); the authoring surface for presets, traces and the custom-expression boundary (AST-005, ALG-004); the respondent page rendering generic templates with the SCS-018 component families and their interaction rules (SCS-010..SCS-014, SCS-018); banks, the selection seed, timers and browser back/forward (ARX-013); administrator-side persistence of the portable URL artifact (URLC-005).",
+      "tags": [
+        "signal,order:05c,authoring"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T22:34:36.113Z",
+      "updatedAt": "2026-10-08T22:34:36.113Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
