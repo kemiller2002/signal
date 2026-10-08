@@ -1102,10 +1102,10 @@
         "analytics"
       ],
       "priority": "medium",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:09.436Z",
-      "updatedAt": "2026-10-08T18:21:11.000Z",
+      "updatedAt": "2026-10-08T18:31:49.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
