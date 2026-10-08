@@ -75,4 +75,4 @@
 | WI-0060 | Signal 08b: encoding remainders after WI-0045 - a signed (authenticity) submission policy beside integrity-only, and an evaluation of separate presence/N/A bitmaps against in-slot special states on realistic surveys (ACR-004, ANS-004) | captured | signal, order:08b, encoding | low |
 | WI-0061 | Re-home URLC-005 after WI-0045 completed: GapAnalysisTests failed on PR #31 because no open work item named it | complete | quality, planning | high |
 | WI-0062 | Signal 09b: render ReportData through Folio and the page - the standard results print profile, HTML/PDF renderers, localization, respondent/facilitator/360 families, benchmark comparisons and respondent detail in reports (RPT-001..006, SRPP-001..185) | captured | signal, order:09b, reporting, folio | medium |
-| WI-0063 | Accept DF-SIGNAL-2026-0002 answers 2-12 (coordinator, on the owner's standing instruction, 2026-10-08); Q1 stays open | ready | decisions, scoring | high |
+| WI-0063 | Accept DF-SIGNAL-2026-0002 answers 2-12 (coordinator, on the owner's standing instruction, 2026-10-08); Q1 stays open | complete | decisions, scoring | high |

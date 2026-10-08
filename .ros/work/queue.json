@@ -1480,10 +1480,10 @@
         "scoring"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T16:33:52.000Z",
-      "updatedAt": "2026-10-08T16:33:53.000Z",
+      "updatedAt": "2026-10-08T16:36:01.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
