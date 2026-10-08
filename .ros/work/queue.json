@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 76,
+  "nextSeq": 77,
   "items": [
     {
       "id": "WI-0001",
@@ -1179,10 +1179,10 @@
         "security"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:10.523Z",
-      "updatedAt": "2026-10-08T07:48:10.523Z",
+      "updatedAt": "2026-10-08T23:24:14.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1773,6 +1773,29 @@
       "attachments": [],
       "createdAt": "2026-10-08T23:13:53.185Z",
       "updatedAt": "2026-10-08T23:13:53.185Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0076",
+      "title": "Signal 14b: apply WI-0051's privacy controls in the store and the page - disclosure ledger on filters, breakdowns and snapshot releases, audit records stored and emitted, retention and retirement enforced (ADM-024, ADM-030, ADM-045, ADM-064, ARX-009)",
+      "description": "WI-0051 built the pure controls: Disclosure (thresholds, complementary suppression, the release ledger against differencing), Audit (PII-free records) and Retention (lifecycle, retention, provider-honest deletion claims, reproducibility versus deletion). Remaining: applying Disclosure and its ledger to the page's filters, role breakdowns, comparisons, snapshot releases and exports (ADM-024, ARX-009); storing audit records through Arca and emitting them from every store operation (ADM-030); enforcing retention and read-only retirement in the store, removal from the repository tree through Arca and the lifecycle screens (ADM-045); storing reproducibility limitations durably (ADM-064); the PII-injection fixture set across question definitions, metadata, localization, report labels, example submissions, import metadata, storage DTOs and diagnostics (ARX-009).",
+      "tags": [
+        "signal,order:14b,privacy"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T23:30:28.278Z",
+      "updatedAt": "2026-10-08T23:30:28.278Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

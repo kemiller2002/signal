@@ -26,6 +26,7 @@ Captured 2026-10-08 (WI-0037) from the missing and partial groups of [`implement
 | 13 | WI-0050 | Signal 13: report builder, snapshots, exports, configuration packages and policy packs (ADM-021..023, ADM-047, ADM-048, ADM-063) | WI-0046 and WI-0048 |
 | 13b | WI-0075 | Signal 13b: report builder, snapshot and export screens, configuration packages and policy packs after WI-0050's stored definitions, snapshots and exports | WI-0050 |
 | 14 | WI-0051 | Signal 14: administrator privacy, audit without PII, retention and deletion (ADM-024, ADM-030, ADM-045, ADM-064; ARX-009; ID-003 remainder) | WI-0041 |
+| 14b | WI-0076 | Signal 14b: WI-0051's disclosure ledger, audit records and retention applied in the store and the page | WI-0051 |
 | 15 | WI-0052 | Signal 15: storage migration, backup and restore, schema evolution and operational repair (ADM-028, ADM-029, ADM-034, ADM-053, ADM-074..076) | WI-0041 and arca slice 10 (derived indexes and migration, ARCA-MIG) |
 | 16 | WI-0053 | Signal 16: cross-cutting verification - static analysis, differential and model tests, performance budgets, incremental evaluation, time semantics (ARX-001, ARX-004, ARX-005, ARX-010, ARX-011, ARX-015, CAN-007, ADM-036..038, ADM-059, ADM-068; ACR-006 localization) | WI-0047 |
 | 17 | WI-0054 | Signal 17: administrator sandbox, synthetic data generator and optional analytics extensions (ADM-039, ADM-040, ADM-042, ADM-043) | WI-0047 |
