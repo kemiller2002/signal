@@ -31,6 +31,13 @@ export const copies = [
   "node_modules/@echelon-foundry/print-components/src"
 ];
 
+// Every page the site publishes, each with the relative address of the
+// banner's stylesheet. Every one carries the policy and the banner (WI-0068).
+export const pages = [
+  { path: "web/index.html", pagesCss: "./pages.css" },
+  { path: "web/admin/index.html", pagesCss: "../pages.css" }
+];
+
 const cspMeta = (policy) => `<meta http-equiv="Content-Security-Policy" content="${escapeHtml(policy)}" />`;
 
 const bannerHtml = (text) => `<p class="pages-demo-banner" role="note" data-pages-banner>${escapeHtml(text)}</p>`;
@@ -43,15 +50,16 @@ const insertAfter = (html, pattern, addition) => {
 };
 
 // The published page: the policy first in <head> (a meta policy covers only
-// what follows it), the banner's stylesheet after the page's own, the banner
-// first in <body>. A page that already carries a policy keeps it.
-export const publishPage = (html, site) => {
+// what follows it), the banner's stylesheet after the page's own first
+// stylesheet, the banner first in <body>. A page that already carries a
+// policy keeps it.
+export const publishPage = (html, site, pagesCss = "./pages.css") => {
   const withPolicy = /http-equiv="Content-Security-Policy"/i.test(html)
     ? html
     : insertAfter(html, /<meta charset="[^"]*"\s*\/?>/i, cspMeta(site.contentSecurityPolicy));
   return site.banner
     ? insertAfter(
-        insertAfter(withPolicy, /<link rel="stylesheet" href="\.\/styles\.css"\s*\/?>/i, '<link rel="stylesheet" href="./pages.css" />'),
+        insertAfter(withPolicy, /<link rel="stylesheet" href="[^"]+"\s*\/?>/i, `<link rel="stylesheet" href="${pagesCss}" />`),
         /<body[^>]*>/i,
         bannerHtml(site.banner)
       )
@@ -92,8 +100,10 @@ const main = (root, out) => {
     mkdirSync(dirname(join(out, relative)), { recursive: true });
     cpSync(from, join(out, relative), { recursive: true, filter: (path) => !isPrecompressed(path) });
   });
-  const page = join(out, "web/index.html");
-  writeFileSync(page, publishPage(readFileSync(page, "utf8"), site));
+  pages.forEach(({ path, pagesCss }) => {
+    const page = join(out, path);
+    writeFileSync(page, publishPage(readFileSync(page, "utf8"), site, pagesCss));
+  });
   if (site.deployment) cpSync(join(root, site.deployment.from), join(out, "web", site.deployment.as));
   cpSync(join(root, "deploy/pages/pages.css"), join(out, "web/pages.css"));
   writeFileSync(join(out, "index.html"), rootPage(site));

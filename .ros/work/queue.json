@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 68,
+  "nextSeq": 69,
   "items": [
     {
       "id": "WI-0001",
@@ -1581,6 +1581,30 @@
       "attachments": [],
       "createdAt": "2026-10-08T20:07:10.078Z",
       "updatedAt": "2026-10-08T20:07:10.078Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0068",
+      "title": "Pages: the published administrator page (web/admin/) carries no Content-Security-Policy and no demo banner; apply the site's policy and banner to every published page",
+      "description": null,
+      "tags": [
+        "security",
+        "pages"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-10-08T20:56:57.226Z",
+      "updatedAt": "2026-10-08T21:00:08.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
