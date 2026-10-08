@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T17:14:51.000Z",
+  "updatedAt": "2026-10-08T17:30:07.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -1614,6 +1614,68 @@
       },
       "completedAt": "2026-10-08T17:14:51.000Z",
       "conclusion": "Signal programs against Arca's provider-neutral StorageProvider with explicit capability knowledge, write modes and failure meanings; loading is staged and validates everything as untrusted; GitHub failures are classified through Aegis. ADM-005 and ADM-006 are tested; ADM-003, 025, 026, 044, 046, 058, 073 are partial with remainders named in WI-0040, 0041, 0048, 0049, 0050, 0052, 0053 and 0057."
+    },
+    {
+      "id": "WI-0040",
+      "type": "implementation",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/Access.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/Credential.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/Store.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/Identity.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/AccessTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/SignInTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/AdminStoreTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-08T17:30:07.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261008T171646006Z-5052586e"
+      ],
+      "latestCheckpoint": {
+        "id": "aa8289e225e5e522cd70cd16",
+        "recordedAt": "2026-10-08T17:30:05.000Z",
+        "executionId": "EXE-20261008T171646006Z-5052586e",
+        "repository": "echelon-signal",
+        "branch": "feature/sign-in-access",
+        "commit": "41dd4609b779238e3c494333598ce2bc2cae35e4",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feature/sign-in-access",
+        "remoteCommit": "41dd4609b779238e3c494333598ce2bc2cae35e4",
+        "summary": "Access, roster records, credential states, Fides sign-in and the Arca store; 249 tests",
+        "nextAction": "Complete WI-0040 and open the PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T17:30:07.000Z",
+      "conclusion": "Administrators sign in with the real Fides client and act through capabilities per dataset; a dataset is set up only by a configured GitHub account number; the store over Arca verifies before loading, pins the repository, and changes the roster one command per commit conditioned on revisions and the change token, deciding again after conflicts and reconciling unknown outcomes; offline, mutations are withheld and nothing is queued. ADM-057, ADM-071 and ADM-073 are tested; ADM-004, 052, 056, 070 and 072 are partial with remainders in WI-0041 and WI-0047."
     },
     {
       "id": "WI-0065",

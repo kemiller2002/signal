@@ -27,6 +27,19 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   GitHub integration (AER-002, AER-032). Tests run against Arca's in-memory
   provider and conformance suite (`StorageTests`, `ProviderTests`,
   `LoadingTests`).
+- Administrators and sign-in (WI-0040): `Access` (capabilities per dataset,
+  grant templates, person-only capabilities, the last-administrator rule),
+  `AdministratorRecord` and `RosterStore` (the roster as Arca records; one
+  command, one commit), `Credential` (ADM-056 credential states, memory-only
+  retention, offline withholds every mutation with no queue, cross-tab
+  notices only downgrade). Application: `Identity` (the real Fides client;
+  the administrator is `github:<numeric id>`), `Store` (opening sets the
+  namespace and dataset up only for a configured administrator, verifies,
+  loads untrusted, pins the repository; roster commands are conditioned on
+  revisions and the change token, decided again after a conflict, and
+  reconciled after an unknown outcome), `Flow`. There is still no
+  administrator page: the Limen host for Arca's GitHub adapter and Fides'
+  ports is WI-0047.
 
 ## Current state (2026-10-07)
 

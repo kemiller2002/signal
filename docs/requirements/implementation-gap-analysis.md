@@ -184,14 +184,17 @@ Arca: deployment configuration, storage profiles, Signal's namespace and the
 storage manifest. Each group has its own row from WI-0038 on. WI-0039 adds
 the provider contract (`ProviderContract`), staged untrusted loading
 (`Loading`), growth warnings (`Growth`) and the application's GitHub failure
-translation through Aegis (`StorageFaults`).
+translation through Aegis (`StorageFaults`). WI-0040 adds administrators and
+capabilities (`Access`, `AdministratorRecord`, `RosterStore`), the credential
+state (`Credential`), Fides sign-in (`Identity`) and the store over Arca
+(`Store`): one command per commit with change tokens and conflict handling.
 
 | Group | Baseline | Current | Evidence or gap | Work items |
 |---|---|---|---|---|
 | ADM-001 | missing | missing | Administrator Product Boundary and No-PII Contract: not built yet. | WI-0047 |
 | ADM-002 | missing | missing | Administrator State System: not built yet. | WI-0047 |
 | ADM-003 | missing | partial | **WI-0039:** Signal's provider is Arca's provider-neutral `StorageProvider`; every ADM-003 capability has explicit, versioned knowledge (`ProviderContract.knowledge`: Available with version, Unavailable with the reason, or Unverified with evidence), nothing undeclared is assumed, and missing write capabilities refuse writes. Reconstructing the same SurveyGroupResult through two providers needs stored results (WI-0041). | WI-0039, WI-0041 |
-| ADM-004 | missing | partial | **WI-0038:** the repository owner/name, branch and base path are deployment configuration (`Deployment`), never constants; Signal owns `<base>/signal` and keeps every dataset in `datasets/<id>` beside other applications' data; records are Arca canonical JSON; the layout is versioned in the storage manifest; the configuration has no place for a token. **WI-0039:** the application references Arca's GitHub provider and Aegis's GitHub integration. Driving it from the store and checking the credential's capability before writes are WI-0040. | WI-0038, WI-0039, WI-0040 |
+| ADM-004 | missing | partial | **WI-0038:** the repository owner/name, branch and base path are deployment configuration (`Deployment`), never constants; Signal owns `<base>/signal` and keeps every dataset in `datasets/<id>` beside other applications' data; records are Arca canonical JSON; the layout is versioned in the storage manifest; the configuration has no place for a token. **WI-0039:** Arca's GitHub provider and Aegis's GitHub integration are referenced. **WI-0040:** the store drives Arca's GitHub adapter (`Store.gitHub`) with Fides' token provider; the credential's repository capability is resolved before writes are enabled, and read-only access opens read-only. Content-addressed, partitioned result objects are WI-0041. | WI-0038, WI-0039, WI-0040, WI-0041 |
 | ADM-005 | missing | tested | **WI-0038:** each dataset carries a Signal storage manifest (`DatasetManifest`): dataset id, root namespace, storage layout, canonicalization, result, group-result, template, administrator-state, report-definition and visualization schema versions, supported encodings and the creating application version, beside Arca's manifest (storage schema, provider contract, location, migration state). It holds no personal data; a future version, another dataset's manifest, another folder or a tampered record fails explicitly; a dataset mid-migration does not open. **WI-0039:** loading is staged by type: only `Loading.verify` (both manifests proven) yields the `VerifiedDataset` that record loading needs. | WI-0038, WI-0039 |
 | ADM-006 | missing | tested | **WI-0039:** the provider type is configuration and a provider this version does not offer is refused, never simulated; the survey engine references no storage assembly and names no repository, branch, commit or SHA concept (`ProviderTests`); capabilities GitHub lacks (transactions, server-side query and aggregation, streaming) are discovered as Unavailable. | WI-0039 |
 | ADM-007 | missing | missing | Group Administration: not built yet. | WI-0047 |
@@ -239,12 +242,12 @@ translation through Aegis (`StorageFaults`).
 | ADM-049 | missing | missing | Template Upgrade and Successor-Group Impact Analysis: not built yet. | WI-0048 |
 | ADM-050 | missing | missing | Report and Visualization Regression Verification: not built yet. | WI-0049 |
 | ADM-051 | missing | missing | Definition and State Diffing: not built yet. | WI-0048 |
-| ADM-052 | missing | missing | Reversible Administration, Saved Views, and Capability Explanation: not built yet. | WI-0047 |
+| ADM-052 | missing | partial | **WI-0040:** capability explanation: every refusal has a stable code and a sentence (`Access.explain`). Reversible administration and saved views are WI-0047. | WI-0040, WI-0047 |
 | ADM-053 | missing | missing | Operational Diagnostics and Localization Preview: not built yet. | WI-0052 |
 | ADM-054 | missing | missing | End-to-End Derived-State Invalidation and Dependency Graph: not built yet. | WI-0048 |
 | ADM-055 | missing | missing | Template Registry and Exact Template Resolution: not built yet. | WI-0057 |
-| ADM-056 | missing | missing | Credential Lifecycle and Capability Revalidation: not built yet. | WI-0040 |
-| ADM-057 | missing | partial | **WI-0038:** storage profiles bind a provider type, locator, branch and base path under a stable id; datasets name their profile by id; labels are presentation (relabelling moves nothing); a dataset whose profile is gone is a configuration error; a location edited under existing data does not open (a migration is required). **WI-0039:** a profile's verification state is provider evidence (`ProviderContract.verify`: repository id, write mode, missing capabilities). The credential slot is WI-0040. | WI-0038, WI-0039, WI-0040 |
+| ADM-056 | missing | partial | **WI-0040:** sign-in is Fides (acquisition, refresh, expiry, revocation, sign-out); the credential state is typed (`Credential.assess`: CredentialMissing, Expired, Rejected, PermissionInsufficient, ProviderIdentityMismatch, ValidReadOnly, ValidReadWrite, Unverifiable) from non-secret evidence only; capabilities are recomputed from it and the roster (`Credential.usable`); a credential that resolves the configured location to another repository is refused until an administrator resolves it; credential failure never writes. Reporting a 401 to Fides from the Limen host, re-resolving, and the UI's states are WI-0047. | WI-0040, WI-0047 |
+| ADM-057 | missing | tested | **WI-0038:** storage profiles bind a provider type, locator, branch and base path under a stable id; datasets name their profile by id; labels are presentation (relabelling moves nothing); a dataset whose profile is gone is a configuration error; a location edited under existing data does not open (a migration is required). **WI-0039:** a profile's verification state is provider evidence (`ProviderContract.verify`). **WI-0040:** the credential slot is the deployment's Fides sign-in, never embedded in a profile; each open records the verification and the repository the dataset is pinned to. | WI-0038, WI-0039, WI-0040 |
 | ADM-058 | missing | partial | **WI-0039:** growth is assessed from Arca's measurement under a policy whose defaults cite GitHub's guidance and which a deployment may replace (`Growth`); warnings come before limits, and an incomplete measurement says so. Archive repositories, rollover and compaction are WI-0052. | WI-0039, WI-0052 |
 | ADM-059 | missing | missing | Storage Cost and Operation Budget Estimation: not built yet. | WI-0053 |
 | ADM-060 | missing | missing | Batch Import Transaction and Resume Semantics: not built yet. | WI-0041 |
@@ -257,10 +260,10 @@ translation through Aegis (`StorageFaults`).
 | ADM-067 | missing | missing | Import Provenance Without Person Identity: not built yet. | WI-0041 |
 | ADM-068 | missing | missing | Clock, Calendar, Time Zone, and Period Semantics: not built yet. | WI-0053 |
 | ADM-069 | missing | missing | Internationalization and Bidirectional Layout Semantics: not built yet. | WI-0049 |
-| ADM-070 | missing | missing | Offline and Interrupted Administrator Session Behavior: not built yet. | WI-0047 |
-| ADM-071 | missing | missing | Browser Secret Storage Policy: not built yet. | WI-0040 |
-| ADM-072 | missing | missing | Cross-Tab Credential and Capability Coherence: not built yet. | WI-0040 |
-| ADM-073 | missing | partial | **WI-0039:** the write mode distinguishes DirectWriteAvailable, ReadOnlyByPermission, ProtectedBranchRequiresReview, BranchMissing, RepositoryArchived and ProviderPolicyUnknown (`ProviderContract.writeMode`); phase 1 writes directly only and refuses anything else explicitly (`Loading.writable`). Resolving the snapshot whenever a dataset opens is WI-0040. | WI-0039, WI-0040 |
+| ADM-070 | missing | partial | **WI-0040:** there is no offline queue: offline, every mutation is withheld with its reason while verified data stays viewable (`Credential.usable`); a write that cannot reach the provider fails and is never replayed later; an unknown outcome is reconciled before anything is resent; reopening revalidates the change token and roster (`AdminStoreTests`). The offline UI indicators are WI-0047. | WI-0040, WI-0047 |
+| ADM-071 | missing | tested | **WI-0040:** retention is explicit: memory-only by default, this tab by choice, never across browser restarts (`Credential.offeredRetentions`); with Fides the token never enters the URL (the callback is removed from the address), browser storage the person did not choose, Signal's state, records (Arca refuses credential-like content), faults or exports (`SignInTests`, `ProviderTests`); retention is separate from preferences. | WI-0040 |
+| ADM-072 | missing | partial | **WI-0040:** another tab's sign-out or renewal reaches this tab through Fides' token-free messages and only downgrades (`Credential.afterNotice`); a stale tab still relies on the provider: a roster command from it is conditioned on the change token and decided again after reloading (`AdminStoreTests`). Notices for sealing, finalization, profile changes and migration activation are WI-0047. | WI-0040, WI-0047 |
+| ADM-073 | missing | tested | **WI-0039:** the write mode distinguishes DirectWriteAvailable, ReadOnlyByPermission, ProtectedBranchRequiresReview, BranchMissing, RepositoryArchived and ProviderPolicyUnknown (`ProviderContract.writeMode`); phase 1 writes directly only and refuses anything else explicitly (`Loading.writable`). **WI-0040:** every open resolves the credential's snapshot, so a protected branch or read-only access opens the dataset read-only and a change is refused before it is sent (`AdminStoreTests`). | WI-0039, WI-0040 |
 | ADM-074 | missing | missing | Operational Repair Preview and Plan: not built yet. | WI-0052 |
 | ADM-075 | missing | missing | Invariant Health Dashboard: not built yet. | WI-0052 |
 | ADM-076 | missing | missing | Proof-Carrying Derived Artifacts: not built yet. | WI-0052 |
@@ -324,6 +327,6 @@ Counts of the **Current** column, recomputed by each change that updates it
 |---|---:|---:|---:|---:|---:|
 | Core survey engine | 72 | 15 | 55 | 2 | 0 |
 | Advanced stress trial | 15 | 0 | 13 | 2 | 0 |
-| Administrator console | 77 | 2 | 10 | 65 | 0 |
+| Administrator console | 77 | 5 | 12 | 60 | 0 |
 | Scoring and selector completeness | 19 | 7 | 11 | 0 | 1 |
-| **Ledger total** | **183** | **24** | **89** | **69** | **1** |
+| **Ledger total** | **183** | **27** | **91** | **64** | **1** |

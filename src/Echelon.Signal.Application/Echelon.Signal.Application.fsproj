@@ -12,6 +12,9 @@
     <Compile Include="Wire.fs" />
     <Compile Include="Runtime.fs" />
     <Compile Include="StorageFaults.fs" />
+    <Compile Include="Flow.fs" />
+    <Compile Include="Identity.fs" />
+    <Compile Include="Store.fs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +22,9 @@
     <!-- AER-002: GitHub failures are classified with Aegis's GitHub integration. -->
     <PackageReference Include="EchelonFoundry.Aegis.Integration.GitHub" />
     <PackageReference Include="EchelonFoundry.Arca.GitHub" />
+    <PackageReference Include="EchelonFoundry.Fides" />
+    <PackageReference Include="EchelonFoundry.Fides.Client" />
+    <PackageReference Include="EchelonFoundry.Fides.Arca" />
   </ItemGroup>
 
   <ItemGroup>

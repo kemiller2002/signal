@@ -893,10 +893,10 @@
         "depends:fides"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:06.779Z",
-      "updatedAt": "2026-10-08T17:12:34.000Z",
+      "updatedAt": "2026-10-08T17:30:07.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -911,7 +911,7 @@
     {
       "id": "WI-0041",
       "title": "Signal 04: durable import, concurrency, OutcomeUnknown and rebuildable indexes (ADM-008..011, ADM-027, ADM-060, ADM-061, ADM-067; ARP-003..006; ARX-008; LURL-003, LURL-005)",
-      "description": "Depends on WI-0039. Persist the pure import and aggregation core from WI-0034 through Arca: set-based accepted contributions with commuting additions, idempotent imports, OutcomeUnknown reconciliation, AdminReportState persistence, batch resume, quarantine and rebuildable indexes. Refines WI-0008 and WI-0013. Also closes the remaining parts of ACR-005, ARP-002, URLC-002, URLC-003 (see their gap-analysis rows). Also carries WI-0039's remainder of ADM-003: the same logical administrator state stored through two conforming providers reconstructs the same SurveyGroupResult and report projections.",
+      "description": "Depends on WI-0039. Persist the pure import and aggregation core from WI-0034 through Arca: set-based accepted contributions with commuting additions, idempotent imports, OutcomeUnknown reconciliation, AdminReportState persistence, batch resume, quarantine and rebuildable indexes. Refines WI-0008 and WI-0013. Also closes the remaining parts of ACR-005, ARP-002, URLC-002, URLC-003 (see their gap-analysis rows). Also carries WI-0039's remainder of ADM-003: the same logical administrator state stored through two conforming providers reconstructs the same SurveyGroupResult and report projections. Also carries WI-0040's remainder of ADM-004: immutable, content-addressed result objects with small mutable manifests, partitioned by a stable hash prefix.",
       "tags": [
         "signal",
         "order:04",
@@ -923,7 +923,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:07.102Z",
-      "updatedAt": "2026-10-08T17:12:34.000Z",
+      "updatedAt": "2026-10-08T17:27:46.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1067,7 +1067,7 @@
     {
       "id": "WI-0047",
       "title": "Signal 10: administrator application state and UX on Limen/Forma - groups, read-only and degraded modes, conflict workspace, sealing and finalization (ADM-001, ADM-002, ADM-007, ADM-031..033, ADM-035, ADM-062, ADM-065, ADM-066, ADM-070, ADM-077)",
-      "description": "Depends on WI-0040 and WI-0041. Offline administrator writes are not allowed (ADM-070): Signal opts out of Arca's offline queue and uses read-only degraded mode. Refines WI-0011. Also closes the remaining parts of ADM-052 (see their gap-analysis rows).",
+      "description": "Depends on WI-0040 and WI-0041. Offline administrator writes are not allowed (ADM-070): Signal opts out of Arca's offline queue and uses read-only degraded mode. Refines WI-0011. Also closes the remaining parts of ADM-052 (see their gap-analysis rows). Also carries WI-0040's remainders: the Limen host for Arca's GitHub adapter and Fides' client ports, reporting a 401 to Fides and resolving the credential again (ADM-056), the UI's credential states and capability explanations (ADM-052), offline and degraded indicators with last verified refresh (ADM-070), and cross-tab notices for dataset sealing, group finalization, storage-profile changes and migration activation (ADM-072).",
       "tags": [
         "signal",
         "order:10",
@@ -1080,7 +1080,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:09.109Z",
-      "updatedAt": "2026-10-08T07:48:09.109Z",
+      "updatedAt": "2026-10-08T17:27:46.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
