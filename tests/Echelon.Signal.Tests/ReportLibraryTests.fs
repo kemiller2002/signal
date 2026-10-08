@@ -189,8 +189,8 @@ let ``building reports and exporting need their own capabilities`` () =
     let report = reportWith entry.Definition at
     let snapshot, _ = ReportLibrary.take library catalog (source report None) |> ok
 
-    match ReportStore.export (actor hubot) editor snapshot report with
+    match ReportStore.export (actor hubot) at editor snapshot report |> run with
     | Error(ReportStore.NotStored(GroupStore.NotPermitted _)) -> ()
     | failed -> failwith $"%A{failed}"
 
-    Assert.True(ReportStore.export (actor octocat) admin snapshot report |> Result.isOk)
+    Assert.True(ReportStore.export (actor octocat) at admin snapshot report |> run |> Result.isOk)

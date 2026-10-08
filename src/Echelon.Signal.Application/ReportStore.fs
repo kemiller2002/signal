@@ -51,9 +51,16 @@ let load (now: DateTimeOffset) (opened: Store.Opened) : AsyncResult<StoredReport
               Problems = definitions.Problems @ snapshots.Problems @ templates.Problems }
     }
 
-let private commit now (opened: Store.Opened) (actor: Store.Actor) (summary: string) (changes: Result<Change list, Problem>) =
+let private commit now (opened: Store.Opened) (actor: Store.Actor) (summary: string) (audits: Result<Audit.Record, Problem> list) (changes: Result<Change list, Problem>) =
     asyncResult {
-        let! operation = changes |> Result.bind (fun c -> Storage.operation opened.Namespace (actor.NewContext()) summary c |> Result.mapError List.head) |> Result.mapError (List.singleton >> Unusable) |> lift
+        let! operation =
+            changes
+            |> Result.mapError List.singleton
+            |> Result.bind (Storage.operation opened.Namespace (actor.NewContext()) summary)
+            |> Result.bind (GovernanceRecord.auditedWith opened.DatasetId audits)
+            |> Result.mapError Unusable
+            |> lift
+
         let! _ = call now (opened.Provider.Commit operation)
         return ()
     }
@@ -96,7 +103,17 @@ let saveDefinition (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Ope
             | Ok(library, entry) ->
                 let changes = definitionChange opened reports library definition.Id |> Result.map List.singleton
 
-                match! commit now opened actor $"save report definition {definition.Id} {entry.Definition.Version}" changes with
+                let audits =
+                    [ GovernanceRecord.record
+                          Audit.ReportDefinitionPublished
+                          [ "definition", "def-" + definition.Id ]
+                          []
+                          [ $"DEFINITION-VERSION-{entry.Definition.Version}" ]
+                          None
+                          None
+                          (Some now) ]
+
+                match! commit now opened actor $"save report definition {definition.Id} {entry.Definition.Version}" audits changes with
                 | Ok() -> return Ok entry
                 | Error failure -> return Error(NotStored failure)
     }
@@ -117,13 +134,46 @@ let takeSnapshot (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Opene
                     | _, Error p, _
                     | _, _, Error p -> Error p
 
-                match! commit now opened actor $"snapshot {snapshot.SnapshotId}" changes with
+                let audits =
+                    [ GovernanceRecord.record
+                          Audit.ReportSnapshotCreated
+                          [ "snapshot", snapshot.SnapshotId; "definition", "def-" + snapshot.DefinitionId ]
+                          [ "reportData", snapshot.CanonicalReportDataHash ]
+                          [ $"DEFINITION-VERSION-{snapshot.DefinitionVersion}" ]
+                          None
+                          None
+                          snapshot.GeneratedAtEvidence ]
+
+                match! commit now opened actor $"snapshot {snapshot.SnapshotId}" audits changes with
                 | Ok() -> return Ok snapshot
                 | Error failure -> return Error(NotStored failure)
     }
 
-/// The export files for a snapshot (ADM-023), for an administrator who may export.
-let export (actor: Store.Actor) (opened: Store.Opened) (snapshot: Snapshot) (report: ReportData) : Result<(string * string) list, ReportFailure> =
-    permitted opened actor Access.ExportData
-    |> Result.mapError NotStored
-    |> Result.bind (fun _ -> ReportLibrary.export snapshot report |> Result.mapError ExportRefused)
+/// The export files for a snapshot (ADM-023), for an administrator who may
+/// export. Exporting writes only its audit record (ADM-030).
+let export (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Opened) (snapshot: Snapshot) (report: ReportData) : Async<Result<(string * string) list, ReportFailure>> =
+    async {
+        match permitted opened actor Access.ExportData with
+        | Error failure -> return Error(NotStored failure)
+        | Ok _ ->
+            match ReportLibrary.export snapshot report with
+            | Error problem -> return Error(ExportRefused problem)
+            | Ok files ->
+                let operation =
+                    GovernanceRecord.record
+                        Audit.ExportCreated
+                        [ "snapshot", snapshot.SnapshotId ]
+                        [ "reportData", snapshot.CanonicalReportDataHash ]
+                        (files |> List.map (fst >> GovernanceRecord.codeOf))
+                        None
+                        None
+                        (Some now)
+                    |> GovernanceRecord.auditOnly opened.Namespace (actor.NewContext()) $"export {snapshot.SnapshotId}" opened.DatasetId
+
+                match operation with
+                | Error problems -> return Error(NotStored(Unusable problems))
+                | Ok operation ->
+                    match! opened.Provider.Commit operation with
+                    | Ok _ -> return Ok files
+                    | Error failure -> return Error(NotStored(failed now failure))
+    }

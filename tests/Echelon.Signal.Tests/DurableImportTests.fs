@@ -360,3 +360,34 @@ let ``the contribution index is rebuilt from the records, detected stale, and re
     // The same records rebuild the same index.
     Assert.Equal(rebuilt, GroupStore.rebuildIndex actor at group.Dataset |> run |> ok)
     Assert.Empty((Derived.compare rebuilt rebuilt).Added)
+
+// ---- ADM-030: every import is audited in its own commit, by hash only ----------------------------
+
+[<Fact>]
+let ``an import writes its audit records in the same commit, naming artifacts by hash only`` () =
+    let github = InMemoryStore()
+    let group = setUp github (fun () -> true) AnonymousGroup GroupRecord.NoneAfterImport
+    let texts = [ anonymous 1uy Often; anonymous 2uy Never ]
+    let first = import texts group
+    let importCommit = github.State.History.Head
+    let more = import (anonymous 3uy Sometimes :: texts) first.Group
+    Assert.Equal((1, 2), (more.Summary.AcceptedCount, more.Summary.DuplicateCount))
+
+    let records, problems = GovernanceStore.audit at group.Dataset |> run |> ok
+    Assert.Empty(problems)
+    let counts = records |> List.countBy (fun r -> Audit.eventName r.Record.Event) |> Map.ofList
+    Assert.Equal<Map<string, int>>(Map [ "StorageConfigured", 1; "GroupCreated", 1; "SubmissionAccepted", 2; "DuplicateRejected", 1 ], counts)
+
+    // The first import's contributions and its audit record landed in one commit.
+    Assert.True(importCommit.Touched |> Seq.exists (fun path -> (string path).Contains "signal.audit"))
+
+    let accepted = records |> List.filter (fun r -> r.Record.Event = Audit.SubmissionAccepted) |> List.collect _.Record.Hashes |> List.map snd |> Set.ofList
+    Assert.Equal<Set<string>>(texts @ [ anonymous 3uy Sometimes ] |> List.map ResultRecord.artifactHash |> Set.ofList, accepted)
+
+    // No URL, answer or person reaches an audit record.
+    let stored = github.State.Objects |> Map.toList |> List.filter (fun (path, _) -> (string path).Contains "signal.audit") |> List.map (fun (_, o) -> o.Content)
+    Assert.Contains(stored, fun text -> text.Contains "SubmissionAccepted")
+
+    for text in stored do
+        for forbidden in [ "https://"; "signal.example"; "octocat"; "583231"; "#" ] do
+            Assert.DoesNotContain(forbidden, text)

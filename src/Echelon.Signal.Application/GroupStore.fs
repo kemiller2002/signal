@@ -87,6 +87,7 @@ let create (actor: Store.Actor) (config: GroupRecord.GroupConfig) (now: DateTime
                     (actor.NewContext())
                     $"create group {GroupRecord.groupKey config.Group}"
                     [ Change.Create(target, content); Change.Create(lifecyclePath, lifecycle) ]
+                |> Result.bind (GovernanceRecord.auditedWith opened.DatasetId [ GovernanceRecord.record Audit.GroupCreated [ "group", string config.Group ] [] [] None None (Some now) ])
             | Error problem, _, _, _
             | _, Error problem, _, _
             | _, _, Error problem, _
@@ -253,8 +254,11 @@ let importBatch
         let contributions = quarantined |> List.choose (Intake.promote current.Config.Group current.Config.Retention origin batch.BatchId)
         let next = Intake.record outcomes { batch with Revision = (match revision with Some _ -> batch.Revision + 1 | None -> batch.Revision) }
 
+        let audits = GovernanceRecord.importRecords (string current.Config.Group) (outcomes |> List.map (fun (h, o) -> h, Intake.itemCode o)) (Some now)
+
         Intake.changes opened.DatasetId contributions next revision
         |> Result.bind (Storage.operation opened.Namespace (importContext actor) $"import into group {GroupRecord.groupKey current.Config.Group}")
+        |> Result.bind (GovernanceRecord.auditedWith opened.DatasetId audits)
         |> Result.map (fun operation -> operation, contributions, next)
 
     let applied (current: OpenedGroup) (contributions: ResultRecord.Contribution list) =
@@ -336,6 +340,11 @@ let persistReportState (actor: Store.Actor) (budget: ReportState.UrlBudget) (now
             | ReadOutcome.Absent ->
                 let! operation =
                     Storage.operation group.Dataset.Namespace (importContext actor) "store report state" [ Change.Create(target, content) ]
+                    |> Result.bind (
+                        GovernanceRecord.auditedWith
+                            group.Dataset.DatasetId
+                            [ GovernanceRecord.record Audit.AggregateRebuilt [ "group", string group.Config.Group; "reportState", ReportState.resultId state ] [] [ "REPORT-STATE-STORED" ] None None (Some now) ]
+                    )
                     |> Result.mapError Unusable
                     |> lift
 
@@ -368,10 +377,22 @@ let validateIndex (now: DateTimeOffset) (opened: Store.Opened) : AsyncResult<Ind
     }
 
 /// Rebuilds the contribution index from the records and activates it in one
-/// commit, unless it is already current.
+/// commit, unless it is already current. The index commit is Arca's own, so
+/// its audit record (ADM-030) follows in a commit of its own.
 let rebuildIndex (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Opened) : AsyncResult<DerivedIndex, GroupFailure> =
-    Derived.rebuild opened.Provider opened.Namespace (Storage.metadata (importContext actor) "rebuild contribution index") ContributionIndex.definition
-    |> mapError (function
-        | DerivedError.Provider failure -> failed now failure
-        | other -> Unusable [ InvalidStoredRecord("index", $"%A{other}") ])
-    |> fun work -> async { let! r = work in return r |> Result.map fst }
+    asyncResult {
+        let! index, _ =
+            Derived.rebuild opened.Provider opened.Namespace (Storage.metadata (importContext actor) "rebuild contribution index") ContributionIndex.definition
+            |> mapError (function
+                | DerivedError.Provider failure -> failed now failure
+                | other -> Unusable [ InvalidStoredRecord("index", $"%A{other}") ])
+
+        let! operation =
+            GovernanceRecord.record Audit.IndexRebuilt [ "index", "idx-contributions" ] [] [ "INDEX-REBUILT" ] None None (Some now)
+            |> GovernanceRecord.auditOnly opened.Namespace (importContext actor) "audit contribution index rebuild" opened.DatasetId
+            |> Result.mapError Unusable
+            |> lift
+
+        let! _ = call now (opened.Provider.Commit operation)
+        return index
+    }
