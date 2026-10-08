@@ -997,10 +997,10 @@
         "scoring"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:08.074Z",
-      "updatedAt": "2026-10-08T15:30:46.000Z",
+      "updatedAt": "2026-10-08T15:51:45.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

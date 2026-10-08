@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T15:30:46.000Z",
+  "updatedAt": "2026-10-08T15:51:45.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -1230,13 +1230,60 @@
     {
       "id": "WI-0044",
       "type": "feature",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-08T15:30:46.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/Expression.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/Composite.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/SurveyResult.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/Keyed.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/ScoringAstTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/KeyedTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-08T15:51:45.000Z",
       "telemetryExecutionIds": [
         "EXE-20261008T153046770Z-48817c7e"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "f07d14f13ca7a0735bcd2627",
+        "recordedAt": "2026-10-08T15:51:44.000Z",
+        "executionId": "EXE-20261008T153046770Z-48817c7e",
+        "repository": "echelon-signal",
+        "branch": "feat/scoring-ast",
+        "commit": "f588137931fb6d4b5a705a99575a94cae461b659",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feat/scoring-ast",
+        "remoteCommit": "f588137931fb6d4b5a705a99575a94cae461b659",
+        "summary": "Scoring AST, composites, interpretation, traces, keyed/benchmark scoring, SurveyResult, group scoring; 153 tests",
+        "nextAction": "Complete WI-0044 and open the PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T15:51:45.000Z",
+      "conclusion": "Scoring AST and results built against DF-SIGNAL-2026-0002 (proposed, reversible); 153/153 tests; remainders on WI-0045, WI-0046, WI-0053, WI-0057, WI-0059"
     }
   ]
 }
