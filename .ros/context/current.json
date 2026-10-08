@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T22:20:18.000Z",
+  "updatedAt": "2026-10-08T22:38:18.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -2228,14 +2228,36 @@
     {
       "id": "WI-0057",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-08T22:20:18.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/TemplateStore.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/TemplateRecord.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/TemplateDecode.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/TemplateStoreTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/TemplateDecodeTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-08T22:38:18.000Z",
       "telemetryExecutionIds": [
         "EXE-20261008T221100996Z-cb2be62d"
       ],
-      "blockReason": "Waits on WI-0072 (echelon-current 1.12.0, Arca 0.3.0) before persisting the catalog through Arca"
+      "blockReason": "Waits on WI-0072 (echelon-current 1.12.0, Arca 0.3.0) before persisting the catalog through Arca",
+      "completedAt": "2026-10-08T22:38:18.000Z"
     },
     {
       "id": "WI-0072",
