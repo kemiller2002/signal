@@ -36,6 +36,7 @@
     <Compile Include="Dashboard.fs" />
     <Compile Include="Locale.fs" />
     <Compile Include="Regression.fs" />
+    <Compile Include="Routes.fs" />
     <Compile Include="AdminApp.fs" />
     <Compile Include="AdminView.fs" />
   </ItemGroup>
@@ -46,6 +47,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../Echelon.Signal.Engine/Echelon.Signal.Engine.fsproj" />
+    <ProjectReference Include="../Limen.Routing.Interim/Limen.Routing.Interim.fsproj" />
   </ItemGroup>
 
 </Project>

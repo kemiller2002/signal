@@ -1377,6 +1377,23 @@
         "name": "step",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.completed",
+      "occurredAt": "2026-10-08T19:59:51.000Z",
+      "stepId": "STEP-20261008T194643000Z-10c33811",
+      "actor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": {
+        "type": "ros-cli",
+        "name": "step",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {
@@ -1425,12 +1442,12 @@
       "name": "Interim Limen.Routing library and Limen conformance vectors",
       "description": null,
       "classification": [],
-      "status": "active",
+      "status": "completed",
       "plannedAt": "2026-10-08T19:46:43.000Z",
       "startedAt": "2026-10-08T19:46:43.000Z",
-      "completedAt": null,
-      "endedAt": null,
-      "updatedAt": "2026-10-08T19:46:43.000Z",
+      "completedAt": "2026-10-08T19:59:51.000Z",
+      "endedAt": "2026-10-08T19:59:51.000Z",
+      "updatedAt": "2026-10-08T19:59:51.000Z",
       "actor": {
         "kind": "agent",
         "id": "anthropic/claude-code",
@@ -1652,6 +1669,19 @@
           "from": null,
           "to": "active",
           "occurredAt": "2026-10-08T19:46:43.000Z",
+          "reason": null,
+          "actor": {
+            "kind": "agent",
+            "id": "anthropic/claude-code",
+            "provider": "anthropic",
+            "model": "unknown",
+            "runtime": "claude-code"
+          }
+        },
+        {
+          "from": "active",
+          "to": "completed",
+          "occurredAt": "2026-10-08T19:59:51.000Z",
           "reason": null,
           "actor": {
             "kind": "agent",

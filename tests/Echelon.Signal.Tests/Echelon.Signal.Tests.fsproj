@@ -45,6 +45,7 @@
     <Compile Include="VisualizationTests.fs" />
     <Compile Include="LimenRoutingVectors.fs" />
     <Compile Include="LimenRoutingConformanceTests.fs" />
+    <Compile Include="RoutesTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

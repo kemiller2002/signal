@@ -1,0 +1,414 @@
+{
+  "home": "overview",
+  "legacy": [
+    {
+      "name": "legacy-1",
+      "params": {},
+      "pattern": "/overview",
+      "to": "overview"
+    },
+    {
+      "name": "legacy-2",
+      "params": {
+        "group": "{group}"
+      },
+      "pattern": "/groups/{group:string}/explore/{*view}",
+      "to": "results"
+    }
+  ],
+  "mode": "hash",
+  "notFound": "not-found",
+  "routes": [
+    {
+      "guards": [
+        "signedIn"
+      ],
+      "name": "overview",
+      "params": [],
+      "pattern": "/",
+      "requires": [
+        "dataset"
+      ],
+      "returnTarget": true
+    },
+    {
+      "guards": [],
+      "name": "sign-in",
+      "params": [
+        {
+          "default": null,
+          "in": "query",
+          "name": "returnTo",
+          "required": false,
+          "type": "string",
+          "values": null
+        }
+      ],
+      "pattern": "/sign-in",
+      "requires": [],
+      "returnTarget": false
+    },
+    {
+      "guards": [],
+      "name": "not-found",
+      "params": [],
+      "pattern": "/not-found",
+      "requires": [],
+      "returnTarget": false
+    },
+    {
+      "guards": [],
+      "name": "assessments",
+      "params": [],
+      "pattern": "/assessments",
+      "requires": [
+        "catalog"
+      ],
+      "returnTarget": true
+    },
+    {
+      "guards": [],
+      "name": "assessment",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "name": "assessment",
+          "required": true,
+          "type": "string",
+          "values": null
+        },
+        {
+          "default": null,
+          "in": "path",
+          "name": "version",
+          "required": true,
+          "type": "string",
+          "values": null
+        }
+      ],
+      "pattern": "/assessments/{assessment:string}/versions/{version:string}",
+      "requires": [
+        "catalog"
+      ],
+      "returnTarget": true
+    },
+    {
+      "guards": [],
+      "name": "section",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "name": "assessment",
+          "required": true,
+          "type": "string",
+          "values": null
+        },
+        {
+          "default": null,
+          "in": "path",
+          "name": "version",
+          "required": true,
+          "type": "string",
+          "values": null
+        },
+        {
+          "default": null,
+          "in": "path",
+          "name": "section",
+          "required": true,
+          "type": "string",
+          "values": null
+        }
+      ],
+      "pattern": "/assessments/{assessment:string}/versions/{version:string}/sections/{section:string}",
+      "requires": [
+        "catalog"
+      ],
+      "returnTarget": true
+    },
+    {
+      "guards": [],
+      "name": "question",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "name": "assessment",
+          "required": true,
+          "type": "string",
+          "values": null
+        },
+        {
+          "default": null,
+          "in": "path",
+          "name": "version",
+          "required": true,
+          "type": "string",
+          "values": null
+        },
+        {
+          "default": null,
+          "in": "path",
+          "name": "section",
+          "required": true,
+          "type": "string",
+          "values": null
+        },
+        {
+          "default": null,
+          "in": "path",
+          "name": "question",
+          "required": true,
+          "type": "string",
+          "values": null
+        }
+      ],
+      "pattern": "/assessments/{assessment:string}/versions/{version:string}/sections/{section:string}/questions/{question:string}",
+      "requires": [
+        "catalog"
+      ],
+      "returnTarget": true
+    },
+    {
+      "guards": [
+        "signedIn"
+      ],
+      "name": "groups",
+      "params": [
+        {
+          "default": null,
+          "in": "query",
+          "name": "status",
+          "required": false,
+          "type": "set",
+          "values": [
+            "collecting",
+            "closed-incomplete",
+            "finalized",
+            "finalized-incomplete",
+            "sealed",
+            "superseded"
+          ]
+        },
+        {
+          "default": null,
+          "in": "query",
+          "name": "mode",
+          "required": false,
+          "type": "set",
+          "values": [
+            "anonymous",
+            "identified"
+          ]
+        },
+        {
+          "default": null,
+          "in": "query",
+          "name": "survey",
+          "required": false,
+          "type": "string",
+          "values": null
+        }
+      ],
+      "pattern": "/groups",
+      "requires": [
+        "dataset"
+      ],
+      "returnTarget": true
+    },
+    {
+      "guards": [
+        "signedIn"
+      ],
+      "name": "group",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "name": "group",
+          "required": true,
+          "type": "string",
+          "values": null
+        }
+      ],
+      "pattern": "/groups/{group:string}",
+      "requires": [
+        "dataset"
+      ],
+      "returnTarget": true
+    },
+    {
+      "guards": [
+        "signedIn"
+      ],
+      "name": "results",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "name": "group",
+          "required": true,
+          "type": "string",
+          "values": null
+        },
+        {
+          "default": null,
+          "in": "query",
+          "name": "section",
+          "required": false,
+          "type": "string",
+          "values": null
+        },
+        {
+          "default": "order",
+          "in": "query",
+          "name": "sort",
+          "required": false,
+          "type": "enum",
+          "values": [
+            "order",
+            "value"
+          ]
+        },
+        {
+          "default": "count",
+          "in": "query",
+          "name": "display",
+          "required": false,
+          "type": "enum",
+          "values": [
+            "count",
+            "percent"
+          ]
+        }
+      ],
+      "pattern": "/groups/{group:string}/results",
+      "requires": [
+        "dataset"
+      ],
+      "returnTarget": true
+    },
+    {
+      "guards": [
+        "signedIn"
+      ],
+      "name": "scoring",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "name": "group",
+          "required": true,
+          "type": "string",
+          "values": null
+        },
+        {
+          "default": null,
+          "in": "query",
+          "name": "section",
+          "required": false,
+          "type": "string",
+          "values": null
+        }
+      ],
+      "pattern": "/groups/{group:string}/scoring",
+      "requires": [
+        "dataset"
+      ],
+      "returnTarget": true
+    },
+    {
+      "guards": [
+        "signedIn"
+      ],
+      "name": "imports",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "name": "group",
+          "required": true,
+          "type": "string",
+          "values": null
+        },
+        {
+          "default": null,
+          "in": "query",
+          "name": "outcome",
+          "required": false,
+          "type": "set",
+          "values": [
+            "accepted",
+            "blocked",
+            "duplicate",
+            "pending",
+            "reconciliation",
+            "rejected"
+          ]
+        }
+      ],
+      "pattern": "/groups/{group:string}/imports",
+      "requires": [
+        "dataset"
+      ],
+      "returnTarget": true
+    },
+    {
+      "guards": [
+        "signedIn"
+      ],
+      "name": "compare",
+      "params": [
+        {
+          "default": null,
+          "in": "query",
+          "name": "groups",
+          "required": false,
+          "type": "set",
+          "values": null
+        },
+        {
+          "default": null,
+          "in": "query",
+          "name": "section",
+          "required": false,
+          "type": "string",
+          "values": null
+        }
+      ],
+      "pattern": "/compare",
+      "requires": [
+        "dataset"
+      ],
+      "returnTarget": true
+    },
+    {
+      "guards": [
+        "signedIn"
+      ],
+      "name": "administrators",
+      "params": [],
+      "pattern": "/administrators",
+      "requires": [
+        "dataset"
+      ],
+      "returnTarget": true
+    },
+    {
+      "guards": [
+        "signedIn"
+      ],
+      "name": "storage",
+      "params": [],
+      "pattern": "/storage",
+      "requires": [
+        "dataset"
+      ],
+      "returnTarget": true
+    }
+  ],
+  "schema": "echelon.routes/v1",
+  "signIn": "sign-in"
+}
