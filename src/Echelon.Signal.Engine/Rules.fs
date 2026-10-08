@@ -55,14 +55,18 @@ let private compare (op: Comparison) (a: float) (b: float) =
 
 /// A section's outcome over its applicable scored questions; None when it is
 /// not scored, not applicable or has no applicable scored question.
-let sectionOutcome (env: Env) (section: Section) : Scoring.Outcome option =
+/// The section's outcome and its explanation, from one evaluation.
+let sectionExplain (env: Env) (section: Section) : (Scoring.Outcome * Scoring.Trace) option =
     section.Scoring
     |> Option.bind (fun scoring ->
         match scoredQuestions section |> List.filter (fun q -> env.Applicable.Contains q.Id) with
         | [] -> None
         | scored ->
             let observations = scored |> List.map (fun q -> observation q (env.Answers.TryFind q.Id))
-            Some(Scoring.evaluate scoring.Scorer observations))
+            Some(Scoring.explain scoring.Scorer observations))
+
+let sectionOutcome (env: Env) (section: Section) : Scoring.Outcome option =
+    sectionExplain env section |> Option.map fst
 
 let rec number (env: Env) (visiting: Set<string>) (expr: NumberExpr) : float option =
     match expr with

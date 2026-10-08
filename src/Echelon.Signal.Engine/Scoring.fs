@@ -230,11 +230,41 @@ let private transform (value: float) (step: Transform) : Result<float, NotScored
     | Floor -> Ok(Math.Floor value)
     | Ceiling -> Ok(Math.Ceiling value)
 
-/// Scores observations. Counting aggregates (CountAnswered) are defined on
-/// zero observations; every other aggregate needs at least one.
-let evaluate (scorer: Scorer) (observations: Observation list) : Outcome =
+/// One observation as the scorer saw it.
+type ItemStep =
+    { Index: int
+      Observation: Observation
+      /// The value after the special policy and the item scale; None when
+      /// the observation was excluded.
+      Scaled: float option }
+
+/// How an outcome was produced, recorded by the same evaluation that
+/// produced it (ARX-012: explanations never come from a second
+/// implementation). Q12 of DF-SIGNAL-2026-0002: always computed; who sees it
+/// is a presentation decision.
+type Trace =
+    { Items: ItemStep list
+      /// The aggregate before transforms, when it was computed.
+      Aggregated: float option
+      /// Each transform with its input and output, in order.
+      Transformed: (Transform * float * float) list
+      /// The value before rounding, when one was reached.
+      Unrounded: float option
+      Decimals: int }
+
+let private emptyTrace (scorer: Scorer) =
+    { Items = []
+      Aggregated = None
+      Transformed = []
+      Unrounded = None
+      Decimals = scorer.Decimals }
+
+/// Scores observations and explains the score. Counting aggregates
+/// (CountAnswered) are defined on zero observations; every other aggregate
+/// needs at least one.
+let explain (scorer: Scorer) (observations: Observation list) : Outcome * Trace =
     match validate scorer with
-    | problem :: _ -> NotScored(InvalidConfiguration problem)
+    | problem :: _ -> NotScored(InvalidConfiguration problem), emptyTrace scorer
     | [] ->
         let slots =
             observations
@@ -254,8 +284,12 @@ let evaluate (scorer: Scorer) (observations: Observation list) : Outcome =
             | Some(Error e) :: _ -> Error e
 
         match collect [] slots with
-        | Error problem -> NotScored(InvalidConfiguration problem)
+        | Error problem -> NotScored(InvalidConfiguration problem), emptyTrace scorer
         | Ok slots ->
+            let trace =
+                { emptyTrace scorer with
+                    Items = List.zip observations slots |> List.mapi (fun i (o, v) -> { Index = i; Observation = o; Scaled = v }) }
+
             let usable = slots |> List.choose id |> List.length
             let excluded = observations.Length - usable
 
@@ -265,16 +299,33 @@ let evaluate (scorer: Scorer) (observations: Observation list) : Outcome =
                 | _ -> true
 
             if usable < scorer.Missing.MinimumObservations || (needsValues && usable = 0) then
-                NotScored(InsufficientObservations(usable, max scorer.Missing.MinimumObservations 1))
+                NotScored(InsufficientObservations(usable, max scorer.Missing.MinimumObservations 1)), trace
             else
-                let result =
-                    aggregate scorer.Aggregate slots
-                    |> Result.bind (fun value -> scorer.Transforms |> List.fold (fun acc step -> acc |> Result.bind (fun v -> transform v step)) (Ok value))
+                match aggregate scorer.Aggregate slots with
+                | Error reason -> NotScored reason, trace
+                | Ok aggregated ->
+                    let folded =
+                        scorer.Transforms
+                        |> List.fold
+                            (fun acc step ->
+                                acc
+                                |> Result.bind (fun (v, steps) -> transform v step |> Result.map (fun out -> out, (step, v, out) :: steps)))
+                            (Ok(aggregated, []))
 
-                match result with
-                | Ok value when finite value -> Score(Math.Round(value, scorer.Decimals, MidpointRounding.AwayFromZero), usable, excluded)
-                | Ok _ -> NotScored(Undefined "the result is not a finite number")
-                | Error reason -> NotScored reason
+                    let trace = { trace with Aggregated = Some aggregated }
+
+                    match folded with
+                    | Error reason -> NotScored reason, trace
+                    | Ok(value, steps) ->
+                        let trace = { trace with Transformed = List.rev steps; Unrounded = Some value }
+
+                        if finite value then
+                            Score(Math.Round(value, scorer.Decimals, MidpointRounding.AwayFromZero), usable, excluded), trace
+                        else
+                            NotScored(Undefined "the result is not a finite number"), trace
+
+/// Scores observations: the outcome half of `explain`.
+let evaluate (scorer: Scorer) (observations: Observation list) : Outcome = explain scorer observations |> fst
 
 // ---------------------------------------------------------------------------
 // Categorical results and comparisons of scores (SCS-002, SCS-003).

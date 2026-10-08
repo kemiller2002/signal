@@ -94,7 +94,10 @@ let requiredCapabilities (content: Content) : Set<Capability> =
           if sectionFlow then UsesConditionalSections
           if not r.Facts.IsEmpty then UsesDerivedFacts
           if not r.Recommendations.IsEmpty then UsesRecommendations
-          if not r.Validation.IsEmpty || r.Completion <> defaultCompletion then UsesAdvancedValidation ]
+          if not r.Validation.IsEmpty || r.Completion <> defaultCompletion then UsesAdvancedValidation
+          match content.Results.Overall with
+          | Some(ResultModel.Custom _) -> UsesCustomScoring
+          | _ -> () ]
 
 // ---------------------------------------------------------------------------
 // The checks.
@@ -116,18 +119,20 @@ let private identities (content: Content) =
               if not (isIdentifier id) then
                   block "RULE-ID" id $"The {kind} id '{id}' is not a stable identifier." ]
 
-let private references (content: Content) =
-    let r = content.Rules
-    let hasQuestion id = (tryQuestion content id).IsSome
+let private referenceFindings (content: Content) subject =
     let section id = content.Sections |> List.tryFind (fun s -> s.Id = id)
 
-    let checkRef subject =
-        function
-        | QuestionRef id when not (hasQuestion id) -> [ block "RULE-REFERENCE" subject $"'{subject}' refers to unknown question '{id}'." ]
-        | SectionRef id when (section id).IsNone -> [ block "RULE-REFERENCE" subject $"'{subject}' refers to unknown section '{id}'." ]
-        | SectionRef id when (section id).Value.Scoring.IsNone -> [ block "RULE-TYPE" subject $"'{subject}' reads the score of unscored section '{id}'." ]
-        | FactRef id when (factOf content id).IsNone -> [ block "RULE-REFERENCE" subject $"'{subject}' refers to unknown fact '{id}'." ]
-        | _ -> []
+    function
+    | QuestionRef id when (tryQuestion content id).IsNone -> [ block "RULE-REFERENCE" subject $"'{subject}' refers to unknown question '{id}'." ]
+    | SectionRef id when (section id).IsNone -> [ block "RULE-REFERENCE" subject $"'{subject}' refers to unknown section '{id}'." ]
+    | SectionRef id when (section id).Value.Scoring.IsNone -> [ block "RULE-TYPE" subject $"'{subject}' reads the score of unscored section '{id}'." ]
+    | FactRef id when (factOf content id).IsNone -> [ block "RULE-REFERENCE" subject $"'{subject}' refers to unknown fact '{id}'." ]
+    | _ -> []
+
+let private references (content: Content) =
+    let r = content.Rules
+    let section id = content.Sections |> List.tryFind (fun s -> s.Id = id)
+    let checkRef = referenceFindings content
 
     let conditions subject c = conditionRefs c |> List.collect (checkRef subject)
 
@@ -176,54 +181,63 @@ let private references (content: Content) =
       | _ -> () ]
 
 /// Conditions that compare answers or facts with values they cannot hold.
-let private types (content: Content) =
+let rec private conditionTypes (content: Content) subject c =
     let factKind id = factOf content id |> Option.map _.Expr
 
-    let rec check subject c =
-        match c with
-        | AnswerIs(q, v) -> valueCheck subject q [ v ]
-        | AnswerIn(q, vs) -> valueCheck subject q vs
-        | IsSpecial(q, s) ->
-            match tryQuestion content q with
-            | Some question when not (List.contains s question.SpecialStates) ->
-                [ block "RULE-TYPE" subject $"'{subject}' tests a special state '{q}' does not offer." ]
-            | _ -> []
-        | FactTrue id ->
-            match factKind id with
-            | Some(BooleanFact _)
-            | None -> []
-            | Some _ -> [ block "RULE-TYPE" subject $"'{subject}' uses fact '{id}' as a condition, but it is not boolean." ]
-        | CategoryIs(id, label) ->
-            match factKind id with
-            | Some(CategoryFact(cases, otherwise)) when not (List.contains label (otherwise |> Option.toList |> List.append (List.map snd cases))) ->
-                [ block "RULE-TYPE" subject $"'{subject}' tests category '{label}', which fact '{id}' never produces." ]
-            | Some(CategoryFact _)
-            | None -> []
-            | Some _ -> [ block "RULE-TYPE" subject $"'{subject}' uses fact '{id}' as a category, but it is not one." ]
-        | Compare(a, _, b) -> numberCheck subject a @ numberCheck subject b
-        | All cs
-        | Any cs -> cs |> List.collect (check subject)
-        | Not inner -> check subject inner
-        | Always
-        | Answered _ -> []
-
-    and numberCheck subject =
-        function
-        | NumberFact id ->
-            match factKind id with
-            | Some(NumberFactOf _)
-            | None -> []
-            | Some _ -> [ block "RULE-TYPE" subject $"'{subject}' uses fact '{id}' as a number, but it is not one." ]
+    match c with
+    | AnswerIs(q, v) -> valueTypes content subject q [ v ]
+    | AnswerIn(q, vs) -> valueTypes content subject q vs
+    | IsSpecial(q, s) ->
+        match tryQuestion content q with
+        | Some question when not (List.contains s question.SpecialStates) ->
+            [ block "RULE-TYPE" subject $"'{subject}' tests a special state '{q}' does not offer." ]
         | _ -> []
+    | FactTrue id ->
+        match factKind id with
+        | Some(BooleanFact _)
+        | None -> []
+        | Some _ -> [ block "RULE-TYPE" subject $"'{subject}' uses fact '{id}' as a condition, but it is not boolean." ]
+    | CategoryIs(id, label) ->
+        match factKind id with
+        | Some(CategoryFact(cases, otherwise)) when not (List.contains label (otherwise |> Option.toList |> List.append (List.map snd cases))) ->
+            [ block "RULE-TYPE" subject $"'{subject}' tests category '{label}', which fact '{id}' never produces." ]
+        | Some(CategoryFact _)
+        | None -> []
+        | Some _ -> [ block "RULE-TYPE" subject $"'{subject}' uses fact '{id}' as a category, but it is not one." ]
+    | Compare(a, _, b) -> numberTypes content subject a @ numberTypes content subject b
+    | All cs
+    | Any cs -> cs |> List.collect (conditionTypes content subject)
+    | Not inner -> conditionTypes content subject inner
+    | Always
+    | Answered _ -> []
 
-    and valueCheck subject q values =
-        values
-        |> List.choose (fun v ->
-            match checkAnswer content q (Value v) with
-            | Some(UnknownQuestion _)
-            | None -> None
-            | Some _ -> Some(block "RULE-TYPE" subject $"'{subject}' compares '{q}' with a value it cannot hold."))
+and private numberTypes (content: Content) subject =
+    let factKind id = factOf content id |> Option.map _.Expr
 
+    function
+    | NumberFact id ->
+        match factKind id with
+        | Some(NumberFactOf _)
+        | None -> []
+        | Some _ -> [ block "RULE-TYPE" subject $"'{subject}' uses fact '{id}' as a number, but it is not one." ]
+    | _ -> []
+
+and private valueTypes (content: Content) subject q values =
+    values
+    |> List.choose (fun v ->
+        match checkAnswer content q (Value v) with
+        | Some(UnknownQuestion _)
+        | None -> None
+        | Some _ -> Some(block "RULE-TYPE" subject $"'{subject}' compares '{q}' with a value it cannot hold."))
+
+/// The reference and type findings of one condition, for any consumer of
+/// conditions (rules here, custom scoring expressions in `Expression`).
+let checkCondition (content: Content) (subject: string) (c: Condition) =
+    (conditionRefs c |> List.collect (referenceFindings content subject)) @ conditionTypes content subject c
+
+let private types (content: Content) =
+    let check = conditionTypes content
+    let numberCheck = numberTypes content
     let r = content.Rules
 
     [ for f in r.Facts do

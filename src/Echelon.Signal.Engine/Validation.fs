@@ -29,14 +29,21 @@ type Policy =
       /// PII-like prompt wording blocks instead of warning (AUT-003 §31).
       PiiPromptsBlock: bool
       /// Fewer scored questions than this in a scored section warns (AUT-005 §51).
-      LowScoringItemCount: int }
+      LowScoringItemCount: int
+      /// Whether templates under this policy may carry custom scoring
+      /// expressions (DF-SIGNAL-2026-0002 Q11: on for Echelon-authored
+      /// templates; an external-author policy turns it off).
+      CustomExpressionsAllowed: bool
+      ExpressionLimits: Expression.Limits }
 
 let defaultPolicy =
     { MaximumUrlCharacters = 2000
       BaseUrlAllowance = 200
       RequireFixtures = true
       PiiPromptsBlock = false
-      LowScoringItemCount = 3 }
+      LowScoringItemCount = 3
+      CustomExpressionsAllowed = true
+      ExpressionLimits = Expression.defaultLimits }
 
 let private structural (draft: Draft) =
     let c = draft.Content
@@ -242,7 +249,8 @@ let private sectionText =
 /// flow, facts, validation and completion are tested exactly as they run.
 /// Invalid answers are failures, not crashes.
 let runFixture (content: Content) (fixture: Fixture) : FixtureResult =
-    let e = Rules.evaluate content fixture.Answers
+    let result = SurveyResult.compute "" content fixture.Answers false
+    let e = result.Evaluation
     let problems = e.AnswerProblems |> List.map (sprintf "invalid answer: %A")
     let complete = Rules.isSubmittable e.Completion
     let triggered = e.Recommendations |> List.map _.Id |> Set.ofList
@@ -258,6 +266,19 @@ let runFixture (content: Content) (fixture: Fixture) : FixtureResult =
             | ExpectApplicable _ -> None
             | ExpectRecommended(id, expected) when expected <> triggered.Contains id -> Some $"recommendation '{id}': expected {expected}"
             | ExpectRecommended _ -> None
+            | ExpectOverall expected ->
+                let actual = result.Overall |> Option.map _.Outcome
+
+                match expected, actual with
+                | Some x, Some(Scoring.Score(v, _, _)) when x = v -> None
+                | None, None
+                | None, Some(Scoring.NotScored _) -> None
+                | _ -> Some $"overall: expected {expected}, got %A{actual}"
+            | ExpectInterpretation(id, expected) ->
+                match result.Interpretations |> List.tryFind (fun i -> i.Id = id) with
+                | Some i when i.Label = expected -> None
+                | Some i -> Some $"interpretation '{id}': expected {expected}, got {i.Label}"
+                | None -> Some $"interpretation '{id}' is not defined"
             | ExpectFact(id, expected) ->
                 match e.Facts |> List.tryFind (fun (f, _) -> f = id) with
                 | Some(_, actual) when actual = expected -> None
@@ -278,7 +299,9 @@ let runFixture (content: Content) (fixture: Fixture) : FixtureResult =
           yield! e.Applicability.Questions |> Set.toList |> List.map (sprintf "applicable=%s")
           yield! e.Facts |> List.map (fun (f, v) -> $"fact {f}=%A{v}")
           yield! e.Sections |> List.map (fun (s, r) -> $"{s}={sectionText r}")
-          yield! e.Recommendations |> List.map (fun r -> $"recommendation={r.Id}") ]
+          yield! e.Recommendations |> List.map (fun r -> $"recommendation={r.Id}")
+          yield! result.Overall |> Option.toList |> List.map (fun o -> $"overall={outcomeText o.Outcome}")
+          yield! result.Interpretations |> List.map (fun i -> $"interpretation {i.Id}=%A{i.Label}") ]
         |> String.concat "\n"
 
     { FixtureId = fixture.Id
@@ -293,6 +316,21 @@ let private fixtures (policy: Policy) (draft: Draft) (results: FixtureResult lis
       for r in results do
           for failure in r.Failures do
               finding FixturesCategory Blocker "FIXTURES-FAILED" r.FixtureId failure ]
+
+/// Overall scoring, interpretations and selector-scorer compatibility
+/// (SCS-015, AST-002, VER-005).
+let private resultChecks (policy: Policy) (draft: Draft) =
+    let c = draft.Content
+
+    Compatibility.check c
+    @ (match c.Results.Overall with
+       | Some(ResultModel.Composite spec) -> Composite.check c spec
+       | Some(ResultModel.Custom custom) ->
+           [ if not policy.CustomExpressionsAllowed then
+                 finding ScoringCategory Blocker "POLICY-CUSTOM-EXPRESSION" "overall" "Custom scoring expressions are not allowed under this authoring policy." ]
+           @ Expression.check policy.ExpressionLimits c "overall" custom
+       | None -> [])
+    @ Interpretation.check c c.Results.Interpretations
 
 type ValidationReport =
     { Findings: Finding list
@@ -316,6 +354,7 @@ let validate (policy: Policy) (draft: Draft) : ValidationReport =
         @ encoding policy draft
         @ privacy policy draft
         @ RuleChecks.check draft.Content
+        @ resultChecks policy draft
         @ fixtures policy draft results
       Capacity = capacity draft.Content
       Fixtures = results }

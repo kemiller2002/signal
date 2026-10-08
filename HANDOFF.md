@@ -32,6 +32,14 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
     rule model (facts, flow, validation, completion, recommendations), its
     deterministic evaluation, publication-time checks and canonical form
     (WI-0043). `Groups`: roles, dependencies and group completion.
+  - `ResultModel`, `Expression`, `Composite`, `Interpretation`, `Registry`,
+    `Keyed`, `Benchmark`, `Compatibility`, `SurveyResult`, `GroupScoring`:
+    overall scoring as an explicit composite or a typed custom expression,
+    explanation traces from the same evaluation, interpretation separate from
+    scoring, answer-key/ranking/allocation/pairwise scoring, benchmarks,
+    selector-scorer compatibility, the canonical SurveyResult with display
+    policy, and group scoring (WI-0044), built against the proposed answers in
+    DF-SIGNAL-2026-0002.
 - Application (`src/Echelon.Signal.Application`): Limen protocol (navigation
   replace and clipboard writeText effects), Aegis dispatch boundary, the
   entropy edge.
