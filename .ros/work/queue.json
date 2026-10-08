@@ -1077,10 +1077,10 @@
         "forma"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:09.109Z",
-      "updatedAt": "2026-10-08T17:51:40.000Z",
+      "updatedAt": "2026-10-08T18:19:47.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
