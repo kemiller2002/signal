@@ -13,13 +13,18 @@ open System
 open Echelon.Signal.Engine.View
 open Echelon.Signal.Engine.Import
 open Echelon.Signal.Admin.Access
+open Echelon.Signal.Admin.Routes
+open Limen.Routing
+open Echelon.Signal.Admin.AdminNavigation
 
 /// A template the catalog offers for new groups.
 type CatalogEntry =
     { Hash: string
       SurveyIdentifier: string
       Version: string
-      Title: string }
+      Title: string
+      /// Its sections and questions, for the assessment views.
+      Content: Echelon.Signal.Engine.Assessment.Assessment }
 
 /// What the page shows about one group.
 [<NoComparison>]
@@ -61,63 +66,6 @@ type DatasetSummary =
       Verification: string
       Groups: GroupSummary list }
 
-/// The page's areas (ADM-031).
-type Route =
-    | Overview
-    | Groups
-    | Group of key: string
-    | Administrators
-    | Storage
-
-let routeOf (hash: string) =
-    match hash.TrimStart('#').Split('/', StringSplitOptions.RemoveEmptyEntries) with
-    | [| "groups" |] -> Groups
-    | [| "groups"; key |] -> Group key
-    | [| "groups"; key; "explore"; _; _; _ |] -> Group key
-    | [| "administrators" |] -> Administrators
-    | [| "storage" |] -> Storage
-    | _ -> Overview
-
-let hashOf =
-    function
-    | Overview -> "#/overview"
-    | Groups -> "#/groups"
-    | Group key -> $"#/groups/{key}"
-    | Administrators -> "#/administrators"
-    | Storage -> "#/storage"
-
-/// How the open group is being explored (ADM-019): the section drilled
-/// into, the sort and counts or percentages. It lives in the address, so
-/// back and forward restore it.
-type Exploration =
-    { Section: string option
-      SortByValue: bool
-      Percent: bool }
-
-let defaultExploration =
-    { Section = None
-      SortByValue = false
-      Percent = false }
-
-/// The address of a group explored this way.
-let explorationHash (key: string) (exploration: Exploration) =
-    if exploration = defaultExploration then
-        hashOf (Group key)
-    else
-        let section = exploration.Section |> Option.defaultValue "all"
-        let sort = if exploration.SortByValue then "value" else "name"
-        let display = if exploration.Percent then "percent" else "count"
-        $"#/groups/{key}/explore/{section}/{sort}/{display}"
-
-/// The exploration an address holds.
-let explorationOf (hash: string) =
-    match hash.TrimStart('#').Split('/', StringSplitOptions.RemoveEmptyEntries) with
-    | [| "groups"; _; "explore"; section; sort; display |] ->
-        { Section = (if section = "all" then None else Some section)
-          SortByValue = (sort = "value")
-          Percent = (display = "percent") }
-    | _ -> defaultExploration
-
 /// A message for the person: a stable code and a sentence (ADM-031).
 type Notice =
     { Code: string
@@ -134,8 +82,10 @@ type Model =
       Principal: Principal option
       Retention: Credential.Retention
       Dataset: DatasetSummary option
-      Route: Route
-      Filter: string
+      /// Where the page is: the view its URL names (SIG-LINK-001).
+      Place: Place
+      /// A sign-in's return target, recalled after the provider's round trip.
+      ReturnTarget: string option
       ImportText: string
       ImportOrigin: ResultRecord.ImportOrigin
       NewGroup: {| Template: string; Mode: IdentityMode; Expected: int; Minimum: int |}
@@ -145,7 +95,6 @@ type Model =
       Notice: Notice option
       Busy: bool
       Conflict: Conflicts.Conflict option
-      Exploration: Exploration
       /// The provider's callback parameters the page was opened with, if any.
       CallbackQuery: (string * string) list }
 
@@ -157,8 +106,8 @@ let initial (catalog: CatalogEntry list) =
       Principal = None
       Retention = Credential.defaultRetention
       Dataset = None
-      Route = Overview
-      Filter = ""
+      Place = AdminNavigation.initial
+      ReturnTarget = None
       ImportText = ""
       ImportOrigin = ResultRecord.MultiPaste
       NewGroup = {| Template = (catalog |> List.tryHead |> Option.map _.Hash |> Option.defaultValue ""); Mode = AnonymousGroup; Expected = 10; Minimum = 5 |}
@@ -168,7 +117,6 @@ let initial (catalog: CatalogEntry list) =
       Notice = None
       Busy = false
       Conflict = None
-      Exploration = defaultExploration
       CallbackQuery = [] }
 
 /// What the page asks the application to do.
@@ -184,12 +132,19 @@ type Effect =
     | TransitionGroup of key: string * transition: string
     | ChangeRoster of RosterCommand
     | RebuildIndex
-    | Navigate of hash: string
+    /// A Navigation effect: push or replace a relative `#/…` URL.
+    | Go of Move
+    /// Write a view's link to the clipboard (SIG-LINK-005).
+    | CopyLink of url: string
+    /// Keep, recall and forget a sign-in's return target in this tab (SIG-LINK-006).
+    | RememberReturn of target: string
+    | RecallReturn
+    | ForgetReturn
 
 /// What happens to the page.
 [<NoComparison>]
 type Msg =
-    | Started of hash: string * query: (string * string) list
+    | Started of page: Limen.Routing.PageLocation * query: (string * string) list
     | ConfigurationRead of text: string option
     | IdentityChanged of Credential.SignIn * Principal option
     | TabNoticed of Credential.TabNotice
@@ -200,9 +155,39 @@ type Msg =
     | Noted of Notice
     | WentOffline of reason: string
     | ConflictFound of Conflicts.Conflict
-    | LocationMoved of hash: string
+    | LocationMoved of page: Limen.Routing.PageLocation
+    | ReturnRecalled of target: string option
+    | LinkCopied of succeeded: bool
     /// A page event: its name, key and value (`data-event`).
     | Ui of name: string * key: string option * value: string
+
+/// The group the current view is about, if any.
+let groupKey (model: Model) =
+    match model.Place.View with
+    | Ok(Group g | Results(g, _) | Scoring(g, _) | Imports(g, _)) -> Some g
+    | _ -> None
+
+/// What the guards read: sign-in is required when it is configured, has
+/// been tried, and nobody is signed in.
+let access (model: Model) =
+    match model.Deployment |> Option.bind _.Identity, model.Principal, model.SignIn with
+    | Some _, None, signIn when signIn <> Credential.SigningIn -> SignInRequired
+    | _ -> Open
+
+let private go (moved: Place * Move option) (model: Model) =
+    let place, move = moved
+    { model with Place = place }, (move |> Option.map Go |> Option.toList)
+
+/// After the person or the access changed: resume a return target once
+/// signed in, or send a signed-out person to sign-in (SIG-LINK-006).
+let private settleAccess (model: Model) : Model * Effect list =
+    match model.Principal, model.Place.View, model.ReturnTarget with
+    | Some _, Ok(AdminRoute.SignIn target), _ -> go (resume model.Place (target |> Option.orElse model.ReturnTarget)) { model with ReturnTarget = None }
+    | Some _, _, Some target ->
+        let model, effects = go (resume model.Place (Some target)) { model with ReturnTarget = None }
+        model, effects @ [ ForgetReturn ]
+    | Some _, _, None -> model, []
+    | None, _, _ -> go (reconsider (access model) model.Place) model
 
 /// The capabilities the person has now, from authoritative state only.
 let capabilities (model: Model) =
@@ -218,8 +203,8 @@ let capabilities (model: Model) =
             Credential.usable dataset.Roster principal.PrincipalId dataset.Credential model.Connectivity dataset.ReadOnlyReasons.IsEmpty
 
         let group =
-            match model.Route with
-            | Group key ->
+            match groupKey model with
+            | Some key ->
                 dataset.Groups
                 |> List.tryFind (fun g -> g.Key = key)
                 |> Option.map (fun g ->
@@ -258,13 +243,20 @@ let private positive (text: string) fallback =
 /// What the page does for an event.
 let private onUi (model: Model) (name: string) (key: string option) (value: string) : Model * Effect list =
     let busy effects = { model with Busy = true; Notice = None }, effects
-    let routeKey = match model.Route with Group key -> Some key | _ -> None
+    let routeKey = groupKey model
+    let place = model.Place
+    // A checkbox sends its value when checked and "" when not (protocol 1.2).
+    let toggle (member': string) (members: string list) =
+        if value = "" then members |> List.filter ((<>) member') else member' :: members |> List.distinct |> List.sort
 
     match name with
     | "retention" -> { model with Retention = (if value = "tab" then Credential.ThisTab else Credential.ThisPage) }, []
     | "signIn" when model.SignIn <> Credential.SigningIn ->
         match model.Deployment |> Option.bind _.Identity with
-        | Some _ -> { model with SignIn = Credential.SigningIn }, [ SignIn model.Retention ]
+        | Some _ ->
+            // The view to return to crosses the provider's round trip in this tab (SIG-LINK-006).
+            let remember = returnTarget place |> Option.map RememberReturn |> Option.toList
+            { model with SignIn = Credential.SigningIn }, remember @ [ SignIn model.Retention ]
         | None -> model, []
     | "signIn" -> model, []
     | "signOut" -> { model with Dataset = None }, [ SignOut ]
@@ -273,30 +265,49 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
         | Some id when model.Principal.IsSome -> busy [ OpenDataset id ]
         | _ -> model, []
     | "navigate" ->
-        let route = routeOf (defaultArg key "")
-        { model with Route = route }, [ Navigate(hashOf route) ]
+        // A location the page names (`/groups`), as a link would.
+        match key |> Option.map (RouteCodec.parse codec Router.allowAll) with
+        | Some(Ok route) -> go (navigate place route) model
+        | _ -> model, []
     | "openGroup" ->
         match key with
         | Some groupKey ->
-            let route = Group groupKey
-            { model with Route = route; Busy = true; Notice = None }, [ Navigate(hashOf route); OpenGroup groupKey ]
+            let model, moves = go (navigate place (Group groupKey)) { model with Busy = true; Notice = None }
+            model, moves @ [ OpenGroup groupKey ]
         | None -> model, []
     | "exploreSort"
     | "exploreDisplay"
     | "exploreSection" ->
-        match routeKey with
-        | Some groupKey ->
-            let e = model.Exploration
-
+        // Refinements of the results view: replace, so Back leaves the view (SIG-LINK-004).
+        match place.View with
+        | Ok(Results(g, view)) ->
             let next =
                 match name with
-                | "exploreSort" -> { e with SortByValue = (value = "value") }
-                | "exploreDisplay" -> { e with Percent = (value = "percent") }
-                | _ -> { e with Section = (match key with Some "all" | None -> None | Some section -> Some section) }
+                | "exploreSort" -> { view with Sort = (if value = "value" then ByValue else ByOrder) }
+                | "exploreDisplay" -> { view with Display = (if value = "percent" then Percentages else Counts) }
+                | _ -> { view with Section = (match key with Some "all" | None -> None | Some section -> Some section) }
 
-            { model with Exploration = next }, [ Navigate(explorationHash groupKey next) ]
-        | None -> model, []
-    | "filter" -> { model with Filter = value }, []
+            go (refine place (Results(g, next))) model
+        | _ -> model, []
+    | "filterStatus"
+    | "filterMode"
+    | "filterSurvey" ->
+        match place.View, key with
+        | Ok(Groups filter), _ when name = "filterSurvey" -> go (refine place (Groups { filter with Survey = (if value = "" then None else Some value) })) model
+        | Ok(Groups filter), Some item when name = "filterStatus" -> go (refine place (Groups { filter with Status = toggle item filter.Status })) model
+        | Ok(Groups filter), Some item -> go (refine place (Groups { filter with Mode = toggle item filter.Mode })) model
+        | _ -> model, []
+    | "filterOutcome" ->
+        match place.View, key with
+        | Ok(Imports(g, outcomes)), Some item -> go (refine place (Imports(g, toggle item outcomes))) model
+        | _ -> model, []
+    | "compareGroup"
+    | "compareSection" ->
+        match place.View, key with
+        | Ok(Compare(groups, section)), _ when name = "compareSection" -> go (refine place (Compare(groups, (if value = "" then None else Some value)))) model
+        | Ok(Compare(groups, section)), Some g -> go (refine place (Compare(toggle g groups, section))) model
+        | _ -> model, []
+    | "copyLink" -> model, [ CopyLink(shareLink place) ]
     | "importText" -> { model with ImportText = value }, []
     | "importOrigin" ->
         { model with ImportOrigin = (if value = "file" then ResultRecord.ImportedTextFile else ResultRecord.MultiPaste) }, []
@@ -361,7 +372,13 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
 /// The next model and the effects to perform.
 let update (msg: Msg) (model: Model) : Model * Effect list =
     match msg with
-    | Started(hash, query) -> { model with Route = routeOf hash; Exploration = explorationOf hash; CallbackQuery = query }, [ ReadConfiguration ]
+    | Started(page, query) ->
+        // A provider callback is consumed and removed from the address by
+        // Fides; the view to return to was kept in this tab (SIG-LINK-006).
+        let callback = query |> List.exists (fun (k, _) -> k = "state")
+        let model, moves = go (arrive (access model) model.Place page) { model with CallbackQuery = query }
+        let place = if callback then withoutCallback model.Place else model.Place
+        { model with Place = place }, moves @ [ ReadConfiguration ] @ (if callback then [ RecallReturn ] else [])
     | ConfigurationRead None -> { model with ConfigurationProblem = Some "This deployment's configuration could not be read." }, []
     | ConfigurationRead(Some text) ->
         match Deployment.parse text with
@@ -373,22 +390,22 @@ let update (msg: Msg) (model: Model) : Model * Effect list =
             | Some identity -> { model with SignIn = Credential.SigningIn; CallbackQuery = [] }, [ BeginIdentity(identity, model.CallbackQuery) ]
             | None -> model, []
     | IdentityChanged(signIn, principal) ->
-        let model = { model with SignIn = signIn; Principal = principal; Busy = false }
+        let model, moves = settleAccess { model with SignIn = signIn; Principal = principal; Busy = false }
 
         match principal, model.Deployment with
         | Some _, Some config ->
             match config.Datasets with
-            | [ only ] -> { model with Busy = true }, [ OpenDataset only.Id ]
-            | _ -> model, []
-        | None, _ -> { model with Dataset = None }, []
-        | _ -> model, []
+            | [ only ] -> { model with Busy = true }, moves @ [ OpenDataset only.Id ]
+            | _ -> model, moves
+        | None, _ -> { model with Dataset = None }, moves
+        | _ -> model, moves
     | TabNoticed notice ->
         match model.Dataset with
         | Some dataset ->
             let downgraded = Credential.afterNotice notice dataset.Credential
 
             match notice with
-            | Credential.SignedOutElsewhere -> { model with Dataset = None; Principal = None; SignIn = Credential.SignedOut }, []
+            | Credential.SignedOutElsewhere -> settleAccess { model with Dataset = None; Principal = None; SignIn = Credential.SignedOut }
             | _ -> { model with Dataset = Some { dataset with Credential = downgraded }; Busy = true }, [ OpenDataset dataset.DatasetId ]
         | None -> model, []
     | DatasetOpened(dataset, at) ->
@@ -407,7 +424,9 @@ let update (msg: Msg) (model: Model) : Model * Effect list =
                 else
                     dataset.Groups @ [ group ]
 
-            { model with Dataset = Some { dataset with Groups = groups }; Busy = false; Route = Group group.Key }, [ Navigate(hashOf (Group group.Key)) ]
+            let model = { model with Dataset = Some { dataset with Groups = groups }; Busy = false }
+            // A new group opens; an update to the group in view stays where it is.
+            if groupKey model = Some group.Key then model, [] else go (navigate model.Place (Group group.Key)) model
         | None -> { model with Busy = false }, []
     | Failed notice
     | Noted notice -> { model with Notice = Some notice; Busy = false }, []
@@ -418,5 +437,12 @@ let update (msg: Msg) (model: Model) : Model * Effect list =
             Notice = Some { Code = "SIGNAL.STORAGE.OFFLINE"; Message = "The data store cannot be reached. What is shown may be out of date; changes are unavailable."; Infrastructure = true } },
         []
     | ConflictFound conflict -> { model with Conflict = Some conflict; Busy = false }, []
-    | LocationMoved hash -> { model with Route = routeOf hash; Exploration = explorationOf hash }, []
+    | LocationMoved page -> go (arrive (access model) model.Place page) model
+    | ReturnRecalled target ->
+        match target |> Option.bind (ReturnTo.capture table) with
+        | Some target -> settleAccess { model with ReturnTarget = Some target }
+        | None -> model, [ ForgetReturn ]
+    | LinkCopied true -> { model with Notice = Some { Code = "SIGNAL.LINK.COPIED"; Message = "Link copied. It opens this view for anyone who may see it."; Infrastructure = false } }, []
+    | LinkCopied false ->
+        { model with Notice = Some { Code = "SIGNAL.LINK.NOT_COPIED"; Message = "The browser did not allow copying. Copy the address from the address bar instead."; Infrastructure = false } }, []
     | Ui(name, key, value) -> onUi model name key value

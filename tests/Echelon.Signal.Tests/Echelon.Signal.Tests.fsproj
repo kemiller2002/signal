@@ -41,6 +41,7 @@
     <Compile Include="ReportStateTests.fs" />
     <Compile Include="AdminStateTests.fs" />
     <Compile Include="AdminPageTests.fs" />
+    <Compile Include="AdminLinkTests.fs" />
     <Compile Include="AnalyticsTests.fs" />
     <Compile Include="VisualizationTests.fs" />
     <Compile Include="LimenRoutingVectors.fs" />

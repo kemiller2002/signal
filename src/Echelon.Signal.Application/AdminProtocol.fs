@@ -58,6 +58,7 @@ type Inbound =
         origin: string *
         path: string *
         query: (string * string) list *
+        rawQuery: string *
         hash: string *
         handshake: JsonNode option
     | Event of name: string * key: string option * value: string option
@@ -159,6 +160,7 @@ let decode (messageJson: string) =
             required "origin" "$.location" asString where,
             path,
             optional "query" "$.location" asString where |> Option.defaultValue "" |> queryPairs,
+            optional "query" "$.location" asString where |> Option.defaultValue "",
             hash,
             tryField "handshake" message
         )
@@ -212,6 +214,8 @@ let answer (offer: JsonNode option) : Handshake =
 /// An effect, as Limen requests it.
 type Request =
     | Push of correlationId: string * url: string
+    /// Replace the current history entry (a refinement or a correction, SIG-LINK-004).
+    | Replace of correlationId: string * url: string
     | Wake of correlationId: string * delayMs: int
     | Copy of correlationId: string * text: string
     | Http of correlationId: string * method: string * url: string * headers: (string * string) list * body: string option * timeoutMs: int * responseHeaders: string list
@@ -271,9 +275,10 @@ let private writeRequest (writer: Utf8JsonWriter) (request: Request) =
     writer.WriteStartObject()
 
     match request with
-    | Push(correlationId, url) ->
+    | Push(correlationId, url)
+    | Replace(correlationId, url) ->
         writer.WriteString("kind", "Navigation")
-        writer.WriteString("operation", "push")
+        writer.WriteString("operation", (match request with Push _ -> "push" | _ -> "replace"))
         writer.WriteString("correlationId", correlationId)
         writer.WriteString("url", url)
     | Wake(correlationId, delayMs) ->

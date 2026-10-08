@@ -13,6 +13,7 @@ open Echelon.Signal.Engine.View
 open Echelon.Signal.Engine.Import
 open Echelon.Signal.Admin.Access
 open Echelon.Signal.Admin.AdminApp
+open Echelon.Signal.Admin.Routes
 
 let private text (value: string) = Value(Text value)
 let private flag (value: bool) = Value(Flag value)
@@ -20,6 +21,7 @@ let private number (value: int) = Value(Number(float value))
 
 let private screen (model: Model) =
     match model.ConfigurationProblem, model.Deployment, model.Principal, model.Dataset with
+    | _ when AdminRouteView.isPublic model -> "public"
     | Some _, _, _, _ -> "misconfigured"
     | None, None, _, _ -> "loading"
     | None, Some config, _, _ when config.Profiles.IsEmpty -> "unconfigured"
@@ -48,13 +50,21 @@ let private groupItem (model: Model) (group: GroupSummary) =
       "progress", Text $"{group.Accepted} of {group.Expected}"
       "phase", Text(AdminState.phaseName group.Phase)
       "status", Text(GroupLifecycle.statusName group.Status)
-      "href", Text(hashOf (Group group.Key))
-      "selected", Flag(model.Route = Group group.Key) ]
+      "href", Text(href (Group group.Key))
+      "resultsHref", Text(href (Results(group.Key, defaultResults)))
+      "selected", Flag(groupKey model = Some group.Key) ]
 
-let private matches (filter: string) (group: GroupSummary) =
-    filter = ""
-    || [ group.Key; group.SurveyIdentifier; group.TemplateVersion; AdminState.phaseName group.Phase; GroupLifecycle.statusName group.Status ]
-       |> List.exists (fun field -> field.Contains(filter.Trim(), StringComparison.OrdinalIgnoreCase))
+/// A status as the filter writes it: "ClosedIncomplete" is "closed-incomplete".
+let statusValue (status: GroupLifecycle.Status) =
+    GroupLifecycle.statusName status
+    |> Seq.mapi (fun i c -> if i > 0 && Char.IsUpper c then $"-{Char.ToLowerInvariant c}" else string (Char.ToLowerInvariant c))
+    |> String.concat ""
+
+/// Whether a group passes the list's typed filters (SIG-LINK-008).
+let private matches (filter: GroupFilter) (group: GroupSummary) =
+    (filter.Status.IsEmpty || List.contains (statusValue group.Status) filter.Status)
+    && (filter.Mode.IsEmpty || List.contains (if group.Mode = IdentifiedGroup then "identified" else "anonymous") filter.Mode)
+    && (filter.Survey |> Option.forall ((=) group.SurveyIdentifier))
 
 let private obligations (dataset: DatasetSummary) =
     dataset.Groups
@@ -95,14 +105,17 @@ let private warningText =
 /// The open group's charts (ADM-015..017, ADM-019): section means, and the
 /// distribution of a section the person drilled into.
 let private charts (model: Model) (group: GroupSummary option) =
-    let e = model.Exploration
+    let e =
+        match model.Place.View with
+        | Ok(Results(_, view)) -> view
+        | _ -> defaultResults
 
     let sectionChart =
         group
         |> Option.map (fun g ->
             let spec =
                 { Visualization.defaultSpec Visualization.Bar "Section means" with
-                    Sort = if e.SortByValue then Visualization.ByValueDescending else Visualization.ByOrder }
+                    Sort = if (e.Sort = ByValue) then Visualization.ByValueDescending else Visualization.ByOrder }
 
             let data =
                 g.Sections
@@ -127,14 +140,14 @@ let private charts (model: Model) (group: GroupSummary option) =
                     { Visualization.defaultSpec Visualization.Histogram $"Distribution of {section}" with
                         Dimension = Visualization.Binned
                         Sort = Visualization.ByOrder
-                        Unit = if e.Percent then Visualization.Percent0To1 else Visualization.Count
-                        Scale = { Minimum = 0.0; Maximum = (if e.Percent then 1.0 else float (max 1 total)) } }
+                        Unit = if (e.Display = Percentages) then Visualization.Percent0To1 else Visualization.Count
+                        Scale = { Minimum = 0.0; Maximum = (if (e.Display = Percentages) then 1.0 else float (max 1 total)) } }
 
                 let data =
                     bins
                     |> List.mapi (fun i (lower, upper, n) ->
                         ({ Category = $"{lower:F0}-{upper:F0}"
-                           Value = Analysis.Value(if e.Percent then (if total = 0 then 0.0 else float n / float total) else float n)
+                           Value = Analysis.Value(if (e.Display = Percentages) then (if total = 0 then 0.0 else float n / float total) else float n)
                            Order = i }: Visualization.Datum))
 
                 Some(Visualization.compile spec data)
@@ -157,8 +170,8 @@ let private charts (model: Model) (group: GroupSummary option) =
       "hasDistribution", Value(Flag distribution.IsSome)
       "distribution", distributionItems
       "distributionDescription", distributionDescription
-      "exploreByValue", Value(Flag e.SortByValue)
-      "explorePercent", Value(Flag e.Percent)
+      "exploreByValue", Value(Flag (e.Sort = ByValue))
+      "explorePercent", Value(Flag (e.Display = Percentages))
       "exploreSection", Value(Text(e.Section |> Option.defaultValue "")) ]
 
 /// The last batch's items by the view ADM-008 names.
@@ -178,8 +191,8 @@ let project (model: Model) : View =
     let dataset = model.Dataset
 
     let selected =
-        match model.Route, dataset with
-        | Group key, Some d -> d.Groups |> List.tryFind (fun g -> g.Key = key)
+        match groupKey model, dataset with
+        | Some key, Some d -> d.Groups |> List.tryFind (fun g -> g.Key = key)
         | _ -> None
 
     let offline, staleSince =
@@ -196,14 +209,7 @@ let project (model: Model) : View =
       "screenSignIn", flag (current = "signIn")
       "screenDatasets", flag (current = "datasets")
       "screenDataset", flag (current = "dataset")
-      "areas",
-      Items(
-          [ "overview", "Overview", model.Route = Overview
-            "groups", "Groups", (match model.Route with Groups | Group _ -> true | _ -> false)
-            "administrators", "Administrators", model.Route = Administrators
-            "storage", "Storage", model.Route = Storage ]
-          |> List.map (fun (key, label, isCurrent) -> [ "key", Text key; "label", Text label; "current", Text(if isCurrent then "page" else "false") ])
-      )
+      "screenPublic", flag (current = "public")
       "configurationProblem", text (defaultArg model.ConfigurationProblem "")
       "signInBusy", flag (model.SignIn = Credential.SigningIn)
       "retentionPage", flag (model.Retention = Credential.ThisPage)
@@ -224,11 +230,6 @@ let project (model: Model) : View =
       "notice", text (model.Notice |> Option.map _.Message |> Option.defaultValue "")
       "noticeCode", text (model.Notice |> Option.map _.Code |> Option.defaultValue "")
       "noticeInfrastructure", flag (model.Notice |> Option.exists _.Infrastructure)
-      // Navigation (ADM-031).
-      "routeOverview", flag (model.Route = Overview)
-      "routeGroups", flag (match model.Route with Groups | Group _ -> true | _ -> false)
-      "routeAdministrators", flag (model.Route = Administrators)
-      "routeStorage", flag (model.Route = Storage)
       "datasets",
       Items(
           model.Deployment
@@ -246,8 +247,11 @@ let project (model: Model) : View =
       "groupsWaiting", number (dataset |> Option.map (fun d -> d.Groups |> List.filter (fun g -> g.Phase = AdminState.GroupReady || g.Phase = AdminState.GroupPartial) |> List.length) |> Option.defaultValue 0)
       "groupsComplete", number (dataset |> Option.map (fun d -> d.Groups |> List.filter (fun g -> g.Phase = AdminState.GroupComplete) |> List.length) |> Option.defaultValue 0)
       // Groups (ADM-007, ADM-032).
-      "filter", text model.Filter
-      "groups", Items(dataset |> Option.map (fun d -> d.Groups |> List.filter (matches model.Filter) |> List.map (groupItem model)) |> Option.defaultValue [])
+      "groups",
+      Items(
+          let filter = match model.Place.View with Ok(Groups f) -> f | _ -> noFilter
+          dataset |> Option.map (fun d -> d.Groups |> List.filter (matches filter) |> List.map (groupItem model)) |> Option.defaultValue []
+      )
       "canCreateGroup", enabled AdminState.CanCreateGroup
       "catalog", Items(model.Catalog |> List.map (fun e -> [ "hash", Text e.Hash; "label", Text $"{e.Title} ({e.SurveyIdentifier} {e.Version})"; "selected", Flag(e.Hash = model.NewGroup.Template) ]))
       "newGroupIdentified", flag (model.NewGroup.Mode = IdentifiedGroup)
@@ -311,4 +315,5 @@ let project (model: Model) : View =
           |> Option.map (fun c -> c.Differences |> List.map (fun d -> [ "field", Text d.Field; "base", Text d.Base; "current", Text d.Current; "proposed", Text d.Proposed; "conflicting", Flag d.Conflicting ]))
           |> Option.defaultValue []
       )
-      "capabilityList", text (can |> Set.toList |> List.map AdminState.capabilityName |> String.concat " ") ]
+      "capabilityList", text (can |> Set.toList |> List.map AdminState.capabilityName |> String.concat " ")
+      yield! AdminRouteView.project model selected ]

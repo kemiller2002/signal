@@ -28,7 +28,8 @@ let private catalog: Echelon.Signal.Admin.AdminApp.CatalogEntry list =
     [ { Hash = Canonical.templateHash Pilot.assessment
         SurveyIdentifier = Pilot.assessment.Id
         Version = Pilot.assessment.Version
-        Title = Pilot.assessment.Title } ]
+        Title = Pilot.assessment.Title
+        Content = Pilot.assessment } ]
 
 let private resolve (hash: string) =
     if hash = Canonical.templateHash Pilot.assessment then Some Pilot.assessment else None

@@ -170,6 +170,18 @@ let summary (unreconciled: int) (imported: Imported option) (group: OpenedGroup)
             found.Batch.Items |> List.map (fun (hash, outcome) -> hash, outcome |> Option.map Intake.itemCode |> Option.defaultValue "pending")
         | None -> None, []
 
+    // Imported surveys: every stored contribution (accepted), with this
+    // session's last batch adding its other outcomes, so a link to the view
+    // shows the same list after a reload (SIG-LINK-001).
+    let stored =
+        group.Contributions
+        |> Map.toList
+        |> List.map (fun (_, c) -> c.Value.Contribution.Provenance.ArtifactHash, "accepted")
+        |> List.filter (fun (hash, _) -> not (items |> List.exists (fun (h, _) -> h = hash)))
+        |> List.sort
+
+    let items = items @ stored
+
     { Key = GroupRecord.groupKey group.Config.Group
       SurveyIdentifier = group.Config.SurveyIdentifier
       TemplateVersion = group.Config.TemplateVersion

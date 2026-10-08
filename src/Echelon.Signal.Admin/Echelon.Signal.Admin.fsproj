@@ -37,7 +37,9 @@
     <Compile Include="Locale.fs" />
     <Compile Include="Regression.fs" />
     <Compile Include="Routes.fs" />
+    <Compile Include="AdminNavigation.fs" />
     <Compile Include="AdminApp.fs" />
+    <Compile Include="AdminRouteView.fs" />
     <Compile Include="AdminView.fs" />
   </ItemGroup>
 
