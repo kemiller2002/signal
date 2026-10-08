@@ -972,10 +972,10 @@
         "identity"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:07.763Z",
-      "updatedAt": "2026-10-08T15:18:57.000Z",
+      "updatedAt": "2026-10-08T15:29:10.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
