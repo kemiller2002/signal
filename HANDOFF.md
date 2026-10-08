@@ -19,8 +19,14 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   administrators by GitHub numeric id), `Storage` (Signal's namespace
   `<base>/signal`, dataset folders `datasets/<id>` in their profile's
   repository, set-up operations, opening against Arca's manifest),
-  `DatasetManifest` (ADM-005 storage manifest). Tests run against Arca's
-  in-memory provider (`StorageTests`).
+  `DatasetManifest` (ADM-005 storage manifest), `ProviderContract` (ADM-003
+  capability knowledge, ADM-073 write modes, profile verification, ADM-026
+  failure meanings with no automatic retry), `Loading` (staged untrusted
+  loading: verify manifests, load records, grant writes), `Growth` (ADM-058).
+  The application's `StorageFaults` classifies GitHub failures through Aegis's
+  GitHub integration (AER-002, AER-032). Tests run against Arca's in-memory
+  provider and conformance suite (`StorageTests`, `ProviderTests`,
+  `LoadingTests`).
 
 ## Current state (2026-10-07)
 
