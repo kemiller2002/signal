@@ -1746,10 +1746,10 @@
         "signal,decision,arca"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T22:49:30.025Z",
-      "updatedAt": "2026-10-08T22:49:33.000Z",
+      "updatedAt": "2026-10-08T22:52:25.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
