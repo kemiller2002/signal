@@ -1,14 +1,14 @@
 {
   "schemaVersion": 4,
   "project": "signal",
-  "manifestSha256": "e219ed1b4a53c8aebc04ace48a0446da1c2e3a711c9f622d36afd584a6d16dfb",
+  "manifestSha256": "cd100b37bdf8d5a10de013a0a89d25652e30f783ee22f9a10009989fe96a830c",
   "manifest": {
     "schemaVersion": 1,
     "name": "signal",
     "registryAuthority": {
       "kind": "resolved-release-set",
       "path": ".conditor/authority/resolved-release-set.json",
-      "sha256": "411e35488117a89a2dd990174328375b1b0935037046969178a838598bc3708a"
+      "sha256": "d6a26a57b1566ee9641d3d408b790d797845075ff683b52b8a574487e718841e"
     },
     "components": [
       {
@@ -28,7 +28,7 @@
       },
       {
         "id": "arca",
-        "version": "0.2.1",
+        "version": "0.3.0",
         "required": true
       },
       {
@@ -77,11 +77,11 @@
     },
     {
       "id": "arca",
-      "version": "0.2.1",
+      "version": "0.3.0",
       "distribution": "nuget",
-      "package": "EchelonFoundry.Arca.Core,EchelonFoundry.Arca.GitHub",
+      "package": "EchelonFoundry.Arca.Core,EchelonFoundry.Arca.GitHub,EchelonFoundry.Arca.Limen",
       "authority": "registry-resolved-set",
-      "sourceReference": "nuget-feed:kemiller2002/arca@v0.2.1#sha256:89896a65cf9d21bcfe871a62cfcc8d40558c4832c4cf933c5485ad4e5523b77e"
+      "sourceReference": "nuget-feed:kemiller2002/arca@v0.3.0#sha256:d3b73d5f4ca76b04f9b581e5fb7b138f724b4642f18361cbaf6f60b45a64f803"
     },
     {
       "id": "fides",

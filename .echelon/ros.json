@@ -59,7 +59,7 @@
     {
       "path": "HANDOFF.md",
       "ownership": "shared",
-      "sha256": "b2e6416fa9df26f5ddd549c0108cd86e27dc2e9280461b65c9b248101a4f39ff"
+      "sha256": "0c575ae3ddb733275fca21eca13ae623d929835760d0e867dacd7dd528730e72"
     },
     {
       "path": "PROJECT-CHARTER.md",
@@ -269,7 +269,7 @@
     {
       "path": "registries/decisions.json",
       "ownership": "generated",
-      "sha256": "ca28d9d2676173cb398a3543cba88e76e6e0adfb973c2018acfd73d28e8da1e4"
+      "sha256": "0774f9fd45b9089a4256598e83b544c1d8de15d783dc2ea69bbd15b11c89e03e"
     },
     {
       "path": "registries/evidence.json",
