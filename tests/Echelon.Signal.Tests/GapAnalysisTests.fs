@@ -28,12 +28,10 @@ let private statusRows =
 let ``every ledger requirement group has exactly one status row`` () =
     let ledgerGroups = rowGroups ledger |> Set.ofList
     let analysed = statusRows |> List.map (fun (group, _, _) -> group)
-    // ADM-001..ADM-076 share one range row; ADM-077 has its own.
-    let expected = ledgerGroups |> Set.filter (fun g -> not (g.StartsWith "ADM-") || g = "ADM-077")
+    // Every group, ADM included, has its own row (since WI-0038).
     Assert.Equal(183, ledgerGroups.Count)
     Assert.Equal<string list>(List.distinct analysed, analysed)
-    Assert.Equal<Set<string>>(expected, Set.ofList analysed)
-    Assert.Contains("| ADM-001 to ADM-076 |", analysis)
+    Assert.Equal<Set<string>>(ledgerGroups, Set.ofList analysed)
 
 let private currentSection = analysis.Substring(analysis.IndexOf "## Coverage after this programme")
 
@@ -44,47 +42,44 @@ let private summaryRowIn (text: string) (label: string) =
 
 let private summaryRow = summaryRowIn analysis
 
-let private countColumn (column: string * string * string -> string) (families: string list) (adm: int * int) =
+let private countColumn (column: string * string * string -> string) (families: string list) =
     let rows =
         statusRows
-        |> List.filter (fun (group, _, _) -> families |> List.exists (fun f -> group.StartsWith(f + "-")) && not (group.StartsWith "ADM-"))
+        |> List.filter (fun (group, _, _) -> families |> List.exists (fun f -> group.StartsWith(f + "-")))
 
     let count status = rows |> List.filter (fun row -> column row = status) |> List.length
-    let admPartial, admMissing = adm
-    [ count "tested"; count "partial" + admPartial; count "missing" + admMissing; count "n/a" ]
+    [ count "tested"; count "partial"; count "missing"; count "n/a" ]
 
 [<Fact>]
 let ``the baseline summary counts are the counts of the status rows`` () =
     let core = [ "AST"; "ACR"; "ARP"; "CAN"; "LURL"; "RPT"; "ANS"; "ALG"; "AUT"; "URLC"; "ID"; "VER" ]
-    let check label families adm =
+    let check label families =
         let row = summaryRow label
-        Assert.Equal<int list>(countColumn (fun (_, baseline, _) -> baseline) families adm, row.Tail)
+        Assert.Equal<int list>(countColumn (fun (_, baseline, _) -> baseline) families, row.Tail)
         Assert.Equal(List.sum row.Tail, row.Head)
 
-    check "Core survey engine" core (0, 0)
-    check "Advanced stress trial" [ "ARX" ] (0, 0)
-    check "Scoring and selector completeness" [ "SCS" ] (0, 0)
-    // ADM: ADM-077 has its own row; ADM-001..076 are one missing range.
-    check "Administrator console" [ "ADM" ] (1, 76)
+    check "Core survey engine" core
+    check "Advanced stress trial" [ "ARX" ]
+    check "Scoring and selector completeness" [ "SCS" ]
+    check "Administrator console" [ "ADM" ]
 
 [<Fact>]
 let ``the current summary counts are the counts of the current column`` () =
     let core = [ "AST"; "ACR"; "ARP"; "CAN"; "LURL"; "RPT"; "ANS"; "ALG"; "AUT"; "URLC"; "ID"; "VER" ]
-    let check label families adm =
+    let check label families =
         let row = summaryRowIn currentSection label
-        Assert.Equal<int list>(countColumn (fun (_, _, current) -> current) families adm, row.Tail)
+        Assert.Equal<int list>(countColumn (fun (_, _, current) -> current) families, row.Tail)
         Assert.Equal(List.sum row.Tail, row.Head)
 
-    check "Core survey engine" core (0, 0)
-    check "Advanced stress trial" [ "ARX" ] (0, 0)
-    check "Scoring and selector completeness" [ "SCS" ] (0, 0)
-    check "Administrator console" [ "ADM" ] (1, 76)
+    check "Core survey engine" core
+    check "Advanced stress trial" [ "ARX" ]
+    check "Scoring and selector completeness" [ "SCS" ]
+    check "Administrator console" [ "ADM" ]
 
 /// Every group that is not yet `tested` (and not `n/a`) is planned: an open
 /// work item in the Praxis queue (captured, ready, active or blocked) names
 /// it, directly (`ADM-052`) or inside a range of the same family
-/// (`ADM-008..011`). ADM-001..076 share one range row, so each is checked on
-/// its own. A gap that no open work item names would be silently dropped from
+/// (`ADM-008..011`). A gap that no open work item names would be silently dropped from
 /// the backlog.
 let private openWorkText =
     use queue = System.Text.Json.JsonDocument.Parse(readRepoFile ".ros/work/queue.json")
@@ -118,10 +113,9 @@ let private plannedGroups =
 [<Fact>]
 let ``every group that is not yet tested is named by an open work item`` () =
     let open' =
-        (statusRows
-         |> List.filter (fun (_, _, current) -> current = "partial" || current = "missing")
-         |> List.map (fun (group, _, _) -> group))
-        @ [ for n in 1..76 -> sprintf "ADM-%03d" n ]
+        statusRows
+        |> List.filter (fun (_, _, current) -> current = "partial" || current = "missing")
+        |> List.map (fun (group, _, _) -> group)
 
     let unplanned = open' |> List.filter (plannedGroups.Contains >> not)
     Assert.Empty unplanned

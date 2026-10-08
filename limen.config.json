@@ -3,6 +3,7 @@
   "boundary": {
     "engine": [
       "src/Echelon.Signal.Engine",
+      "src/Echelon.Signal.Admin",
       "src/Echelon.Signal.Application"
     ],
     "kernel": [

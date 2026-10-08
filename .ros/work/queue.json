@@ -841,10 +841,10 @@
         "depends:arca"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:06.146Z",
-      "updatedAt": "2026-10-08T07:48:06.146Z",
+      "updatedAt": "2026-10-08T16:58:58.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -859,7 +859,7 @@
     {
       "id": "WI-0039",
       "title": "Signal 02: storage provider contract implemented on Arca's GitHub provider (ADM-003, ADM-004, ADM-006, ADM-025, ADM-026, ADM-044, ADM-046, ADM-058, ADM-073; AER-002, AER-003, AER-032)",
-      "description": "Depends on WI-0038, arca slice 6 (GitHub adapter, ARCA-API/OUT), arca slice 7 (conformance suite, ARCA-TEST) and arca slice 8 (integrity, ARCA-INT). Signal's StorageProvider is Arca's interface; Signal owns only its domain mapping. Capability negative knowledge, untrusted-input loading, rate limits, growth warnings, protected-branch failure, and Aegis GitHub boundaries. Run Arca's conformance suite in Signal's CI. Refines WI-0012. Also closes the remaining parts of ADM-055 (see their gap-analysis rows).",
+      "description": "Depends on WI-0038, arca slice 6 (GitHub adapter, ARCA-API/OUT), arca slice 7 (conformance suite, ARCA-TEST) and arca slice 8 (integrity, ARCA-INT). Signal's StorageProvider is Arca's interface; Signal owns only its domain mapping. Capability negative knowledge, untrusted-input loading, rate limits, growth warnings, protected-branch failure, and Aegis GitHub boundaries. Run Arca's conformance suite in Signal's CI. Refines WI-0012. Also closes the remaining parts of ADM-055 (see their gap-analysis rows). Also closes WI-0038's remainders: staged loading so the storage manifest (ADM-005) is validated before any mutable administrator capability exists, and a storage profile's verification state (ADM-057).",
       "tags": [
         "signal",
         "order:02",
@@ -870,7 +870,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:06.459Z",
-      "updatedAt": "2026-10-08T07:48:06.459Z",
+      "updatedAt": "2026-10-08T16:57:07.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -885,7 +885,7 @@
     {
       "id": "WI-0040",
       "title": "Signal 03: administrator sign-in through Fides - credential lifecycle, browser secret policy, cross-tab coherence (ADM-056, ADM-071, ADM-072)",
-      "description": "Depends on fides slice 7 (WASM client and Arca token provider, FID-CLI) and arca slice 5 (token-provider port, ARCA-AUTH). Memory-only by default, typed credential states, capability recomputation on permission change, and dataset identity checks on credential replacement. Refines WI-0011 and WI-0017.",
+      "description": "Depends on fides slice 7 (WASM client and Arca token provider, FID-CLI) and arca slice 5 (token-provider port, ARCA-AUTH). Memory-only by default, typed credential states, capability recomputation on permission change, and dataset identity checks on credential replacement. Refines WI-0011 and WI-0017. Also closes WI-0038's remainder of ADM-057: the profile's credential slot (which signed-in credential a profile uses), and ADM-004's check of the credential's repository capability before writes are enabled.",
       "tags": [
         "signal",
         "order:03",
@@ -896,7 +896,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:06.779Z",
-      "updatedAt": "2026-10-08T07:48:06.779Z",
+      "updatedAt": "2026-10-08T16:57:07.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

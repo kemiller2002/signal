@@ -149,7 +149,7 @@ let ``the Limen boundary names the F# engine and the browser kernel`` () =
     let paths (name: string) = boundary.[name].AsArray() |> Seq.map str |> Seq.toList
 
     Assert.Null(boundary.["notApplicable"])
-    Assert.Equal<string list>([ "src/Echelon.Signal.Engine"; "src/Echelon.Signal.Application" ], paths "engine")
+    Assert.Equal<string list>([ "src/Echelon.Signal.Engine"; "src/Echelon.Signal.Admin"; "src/Echelon.Signal.Application" ], paths "engine")
     Assert.Equal<string list>([ "src/Echelon.Signal.Browser"; "web"; "web-kernel" ], paths "kernel")
 
     for path in paths "engine" @ paths "kernel" do

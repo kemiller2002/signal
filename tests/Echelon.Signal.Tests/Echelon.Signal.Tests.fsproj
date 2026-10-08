@@ -31,6 +31,7 @@
     <Compile Include="EncodingTests.fs" />
     <Compile Include="StructureTests.fs" />
     <Compile Include="ReportingTests.fs" />
+    <Compile Include="StorageTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,6 +44,7 @@
   <ItemGroup>
     <ProjectReference Include="../../src/Echelon.Signal.Engine/Echelon.Signal.Engine.fsproj" />
     <ProjectReference Include="../../src/Echelon.Signal.Application/Echelon.Signal.Application.fsproj" />
+    <ProjectReference Include="../../src/Echelon.Signal.Admin/Echelon.Signal.Admin.fsproj" />
   </ItemGroup>
 
 </Project>

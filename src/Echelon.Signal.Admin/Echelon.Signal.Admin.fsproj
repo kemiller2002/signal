@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Limen engine, administrator domain: where Signal's administrator data
+       lives and the rules for reading and changing it, over Arca's
+       provider-neutral storage contract. Pure F#: it builds Arca operations
+       and validates what Arca reads; an Arca provider (in memory for tests,
+       GitHub in the application) carries them out. No browser, network,
+       clock or file-system access. -->
+
+  <ItemGroup>
+    <Compile Include="Problems.fs" />
+    <Compile Include="Codec.fs" />
+    <Compile Include="Deployment.fs" />
+    <Compile Include="DatasetManifest.fs" />
+    <Compile Include="Storage.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EchelonFoundry.Arca.Core" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Echelon.Signal.Engine/Echelon.Signal.Engine.fsproj" />
+  </ItemGroup>
+
+</Project>
