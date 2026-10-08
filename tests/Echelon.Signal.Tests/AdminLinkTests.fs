@@ -189,3 +189,55 @@ let ``a fresh page opens a dataset that already has groups within the sign-in st
     back.Send(initialize $"?code=good-code&state={callbackState browser}" "")
     Assert.True(back.Flag "screenDataset", back.ViewText)
     Assert.Equal(1, back.Items("groups").Length)
+
+/// Every name a view offers: its keys and the fields of its list items.
+let private namesOf (viewText: string) =
+    let view = Text.Json.Nodes.JsonNode.Parse(viewText).AsObject()
+
+    view
+    |> Seq.collect (fun pair ->
+        match pair.Value with
+        | :? Text.Json.Nodes.JsonArray as items -> pair.Key :: (items |> Seq.collect (fun item -> item.AsObject() |> Seq.map _.Key) |> List.ofSeq)
+        | _ -> [ pair.Key ])
+    |> Set.ofSeq
+
+[<Fact>]
+let ``the administrator page binds only what its engine projects, and sends only events it handles`` () =
+    let html = Support.readRepoFile "web/admin/index.html"
+    let browser, github, key = withGroup ()
+    let page = openAt browser github ""
+    page.Event("signIn")
+    let back = Page(browser, github, fun () -> true)
+    back.Send(initialize $"?code=good-code&state={callbackState browser}" "")
+    // A second comparable group, so comparison rows are projected.
+    changed back "#/groups"
+    back.Event("newGroupExpected", value = "2")
+    back.Event("newGroupMinimum", value = "1")
+    back.Event("createGroup")
+    let other = back.Text "groupKey"
+
+    let seen =
+        [ $"#/compare?groups={key},{other}"; $"#/groups/{key}"; $"#/groups/{key}/results?section=D01"; $"#/groups/{key}/scoring"; $"#/groups/{key}/imports"
+          $"#/compare?groups={key}"; "#/groups"; "#/assessments/SDRA/versions/0.1.0-draft/sections/D01/questions/CORE-001"; "#/nowhere" ]
+        |> List.map (fun hash ->
+            changed back hash
+            namesOf back.ViewText)
+        |> Set.unionMany
+
+    let attribute (name: string) =
+        Text.RegularExpressions.Regex.Matches(html, $"\\s{name}=\"([^\"]+)\"") |> Seq.map (fun m -> m.Groups[1].Value) |> Set.ofSeq
+
+    let bound =
+        Set.unionMany
+            [ attribute "data-text"; attribute "data-if"; attribute "data-each"; attribute "data-key"
+              Text.RegularExpressions.Regex.Matches(html, "\\sdata-bind-[a-z-]+=\"([^\"]+)\"") |> Seq.map (fun m -> m.Groups[1].Value) |> Set.ofSeq ]
+
+    // Obligation items (code, text) appear only with unreconciled work, which
+    // these flows do not create; AdminView projects both fields.
+    Assert.Empty(Set.difference bound (Set.union seen (set [ "code"; "text" ])))
+
+    // Every event the page sends is one the engine handles (an unknown one fails loudly).
+    for name in attribute "data-event" do
+        let probe = Page(browser, github, fun () -> true)
+        probe.Send(initialize "" "#/assessments")
+        probe.Event(name, key = "x", value = "")

@@ -44,6 +44,7 @@ bin/
 obj/
 build/
 dist-pages/
+dist-pages-root/
 test-results/
 playwright-report/
 

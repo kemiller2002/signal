@@ -8,8 +8,15 @@
 import { existsSync } from "node:fs";
 import { defineConfig, devices } from "@playwright/test";
 
-const port = 4321;
+// SIGNAL_TEST_PORT moves the suite off 4321 when that port is taken locally.
+const port = Number(process.env.SIGNAL_TEST_PORT ?? 4321);
 const origin = `http://127.0.0.1:${port}`;
+
+// The assembled GitHub Pages site (tools/pages/assemble-site.mjs), served
+// under a sub-path, so deep links are proven against what Pages publishes
+// (SIG-LINK-012). It needs `npm run build:wasm` first, as the suite does.
+const pagesPort = port + 1;
+const pagesOrigin = `http://127.0.0.1:${pagesPort}`;
 
 // Some environments ship a Chromium that Playwright did not download itself
 // and must not try to. Where that binary exists it is used as-is; everywhere
@@ -26,14 +33,29 @@ export default defineConfig({
   timeout: 60_000,
   reporter: process.env.CI ? [["github"], ["list"]] : [["list"]],
   use: { baseURL: origin, trace: "retain-on-failure" },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"], launchOptions } }],
+  projects: [
+    { name: "chromium", use: { ...devices["Desktop Chrome"], launchOptions } },
+    {
+      name: "pages",
+      testMatch: /deep-links\.spec\.js/,
+      use: { ...devices["Desktop Chrome"], launchOptions, baseURL: `${pagesOrigin}/signal/` }
+    }
+  ],
   // Served from the repository root: index.html reaches up into node_modules/
   // for Limen, Forma and Folio, into web-kernel/ for the kernel, and into
   // build/ for the published engine.
-  webServer: {
-    command: `python3 -m http.server ${port} --bind 127.0.0.1`,
-    url: `${origin}/web/index.html`,
-    reuseExistingServer: !process.env.CI,
-    timeout: 60_000
-  }
+  webServer: [
+    {
+      command: `python3 -m http.server ${port} --bind 127.0.0.1`,
+      url: `${origin}/web/index.html`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 60_000
+    },
+    {
+      command: `node tools/pages/assemble-site.mjs dist-pages-root/signal && python3 -m http.server ${pagesPort} --bind 127.0.0.1 --directory dist-pages-root`,
+      url: `${pagesOrigin}/signal/web/admin/index.html`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120_000
+    }
+  ]
 });

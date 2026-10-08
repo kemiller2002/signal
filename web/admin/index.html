@@ -22,7 +22,68 @@
       </div>
       <p id="principal" data-text="principal"></p>
     </div>
+    <!-- Every view's address is its state (SIG-LINK-001); this copies it. -->
+    <div class="ef-record-header__actions">
+      <button type="button" class="ef-button" id="copy-link" data-event="copyLink">Copy link</button>
+    </div>
   </header>
+
+  <!-- Relative links from the engine's route codec (SIG-LINK-002). -->
+  <nav class="ef-navigation-shell" id="areas" aria-label="Administration">
+    <ul class="areas">
+      <template data-each="areas" data-key="href">
+        <li><a data-bind-href="href" data-bind-aria-current="current" data-text="label"></a></li>
+      </template>
+    </ul>
+  </nav>
+
+  <!-- A link that names nothing has its own page (SIG-LINK-007). -->
+  <template data-if="hasProblem">
+    <section id="route-problem" class="ef-stack" role="alert" aria-labelledby="route-problem-title">
+      <h2 id="route-problem-title" data-text="problemTitle"></h2>
+      <p id="route-problem-message" data-text="problemMessage"></p>
+      <p><a id="route-problem-home" data-bind-href="homeHref">Go to the overview</a></p>
+    </section>
+  </template>
+
+  <!-- Assessments: public, no sign-in or dataset needed (DF-SIGNAL-2026-0003 §8). -->
+  <template data-if="viewAssessments">
+    <section id="assessments" class="ef-stack" aria-labelledby="assessments-title">
+      <h2 id="assessments-title">Assessments</h2>
+      <ul id="catalog-assessments">
+        <template data-each="catalogAssessments" data-key="href"><li><a data-bind-href="href" data-text="label"></a></li></template>
+      </ul>
+      <template data-if="hasAssessment">
+        <section id="assessment" class="ef-stack">
+          <h3><a id="assessment-title" data-bind-href="assessmentHref" data-text="assessmentTitle"></a></h3>
+          <nav aria-label="Sections">
+            <ul id="assessment-sections">
+              <template data-each="assessmentSections" data-key="id">
+                <li><a data-bind-href="href" data-bind-aria-current="current"><span data-text="id"></span> <span data-text="label"></span></a></li>
+              </template>
+            </ul>
+          </nav>
+          <template data-if="hasSection">
+            <section id="section" class="ef-stack">
+              <h4 id="section-label" data-text="sectionLabel"></h4>
+              <ol id="section-questions">
+                <template data-each="sectionQuestions" data-key="id">
+                  <li><a data-bind-href="href" data-bind-aria-current="current"><span data-text="id"></span>: <span data-text="prompt"></span></a></li>
+                </template>
+              </ol>
+            </section>
+          </template>
+          <template data-if="hasQuestion">
+            <section id="question" class="ef-stack" aria-label="Question">
+              <p><strong id="question-id" data-text="questionId"></strong></p>
+              <blockquote id="question-prompt" data-text="questionPrompt"></blockquote>
+              <p>Answered on a five-point frequency scale, with "don't know", "not observed" and "not applicable", which are not counted as zero.</p>
+            </section>
+          </template>
+        </section>
+      </template>
+    </section>
+  </template>
 
   <template data-if="hasOperationalFault">
     <aside class="ef-fault ef-fault--inline" id="operational-fault" role="alert">
@@ -98,13 +159,7 @@
         <button type="button" class="ef-button" data-event="signOut">Sign out</button>
       </div>
 
-      <nav class="ef-navigation-shell" aria-label="Administration">
-        <template data-each="areas" data-key="key">
-          <button type="button" class="ef-button" data-event="navigate" data-bind-aria-current="current" data-text="label"></button>
-        </template>
-      </nav>
-
-      <template data-if="routeOverview">
+      <template data-if="viewOverview">
         <section id="overview" class="ef-stack">
           <h2>Overview</h2>
           <p><span data-text="groupsWaiting"></span> group(s) waiting for imports · <span data-text="groupsComplete"></span> complete</p>
@@ -115,16 +170,30 @@
         </section>
       </template>
 
-      <template data-if="routeGroups">
+      <template data-if="viewGroups">
         <section id="groups" class="ef-stack">
           <h2>Groups</h2>
-          <label>Filter <input type="search" id="group-filter" data-event="filter" data-bind-value="filter" /></label>
-          <table>
+          <!-- Typed filters, held in the address (SIG-LINK-001, SIG-LINK-008). -->
+          <fieldset id="group-filters" class="ef-choice-group">
+            <legend>Filter</legend>
+            <template data-each="statusFilters" data-key="key">
+              <label><input type="checkbox" data-event="filterStatus" data-bind-value="key" data-bind-checked="checked" /> <span data-text="label"></span></label>
+            </template>
+            <template data-each="modeFilters" data-key="key">
+              <label><input type="checkbox" data-event="filterMode" data-bind-value="key" data-bind-checked="checked" /> <span data-text="label"></span></label>
+            </template>
+            <label>Survey
+              <select id="survey-filter" data-event="filterSurvey">
+                <template data-each="surveyFilters" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template>
+              </select>
+            </label>
+          </fieldset>
+          <table id="group-list">
             <thead><tr><th>Group</th><th>Survey</th><th>Identity</th><th>Accepted</th><th>State</th></tr></thead>
             <tbody>
               <template data-each="groups" data-key="key">
                 <tr>
-                  <td><button type="button" class="ef-button" data-event="openGroup" data-text="key"></button></td>
+                  <td><a data-bind-href="href" data-text="key"></a></td>
                   <td data-text="survey"></td><td data-text="mode"></td><td data-text="progress"></td><td data-text="phase"></td>
                 </tr>
               </template>
@@ -146,15 +215,38 @@
             </form>
           </template>
 
-          <template data-if="hasGroup">
+        </section>
+      </template>
+
+      <template data-if="viewGroupTabs">
+        <template data-if="hasGroup">
             <section id="group" class="ef-stack">
-              <h3>Group <code data-text="groupKey"></code></h3>
+              <h2>Group <code id="group-key" data-text="groupKey"></code></h2>
               <p><span data-text="groupProgress"></span> · <span id="group-phase" data-text="groupPhase"></span></p>
+              <nav aria-label="Group" id="group-tabs">
+                <ul class="areas">
+                  <li><a id="tab-group" data-bind-href="groupHref" data-bind-aria-current="viewGroup">Overview</a></li>
+                  <li><a id="tab-results" data-bind-href="resultsHref" data-bind-aria-current="viewResults">Results</a></li>
+                  <li><a id="tab-scoring" data-bind-href="scoringHref" data-bind-aria-current="viewScoring">Scoring</a></li>
+                  <li><a id="tab-imports" data-bind-href="importsHref" data-bind-aria-current="viewImports">Imported surveys</a></li>
+                </ul>
+              </nav>
+              <template data-if="viewGroup">
+              <section id="group-overview" class="ef-stack">
               <table>
                 <thead><tr><th>Section</th><th>Mean</th></tr></thead>
                 <tbody><template data-each="sections" data-key="id"><tr><td data-text="id"></td><td data-text="score"></td></tr></template></tbody>
               </table>
               <p>Report state: <code id="report-fragment" data-text="reportFragment"></code></p>
+              <div class="ef-stack" id="lifecycle">
+                <template data-if="canClose"><button type="button" class="ef-button" data-event="transition" value="close">Close incomplete</button></template>
+                <template data-if="canReopen"><button type="button" class="ef-button" data-event="transition" value="reopen">Reopen</button></template>
+                <template data-if="canFinalize"><button type="button" class="ef-button" data-event="transition" value="finalize">Finalize</button></template>
+                <template data-if="canSeal"><button type="button" class="ef-button" data-event="transition" value="seal">Seal</button></template>
+              </div>
+              </section>
+              </template>
+              <template data-if="viewResults">
               <!-- Charts compiled and validated in F# (ADM-015..017): meters for the
                    marks, a symbol beside every colour, and the same data as text. -->
               <section id="exploration" class="ef-stack" aria-label="Exploration">
@@ -193,14 +285,22 @@
                   </figure>
                 </template>
               </section>
-              <details id="analysis"><summary>Analysis (calculated, not the canonical result)</summary>
-                <table>
+              </template>
+              <template data-if="viewScoring">
+              <section id="scoring" class="ef-stack" aria-label="Scoring">
+                <p>Calculated measures, not the canonical result.</p>
+                <ul class="areas" id="scoring-sections">
+                  <template data-each="scoringSections" data-key="id"><li><a data-bind-href="href" data-bind-aria-current="current" data-text="id"></a></li></template>
+                </ul>
+                <table id="scoring-measures">
                   <thead><tr><th>Section</th><th>Measure</th><th>Value</th></tr></thead>
-                  <tbody><template data-each="analysis" data-key="key"><tr><td data-text="section"></td><td data-text="measure"></td><td data-text="value"></td></tr></template></tbody>
+                  <tbody><template data-each="scoringMeasures" data-key="key"><tr><td data-text="section"></td><td data-text="measure"></td><td data-text="value"></td></tr></template></tbody>
                 </table>
                 <p>Lineage: <code id="lineage" data-text="lineage"></code></p>
-              </details>
-
+              </section>
+              </template>
+              <template data-if="viewImports">
+              <section id="imports" class="ef-stack" aria-label="Imported surveys">
               <template data-if="canImport">
                 <form id="import" class="ef-stack" data-event="import">
                   <label>Completed survey links, one per line
@@ -211,6 +311,16 @@
                 </form>
               </template>
 
+              <fieldset id="outcome-filters" class="ef-choice-group">
+                <legend>Show</legend>
+                <template data-each="outcomeFilters" data-key="key">
+                  <label><input type="checkbox" data-event="filterOutcome" data-bind-value="key" data-bind-checked="checked" /> <span data-text="label"></span></label>
+                </template>
+              </fieldset>
+              <table id="imported-surveys">
+                <thead><tr><th>Artifact</th><th>Outcome</th></tr></thead>
+                <tbody><template data-each="importedSurveys" data-key="artifact"><tr><td><code data-text="artifact"></code></td><td data-text="outcome"></td></tr></template></tbody>
+              </table>
               <section id="last-import" aria-label="Last import">
                 <!-- ADM-008's separate views of the last batch, by outcome. -->
                 <details id="importPending"><summary>Pending</summary><ul><template data-each="importPending" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
@@ -226,19 +336,36 @@
                   <tbody><template data-each="importItems" data-key="artifact"><tr><td><code data-text="artifact"></code></td><td data-text="outcome"></td></tr></template></tbody>
                 </table>
               </section>
-
-              <div class="ef-stack" id="lifecycle">
-                <template data-if="canClose"><button type="button" class="ef-button" data-event="transition" value="close">Close incomplete</button></template>
-                <template data-if="canReopen"><button type="button" class="ef-button" data-event="transition" value="reopen">Reopen</button></template>
-                <template data-if="canFinalize"><button type="button" class="ef-button" data-event="transition" value="finalize">Finalize</button></template>
-                <template data-if="canSeal"><button type="button" class="ef-button" data-event="transition" value="seal">Seal</button></template>
-              </div>
+              </section>
+              </template>
             </section>
-          </template>
+        </template>
+      </template>
+
+      <template data-if="viewCompare">
+        <section id="compare" class="ef-stack" aria-labelledby="compare-title">
+          <h2 id="compare-title">Compare groups</h2>
+          <fieldset id="compare-groups" class="ef-choice-group">
+            <legend>Groups</legend>
+            <template data-each="compareGroups" data-key="key">
+              <label><input type="checkbox" data-event="compareGroup" data-bind-value="key" data-bind-checked="checked" /> <code data-text="key"></code> <span data-text="survey"></span></label>
+            </template>
+          </fieldset>
+          <label>Section
+            <select id="compare-section" data-event="compareSection">
+              <option value="">All sections</option>
+              <template data-each="compareSections" data-key="id"><option data-bind-value="id" data-bind-selected="selected" data-text="id"></option></template>
+            </select>
+          </label>
+          <p id="compare-reason" data-text="compareReason"></p>
+          <table id="compare-rows">
+            <thead><tr><th>Section</th><th>Group</th><th>Mean</th></tr></thead>
+            <tbody><template data-each="compareRows" data-key="key"><tr><td data-text="section"></td><td><code data-text="group"></code></td><td data-text="score"></td></tr></template></tbody>
+          </table>
         </section>
       </template>
 
-      <template data-if="routeAdministrators">
+      <template data-if="viewAdministrators">
         <section id="administrators" class="ef-stack">
           <h2>Administrators</h2>
           <table>
@@ -271,7 +398,7 @@
         </section>
       </template>
 
-      <template data-if="routeStorage">
+      <template data-if="viewStorage">
         <section id="storage" class="ef-stack">
           <h2>Storage</h2>
           <p id="verification" data-text="verification"></p>
