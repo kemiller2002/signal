@@ -1619,7 +1619,7 @@
     {
       "id": "WI-0069",
       "title": "Signal 09c: report remainders after WI-0062 - respondent, facilitator and 360-reviewer report families, benchmark comparisons and identified respondent detail in reports, longitudinal series, draft status and caching, and a server-side PDF renderer (RPT-001..006, SRPP-011..028, SRPP-072..088)",
-      "description": null,
+      "description": "Remainders of WI-0062: the respondent, facilitator and 360-reviewer report families; benchmark comparisons and identified respondent detail in reports; longitudinal series; draft status and caching; a server-side PDF renderer (RPT-001..006, SRPP-011..028, SRPP-072..088). Also carries ADM-069's remainder: long translated labels and font fallback in rendered reports.",
       "tags": [
         "signal",
         "reporting",
@@ -1629,7 +1629,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T21:21:21.285Z",
-      "updatedAt": "2026-10-08T21:21:21.285Z",
+      "updatedAt": "2026-10-08T21:26:54.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
