@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T16:20:39.000Z",
+  "updatedAt": "2026-10-08T16:28:10.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -1388,13 +1388,52 @@
     {
       "id": "WI-0046",
       "type": "feature",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-08T16:20:39.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/GroupResult.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/Report.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/ReportExport.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/ReportingTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-08T16:28:10.000Z",
       "telemetryExecutionIds": [
         "EXE-20261008T162040295Z-0688987e"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "2925b1ec6be42e12c6e2fd93",
+        "recordedAt": "2026-10-08T16:28:08.000Z",
+        "executionId": "EXE-20261008T162040295Z-0688987e",
+        "repository": "echelon-signal",
+        "branch": "feat/reporting-contract",
+        "commit": "5c5c3504522c893454deb9af70240248a189cda5",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feat/reporting-contract",
+        "remoteCommit": "5c5c3504522c893454deb9af70240248a189cda5",
+        "summary": "GroupResult, ReportModel, Report, ReportExport; 180 tests; renderers captured as WI-0062",
+        "nextAction": "Complete WI-0046 and open the PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T16:28:10.000Z",
+      "conclusion": "Format-neutral reporting contract with exports and snapshots; 180/180 tests; Folio/HTML rendering in WI-0062"
     }
   ]
 }
