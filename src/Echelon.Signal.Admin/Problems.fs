@@ -36,6 +36,22 @@ type Problem =
     | OperationRefused of detail: string
     /// A record cannot be encoded for storage.
     | UnstorableRecord of id: string * detail: string
+    /// A record is not where its id and type place it.
+    | MisplacedRecord of path: string
+    /// The same id at two paths: neither copy can be trusted to be the record.
+    | DuplicateRecord of id: string
+    /// A record belongs to another dataset (ADM-025, ADM-046).
+    | WrongDataset of path: string * found: string
+    /// A record refers to one that is not stored.
+    | DanglingReference of from: string * target: string
+    /// Records refer to each other in a cycle.
+    | ReferenceCycle of ids: string list
+    /// The provider returned a partial listing: what was not listed was not validated.
+    | IncompleteRead of folder: string
+    /// A needed storage capability is not offered (ADM-003).
+    | CapabilityUnavailable of capability: string * reason: string
+    /// Direct writes are not possible at the configured branch (ADM-073).
+    | WritesUnavailable of mode: string
 
 /// The problem's stable code.
 let code =
@@ -54,6 +70,14 @@ let code =
     | InvalidStoredRecord _ -> "SIGNAL.STORAGE.INVALID_RECORD"
     | OperationRefused _ -> "SIGNAL.STORAGE.OPERATION_REFUSED"
     | UnstorableRecord _ -> "SIGNAL.STORAGE.UNSTORABLE_RECORD"
+    | MisplacedRecord _ -> "SIGNAL.STORAGE.MISPLACED_RECORD"
+    | DuplicateRecord _ -> "SIGNAL.STORAGE.DUPLICATE_RECORD"
+    | WrongDataset _ -> "SIGNAL.STORAGE.WRONG_DATASET"
+    | DanglingReference _ -> "SIGNAL.STORAGE.DANGLING_REFERENCE"
+    | ReferenceCycle _ -> "SIGNAL.STORAGE.REFERENCE_CYCLE"
+    | IncompleteRead _ -> "SIGNAL.STORAGE.INCOMPLETE_READ"
+    | CapabilityUnavailable _ -> "SIGNAL.STORAGE.CAPABILITY_UNAVAILABLE"
+    | WritesUnavailable _ -> "SIGNAL.STORAGE.WRITES_UNAVAILABLE"
 
 /// The problem as one sentence for the person. It never holds a credential.
 let describe =
@@ -72,3 +96,11 @@ let describe =
     | InvalidStoredRecord(path, detail) -> $"'{path}' is not a valid record: {detail}."
     | OperationRefused detail -> $"The change cannot be saved: {detail}."
     | UnstorableRecord(id, detail) -> $"'{id}' cannot be stored: {detail}."
+    | MisplacedRecord path -> $"'{path}' is not where its id and type place it."
+    | DuplicateRecord id -> $"'{id}' is stored twice; neither copy is used."
+    | WrongDataset(path, found) -> $"'{path}' belongs to dataset '{found}'."
+    | DanglingReference(from, target) -> $"'{from}' refers to '{target}', which is not stored."
+    | ReferenceCycle ids -> "Records refer to each other in a cycle: " + String.concat ", " ids + "."
+    | IncompleteRead folder -> $"The provider listed only part of '{folder}'; the rest was not checked."
+    | CapabilityUnavailable(capability, reason) -> $"The store cannot offer {capability}: {reason}."
+    | WritesUnavailable mode -> $"Changes cannot be saved ({mode})."
