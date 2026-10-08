@@ -132,9 +132,11 @@ let private interpret (assessment: Assessment) (identity: SubmissionIdentity) (e
       AnsweredCount = envelope.Answers.Count
       NonNumericCount = envelope.Answers |> Map.filter (fun _ a -> (numericValue a).IsNone) |> Map.count }
 
-/// Reads and validates one submission against a group, without changing it.
-let evaluate (state: GroupState) (text: string) : ImportOutcome =
-    let definition = state.Definition
+/// Reads and validates one submission against a group definition and the
+/// group's accepted identities (`accepted` gives the SubmissionHash accepted
+/// for an identity key, if any), without changing anything. The accepted
+/// set may come from the results in memory or from a store's index.
+let evaluateAgainst (definition: GroupDefinition) (accepted: string -> string option) (text: string) : ImportOutcome =
     let assessment = definition.Template
 
     match payloadOf text with
@@ -162,12 +164,17 @@ let evaluate (state: GroupState) (text: string) : ImportOutcome =
                 | _ ->
                     let result = interpret assessment identity envelope
 
-                    match state.Results.TryFind identity.Key with
-                    | Some existing when existing.SubmissionHash = result.SubmissionHash -> AlreadyImported identity
-                    | Some existing -> Rejected(DuplicateInstance existing.SubmissionHash)
+                    match accepted identity.Key with
+                    | Some existing when existing = result.SubmissionHash -> AlreadyImported identity
+                    | Some existing -> Rejected(DuplicateInstance existing)
                     | None -> Accepted result
 
-let private code =
+/// Reads and validates one submission against a group, without changing it.
+let evaluate (state: GroupState) (text: string) : ImportOutcome =
+    evaluateAgainst state.Definition (fun key -> state.Results.TryFind key |> Option.map _.SubmissionHash) text
+
+/// The outcome's stable code, as the audit log records it.
+let outcomeCode =
     function
     | Accepted _ -> "accepted"
     | AlreadyImported _ -> "already-imported"
@@ -191,7 +198,7 @@ let importOne (state: GroupState) (text: string) : GroupState * ImportOutcome =
 
     { state with
         Results = results
-        Log = state.Log @ [ code outcome ] },
+        Log = state.Log @ [ outcomeCode outcome ] },
     outcome
 
 /// Imports a batch in order; each item's outcome is reported (ADM-060).

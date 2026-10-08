@@ -20,6 +20,11 @@
     <Compile Include="AdministratorRecord.fs" />
     <Compile Include="RosterStore.fs" />
     <Compile Include="Credential.fs" />
+    <Compile Include="GroupRecord.fs" />
+    <Compile Include="ResultRecord.fs" />
+    <Compile Include="Intake.fs" />
+    <Compile Include="ReportState.fs" />
+    <Compile Include="ContributionIndex.fs" />
   </ItemGroup>
 
   <ItemGroup>
