@@ -1786,7 +1786,7 @@
     },
     {
       "id": "WI-0076",
-      "title": "Signal 14b: apply WI-0051's privacy controls in the store and the page - disclosure ledger on filters, breakdowns and snapshot releases, audit records stored and emitted, retention and retirement enforced (ADM-024, ADM-030, ADM-045, ADM-064, ARX-009)",
+      "title": "Signal 14b: apply WI-0051's privacy controls in the store and the page - disclosure ledger on filters, breakdowns and snapshot releases, audit records stored and emitted, retention and retirement enforced (ADM-024, ADM-030, ADM-045, ADM-064, ARX-009, SCS-001)",
       "description": "WI-0051 built the pure controls: Disclosure (thresholds, complementary suppression, the release ledger against differencing), Audit (PII-free records) and Retention (lifecycle, retention, provider-honest deletion claims, reproducibility versus deletion). Remaining: applying Disclosure and its ledger to the page's filters, role breakdowns, comparisons, snapshot releases and exports (ADM-024, ARX-009); storing audit records through Arca and emitting them from every store operation (ADM-030); enforcing retention and read-only retirement in the store, removal from the repository tree through Arca and the lifecycle screens (ADM-045); storing reproducibility limitations durably (ADM-064); the PII-injection fixture set across question definitions, metadata, localization, report labels, example submissions, import metadata, storage DTOs and diagnostics (ARX-009).",
       "tags": [
         "signal,order:14b,privacy"
@@ -1795,7 +1795,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T23:30:28.278Z",
-      "updatedAt": "2026-10-08T23:30:28.278Z",
+      "updatedAt": "2026-10-08T23:36:35.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
