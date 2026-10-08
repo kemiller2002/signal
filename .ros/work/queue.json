@@ -841,10 +841,10 @@
         "depends:arca"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:06.146Z",
-      "updatedAt": "2026-10-08T16:49:03.000Z",
+      "updatedAt": "2026-10-08T16:58:58.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

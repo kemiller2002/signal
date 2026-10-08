@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T16:49:03.000Z",
+  "updatedAt": "2026-10-08T16:58:58.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -1526,13 +1526,44 @@
     {
       "id": "WI-0038",
       "type": "implementation",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-08T16:49:03.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/Storage.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/StorageTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-08T16:58:58.000Z",
       "telemetryExecutionIds": [
         "EXE-20261008T164904442Z-925b1211"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "4cae11a619d6ce5d1b1f6003",
+        "recordedAt": "2026-10-08T16:58:56.000Z",
+        "executionId": "EXE-20261008T164904442Z-925b1211",
+        "repository": "echelon-signal",
+        "branch": "feature/storage-location",
+        "commit": "a8688d88fee2dc4d2f7d597373f11cf5c09f038c",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feature/storage-location",
+        "remoteCommit": "a8688d88fee2dc4d2f7d597373f11cf5c09f038c",
+        "summary": "Admin domain project with deployment config, storage profiles, namespace, dataset set-up and storage manifest; 16 storage tests; ADM rows per group",
+        "nextAction": "Complete WI-0038 and open the PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T16:58:58.000Z",
+      "conclusion": "Signal's data location is deployment configuration with storage profiles; Signal owns <base>/signal, datasets live in their profile's repository, production data is refused in public repositories, and every dataset carries a validated ADM-005 storage manifest. ADM-004, ADM-005 and ADM-057 are partial; remainders are named in WI-0039 and WI-0040."
     }
   ]
 }
