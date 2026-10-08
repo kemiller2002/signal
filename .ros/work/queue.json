@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 75,
+  "nextSeq": 76,
   "items": [
     {
       "id": "WI-0001",
@@ -1153,10 +1153,10 @@
         "exports"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:10.206Z",
-      "updatedAt": "2026-10-08T18:53:16.000Z",
+      "updatedAt": "2026-10-08T23:17:48.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1750,6 +1750,29 @@
       "attachments": [],
       "createdAt": "2026-10-08T22:49:30.025Z",
       "updatedAt": "2026-10-08T22:52:25.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0075",
+      "title": "Signal 13b: the report builder, snapshot and export screens, configuration packages and policy packs after WI-0050 (ADM-001, ADM-002, ADM-007, ADM-008, ADM-018, ADM-021, ADM-022, ADM-023, ADM-031, ADM-047, ADM-048, ADM-049, ADM-050, ADM-051, ADM-061, ADM-062, ADM-063, ADM-066, ADM-077)",
+      "description": "WI-0050 built saved, versioned report definitions with exact dependency pins, immutable formal snapshots that never read current state, and exports with non-PII lineage, stored through Arca (ReportLibrary, ReportRecord, ReportStore). Remaining: the report builder screen with preview and accessibility checks (ADM-021); showing snapshots and their unresolved state in the page (ADM-022); print HTML and PDF through Folio, the offline snapshot package and the download mechanism with its Aegis boundary (ADM-023, ADM-077); pins on dashboard definitions, policy packs, localization packages and comparison references (ADM-063); portable configuration packages with quarantine (ADM-047, ADM-061); versioned policy packs (ADM-048); the page's Reports, Dashboards, Snapshots and Audit areas and the Reporting and Snapshotting states (ADM-001, ADM-031, ADM-002); group configuration editing, successors, per-group report definitions and storage profile in the page (ADM-007); the conflict workspace's resolution flow (ADM-062); finalization with a formal snapshot and FinalizationOutcomeUnknown reconciliation (ADM-066); importing a text file through Limen's files capability (ADM-008); report-definition and dashboard impacts of template upgrades (ADM-049) and semantic diffs of report, dashboard and visualization definitions, analysis expressions, privacy policies, policy packs and configuration packages (ADM-051); saving dashboard definitions with the remaining blocks (ADM-018); report-definition regression fixtures and the browser-level assertions (ADM-050).",
+      "tags": [
+        "signal,order:13b,reporting"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T23:13:53.185Z",
+      "updatedAt": "2026-10-08T23:13:53.185Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

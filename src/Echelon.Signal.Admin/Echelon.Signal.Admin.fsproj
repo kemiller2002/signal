@@ -38,6 +38,8 @@
     <Compile Include="Regression.fs" />
     <Compile Include="ReportLabels.fs" />
     <Compile Include="TemplateRecord.fs" />
+    <Compile Include="ReportLibrary.fs" />
+    <Compile Include="ReportRecord.fs" />
     <Compile Include="Routes.fs" />
     <Compile Include="AdminNavigation.fs" />
     <Compile Include="AdminApp.fs" />
