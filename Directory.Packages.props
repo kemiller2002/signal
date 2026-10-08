@@ -23,6 +23,10 @@
     <PackageVersion Include="EchelonFoundry.Fides" Version="0.2.0" />
     <PackageVersion Include="EchelonFoundry.Fides.Client" Version="0.2.0" />
     <PackageVersion Include="EchelonFoundry.Fides.Arca" Version="0.2.0" />
+    <!-- Limen 0.9.0's F# router (limen-fsharp, attested release asset in
+         vendor/nuget, vendor/nuget/limen-fsharp.lock): the routing semantics
+         Signal's routes are built on (DF-SIGNAL-2026-0003, WI-0071). -->
+    <PackageVersion Include="EchelonFoundry.Limen.Routing" Version="0.9.0" />
   </ItemGroup>
 
   <ItemGroup Label="Test">

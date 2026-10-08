@@ -148,14 +148,12 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   model and codec are `src/Echelon.Signal.Admin/Routes.fs` and
   `AdminNavigation.fs`; the inventory is `.echelon/routes.json` (a test holds
   it equal to the table).
-- `vendor/limen-routing/Routing.fs` is Limen's router byte for byte (limen
-  `e935da7`, SHA-256 pinned). **When Limen 0.9.0 ships
-  `EchelonFoundry.Limen.Routing`**, delete `vendor/limen-routing`, reference
-  the package from `Echelon.Signal.Admin` and the tests, remove it from the
-  Limen boundary in `limen.config.json` and `FoundationsConformanceTests`,
-  and keep `tests/limen-routing` (the vectors then test the package).
-- Open for the owner: DF-SIGNAL-2026-0003 decision 4 (the respondent page's
-  `#r=` answer document versus "never answers in URLs").
+- Routing is Limen 0.9.0's `EchelonFoundry.Limen.Routing` (WI-0071), installed
+  by Conditor from echelon-current 1.11.0 into `vendor/nuget`. Limen's vectors
+  (`tests/limen-routing`) test it, and `RouteSchemaTests` validates
+  `.echelon/routes.json` against the shipped `contract/routes.schema.json`.
+- DF-SIGNAL-2026-0003 decision 4 is closed (WI-0070): the respondent's `#r=`
+  answer link is an accepted, scoped, disclosed exception.
 - Browser suite: `SIGNAL_TEST_PORT` moves it off 4321 when that port is taken;
   the `pages` project serves the assembled site under `/signal/`.
 

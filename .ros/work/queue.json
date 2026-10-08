@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 71,
+  "nextSeq": 72,
   "items": [
     {
       "id": "WI-0001",
@@ -1654,6 +1654,31 @@
       "attachments": [],
       "createdAt": "2026-10-08T21:33:50.204Z",
       "updatedAt": "2026-10-08T21:40:38.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0071",
+      "title": "Move Signal to Limen 0.9.0 (echelon-current 1.11.0): replace vendor/limen-routing with EchelonFoundry.Limen.Routing 0.9.0 through Conditor, bump @echelon-foundry/limen to 0.9.0, keep the inventory byte-equal test and validate .echelon/routes.json against the shipped contract/routes.schema.json",
+      "description": null,
+      "tags": [
+        "limen",
+        "routing",
+        "platform"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-10-08T21:47:02.314Z",
+      "updatedAt": "2026-10-08T21:54:37.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

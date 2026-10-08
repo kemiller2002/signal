@@ -9,7 +9,7 @@
 /// leaving for the identity provider, tidying the address bar after its
 /// callback, and telling the origin's other tabs about sign-in).
 ///
-/// See the `protocol` export of `@echelon-foundry/limen` (0.7.1).
+/// See the `protocol` export of `@echelon-foundry/limen` (0.9.0; protocol unchanged since 0.7.1).
 module Echelon.Signal.Application.AdminProtocol
 
 open System.Text.Json

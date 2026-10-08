@@ -1,5 +1,5 @@
 /// Limen's routing vectors (tests/limen-routing, copied from
-/// kemiller2002/limen conformance/routing at e935da7) as F# values: the
+/// kemiller2002/limen conformance/routing at v0.9.0) as F# values: the
 /// neutral JSON tables translated into Limen.Routing routes, and results
 /// rendered back into the neutral JSON shape so they compare structurally.
 /// Adapted from Limen's own F# conformance runner, without its mutable

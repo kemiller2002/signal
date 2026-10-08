@@ -1,14 +1,14 @@
 {
   "schemaVersion": 4,
   "project": "signal",
-  "manifestSha256": "46a5154150f5d4835b95f2485acbd77e81204d6a58a560ad7b4cb046bb39df94",
+  "manifestSha256": "e219ed1b4a53c8aebc04ace48a0446da1c2e3a711c9f622d36afd584a6d16dfb",
   "manifest": {
     "schemaVersion": 1,
     "name": "signal",
     "registryAuthority": {
       "kind": "resolved-release-set",
       "path": ".conditor/authority/resolved-release-set.json",
-      "sha256": "06a2faf6c0c4cfadcf7b91929cc027aa1af065b66d4c0c910a3cdd595d6754e9"
+      "sha256": "411e35488117a89a2dd990174328375b1b0935037046969178a838598bc3708a"
     },
     "components": [
       {
@@ -34,6 +34,11 @@
       {
         "id": "fides",
         "version": "0.2.0",
+        "required": true
+      },
+      {
+        "id": "limen-fsharp",
+        "version": "0.9.0",
         "required": true
       }
     ],
@@ -85,23 +90,15 @@
       "package": "EchelonFoundry.Fides,EchelonFoundry.Fides.Arca,EchelonFoundry.Fides.Client,EchelonFoundry.Fides.Hosting",
       "authority": "registry-resolved-set",
       "sourceReference": "nuget-feed:kemiller2002/fides@v0.2.0#sha256:0ef2204d8ec298e6d930ce11d66629794486a5e31367959d7f9dbd39468b6a2a"
-    }
-  ],
-  "requirements": [],
-  "reviewSignals": [
-    {
-      "component": "ordo",
-      "code": "SDE-STRUCT-001",
-      "band": "conformance-concern",
-      "path": "src/Echelon.Signal.Browser/bin/Release/net10.0/wwwroot/_framework/dotnet.native.go6x1p5bpl.js",
-      "lineCount": 6773
     },
     {
-      "component": "ordo",
-      "code": "SDE-STRUCT-001",
-      "band": "strong-review",
-      "path": "src/Echelon.Signal.Browser/bin/Release/net10.0/wwwroot/_framework/dotnet.js",
-      "lineCount": 1150
+      "id": "limen-fsharp",
+      "version": "0.9.0",
+      "distribution": "nuget",
+      "package": "EchelonFoundry.Limen.Contract,EchelonFoundry.Limen.Guest,EchelonFoundry.Limen.Routing,EchelonFoundry.Limen.Store",
+      "authority": "registry-resolved-set",
+      "sourceReference": "nuget-feed:kemiller2002/limen@v0.9.0#sha256:d8aec120fdaff6bb2a9dcd6e4d79b8a92d69f8cc0227de1c6b7166c6c3b8ce3a"
     }
-  ]
+  ],
+  "requirements": []
 }
