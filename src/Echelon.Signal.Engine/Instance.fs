@@ -3,6 +3,8 @@ module Echelon.Signal.Engine.Instance
 
 open System
 open Echelon.Signal.Engine.Responses
+open Echelon.Signal.Engine.Primitives
+open Echelon.Signal.Engine.Selectors
 open Echelon.Signal.Engine.Template
 
 // ---------------------------------------------------------------------------

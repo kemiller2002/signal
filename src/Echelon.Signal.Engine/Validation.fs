@@ -12,6 +12,8 @@ open System.Text
 open System.Text.RegularExpressions
 open Echelon.Signal.Engine.Responses
 open Echelon.Signal.Engine.RuleModel
+open Echelon.Signal.Engine.Primitives
+open Echelon.Signal.Engine.Selectors
 open Echelon.Signal.Engine.Template
 open Echelon.Signal.Engine.Layout
 open Echelon.Signal.Engine.Drafts
@@ -79,51 +81,7 @@ let private structural (draft: Draft) =
           if String.IsNullOrWhiteSpace q.Prompt then
               block "STRUCT-PROMPT" q.Id $"Question '{q.Id}' has no prompt." ]
 
-/// The answer primitive each selector preset presents, and its fixed
-/// cardinality where the preset fixes one.
-let presetFits (preset: SelectorPreset) (answer: AnswerDefinition) =
-    match preset, answer with
-    | YesNo, Boolean -> true
-    | Likert3, Ordinal 3 -> true
-    | (Likert5 | Agreement5 | Frequency5 | Quality5 | Confidence5 | Satisfaction5 | Maturity5), Ordinal 5 -> true
-    | Likert7, Ordinal 7 -> true
-    | NumericRating, Ordinal _ -> true
-    | (SingleSelect | ForcedChoice), SingleChoice _ -> true
-    | _ -> false
-
-let private answers' (draft: Draft) =
-    let block = finding AnswerCategory Blocker
-
-    [ for _, q in questions draft.Content do
-          match q.Answer with
-          | Ordinal points when points < 2 || points > 11 ->
-              block "ANSWER-ORDINAL-POINTS" q.Id $"Question '{q.Id}' needs 2 to 11 ordinal points."
-          | SingleChoice options ->
-              if options.Length < 2 then
-                  block "ANSWER-TOO-FEW-OPTIONS" q.Id $"Question '{q.Id}' needs at least two options."
-              for id in duplicates (options |> List.map _.Id) do
-                  block "ANSWER-DUPLICATE-OPTION" q.Id $"Option id '{id}' is used more than once in '{q.Id}'."
-              for o in options do
-                  if not (isIdentifier o.Id) then
-                      block "ANSWER-OPTION-ID" q.Id $"Option id '{o.Id}' in '{q.Id}' is not a stable identifier."
-              if options |> List.exists (fun o -> o.Score |> Option.exists (fun s -> Double.IsNaN s || Double.IsInfinity s)) then
-                  block "ANSWER-OPTION-SCORE" q.Id $"An option score in '{q.Id}' is not a finite number."
-          | _ -> ()
-
-          if not (presetFits q.Selector.Preset q.Answer) then
-              block "ANSWER-SELECTOR-INCOMPATIBLE" q.Id $"Selector '{TemplateCanonical.presetName q.Selector.Preset}' does not present the answer of '{q.Id}'."
-          else
-              match q.Answer with
-              | SingleChoice _ when not q.Selector.Labels.IsEmpty ->
-                  block "ANSWER-LABELS" q.Id $"Choice question '{q.Id}' takes labels from its options."
-              | Boolean
-              | Ordinal _ when q.Selector.Labels.Length <> cardinality q.Answer ->
-                  block "ANSWER-LABELS" q.Id $"Question '{q.Id}' needs {cardinality q.Answer} selector labels."
-              | _ -> ()
-
-          if List.distinct q.SpecialStates <> q.SpecialStates
-             || q.SpecialStates <> (specialStates |> List.filter (fun s -> List.contains s q.SpecialStates)) then
-              block "ANSWER-SPECIAL-STATES" q.Id $"Special states of '{q.Id}' must be distinct and in canonical order." ]
+let private answers' (draft: Draft) = PrimitiveChecks.check draft.Content
 
 let private scoring (policy: Policy) (draft: Draft) =
     let block = finding ScoringCategory Blocker
@@ -151,8 +109,10 @@ let private scoring (policy: Policy) (draft: Draft) =
                   warn "SCORING-LOW-ITEM-COUNT" s.Id $"Section '{s.Id}' is scored from only {scored.Length} question(s)."
 
               for q in scored do
+                  let keyed = draft.Content.Results.ItemKeys |> List.exists (fun k -> k.Question = q.Id)
+
                   match q.Answer with
-                  | SingleChoice options when options |> List.exists (fun o -> o.Score.IsNone) ->
+                  | (SingleChoice _ | Hierarchical _) when not keyed && options q.Answer |> List.exists (fun o -> o.Score.IsNone) ->
                       block "SCORING-MAPPING-INCOMPLETE" q.Id $"Scored choice question '{q.Id}' has an option without a score."
                   | _ -> ()
 
@@ -170,11 +130,17 @@ let private scoring (policy: Policy) (draft: Draft) =
               match sc.Scorer.Scale with
               | Scoring.Mapped map ->
                   for q in scored do
+                      let keyed = draft.Content.Results.ItemKeys |> List.exists (fun k -> k.Question = q.Id)
+
                       let values =
                           match q.Answer with
+                          | _ when keyed -> []
                           | Boolean -> [ 0.0; 1.0 ]
                           | Ordinal points -> [ for p in 0 .. points - 1 -> float p ]
-                          | SingleChoice options -> options |> List.choose _.Score
+                          | BoundedNumber b -> [ for t in 0 .. ticks b - 1 -> tickValue b t ]
+                          | SingleChoice _
+                          | Hierarchical _ -> options q.Answer |> List.choose _.Score
+                          | _ -> []
 
                       for v in values do
                           if not (map.ContainsKey v) then

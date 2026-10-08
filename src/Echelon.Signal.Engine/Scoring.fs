@@ -16,6 +16,9 @@ type Special =
     | DontKnow
     | NotObserved
     | NotApplicable
+    /// Prefer not to answer (SCS-009): excluded or substituted by policy like
+    /// the others, and still distinct from them.
+    | Declined
     | Unanswered
 
 type Observation =

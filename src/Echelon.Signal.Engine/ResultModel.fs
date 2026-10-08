@@ -127,10 +127,37 @@ type Display =
       Interpretations: DisplayPolicy
       Explanation: ExplanationVisibility }
 
+/// How a bounded range becomes one number.
+type RangeMeasure =
+    | RangeWidth
+    | RangeMidpoint
+    | RangeLow
+    | RangeHigh
+
+type BestWorstMeasure =
+    | BestOnly
+    | WorstOnly
+    | BestMinusWorstOnly
+
+/// How an answer without a single number (choice keys, multi-choice,
+/// ranking, allocation, best-worst, ranges) becomes the number a section
+/// scorer aggregates (SCS-004, SCS-006, SCS-015). Keys are part of the
+/// immutable template semantics.
+type KeyKind =
+    | SingleKeyed of Keyed.SingleKey
+    | MultiKeyed of Keyed.MultiKey
+    | RankKeyed of item: string * method: Keyed.RankMethod
+    | AllocationKeyed of Keyed.AllocationMethod
+    | BestWorstKeyed of item: string * measure: BestWorstMeasure
+    | RangeKeyed of RangeMeasure
+
+type ItemKey = { Question: string; Key: KeyKind }
+
 type Results =
     { Overall: OverallScoring option
       Interpretations: Interpretation list
-      Display: Display }
+      Display: Display
+      ItemKeys: ItemKey list }
 
 let defaultDisplay =
     { Overall = FinalOnly
@@ -141,4 +168,5 @@ let defaultDisplay =
 let noResults =
     { Overall = None
       Interpretations = []
-      Display = defaultDisplay }
+      Display = defaultDisplay
+      ItemKeys = [] }

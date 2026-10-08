@@ -23,6 +23,8 @@ open System.Security.Cryptography
 open System.Text.Json
 open Echelon.Signal.Engine.Responses
 open Echelon.Signal.Engine.RuleModel
+open Echelon.Signal.Engine.Primitives
+open Echelon.Signal.Engine.Selectors
 open Echelon.Signal.Engine.Template
 open Echelon.Signal.Engine.Layout
 
@@ -49,21 +51,7 @@ let private numberList (w: Utf8JsonWriter) (name: string) (values: float list) =
 
 let specialName = RuleCanonical.specialName
 
-let presetName =
-    function
-    | YesNo -> "yes-no"
-    | Likert3 -> "likert-3"
-    | Likert5 -> "likert-5"
-    | Likert7 -> "likert-7"
-    | Agreement5 -> "agreement-5"
-    | Frequency5 -> "frequency-5"
-    | Quality5 -> "quality-5"
-    | Confidence5 -> "confidence-5"
-    | Satisfaction5 -> "satisfaction-5"
-    | Maturity5 -> "maturity-5"
-    | NumericRating -> "numeric-rating"
-    | SingleSelect -> "single-select"
-    | ForcedChoice -> "forced-choice"
+let presetName = PrimitiveCanonical.presetName
 
 let capabilityName =
     function
@@ -225,37 +213,15 @@ let writeScorer (w: Utf8JsonWriter) (scorer: Scoring.Scorer) =
     w.WriteString("rounding", "half-away-from-zero")
     w.WriteEndObject()
 
-let private writeAnswer (w: Utf8JsonWriter) (answer: AnswerDefinition) =
-    w.WriteStartObject "answer"
-
-    match answer with
-    | Boolean -> w.WriteString("kind", "boolean")
-    | Ordinal points ->
-        w.WriteString("kind", "ordinal")
-        w.WriteNumber("points", points)
-    | SingleChoice options ->
-        w.WriteString("kind", "single-choice")
-        w.WriteStartArray "options"
-
-        for o in options do
-            w.WriteStartObject()
-            w.WriteString("id", o.Id)
-            w.WriteString("label", o.Label)
-            o.Score |> Option.iter (fun s -> w.WriteNumber("score", s))
-            w.WriteEndObject()
-
-        w.WriteEndArray()
-
-    w.WriteEndObject()
-
 let private writeQuestion (w: Utf8JsonWriter) (q: Question) =
     w.WriteStartObject()
     w.WriteString("id", q.Id)
     w.WriteString("prompt", q.Prompt)
     optionalString w "help" q.HelpText
-    writeAnswer w q.Answer
+    PrimitiveCanonical.writeAnswer w q.Answer
     w.WriteStartObject "selector"
     w.WriteString("preset", presetName q.Selector.Preset)
+    PrimitiveCanonical.writePresetDetail w q.Selector.Preset
     stringList w "labels" q.Selector.Labels
     w.WriteEndObject()
     stringList w "special" (q.SpecialStates |> List.map specialName)
@@ -324,6 +290,13 @@ let bytes (surveyId: string) (version: string) (content: Content) : byte[] =
         w.WriteBoolean("reviewBeforeSubmit", p.ReviewBeforeSubmit)
         w.WriteBoolean("sectionStartsOnNewPage", p.SectionStartsOnNewPage)
         w.WriteString("randomization", "none")
+
+        // Written only when not the default (extension rule).
+        if p.Revisit <> fullRevisit then
+            w.WriteStartObject "revisit"
+            w.WriteBoolean("lockPreviousQuestions", (p.Revisit.Questions = LockPreviousQuestionsAfterAdvance))
+            w.WriteBoolean("lockPreviousSections", (p.Revisit.Sections = LockPreviousSectionsAfterExit))
+            w.WriteEndObject()
         w.WriteEndObject()
 
         let r = content.Runtime

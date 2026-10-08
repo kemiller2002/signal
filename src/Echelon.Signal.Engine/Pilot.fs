@@ -74,11 +74,11 @@ let content: Template.Content =
         { Id = item.Id
           Prompt = item.Prompt
           HelpText = None
-          Answer = Template.Ordinal 5
+          Answer = Primitives.Ordinal 5
           Selector =
-            { Preset = Template.Frequency5
+            { Preset = Selectors.Frequency5
               Labels = [ Never; Rarely; Sometimes; Often; AlmostAlways ] |> List.map frequencyLabel }
-          SpecialStates = Responses.specialStates
+          SpecialStates = [ Responses.DontKnow; Responses.NotObserved; Responses.NotApplicable ]
           Required = true
           Tags = [] }
 

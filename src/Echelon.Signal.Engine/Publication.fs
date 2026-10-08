@@ -9,6 +9,8 @@
 module Echelon.Signal.Engine.Publication
 
 open System
+open Echelon.Signal.Engine.Primitives
+open Echelon.Signal.Engine.Selectors
 open Echelon.Signal.Engine.Template
 open Echelon.Signal.Engine.Layout
 open Echelon.Signal.Engine.Drafts

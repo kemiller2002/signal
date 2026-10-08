@@ -147,6 +147,17 @@ let write (w: Utf8JsonWriter) (results: Results) =
 
         w.WriteEndArray()
 
+    if not results.ItemKeys.IsEmpty then
+        w.WriteStartArray "itemKeys"
+
+        for k in results.ItemKeys do
+            w.WriteStartObject()
+            w.WriteString("question", k.Question)
+            ItemKeyCanonical.write w k.Key
+            w.WriteEndObject()
+
+        w.WriteEndArray()
+
     let d = results.Display
     w.WriteStartObject "display"
     w.WriteString("overall", displayName d.Overall)

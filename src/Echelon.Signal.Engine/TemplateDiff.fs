@@ -4,6 +4,8 @@
 module Echelon.Signal.Engine.TemplateDiff
 
 open Echelon.Signal.Engine.Responses
+open Echelon.Signal.Engine.Primitives
+open Echelon.Signal.Engine.Selectors
 open Echelon.Signal.Engine.Template
 
 type Change =
@@ -37,6 +39,7 @@ type Change =
     | OverallScoringChanged
     | InterpretationsChanged
     | DisplayChanged
+    | ItemKeysChanged
 
 /// Whether a change can alter scores, alter how stored answers are read, or
 /// only how the survey looks.
@@ -60,7 +63,8 @@ let impact (change: Change) =
     | OptionScoresChanged _
     | FlowChanged
     | FactsChanged
-    | OverallScoringChanged -> { Scoring = true; Encoding = false }
+    | OverallScoringChanged
+    | ItemKeysChanged -> { Scoring = true; Encoding = false }
     | InterpretationsChanged
     | DisplayChanged -> { Scoring = false; Encoding = false }
     | ValidationRulesChanged
@@ -100,6 +104,7 @@ let diff (before: Content) (after: Content) : Change list =
       if before.Results.Overall <> after.Results.Overall then OverallScoringChanged
       if before.Results.Interpretations <> after.Results.Interpretations then InterpretationsChanged
       if before.Results.Display <> after.Results.Display then DisplayChanged
+      if before.Results.ItemKeys <> after.Results.ItemKeys then ItemKeysChanged
       if before.Presentation <> after.Presentation then PresentationChanged
       if before.Runtime <> after.Runtime then RuntimeChanged
       if before.Compatibility <> after.Compatibility then CompatibilityChanged
@@ -173,6 +178,7 @@ let comparability (changes: Change list) =
             | FlowChanged -> Some "flow changed which questions apply"
             | FactsChanged -> Some "derived facts changed"
             | OverallScoringChanged -> Some "overall scoring changed"
+            | ItemKeysChanged -> Some "item keys changed"
             | _ -> None)
 
     let caution =

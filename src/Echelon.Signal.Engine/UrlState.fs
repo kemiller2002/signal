@@ -66,7 +66,7 @@ type OpaqueId =
 
 /// Strict unpadded base64url: the alphabet only, and only the canonical
 /// spelling (unused trailing bits zero), so one value has one text.
-let private tryFromBase64Url (text: string) : byte[] option =
+let tryFromBase64Url (text: string) : byte[] option =
     let value (c: char) =
         if c >= 'A' && c <= 'Z' then int c - int 'A'
         elif c >= 'a' && c <= 'z' then int c - int 'a' + 26
@@ -120,7 +120,7 @@ type Binding =
     /// and no instance (LURL-002 §15, ID-002).
     | Anonymous of submission: OpaqueId * group: OpaqueId
 
-let private kindOf =
+let kindOf =
     function
     | Unbound -> 0uy
     | IdentifiedInvitation _ -> 1uy
@@ -128,7 +128,7 @@ let private kindOf =
     | Anonymous _ -> 3uy
     | AnonymousInvitation _ -> 4uy
 
-let private idsOf =
+let idsOf =
     function
     | Unbound -> []
     | IdentifiedInvitation(a, b)
@@ -137,7 +137,7 @@ let private idsOf =
     | Anonymous(a, b) -> [ a; b ]
 
 /// Identifiers that follow the kind byte, by kind.
-let private idCount =
+let idCount =
     function
     | 0uy -> Some 0
     | 1uy
@@ -179,7 +179,7 @@ let private stateOf (answer: Answer option) =
 
 let private packedLength count = (count * bitsPerItem + 7) / 8
 
-let private checksum (data: ReadOnlySpan<byte>) = SHA256.HashData(data).AsSpan(0, IntegrityLength).ToArray()
+let checksum (data: ReadOnlySpan<byte>) = SHA256.HashData(data).AsSpan(0, IntegrityLength).ToArray()
 
 /// The envelope as unpadded base64url. Answers for ids the template does not
 /// have are not state the template can interpret, and are not written.

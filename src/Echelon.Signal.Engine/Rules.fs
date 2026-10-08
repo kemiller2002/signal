@@ -20,6 +20,8 @@ module Echelon.Signal.Engine.Rules
 
 open Echelon.Signal.Engine.Responses
 open Echelon.Signal.Engine.RuleModel
+open Echelon.Signal.Engine.Primitives
+open Echelon.Signal.Engine.Selectors
 open Echelon.Signal.Engine.Template
 
 /// What conditions read: the applicable questions decided so far and their
@@ -62,7 +64,7 @@ let sectionExplain (env: Env) (section: Section) : (Scoring.Outcome * Scoring.Tr
         match scoredQuestions section |> List.filter (fun q -> env.Applicable.Contains q.Id) with
         | [] -> None
         | scored ->
-            let observations = scored |> List.map (fun q -> observation q (env.Answers.TryFind q.Id))
+            let observations = scored |> List.map (fun q -> observationIn env.Content q (env.Answers.TryFind q.Id))
             Some(Scoring.explain scoring.Scorer observations))
 
 let sectionOutcome (env: Env) (section: Section) : Scoring.Outcome option =
@@ -73,7 +75,7 @@ let rec number (env: Env) (visiting: Set<string>) (expr: NumberExpr) : float opt
     | Constant v -> Some v
     | AnswerNumber id ->
         match env.Answers.TryFind id, tryQuestion env.Content id with
-        | Some(Value v), Some q -> numeric q v
+        | Some(Value v), Some q -> keyedNumber env.Content q v
         | _ -> None
     | SectionScore id ->
         env.Content.Sections
@@ -249,6 +251,14 @@ let violations (env: Env) : RuleViolation list =
             match number env Set.empty (AnswerNumber id) with
             | Some v when v < lo || v > hi -> violation id
             | _ -> None
+        | AnsweredBetween(ids, lo, hi) ->
+            let applicable = ids |> List.filter env.Applicable.Contains
+            let answered = applicable |> List.filter env.Answers.ContainsKey |> List.length
+            // "At least" is judged on completion; "at most" at any time.
+            if answered > hi then violation (String.concat "," ids) else None
+        | DistinctAnswers ids ->
+            let values = ids |> List.choose (fun id -> match env.Answers.TryFind id with Some(Value v) -> Some v | _ -> None)
+            if List.distinct values <> values then violation (String.concat "," ids) else None
         | _ -> None)
 
 /// Explicit completion state (ACR-001 §4, CAN-002 §11). Finalization, not
@@ -321,9 +331,20 @@ let private completion (env: Env) (applicability: Applicability) (invalid: int) 
 
     let conditionMet = policy.Condition |> Option.forall (fun c -> truth env c = Some true)
 
+    // "At least N of these answered" (matrix rows) must hold to complete.
+    let minimumsMet =
+        content.Rules.Validation
+        |> List.forall (fun rule ->
+            match rule.Check with
+            | AnsweredBetween(ids, lo, _) ->
+                let applicable = ids |> List.filter env.Applicable.Contains
+                (applicable |> List.filter env.Answers.ContainsKey |> List.length) >= min lo applicable.Length
+            | _ -> true)
+
     if invalid > 0 then Invalid invalid
     elif env.Answers.IsEmpty && missingRequired > 0 then NotStarted
-    elif missingRequired > 0 || not requiredSectionsApplicable || not percentMet || not conditionMet then InProgress missingRequired
+    elif missingRequired > 0 || not requiredSectionsApplicable || not percentMet || not conditionMet || not minimumsMet then
+        InProgress missingRequired
     else
         match applicability.Terminated with
         | Some(_, reason) -> Terminated reason
