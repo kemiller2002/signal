@@ -8,11 +8,16 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
 
 ## Platform (2026-10-08)
 
-- echelon-current 1.9.0 through Conditor 0.6.0 (`conditor.json`,
-  `.conditor/`): Praxis 3.7.2, Ordo 1.5.0, Visual Engineering 1.0.1, and
-  Arca 0.2.1 and Fides 0.2.0 as attested NuGet release assets in
-  `vendor/nuget` (mapped in `NuGet.config`, pinned in
-  `Directory.Packages.props`). `conditor verify` passes.
+- echelon-current 1.12.0 through Conditor 0.7.0, repository-only install
+  path (`conditor init --manifest conditor.json`; Conditor's
+  `upgrade --current` plan would also change the shared workstation profile,
+  so it is not authorized): Praxis 3.7.2, Ordo 1.5.0, Visual Engineering
+  1.0.1, and as attested NuGet release assets in `vendor/nuget` (mapped in
+  `NuGet.config`, pinned in `Directory.Packages.props`): Arca 0.3.0 (Core,
+  GitHub, Limen), Fides 0.2.0 and limen-fsharp 0.9.0. `conditor verify`
+  passes. `EchelonFoundry.Arca.Limen` is pinned, but no project references it:
+  Arca's offline write queue stays off (DF-SIGNAL-2026-0001 decision 5), and
+  wiring it, or only its read cache, needs that decision revisited (WI-0072).
 - Administrator domain (`src/Echelon.Signal.Admin`, pure F# over Arca.Core,
   WI-0038 onward): `Deployment` (closed, validated deployment configuration:
   environment, Fides identity, storage profiles, datasets and their bootstrap

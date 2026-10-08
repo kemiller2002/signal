@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 72,
+  "nextSeq": 73,
   "items": [
     {
       "id": "WI-0001",
@@ -1332,10 +1332,10 @@
         "depends:arca"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-10-08T15:11:46.000Z",
-      "updatedAt": "2026-10-08T17:15:25.000Z",
+      "updatedAt": "2026-10-08T22:11:00.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1679,6 +1679,31 @@
       "attachments": [],
       "createdAt": "2026-10-08T21:47:02.314Z",
       "updatedAt": "2026-10-08T21:54:37.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0072",
+      "title": "Move Signal to echelon-current 1.12.0 through Conditor (repository-only install): Arca 0.3.0, limen-fsharp declared alongside EchelonFoundry.Arca.Limen per arca docs/consuming-arca.md section 5a; the offline write queue stays off (DF-SIGNAL-2026-0001 decision 5)",
+      "description": null,
+      "tags": [
+        "platform",
+        "conditor",
+        "arca"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-10-08T22:12:04.106Z",
+      "updatedAt": "2026-10-08T22:15:51.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

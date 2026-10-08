@@ -13,13 +13,13 @@
     <PackageVersion Include="FSharp.Core" Version="10.1.401" />
     <PackageVersion Include="EchelonFoundry.Aegis.Core" Version="1.0.0" />
     <PackageVersion Include="EchelonFoundry.Aegis.Integration.GitHub" Version="1.0.0" />
-    <!-- Arca 0.2.1 and Fides 0.2.0: attested GitHub release assets in
+    <!-- Arca 0.3.0 and Fides 0.2.0: attested GitHub release assets in
          vendor/nuget, installed and proven by Conditor (conditor.json,
          vendor/nuget/arca.lock, vendor/nuget/fides.lock). Fides.Client is the
          WASM sign-in client; Fides.Arca bridges it to Arca's token-provider
          port. Fides.Hosting is the server side and is not referenced here. -->
-    <PackageVersion Include="EchelonFoundry.Arca.Core" Version="0.2.1" />
-    <PackageVersion Include="EchelonFoundry.Arca.GitHub" Version="0.2.1" />
+    <PackageVersion Include="EchelonFoundry.Arca.Core" Version="0.3.0" />
+    <PackageVersion Include="EchelonFoundry.Arca.GitHub" Version="0.3.0" />
     <PackageVersion Include="EchelonFoundry.Fides" Version="0.2.0" />
     <PackageVersion Include="EchelonFoundry.Fides.Client" Version="0.2.0" />
     <PackageVersion Include="EchelonFoundry.Fides.Arca" Version="0.2.0" />
@@ -27,6 +27,14 @@
          vendor/nuget, vendor/nuget/limen-fsharp.lock): the routing semantics
          Signal's routes are built on (DF-SIGNAL-2026-0003, WI-0071). -->
     <PackageVersion Include="EchelonFoundry.Limen.Routing" Version="0.9.0" />
+    <!-- Arca 0.3.0's Limen adapter (IndexedDB queue and read cache, arca
+         docs/consuming-arca.md section 5a) and the Limen 0.9.0 packages it
+         brings, declared with limen-fsharp in conditor.json (WI-0072). Pinned
+         here; no project references them yet: Signal keeps Arca's offline
+         write queue off (DF-SIGNAL-2026-0001 decision 5). -->
+    <PackageVersion Include="EchelonFoundry.Arca.Limen" Version="0.3.0" />
+    <PackageVersion Include="EchelonFoundry.Limen.Store" Version="0.9.0" />
+    <PackageVersion Include="EchelonFoundry.Limen.Contract" Version="0.9.0" />
   </ItemGroup>
 
   <ItemGroup Label="Test">
