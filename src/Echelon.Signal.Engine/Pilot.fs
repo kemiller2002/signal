@@ -104,7 +104,8 @@ let content: Template.Content =
                 Some
                     { Scorer = dimensionScorer assessment
                       Questions = [] } })
-      Rules = RuleModel.noRules }
+      Rules = RuleModel.noRules
+      Results = ResultModel.noResults }
 
 /// Assessment answers as generic answer state.
 let answerState (answer: Answer) : Responses.AnswerState =

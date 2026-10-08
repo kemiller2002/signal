@@ -34,6 +34,9 @@ type Change =
     | ValidationRulesChanged
     | CompletionChanged
     | RecommendationsChanged
+    | OverallScoringChanged
+    | InterpretationsChanged
+    | DisplayChanged
 
 /// Whether a change can alter scores, alter how stored answers are read, or
 /// only how the survey looks.
@@ -56,7 +59,10 @@ let impact (change: Change) =
     | SectionScoringChanged _
     | OptionScoresChanged _
     | FlowChanged
-    | FactsChanged -> { Scoring = true; Encoding = false }
+    | FactsChanged
+    | OverallScoringChanged -> { Scoring = true; Encoding = false }
+    | InterpretationsChanged
+    | DisplayChanged -> { Scoring = false; Encoding = false }
     | ValidationRulesChanged
     | CompletionChanged
     | RecommendationsChanged -> { Scoring = false; Encoding = false }
@@ -91,6 +97,9 @@ let diff (before: Content) (after: Content) : Change list =
       if before.Rules.Validation <> after.Rules.Validation then ValidationRulesChanged
       if before.Rules.Completion <> after.Rules.Completion then CompletionChanged
       if before.Rules.Recommendations <> after.Rules.Recommendations then RecommendationsChanged
+      if before.Results.Overall <> after.Results.Overall then OverallScoringChanged
+      if before.Results.Interpretations <> after.Results.Interpretations then InterpretationsChanged
+      if before.Results.Display <> after.Results.Display then DisplayChanged
       if before.Presentation <> after.Presentation then PresentationChanged
       if before.Runtime <> after.Runtime then RuntimeChanged
       if before.Compatibility <> after.Compatibility then CompatibilityChanged
@@ -163,6 +172,7 @@ let comparability (changes: Change list) =
             | SectionRemoved id -> Some $"section '{id}' removed"
             | FlowChanged -> Some "flow changed which questions apply"
             | FactsChanged -> Some "derived facts changed"
+            | OverallScoringChanged -> Some "overall scoring changed"
             | _ -> None)
 
     let caution =
@@ -175,6 +185,7 @@ let comparability (changes: Change list) =
             | ValidationRulesChanged -> Some "validation rules changed"
             | CompletionChanged -> Some "completion policy changed"
             | RecommendationsChanged -> Some "recommendations changed"
+            | InterpretationsChanged -> Some "interpretations changed"
             | _ -> None)
 
     match notComparable, caution with

@@ -344,6 +344,10 @@ let bytes (surveyId: string) (version: string) (content: Content) : byte[] =
             w.WritePropertyName "rules"
             RuleCanonical.write w content.Rules
 
+        if content.Results <> ResultModel.noResults then
+            w.WritePropertyName "results"
+            ResultCanonical.write w content.Results
+
         w.WriteEndObject()
     )
 

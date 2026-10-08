@@ -50,7 +50,7 @@ let private number (w: Utf8JsonWriter) (n: NumberExpr) =
 
     w.WriteEndObject()
 
-let rec private condition (w: Utf8JsonWriter) (c: Condition) =
+let rec condition (w: Utf8JsonWriter) (c: Condition) =
     w.WriteStartObject()
 
     let list (name: string) (cs: Condition list) =

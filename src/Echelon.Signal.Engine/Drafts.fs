@@ -24,6 +24,10 @@ type Assertion =
     /// A derived fact's value, or None for unknown.
     | ExpectFact of factId: string * expected: FactValue option
     | ExpectRecommended of recommendationId: string * triggered: bool
+    /// The overall score, or None for not scored.
+    | ExpectOverall of expected: float option
+    /// An interpretation's label, or None for unknown.
+    | ExpectInterpretation of interpretationId: string * label: string option
 
 /// A response simulated directly from answer state (AUT-003 §24).
 type Fixture =
@@ -58,7 +62,8 @@ let newDraft (surveyId: string) (title: string) : Draft =
           Presentation = defaultPresentation
           Runtime = defaultRuntime
           Sections = []
-          Rules = noRules }
+          Rules = noRules
+          Results = ResultModel.noResults }
       Fixtures = [] }
 
 let sectionIds (content: Content) = content.Sections |> List.map _.Id

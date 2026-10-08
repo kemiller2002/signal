@@ -997,10 +997,10 @@
         "scoring"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:08.074Z",
-      "updatedAt": "2026-10-08T15:28:53.000Z",
+      "updatedAt": "2026-10-08T15:51:45.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1015,7 +1015,7 @@
     {
       "id": "WI-0045",
       "title": "Signal 08: answer primitives and selectors - multi-choice, matrix, ranking/allocation, timers and banking, encodings (ANS-002, ANS-004 remainder, SCS-009..014, SCS-016, SCS-018, ARX-013, CAN-004/LURL-004 remainders)",
-      "description": "Depends on WI-0042. Refines WI-0004. Also closes the remaining parts of ACR-004, ANS-001, URLC-005 (see their gap-analysis rows). Also carries WI-0043's remainders: selection-count, allocation, ranking and mutual-exclusion validation and choice restriction (ACR-001), and binding invitations to an exact generic template version (ID-001).",
+      "description": "Depends on WI-0042. Refines WI-0004. Also closes the remaining parts of ACR-004, ANS-001, URLC-005 (see their gap-analysis rows). Also carries WI-0043's remainders: selection-count, allocation, ranking and mutual-exclusion validation and choice restriction (ACR-001), and binding invitations to an exact generic template version (ID-001). Also carries WI-0044's remainders: wiring multi-choice, ranking, allocation, pairwise and best-worst primitives to the Keyed scorers and their selector-scorer compatibility rules (SCS-002, SCS-004, SCS-006, SCS-015, ANS-003), a PreferNotToAnswer/Declined special state (SCS-008), and decoding generic templates from the URL (ANS-005).",
       "tags": [
         "signal",
         "order:08",
@@ -1026,7 +1026,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:08.417Z",
-      "updatedAt": "2026-10-08T15:28:53.000Z",
+      "updatedAt": "2026-10-08T15:50:07.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1041,7 +1041,7 @@
     {
       "id": "WI-0046",
       "title": "Signal 09: reporting contract and Folio renderers - report blocks, group reports, comparisons, the standard results print profile (RPT-001..006, SRPP-001..185)",
-      "description": "Depends on WI-0044. PDFs through Folio (every app except Helix uses Folio). Refines WI-0009. Also closes the remaining parts of ARX-006 (see their gap-analysis rows).",
+      "description": "Depends on WI-0044. PDFs through Folio (every app except Helix uses Folio). Refines WI-0009. Also closes the remaining parts of ARX-006 (see their gap-analysis rows). Also carries CAN-006's reporting boundary from WI-0044: reports consume SurveyResult rather than recomputing it.",
       "tags": [
         "signal",
         "order:09",
@@ -1052,7 +1052,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:08.783Z",
-      "updatedAt": "2026-10-08T07:48:08.783Z",
+      "updatedAt": "2026-10-08T15:50:07.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1224,7 +1224,7 @@
     {
       "id": "WI-0053",
       "title": "Signal 16: cross-cutting verification - static analysis, differential and model tests, performance budgets, incremental evaluation, time semantics (ARX-001, ARX-004, ARX-005, ARX-010, ARX-011, ARX-015, CAN-007, ADM-036..038, ADM-059, ADM-068; ACR-006 localization)",
-      "description": "Depends on WI-0047. Refines WI-0010 and WI-0020. Also closes the remaining parts of ARX-003, ARX-007 (see their gap-analysis rows).",
+      "description": "Depends on WI-0047. Refines WI-0010 and WI-0020. Also closes the remaining parts of ARX-003, ARX-007 (see their gap-analysis rows). Also carries ARX-014's dependency-closure incremental evaluation and AST-004's characterization and differential corpus from WI-0044.",
       "tags": [
         "signal",
         "order:16",
@@ -1234,7 +1234,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:11.208Z",
-      "updatedAt": "2026-10-08T07:48:11.208Z",
+      "updatedAt": "2026-10-08T15:50:08.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1324,7 +1324,7 @@
     {
       "id": "WI-0057",
       "title": "Signal 05b: persist the template catalog through Arca and finish the authoring remainders WI-0042 left (CAN-001, CAN-005, CAN-008, URLC-004, ACR-003, ACR-008, ACR-009, CAN-003, VER-001, VER-003, VER-004, VER-007, AUT-001..007, ARX-002, SCS-017)",
-      "description": "WI-0042 built the pure domain: Template, TemplateCanonical and Authoring (drafts, validation, fixtures, diff, derived lifecycle, immutable catalog). Remaining here: storing drafts and the published catalog through Arca (depends on WI-0039); test-mode/preview submission isolation and production import refusal (AUT-006 §60); preview mode on the respondent page and the respondent page paginating generic templates (AUT-003 §20, VER-004); locale and invitation expiry carriage (VER-003); DraftEditor/Reviewer/Publisher role separation (AUT-006 §64); cross-device sample-URL checks (AUT-006 §§61-62). Rule, scoring-trace, primitive and report remainders of the same groups are WI-0043..WI-0046. Also carries ARP-001's remainder from WI-0043: the import pipeline on generic templates carrying facts and recommendations into SurveyResult.",
+      "description": "WI-0042 built the pure domain: Template, TemplateCanonical and Authoring (drafts, validation, fixtures, diff, derived lifecycle, immutable catalog). Remaining here: storing drafts and the published catalog through Arca (depends on WI-0039); test-mode/preview submission isolation and production import refusal (AUT-006 §60); preview mode on the respondent page and the respondent page paginating generic templates (AUT-003 §20, VER-004); locale and invitation expiry carriage (VER-003); DraftEditor/Reviewer/Publisher role separation (AUT-006 §64); cross-device sample-URL checks (AUT-006 §§61-62). Rule, scoring-trace, primitive and report remainders of the same groups are WI-0043..WI-0046. Also carries ARP-001's remainder from WI-0043: the import pipeline on generic templates carrying facts and recommendations into SurveyResult. Also carries WI-0044's authoring remainders: reading templates (including custom expressions) from their stored JSON form (AST-002, AST-006) and the authoring surface for presets, traces and the custom-expression boundary (AST-005, ALG-004).",
       "tags": [
         "signal",
         "order:05b",
@@ -1335,7 +1335,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T15:11:46.000Z",
-      "updatedAt": "2026-10-08T15:28:53.000Z",
+      "updatedAt": "2026-10-08T15:50:09.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1360,6 +1360,31 @@
       "attachments": [],
       "createdAt": "2026-10-08T15:16:11.000Z",
       "updatedAt": "2026-10-08T15:16:34.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0059",
+      "title": "Signal 07b: scoring remainders after WI-0044 - ipsative, confidence- and completeness-adjusted scoring, per-section direction, weakest/strongest section and confidence outputs, single-response NPS guard, recommendations reading the overall and group result, shared group metadata (ALG-002, ALG-003, SCS-003, CAN-006, VER-005, VER-006, ACR-002, ACR-007, CAN-002)",
+      "description": "Pure domain, no Arca or Fides dependency; builds on Composite, Expression, Interpretation, SurveyResult and GroupScoring from WI-0044. Each item is reversible configuration in the sense of DF-SIGNAL-2026-0002 and needs no new owner answer, except that confidence scoring needs a definition of confidence that the requirements do not give.",
+      "tags": [
+        "signal",
+        "order:07b",
+        "scoring"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T15:50:06.000Z",
+      "updatedAt": "2026-10-08T15:50:06.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

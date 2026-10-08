@@ -16,6 +16,7 @@ open System
 open System.Text.RegularExpressions
 open Echelon.Signal.Engine.Responses
 open Echelon.Signal.Engine.RuleModel
+open Echelon.Signal.Engine.ResultModel
 
 /// The template schema this engine reads and writes.
 [<Literal>]
@@ -135,9 +136,9 @@ type Capability =
     | UsesLocalization
 
 /// Capabilities this engine version supports (WI-0043 added the rule
-/// capabilities). Later slices add to it.
+/// capabilities, WI-0044 custom scoring). Later slices add to it.
 let supportedCapabilities: Set<Capability> =
-    Set.ofList [ UsesBranching; UsesConditionalSections; UsesDerivedFacts; UsesRecommendations; UsesAdvancedValidation ]
+    Set.ofList [ UsesBranching; UsesConditionalSections; UsesDerivedFacts; UsesRecommendations; UsesAdvancedValidation; UsesCustomScoring ]
 
 type Compatibility =
     { SchemaVersion: int
@@ -176,7 +177,8 @@ type Content =
       Presentation: Presentation
       Runtime: RuntimePolicy
       Sections: Section list
-      Rules: RuleSet }
+      Rules: RuleSet
+      Results: Results }
 
 let defaultPresentation =
     { ItemsPerPage = None
