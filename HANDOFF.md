@@ -180,6 +180,23 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   are no catalog or draft screens (WI-0073, with the authoring and
   respondent UI remainders).
 
+## Report definitions, snapshots and exports (WI-0050, 2026-10-08)
+
+- `ReportLibrary` (Admin, pure): versioned report definitions (an unused
+  version is replaced, a used one never changes, an edit makes the next),
+  exact dependency pins (template, or latest while drafting; visualization,
+  result, aggregate and export schemas), immutable formal snapshots carrying
+  their canonical report data (the clock is evidence outside every hash),
+  `openSnapshot` (its own data or an explicit unresolved state, never
+  current state) and `export` (JSON, sections CSV and lineage from the same
+  ReportData; no locator or credential can reach it).
+- `ReportRecord` (Admin): `signal.report-definition` (mutable, every version
+  of one definition) and `signal.report-snapshot` (immutable, verified on
+  read). `ReportStore` (Application): `load`, `saveDefinition` and
+  `takeSnapshot` (`BuildReports`; snapshot and used definition in one
+  commit), `export` (`ExportData`).
+- Screens, Folio print/PDF, configuration packages and policy packs: WI-0075.
+
 ## Validation
 
 ```bash

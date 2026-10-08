@@ -24,6 +24,7 @@ Captured 2026-10-08 (WI-0037) from the missing and partial groups of [`implement
 | 11 | WI-0048 | Signal 11: analytics, comparisons, lineage, change-impact and dependency invalidation (ADM-012..014, ADM-019, ADM-020, ADM-041, ADM-049, ADM-051, ADM-054; ARX-012 remainder) | WI-0041 |
 | 12 | WI-0049 | Signal 12: visualization grammar, dashboards and accessibility (ADM-015..018, ADM-050, ADM-069) | WI-0048 |
 | 13 | WI-0050 | Signal 13: report builder, snapshots, exports, configuration packages and policy packs (ADM-021..023, ADM-047, ADM-048, ADM-063) | WI-0046 and WI-0048 |
+| 13b | WI-0075 | Signal 13b: report builder, snapshot and export screens, configuration packages and policy packs after WI-0050's stored definitions, snapshots and exports | WI-0050 |
 | 14 | WI-0051 | Signal 14: administrator privacy, audit without PII, retention and deletion (ADM-024, ADM-030, ADM-045, ADM-064; ARX-009; ID-003 remainder) | WI-0041 |
 | 15 | WI-0052 | Signal 15: storage migration, backup and restore, schema evolution and operational repair (ADM-028, ADM-029, ADM-034, ADM-053, ADM-074..076) | WI-0041 and arca slice 10 (derived indexes and migration, ARCA-MIG) |
 | 16 | WI-0053 | Signal 16: cross-cutting verification - static analysis, differential and model tests, performance budgets, incremental evaluation, time semantics (ARX-001, ARX-004, ARX-005, ARX-010, ARX-011, ARX-015, CAN-007, ADM-036..038, ADM-059, ADM-068; ACR-006 localization) | WI-0047 |
