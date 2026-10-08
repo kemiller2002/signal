@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T20:57:00.000Z",
+  "updatedAt": "2026-10-08T21:00:08.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -2011,13 +2011,43 @@
     {
       "id": "WI-0068",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-08T20:57:00.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "tools/pages/assemble-site.mjs"
+        },
+        {
+          "type": "tests",
+          "path": "tools/pages/assemble-site.test.mjs"
+        }
+      ],
+      "updatedAt": "2026-10-08T21:00:08.000Z",
       "telemetryExecutionIds": [
         "EXE-20261008T205700755Z-208a1951"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "7b70fc28b5a516e7cc75a2ab",
+        "recordedAt": "2026-10-08T21:00:07.000Z",
+        "executionId": "EXE-20261008T205700755Z-208a1951",
+        "repository": "echelon-signal",
+        "branch": "fix/pages-admin-csp",
+        "commit": "4fb51b4d751c281a3f790f53c8fae3dd7222ed22",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "fix/pages-admin-csp",
+        "remoteCommit": "4fb51b4d751c281a3f790f53c8fae3dd7222ed22",
+        "summary": "Every published page carries the CSP and banner; tests and workflow check added",
+        "nextAction": "Complete and merge",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T21:00:08.000Z"
     }
   ]
 }
