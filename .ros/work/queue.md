@@ -76,3 +76,4 @@
 | WI-0061 | Re-home URLC-005 after WI-0045 completed: GapAnalysisTests failed on PR #31 because no open work item named it | complete | quality, planning | high |
 | WI-0062 | Signal 09b: render ReportData through Folio and the page - the standard results print profile, HTML/PDF renderers, localization, respondent/facilitator/360 families, benchmark comparisons and respondent detail in reports (RPT-001..006, SRPP-001..185) | captured | signal, order:09b, reporting, folio | medium |
 | WI-0063 | Accept DF-SIGNAL-2026-0002 answers 2-12 (coordinator, on the owner's standing instruction, 2026-10-08); Q1 stays open | complete | decisions, scoring | high |
+| WI-0064 | Move Signal to echelon-current 1.9.0 with Conditor 0.6.0 and install Arca 0.2.1 and Fides 0.2.0 through Conditor | complete | platform, conditor, depends:arca, depends:fides | high |

@@ -2,8 +2,8 @@
   "schema": "echelon.resolved-release-set/v1",
   "profile": {
     "id": "echelon-current",
-    "version": "1.2.0",
-    "sha256": "703de3a300be873ff8a3eb09a290d46f1c1ebe336d45471d325927df4eae4891"
+    "version": "1.9.0",
+    "sha256": "c5350d0ba2eacb73263c91c5405c89ce5ef2828b5f9bfa57332b7e5a4ba5dc38"
   },
   "platform": "linux-x64",
   "resolver": {
@@ -11,7 +11,7 @@
     "version": "0.1.0"
   },
   "catalogSnapshot": {
-    "sha256": "bffd0e5a542400cebbee4a15f8d33c9d27db3088ef1c4d0e6676a834d1f50ed3"
+    "sha256": "9fdf32b111151f7384882b45eda25598b8b3c040aa84d5e4d52281745804f524"
   },
   "components": [
     {
@@ -406,10 +406,10 @@
       "systemId": "strata",
       "role": "repository-lifecycle",
       "required": false,
-      "version": "0.1.0",
+      "version": "0.1.1",
       "repository": "kemiller2002/strata",
-      "tag": "v0.1.0",
-      "commit": "10b25ec49191f1d379d7e53435a1a61d8462ca6b",
+      "tag": "v0.1.1",
+      "commit": "f650d91e2930dfcbe82a1d2c52d8c5245e0f9996",
       "releaseStage": "stable",
       "lifecycleState": "active",
       "distributionClass": "self-contained-native-cli",
@@ -420,25 +420,157 @@
       },
       "releaseManifest": {
         "schema": "echelon.release/v2",
-        "sha256": "e5e33a9738f1e3ca7855fdba4174e955ff03881b5e4c7738fd6b92080f277e96"
+        "sha256": "262bf735e8af934a5d104cad910e34d55e8ffcf310696f8604560bc73eb8ab04"
       },
       "distribution": {
         "mechanism": "github-release",
         "package": null,
-        "url": "https://github.com/kemiller2002/strata/releases/tag/v0.1.0"
+        "url": "https://github.com/kemiller2002/strata/releases/tag/v0.1.1"
       },
       "artifacts": [
         {
           "name": "strata-linux-x64.tar.gz",
           "purpose": "executable",
           "platform": "linux-x64",
-          "sha256": "399ae002c971fad5dd6f99552bbccf048c75e5b16426d40bcb6a0ac9f428db8f"
+          "sha256": "497ec245b60994e13b8a8923ec6a8fb994acdb8365d022e9e4fcf955605f2a1b"
         },
         {
           "name": "native-checksums.txt",
           "purpose": "checksums",
           "platform": null,
-          "sha256": "7de7088f59e185779e6dbf0693ed5f1c9035b1d4102767e6894022944346f922"
+          "sha256": "fc42113dfbeb48f361cd2b402c1a3a5dbdcd3c38c35034e2856544f7d618a1fe"
+        }
+      ]
+    },
+    {
+      "systemId": "arca",
+      "role": "project-binding",
+      "required": false,
+      "version": "0.2.1",
+      "repository": "kemiller2002/arca",
+      "tag": "v0.2.1",
+      "commit": "98a60cf76de9faa3f62b36a7f96d767e768d7baf",
+      "releaseStage": "stable",
+      "lifecycleState": "active",
+      "distributionClass": "nuget-library",
+      "executable": null,
+      "releaseManifest": {
+        "schema": "echelon.release/v2",
+        "sha256": "89896a65cf9d21bcfe871a62cfcc8d40558c4832c4cf933c5485ad4e5523b77e"
+      },
+      "distribution": {
+        "mechanism": "github-release",
+        "package": null,
+        "url": "https://github.com/kemiller2002/arca/releases/tag/v0.2.1"
+      },
+      "artifacts": [
+        {
+          "name": "EchelonFoundry.Arca.Core.0.2.1.nupkg",
+          "purpose": "package",
+          "platform": null,
+          "sha256": "abd54879473967eea1cd8b207ed873222aeb43079eabd9db38e560ac43bd9c99"
+        },
+        {
+          "name": "EchelonFoundry.Arca.GitHub.0.2.1.nupkg",
+          "purpose": "package",
+          "platform": null,
+          "sha256": "817b4bc98e5e2a457b84cf57ada54c567d523fa10b488a1e4cfbc7a25eb093af"
+        },
+        {
+          "name": "checksums.txt",
+          "purpose": "checksums",
+          "platform": null,
+          "sha256": "24fc88fe33c327a6c5f9ddc557ca7f73b989e0d7457197eceb3e3946b214d9d4"
+        }
+      ]
+    },
+    {
+      "systemId": "fides",
+      "role": "project-binding",
+      "required": false,
+      "version": "0.2.0",
+      "repository": "kemiller2002/fides",
+      "tag": "v0.2.0",
+      "commit": "dea13cef62b0bd34e2d4295659b4965da87f2698",
+      "releaseStage": "stable",
+      "lifecycleState": "active",
+      "distributionClass": "nuget-library",
+      "executable": null,
+      "releaseManifest": {
+        "schema": "echelon.release/v2",
+        "sha256": "0ef2204d8ec298e6d930ce11d66629794486a5e31367959d7f9dbd39468b6a2a"
+      },
+      "distribution": {
+        "mechanism": "github-release",
+        "package": null,
+        "url": "https://github.com/kemiller2002/fides/releases/tag/v0.2.0"
+      },
+      "artifacts": [
+        {
+          "name": "EchelonFoundry.Fides.0.2.0.nupkg",
+          "purpose": "package",
+          "platform": null,
+          "sha256": "ee557e9285894d898f6a727b8ced968fc08c6f73bc8b3cc86bc5f5c669a31863"
+        },
+        {
+          "name": "EchelonFoundry.Fides.Arca.0.2.0.nupkg",
+          "purpose": "package",
+          "platform": null,
+          "sha256": "c7c8df26a47d49f0385d39f1614d03837671e7b6c071baa399cab910bb42b84b"
+        },
+        {
+          "name": "EchelonFoundry.Fides.Client.0.2.0.nupkg",
+          "purpose": "package",
+          "platform": null,
+          "sha256": "b65efb1357cd10fcf2d9a2e2080e24cb2f488c470ba8802e6d4a578628936e95"
+        },
+        {
+          "name": "EchelonFoundry.Fides.Hosting.0.2.0.nupkg",
+          "purpose": "package",
+          "platform": null,
+          "sha256": "53f8126e8b74002d71bd2ae539640951c5a103bcf2c6e17d33a527d75128f944"
+        },
+        {
+          "name": "checksums.txt",
+          "purpose": "checksums",
+          "platform": null,
+          "sha256": "a32e49303d650afa60cd51f860732216afb633c103f0c4ce0cbf76c93592378d"
+        }
+      ]
+    },
+    {
+      "systemId": "summa-contracts",
+      "role": "project-binding",
+      "required": false,
+      "version": "0.1.0",
+      "repository": "kemiller2002/summa",
+      "tag": "contracts-v0.1.0",
+      "commit": "e888cfb102be7001db7129121a5769a02c44a968",
+      "releaseStage": "stable",
+      "lifecycleState": "active",
+      "distributionClass": "nuget-library",
+      "executable": null,
+      "releaseManifest": {
+        "schema": "echelon.release/v2",
+        "sha256": "b952e4c667bc83aae23092397e8de3bcd75ecd2a6d59ef7d1047f2f5d094bcfe"
+      },
+      "distribution": {
+        "mechanism": "github-release",
+        "package": null,
+        "url": "https://github.com/kemiller2002/summa/releases/tag/contracts-v0.1.0"
+      },
+      "artifacts": [
+        {
+          "name": "EchelonFoundry.Summa.Contracts.0.1.0.nupkg",
+          "purpose": "package",
+          "platform": null,
+          "sha256": "8ef0e595f9749edac7fc3c46c1d400ba1a4d44f10090c3ed27291855845d15f1"
+        },
+        {
+          "name": "checksums.txt",
+          "purpose": "checksums",
+          "platform": null,
+          "sha256": "526dc765ac6736de9043a0cc08b4f9932b4b79518c4bff0b049d5366df7f6776"
         }
       ]
     }
