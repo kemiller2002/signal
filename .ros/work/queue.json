@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 67,
+  "nextSeq": 68,
   "items": [
     {
       "id": "WI-0001",
@@ -1557,6 +1557,30 @@
       "attachments": [],
       "createdAt": "2026-10-08T19:46:13.855Z",
       "updatedAt": "2026-10-08T19:46:21.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0067",
+      "title": "Report-state privacy: the embedded AdminReportState carries per-respondent sorted dimension scores (Evidence) and, in identified groups, invitation-linked identity keys; replace with sufficient statistics and keyed hashes, and keep it out of any URL until then (ID-003, ARX-009, SIG-LINK-008; found in WI-0066)",
+      "description": null,
+      "tags": [
+        "privacy",
+        "signal"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T20:07:10.078Z",
+      "updatedAt": "2026-10-08T20:07:10.078Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

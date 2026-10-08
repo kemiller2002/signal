@@ -149,7 +149,7 @@
     "related_documents": [
       "docs/requirements/SIGNAL-DEEP-LINKING.md",
       ".echelon/routes.json",
-      "src/Limen.Routing.Interim/Limen.Routing.Interim.fsproj"
+      "vendor/limen-routing/Limen.Routing.fsproj"
     ],
     "review_cycle": "on-trigger",
     "status": "accepted",
@@ -161,7 +161,7 @@
       "limen",
       "privacy"
     ],
-    "title": "Deep linking through Limen's routing semantics, an interim copy of Limen.Routing, and the respondent answer document",
+    "title": "Deep linking through Limen's routing semantics, Limen.Routing vendored byte for byte, and the respondent answer document",
     "updated": "2026-10-08",
     "version": "1.0.0"
   },

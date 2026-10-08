@@ -1,6 +1,6 @@
 ---
 id: DF-SIGNAL-2026-0003
-title: Deep linking through Limen's routing semantics, an interim copy of Limen.Routing, and the respondent answer document
+title: Deep linking through Limen's routing semantics, Limen.Routing vendored byte for byte, and the respondent answer document
 status: accepted
 version: 1.0.0
 created: 2026-10-08
@@ -13,7 +13,7 @@ superseded_by: []
 related_documents:
   - docs/requirements/SIGNAL-DEEP-LINKING.md
   - .echelon/routes.json
-  - src/Limen.Routing.Interim/Limen.Routing.Interim.fsproj
+  - vendor/limen-routing/Limen.Routing.fsproj
 tags: [routing, deep-linking, limen, privacy]
 provenance:
   contributions:
@@ -46,17 +46,21 @@ later is mechanical.
 
 ## Decisions
 
-1. **An interim copy of Limen.Routing.** `src/Limen.Routing.Interim` is
-   Limen's F# reference library from `kemiller2002/limen` PR #101 at
-   `e935da7` (WI-0168), split into files below Ordo's structural-review
-   size. The namespace (`Limen.Routing`), module names and signatures are
-   unchanged; only cross-file `private` members became `internal`, and the
-   three modules that now sit apart from their type carry `ModuleSuffix`,
-   the compiled name they had before. Limen's own conformance vectors
-   (`tests/limen-routing`, copied at the same commit) run against it. **When
-   Limen 0.9.0 is released**, delete the project, reference the package from
-   `Echelon.Signal.Admin` and the tests, and keep the vectors: they then test
-   the package.
+1. **Limen.Routing, vendored byte for byte.** `vendor/limen-routing/Routing.fs`
+   is Limen's F# reference library from `kemiller2002/limen` PR #101 at
+   `e935da7` (WI-0168), unmodified: SHA-256
+   `c7fc955063b2b4490d1fbcc29aa7302e2f16f0310609d45dd0679c32ba664338`,
+   pinned by a test that fails on any drift. A first draft split the file to
+   fit Ordo's 500-line review threshold. It was replaced, on the
+   coordinator's advice and as Summa did (summa#43, DF-SUMMA-2026-0010), by
+   the unmodified file under `vendor/`, which Ordo's structural review
+   excludes. There is no second implementation to prove. Limen's own
+   conformance vectors (`tests/limen-routing`, byte-identical and pinned
+   too) run against it. The folder sits inside the Limen engine boundary
+   (`limen.config.json`), because it is pure engine code. **When Limen 0.9.0
+   is released**, delete the folder, reference `EchelonFoundry.Limen.Routing`
+   from `Echelon.Signal.Admin` and the tests, and keep the vectors: they
+   then test the package.
 2. **Hash mode for the administrator application.** Routes live in the
    fragment of `web/admin/`, links are relative (`#/…`), the canonical form
    is Limen's, and the inventory is written to `.echelon/routes.json`.
@@ -103,7 +107,7 @@ later is mechanical.
 
 ## Consequences
 
-- Moving to Limen 0.9.0 changes two project files and deletes one project.
+- Moving to Limen 0.9.0 changes two project files and deletes one vendored folder.
 - Every administrator view gains a URL; an unknown identifier or an invalid
   parameter renders its own page.
 - Decision 4 must be confirmed or changed by the owner.

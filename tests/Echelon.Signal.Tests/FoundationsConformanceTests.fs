@@ -145,11 +145,14 @@ let ``Aegis is referenced, pinned and its boundary codes are declared`` () =
 
 [<Fact>]
 let ``the Limen boundary names the F# engine and the browser kernel`` () =
+    // vendor/limen-routing is Limen's own engine library (Limen.Routing,
+    // vendored until 0.9.0 ships it): pure engine code, so it sits inside
+    // the engine boundary (DF-SIGNAL-2026-0003).
     let boundary = (json "limen.config.json").["boundary"]
     let paths (name: string) = boundary.[name].AsArray() |> Seq.map str |> Seq.toList
 
     Assert.Null(boundary.["notApplicable"])
-    Assert.Equal<string list>([ "src/Echelon.Signal.Engine"; "src/Echelon.Signal.Admin"; "src/Echelon.Signal.Application" ], paths "engine")
+    Assert.Equal<string list>([ "src/Echelon.Signal.Engine"; "src/Echelon.Signal.Admin"; "src/Echelon.Signal.Application"; "vendor/limen-routing" ], paths "engine")
     Assert.Equal<string list>([ "src/Echelon.Signal.Browser"; "web"; "web-kernel" ], paths "kernel")
 
     for path in paths "engine" @ paths "kernel" do

@@ -5,7 +5,7 @@
       "src/Echelon.Signal.Engine",
       "src/Echelon.Signal.Admin",
       "src/Echelon.Signal.Application",
-      "src/Limen.Routing.Interim"
+      "vendor/limen-routing"
     ],
     "kernel": [
       "src/Echelon.Signal.Browser",

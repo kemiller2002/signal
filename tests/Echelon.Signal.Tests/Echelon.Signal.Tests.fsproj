@@ -59,7 +59,7 @@
     <ProjectReference Include="../../src/Echelon.Signal.Engine/Echelon.Signal.Engine.fsproj" />
     <ProjectReference Include="../../src/Echelon.Signal.Application/Echelon.Signal.Application.fsproj" />
     <ProjectReference Include="../../src/Echelon.Signal.Admin/Echelon.Signal.Admin.fsproj" />
-    <ProjectReference Include="../../src/Limen.Routing.Interim/Limen.Routing.Interim.fsproj" />
+    <ProjectReference Include="../../vendor/limen-routing/Limen.Routing.fsproj" />
   </ItemGroup>
 
 </Project>
