@@ -48,6 +48,7 @@
     <Compile Include="StoreFixture.fs" />
     <Compile Include="TemplateStoreTests.fs" />
     <Compile Include="ReportLibraryTests.fs" />
+    <Compile Include="PrivacyTests.fs" />
     <Compile Include="AnalyticsTests.fs" />
     <Compile Include="VisualizationTests.fs" />
     <Compile Include="LimenRoutingVectors.fs" />

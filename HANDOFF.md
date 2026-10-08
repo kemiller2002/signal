@@ -197,6 +197,21 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   commit), `export` (`ExportData`).
 - Screens, Folio print/PDF, configuration packages and policy packs: WI-0075.
 
+## Administrator privacy (WI-0051, 2026-10-08)
+
+- `Disclosure` (Admin, pure): anonymous-group thresholds for groups, cells,
+  distributions (with diversity) and comparisons; complementary suppression;
+  a release ledger that withholds a view nesting with an earlier release and
+  differing by fewer than the minimum (repeated snapshots freeze until enough
+  responses arrive).
+- `Audit`: PII-free records; ids must use Signal's prefixes or be OpaqueIds,
+  hashes are `sha256:`, reasons are codes, no free text, clock outside the hash.
+- `Retention`: the nine ADM-045 states and legal transitions (audited),
+  retention per class, provider-honest claims (GitHub deletion is never
+  "permanently erased"), retired datasets read-only, and ADM-064
+  reconstructability with recorded limitations.
+- Not yet applied in the store or page: WI-0076.
+
 ## Validation
 
 ```bash
