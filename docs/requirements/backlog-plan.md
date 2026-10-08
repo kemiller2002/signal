@@ -2,6 +2,8 @@
 
 Captured 2026-10-08 (WI-0037) from the missing and partial groups of [`implementation-gap-analysis.md`](implementation-gap-analysis.md). Each slice refines the broad ledger items WI-0002..WI-0020, which stay as the requirement-accounting record. Build order, per the user (DF-SIGNAL-2026-0001): Chrona first, then Summa, **then Signal** and the rest. Storage and sign-in slices depend on Arca (kemiller2002/arca) and Fides (kemiller2002/fides). `GapAnalysisTests` fails if any group that is not yet `tested` is not named by an open work item.
 
+**Pull-forward (2026-10-08, DF-SIGNAL-2026-0001 amendment 1):** the pure-domain slices that depend on no Arca or Fides slice (orders 5-9: WI-0042..WI-0046) start now, ahead of Chrona and Summa. The rest of the order stands.
+
 | Order | Work item | Slice | Depends on |
 |---:|---|---|---|
 | 1 | WI-0038 | Signal 01: configurable data location and Signal-owned namespace through Arca (SIG-DATALOC-001, ADM-004 location/namespace, ADM-005, ADM-057) | arca slice 2 (data location, ARCA-LOC) and arca slice 3 (record format, ARCA-REC) |
