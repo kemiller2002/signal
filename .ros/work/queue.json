@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 69,
+  "nextSeq": 70,
   "items": [
     {
       "id": "WI-0001",
@@ -1456,10 +1456,10 @@
         "folio"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-10-08T16:26:31.000Z",
-      "updatedAt": "2026-10-08T18:53:16.000Z",
+      "updatedAt": "2026-10-08T21:05:16.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1605,6 +1605,31 @@
       "attachments": [],
       "createdAt": "2026-10-08T20:56:57.226Z",
       "updatedAt": "2026-10-08T21:00:08.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0069",
+      "title": "Signal 09c: report remainders after WI-0062 - respondent, facilitator and 360-reviewer report families, benchmark comparisons and identified respondent detail in reports, longitudinal series, draft status and caching, and a server-side PDF renderer (RPT-001..006, SRPP-011..028, SRPP-072..088)",
+      "description": null,
+      "tags": [
+        "signal",
+        "reporting",
+        "folio"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T21:21:21.285Z",
+      "updatedAt": "2026-10-08T21:21:21.285Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

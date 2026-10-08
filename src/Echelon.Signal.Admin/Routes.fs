@@ -57,6 +57,8 @@ type AdminRoute =
     | Results of group: string * ResultsView
     | Scoring of group: string * section: string option
     | Imports of group: string * outcomes: string list
+    /// A group's report in one family and locale (WI-0062).
+    | Report of group: string * family: string * locale: string
     | Compare of groups: string list * section: string option
     | Administrators
     | Storage
@@ -68,6 +70,13 @@ let modeValues = [ "anonymous"; "identified" ]
 
 /// Import outcomes as the imported-surveys filter writes them (ADM-008's views).
 let outcomeValues = [ "accepted"; "blocked"; "duplicate"; "pending"; "reconciliation"; "rejected" ]
+
+/// Report families and locales a report route may name; the defaults are
+/// the administrator's group report in English.
+let familyValues = Echelon.Signal.Engine.ReportExport.families |> List.map _.Id
+let defaultFamily = Echelon.Signal.Engine.ReportExport.administratorGroup.Id
+let localeValues = Locale.supported |> List.map _.Tag
+let defaultLocale = Locale.english.Tag
 
 /// The guard every route that shows dataset content carries.
 [<Literal>]
@@ -105,6 +114,11 @@ let private routes =
       |> guarded
       Route.create "scoring" "groups/{group}/scoring" |> withQuery [ section ] |> guarded
       Route.create "imports" "groups/{group}/imports" |> withQuery [ QueryParam.optional "outcome" (ParamType.Set outcomeValues) ] |> guarded
+      Route.create "report" "groups/{group}/report"
+      |> withQuery
+          [ QueryParam.optional "family" (ParamType.Enum familyValues) |> QueryParam.withDefault (Value.Text defaultFamily)
+            QueryParam.optional "locale" (ParamType.Enum localeValues) |> QueryParam.withDefault (Value.Text defaultLocale) ]
+      |> guarded
       Route.create "compare" "compare" |> withQuery [ QueryParam.optional "groups" (ParamType.Set []); section ] |> guarded
       Route.create "administrators" "administrators" |> guarded
       Route.create "storage" "storage" |> guarded ]
@@ -161,6 +175,7 @@ let toTarget (route: AdminRoute) : Target =
                  "display", text (if view.Display = Percentages then "percent" else "count") ])
     | Scoring(g, s) -> target "scoring" [ "group", text g ] (optionalText "section" s)
     | Imports(g, outcomes) -> target "imports" [ "group", text g ] [ "outcome", members outcomes ]
+    | Report(g, family, locale) -> target "report" [ "group", text g ] [ "family", text family; "locale", text locale ]
     | Compare(groups, s) -> target "compare" [] ([ "groups", members groups ] @ optionalText "section" s)
     | Administrators -> target "administrators" [] []
     | Storage -> target "storage" [] []
@@ -211,6 +226,7 @@ let ofMatch (m: Match) : Result<AdminRoute, string> =
         |> need
     | "scoring" -> path "group" |> Option.map (fun g -> Scoring(g, query "section")) |> need
     | "imports" -> path "group" |> Option.map (fun g -> Imports(g, set "outcome")) |> need
+    | "report" -> path "group" |> Option.map (fun g -> Report(g, defaultArg (query "family") defaultFamily, defaultArg (query "locale") defaultLocale)) |> need
     | "compare" -> Ok(Compare(set "groups", query "section"))
     | "administrators" -> Ok Administrators
     | "storage" -> Ok Storage

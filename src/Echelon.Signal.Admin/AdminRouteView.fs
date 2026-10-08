@@ -83,7 +83,7 @@ let private viewIs (model: Model) (test: AdminRoute -> bool) =
 let private areas (model: Model) =
     let current (route: AdminRoute) =
         match model.Place.View, route with
-        | Ok(Groups _ | Group _ | Results _ | Scoring _ | Imports _), Groups _ -> true
+        | Ok(Groups _ | Group _ | Results _ | Scoring _ | Imports _ | Report _), Groups _ -> true
         | Ok(Assessments | Assessment _ | Section _ | Question _), Assessments -> true
         | Ok r, _ -> r = route
         | _ -> false
@@ -201,7 +201,8 @@ let project (model: Model) (group: GroupSummary option) : View =
       "viewResults", flag (is (function Results _ -> true | _ -> false))
       "viewScoring", flag (is (function Scoring _ -> true | _ -> false))
       "viewImports", flag (is (function Imports _ -> true | _ -> false))
-      "viewGroupTabs", flag (is (function Group _ | Results _ | Scoring _ | Imports _ -> true | _ -> false))
+      "viewReport", flag (is (function Report _ -> true | _ -> false))
+      "viewGroupTabs", flag (is (function Group _ | Results _ | Scoring _ | Imports _ | Report _ -> true | _ -> false))
       "viewCompare", flag (is (function Compare _ -> true | _ -> false))
       "viewAssessments", flag (is (function Assessments | Assessment _ | Section _ | Question _ -> true | _ -> false))
       "viewAdministrators", flag (is ((=) Administrators))
@@ -210,6 +211,7 @@ let project (model: Model) (group: GroupSummary option) : View =
       "resultsHref", text (href (Results(key, defaultResults)))
       "scoringHref", text (href (Scoring(key, None)))
       "importsHref", text (href (Imports(key, [])))
+      "reportHref", text (href (Report(key, defaultFamily, defaultLocale)))
       "statusFilters", Items(statusValues |> List.map (fun s -> [ "key", Text s; "label", Text s; "checked", Flag(List.contains s filter.Status) ]))
       "modeFilters", Items(modeValues |> List.map (fun m -> [ "key", Text m; "label", Text m; "checked", Flag(List.contains m filter.Mode) ]))
       "surveyFilters",

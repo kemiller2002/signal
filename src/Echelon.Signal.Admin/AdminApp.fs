@@ -53,6 +53,9 @@ type GroupSummary =
       Distributions: Map<string, Result<(float * float * int) list, Analysis.Unavailable>>
       /// The group result's derivation hash and contribution count (ADM-020).
       Lineage: string
+      /// The group result reports render from, and the survey it reports on (WI-0062).
+      Report: Echelon.Signal.Engine.GroupResult.Result
+      Template: Echelon.Signal.Engine.Assessment.Assessment
       Problems: string list }
 
 /// What the page shows about the open dataset.
@@ -164,7 +167,7 @@ type Msg =
 /// The group the current view is about, if any.
 let groupKey (model: Model) =
     match model.Place.View with
-    | Ok(Group g | Results(g, _) | Scoring(g, _) | Imports(g, _)) -> Some g
+    | Ok(Group g | Results(g, _) | Scoring(g, _) | Imports(g, _) | Report(g, _, _)) -> Some g
     | _ -> None
 
 /// What the guards read: sign-in is required when it is configured, has

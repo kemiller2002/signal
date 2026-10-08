@@ -182,3 +182,111 @@ let aggregate
           Hash = "" }
 
     { result with Hash = "sha256:" + Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(canonical result))).ToLowerInvariant() }
+
+/// One contribution where only its section values and coverage were kept
+/// (the administrator's stored contributions keep scores, not answers).
+type ScoredContribution =
+    { Role: Role option
+      /// Section id and its score; None when the section was not scored.
+      Sections: (string * float option) list
+      Coverage: Coverage }
+
+/// Aggregates a group from each section's scores and unscored count
+/// (WI-0062): the same statistics, suppression, role rule and hash as
+/// `aggregate`, so a report on stored or accumulated scores is the report on
+/// the results they came from. A template with no overall,
+/// interpretations or recommendations has none here either.
+let ofEvidence
+    (templateHash: string)
+    (mode: IdentityMode)
+    (expectedCount: int)
+    (minimumReportable: int)
+    (accepted: int)
+    (roleCounts: (Role * int) list)
+    (sections: (string * float list * int) list)
+    (coverage: Coverage)
+    : Result =
+    let suppressed = mode = AnonymousGroup && accepted < minimumReportable
+
+    let result =
+        { TemplateHash = templateHash
+          Mode = mode
+          ExpectedCount = expectedCount
+          AcceptedCount = accepted
+          MissingCount = max 0 (expectedCount - accepted)
+          Complete = accepted >= expectedCount
+          Overall = None
+          Sections =
+            sections
+            |> List.map (fun (section, scores, unscored) -> section, (if suppressed then Suppressed(accepted, minimumReportable) else statistics scores unscored))
+          Interpretations = []
+          Recommendations = []
+          Coverage = coverage
+          Roles =
+            if mode = AnonymousGroup && roleCounts |> List.exists (fun (_, n) -> n < minimumReportable) then [] else roleCounts
+          Hash = "" }
+
+    { result with Hash = "sha256:" + Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(canonical result))).ToLowerInvariant() }
+
+/// Aggregates a group from stored section values, one list per contribution.
+let ofScores (templateHash: string) (mode: IdentityMode) (expectedCount: int) (minimumReportable: int) (contributions: ScoredContribution list) : Result =
+    let sectionIds = contributions |> List.collect (fun c -> c.Sections |> List.map fst) |> List.distinct
+
+    let valuesOf (section: string) =
+        contributions |> List.map (fun c -> c.Sections |> List.tryFind (fun (s, _) -> s = section) |> Option.bind snd)
+
+    let sum f = contributions |> List.sumBy f
+
+    ofEvidence
+        templateHash
+        mode
+        expectedCount
+        minimumReportable
+        contributions.Length
+        (contributions |> List.choose _.Role |> List.countBy id |> List.sortBy (fun (role, _) -> sprintf "%A" role))
+        (sectionIds |> List.map (fun s -> let values = valuesOf s in s, List.choose id values, values |> List.filter Option.isNone |> List.length))
+        { Applicable = sum _.Coverage.Applicable
+          Answered = sum _.Coverage.Answered
+          Special = sum _.Coverage.Special
+          Unanswered = sum _.Coverage.Unanswered }
+
+/// Aggregates a group from the administrator's incremental accumulator
+/// (ADM-011): its evidence per dimension, in the template's order, and its
+/// answer totals as coverage.
+let ofAccumulator (templateHash: string) (minimumReportable: int) (accumulator: Incremental.Accumulator) : Result =
+    let definition = accumulator.Definition
+    let accepted = accumulator.Accepted.Count
+    let applicable = definition.Template.Items.Length * accepted
+
+    ofEvidence
+        templateHash
+        definition.Mode
+        definition.ExpectedCount
+        minimumReportable
+        accepted
+        []
+        (definition.Template.Dimensions
+         |> List.choose (fun d -> accumulator.Evidence.TryFind d.Id |> Option.map (fun e -> d.Id, e.Scores, e.Unscored))
+         |> List.filter (fun _ -> accepted > 0))
+        { Applicable = applicable
+          Answered = accumulator.Answered - accumulator.NonNumeric
+          Special = accumulator.NonNumeric
+          Unanswered = max 0 (applicable - accumulator.Answered) }
+
+/// A stored submission result as a scored contribution: its dimension scores
+/// as section values (the pilot's generic sections are its dimensions, with
+/// the same scores, `Pilot.contentOf`) and its answer counts as coverage.
+let ofSubmission (items: int) (result: Import.SurveyResult) : ScoredContribution =
+    { Role = None
+      Sections =
+        result.Dimensions
+        |> List.map (fun (dimension, outcome) ->
+            dimension.Id,
+            match outcome with
+            | Assessment.Scored(score, _, _) -> Some score
+            | Assessment.Unscored _ -> None)
+      Coverage =
+        { Applicable = items
+          Answered = result.AnsweredCount - result.NonNumericCount
+          Special = result.NonNumericCount
+          Unanswered = max 0 (items - result.AnsweredCount) } }

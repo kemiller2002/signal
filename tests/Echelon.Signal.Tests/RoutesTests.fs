@@ -121,7 +121,7 @@ let ``the inventory file is the table's inventory, byte for byte (SIG-LINK-009)`
 /// Every parameter name a route may carry. Adding one is a privacy review
 /// (SIG-LINK-008): it must be an opaque identifier or a typed view parameter.
 let private allowedParameters =
-    set [ "assessment"; "version"; "section"; "question"; "group"; "groups"; "status"; "mode"; "survey"; "sort"; "display"; "outcome"; "returnTo"; "view" ]
+    set [ "assessment"; "version"; "section"; "question"; "group"; "groups"; "status"; "mode"; "survey"; "sort"; "display"; "outcome"; "returnTo"; "view"; "family"; "locale" ]
 
 [<Fact>]
 let ``routes carry only identifiers and typed view parameters, never answers (SIG-LINK-008)`` () =

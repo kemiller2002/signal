@@ -209,6 +209,8 @@ let summary (unreconciled: int) (imported: Imported option) (group: OpenedGroup)
       Distributions =
         let source = Analysis.source group.Config group.Accumulator
         source.Scores |> Map.map (fun section _ -> Analysis.distribution source section 5)
+      Report = Echelon.Signal.Engine.GroupResult.ofAccumulator group.Config.TemplateHash group.Config.MinimumReportableCount group.Accumulator
+      Template = group.Definition.Template
       Lineage =
         let result = result group
         $"{result.Lineage.DerivationHash} from {result.Lineage.SubmissionHashes.Length} accepted contribution(s), template {result.Lineage.TemplateHash}"

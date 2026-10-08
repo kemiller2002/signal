@@ -68,8 +68,9 @@ let assessment: Assessment =
 /// The same pilot as a generic canonical template (WI-0042): one section per
 /// dimension, five-point frequency questions offering the three special
 /// states, each section scored by the SDRA catalog scorer. A differential
-/// test holds its section scores equal to `Assessment.score`.
-let content: Template.Content =
+/// test holds its section scores equal to `Assessment.score`. Any assessment
+/// converts the same way (`contentOf`).
+let contentOf (assessment: Assessment) : Template.Content =
     let question (item: Item) : Template.Question =
         { Id = item.Id
           Prompt = item.Prompt
@@ -106,6 +107,8 @@ let content: Template.Content =
                       Questions = [] } })
       Rules = RuleModel.noRules
       Results = ResultModel.noResults }
+
+let content: Template.Content = contentOf assessment
 
 /// Assessment answers as generic answer state.
 let answerState (answer: Answer) : Responses.AnswerState =

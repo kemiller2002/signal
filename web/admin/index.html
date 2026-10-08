@@ -229,6 +229,7 @@
                   <li><a id="tab-results" data-bind-href="resultsHref" data-bind-aria-current="viewResults">Results</a></li>
                   <li><a id="tab-scoring" data-bind-href="scoringHref" data-bind-aria-current="viewScoring">Scoring</a></li>
                   <li><a id="tab-imports" data-bind-href="importsHref" data-bind-aria-current="viewImports">Imported surveys</a></li>
+                  <li><a id="tab-report" data-bind-href="reportHref" data-bind-aria-current="viewReport">Report</a></li>
                 </ul>
               </nav>
               <template data-if="viewGroup">
@@ -407,6 +408,107 @@
         </section>
       </template>
     </section>
+  </template>
+
+  <!-- A group's report (WI-0062): ReportData from the engine, rendered by
+       Folio's print components without recomputation. The family and
+       language are the route's, so the link opens this report; printing
+       prints only the report (Print, or Save as PDF). -->
+  <template data-if="viewReport">
+    <section id="report-controls" class="ef-stack report-controls" aria-label="Report options">
+      <nav aria-label="Report family">
+        <ul class="areas" id="report-families">
+          <template data-each="reportFamilies" data-key="id">
+            <li><a data-bind-href="href" data-bind-aria-current="current" data-bind-data-available="available" data-text="label"></a></li>
+          </template>
+        </ul>
+      </nav>
+      <nav aria-label="Report language">
+        <ul class="areas" id="report-locales">
+          <template data-each="reportLocales" data-key="id">
+            <li><a data-bind-href="href" data-bind-aria-current="current" data-bind-lang="id" data-text="label"></a></li>
+          </template>
+        </ul>
+      </nav>
+      <template data-if="reportWithheld">
+        <p id="report-withheld" role="status">This report is not available for this group. <span data-text="reportWithheldReason"></span></p>
+      </template>
+      <p class="ef-field__description">To keep a copy, print this page or save it as PDF: only the report is printed.</p>
+    </section>
+  </template>
+  <template data-if="hasReport">
+    <template data-if="viewReport">
+      <ef-print-document class="report-surface" id="report" data-bind-lang="reportLang" data-bind-dir="reportDir">
+        <ef-print-title-page>
+          <header>
+            <p data-text="reportFamily"></p>
+            <h1 id="report-title" data-text="reportTitle"></h1>
+            <p><span data-text="reportGroupLabel"></span> <code data-text="reportGroup"></code></p>
+            <p><span data-text="reportGeneratedLabel"></span> <span id="report-generated" data-text="reportGenerated"></span> · <span id="report-status" data-text="reportStatus"></span></p>
+          </header>
+        </ef-print-title-page>
+        <ef-print-toc>
+          <nav aria-labelledby="report-contents-title">
+            <h2 id="report-contents-title" data-text="reportContentsLabel"></h2>
+            <ol id="report-contents"><template data-each="reportContents" data-key="key"><li data-text="title"></li></template></ol>
+          </nav>
+        </ef-print-toc>
+        <template data-if="reportHasSummary">
+          <ef-print-section><section><h2 data-text="reportTitleSummary"></h2><p id="report-summary" data-text="reportSummary"></p>
+            <ul id="report-warnings"><template data-each="reportWarnings" data-key="code"><li data-bind-data-code="code" data-text="text"></li></template></ul></section></ef-print-section>
+        </template>
+        <template data-if="reportHasResponseCounts">
+          <ef-print-section><section><h2 data-text="reportTitleResponseCounts"></h2>
+            <dl id="report-counts"><template data-each="reportCounts" data-key="key"><div><dt data-text="label"></dt><dd data-bind-data-count="key" data-text="value"></dd></div></template></dl>
+          </section></ef-print-section>
+        </template>
+        <template data-if="reportHasOverallResult">
+          <ef-print-section><section><h2 data-text="reportTitleOverallResult"></h2>
+            <ef-print-metric><p id="report-overall" data-text="reportOverall"></p></ef-print-metric></section></ef-print-section>
+        </template>
+        <template data-if="reportHasSectionResults">
+          <ef-print-section><section><h2 data-text="reportTitleSectionResults"></h2>
+            <ef-print-table><table id="report-sections">
+              <thead><tr><template data-each="reportColumns" data-key="key"><th scope="col" data-text="label"></th></template></tr></thead>
+              <tbody><template data-each="reportSections" data-key="key"><tr><th scope="row" data-text="section"></th><td data-text="mean"></td><td data-text="median"></td><td data-text="range"></td><td data-text="scored"></td><td data-text="unscored"></td></tr></template></tbody>
+            </table></ef-print-table></section></ef-print-section>
+        </template>
+        <template data-if="reportHasGroupDistributions">
+          <ef-print-section><section><h2 data-text="reportTitleGroupDistributions"></h2>
+            <ef-print-table><table id="report-spread">
+              <tbody><template data-each="reportSections" data-key="key"><tr><th scope="row" data-text="section"></th><td data-text="median"></td><td data-text="range"></td></tr></template></tbody>
+            </table></ef-print-table></section></ef-print-section>
+        </template>
+        <template data-if="reportHasStrengths">
+          <ef-print-section><section><h2 data-text="reportTitleStrengths"></h2><ul><template data-each="reportStrengths" data-key="key"><li data-text="text"></li></template></ul></section></ef-print-section>
+        </template>
+        <template data-if="reportHasWeaknesses">
+          <ef-print-section><section><h2 data-text="reportTitleWeaknesses"></h2><ul><template data-each="reportWeaknesses" data-key="key"><li data-text="text"></li></template></ul></section></ef-print-section>
+        </template>
+        <template data-if="reportHasRecommendations">
+          <ef-print-section><section><h2 data-text="reportTitleRecommendations"></h2>
+            <ul id="report-recommendations"><template data-each="reportRecommendations" data-key="key"><li><strong data-text="title"></strong> <span data-text="priority"></span> · <span data-text="frequency"></span></li></template></ul></section></ef-print-section>
+        </template>
+        <template data-if="reportHasCoverageAndConfidence">
+          <ef-print-section><section><h2 data-text="reportTitleCoverageAndConfidence"></h2>
+            <dl id="report-coverage"><template data-each="reportCoverage" data-key="key"><div><dt data-text="label"></dt><dd data-text="value"></dd></div></template></dl></section></ef-print-section>
+        </template>
+        <template data-if="reportHasComparisons">
+          <ef-print-section><section><h2 data-text="reportTitleComparisons"></h2>
+            <ul id="report-comparisons"><template data-each="reportComparisons" data-key="key"><li><span data-text="label"></span> (<span data-text="baseline"></span>): <span data-text="delta"></span></li></template></ul></section></ef-print-section>
+        </template>
+        <template data-if="reportHasRoleBreakdown">
+          <ef-print-section><section><h2 data-text="reportTitleRoleBreakdown"></h2><ul><template data-each="reportRoles" data-key="key"><li><span data-text="role"></span>: <span data-text="count"></span></li></template></ul></section></ef-print-section>
+        </template>
+        <template data-if="reportHasMethodology">
+          <ef-print-section><section><h2 data-text="reportTitleMethodology"></h2><ul id="report-methodology"><template data-each="reportMethodology" data-key="key"><li data-text="text"></li></template></ul></section></ef-print-section>
+        </template>
+        <template data-if="reportHasAuditMetadata">
+          <ef-print-section><section><h2 data-text="reportTitleAuditMetadata"></h2>
+            <dl id="report-audit"><template data-each="reportAudit" data-key="key"><div><dt data-text="label"></dt><dd><code data-text="value"></code></dd></div></template></dl></section></ef-print-section>
+        </template>
+      </ef-print-document>
+    </template>
   </template>
 </main>
 <script type="module" src="./admin.js"></script>

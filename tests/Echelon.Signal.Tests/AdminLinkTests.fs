@@ -13,22 +13,22 @@ open Echelon.Signal.Engine
 open Echelon.Signal.Engine.UrlState
 open Echelon.Signal.Tests.AdminPageTests
 
-let private origin = "http://127.0.0.1:4321/web/admin/index.html"
+let origin = "http://127.0.0.1:4321/web/admin/index.html"
 
 /// A fresh page load at a fragment, against an existing browser and store.
-let private openAt (browser: Browser) (github: InMemoryStore) (hash: string) =
+let openAt (browser: Browser) (github: InMemoryStore) (hash: string) =
     let page = Page(browser, github, fun () -> true)
     page.Send(initialize "" hash)
     page
 
-let private callbackState (browser: Browser) =
+let callbackState (browser: Browser) =
     Uri(Seq.last browser.Left).Query.TrimStart('?').Split('&') |> Array.find (fun p -> p.StartsWith "state=") |> fun p -> p.Substring 6
 
-let private changed (page: Page) (hash: string) =
+let changed (page: Page) (hash: string) =
     page.Send $"""{{"kind":"LocationChanged","location":{{"path":"/web/admin/index.html","hash":"{hash}"}}}}"""
 
 /// A group with two accepted submissions, made by a signed-in administrator.
-let private withGroup () =
+let withGroup () =
     let browser, github, page = signedIn ()
     page.Event("navigate", key = "/groups")
     page.Event("newGroupExpected", value = "2")
@@ -218,7 +218,7 @@ let ``the administrator page binds only what its engine projects, and sends only
 
     let seen =
         [ $"#/compare?groups={key},{other}"; $"#/groups/{key}"; $"#/groups/{key}/results?section=D01"; $"#/groups/{key}/scoring"; $"#/groups/{key}/imports"
-          $"#/compare?groups={key}"; "#/groups"; "#/assessments/SDRA/versions/0.1.0-draft/sections/D01/questions/CORE-001"; "#/nowhere" ]
+          $"#/compare?groups={key}"; $"#/groups/{key}/report?family=audit&locale=ar-EG"; $"#/groups/{key}/report"; "#/groups"; "#/assessments/SDRA/versions/0.1.0-draft/sections/D01/questions/CORE-001"; "#/nowhere" ]
         |> List.map (fun hash ->
             changed back hash
             namesOf back.ViewText)
@@ -232,9 +232,13 @@ let ``the administrator page binds only what its engine projects, and sends only
             [ attribute "data-text"; attribute "data-if"; attribute "data-each"; attribute "data-key"
               Text.RegularExpressions.Regex.Matches(html, "\\sdata-bind-[a-z-]+=\"([^\"]+)\"") |> Seq.map (fun m -> m.Groups[1].Value) |> Set.ofSeq ]
 
-    // Obligation items (code, text) appear only with unreconciled work, which
-    // these flows do not create; AdminView projects both fields.
-    Assert.Empty(Set.difference bound (Set.union seen (set [ "code"; "text" ])))
+    // Fields of lists these flows leave empty: obligations (code, text) need
+    // unreconciled work; report recommendations (title, priority, frequency),
+    // comparisons (label, baseline, delta) and roles (role, count) need a
+    // template or group that yields them. AdminView and AdminReportView
+    // project each of them.
+    let emptyListFields = set [ "code"; "text"; "title"; "priority"; "frequency"; "label"; "baseline"; "delta"; "role"; "count" ]
+    Assert.Empty(Set.difference bound (Set.union seen emptyListFields))
 
     // Every event the page sends is one the engine handles (an unknown one fails loudly).
     for name in attribute "data-event" do
