@@ -155,6 +155,44 @@
                 <tbody><template data-each="sections" data-key="id"><tr><td data-text="id"></td><td data-text="score"></td></tr></template></tbody>
               </table>
               <p>Report state: <code id="report-fragment" data-text="reportFragment"></code></p>
+              <!-- Charts compiled and validated in F# (ADM-015..017): meters for the
+                   marks, a symbol beside every colour, and the same data as text. -->
+              <section id="exploration" class="ef-stack" aria-label="Exploration">
+                <div class="explore-controls">
+                  <label><input type="checkbox" data-event="exploreSort" value="value" data-bind-checked="exploreByValue" /> Sort by value</label>
+                  <label><input type="checkbox" data-event="exploreDisplay" value="percent" data-bind-checked="explorePercent" /> Distribution as percentages</label>
+                  <button type="button" class="ef-button" data-event="exploreSection" value="all">All sections</button>
+                </div>
+                <figure id="section-chart">
+                  <figcaption data-text="chartDescription"></figcaption>
+                  <table class="chart">
+                    <thead><tr><th>Section</th><th>Mean</th><th>Bar</th></tr></thead>
+                    <tbody>
+                      <template data-each="chart" data-key="key">
+                        <tr data-bind-data-pattern="pattern">
+                          <th scope="row"><button type="button" class="ef-button" data-event="exploreSection" data-text="category"></button></th>
+                          <td><span aria-hidden="true" data-text="symbol"></span> <span data-text="value"></span></td>
+                          <td><meter min="0" max="1" data-bind-value="position" data-bind-hidden="unavailable" data-bind-aria-label="value"></meter></td>
+                        </tr>
+                      </template>
+                    </tbody>
+                  </table>
+                  <p class="chart-warnings" data-text="chartWarnings"></p>
+                </figure>
+                <template data-if="hasDistribution">
+                  <figure id="distribution-chart">
+                    <figcaption data-text="distributionDescription"></figcaption>
+                    <table class="chart">
+                      <thead><tr><th>Scores</th><th>Respondents</th><th>Bar</th></tr></thead>
+                      <tbody>
+                        <template data-each="distribution" data-key="key">
+                          <tr><th scope="row" data-text="category"></th><td data-text="value"></td><td><meter min="0" max="1" data-bind-value="position" data-bind-hidden="unavailable"></meter></td></tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </figure>
+                </template>
+              </section>
               <details id="analysis"><summary>Analysis (calculated, not the canonical result)</summary>
                 <table>
                   <thead><tr><th>Section</th><th>Measure</th><th>Value</th></tr></thead>

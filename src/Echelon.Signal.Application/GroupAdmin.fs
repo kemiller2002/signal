@@ -176,6 +176,7 @@ let summary (unreconciled: int) (imported: Imported option) (group: OpenedGroup)
       Mode = group.Config.Mode
       Expected = group.Config.ExpectedCount
       Accepted = group.Accumulator.Accepted.Count
+      MinimumReportable = group.Config.MinimumReportableCount
       Status = group.Lifecycle.Status
       Phase =
         AdminState.phase
@@ -193,6 +194,9 @@ let summary (unreconciled: int) (imported: Imported option) (group: OpenedGroup)
       Items = items
       UnreconciledBatches = unreconciled
       Analysis = analysisRows group
+      Distributions =
+        let source = Analysis.source group.Config group.Accumulator
+        source.Scores |> Map.map (fun section _ -> Analysis.distribution source section 5)
       Lineage =
         let result = result group
         $"{result.Lineage.DerivationHash} from {result.Lineage.SubmissionHashes.Length} accepted contribution(s), template {result.Lineage.TemplateHash}"

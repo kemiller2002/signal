@@ -1127,10 +1127,10 @@
         "visualization"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:09.810Z",
-      "updatedAt": "2026-10-08T18:28:54.000Z",
+      "updatedAt": "2026-10-08T18:55:15.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1145,7 +1145,7 @@
     {
       "id": "WI-0050",
       "title": "Signal 13: report builder, snapshots, exports, configuration packages and policy packs (ADM-021..023, ADM-047, ADM-048, ADM-063)",
-      "description": "Depends on WI-0046 and WI-0048. Refines WI-0016. Also carries WI-0039's remainder of ADM-025: storage locators and credentials never appear in exports or shareable report artifacts. Also carries WI-0041's remainders: saved report definitions and immutable report snapshots as stored layers (ADM-010), and quarantine for configuration packages (ADM-061). Also carries WI-0047's remainders: the page's Reports, Dashboards, Snapshots and Audit areas (ADM-001, ADM-031), the Reporting and Snapshotting administrator states (ADM-002), group configuration editing, successor creation, per-group report definitions and storage profile in the page (ADM-007), the conflict workspace's resolution flow in the page (ADM-062), finalization with a formal report snapshot and FinalizationOutcomeUnknown reconciliation (ADM-066), importing a text file through Limen's files capability (ADM-008), and Aegis boundaries for export and download mechanisms (ADM-077). Also carries WI-0048's remainders: report-definition and dashboard impacts of template upgrades (ADM-049) and semantic diffs of report, dashboard and visualization definitions, analysis expressions, privacy policies, policy packs and configuration packages (ADM-051).",
+      "description": "Depends on WI-0046 and WI-0048. Refines WI-0016. Also carries WI-0039's remainder of ADM-025: storage locators and credentials never appear in exports or shareable report artifacts. Also carries WI-0041's remainders: saved report definitions and immutable report snapshots as stored layers (ADM-010), and quarantine for configuration packages (ADM-061). Also carries WI-0047's remainders: the page's Reports, Dashboards, Snapshots and Audit areas (ADM-001, ADM-031), the Reporting and Snapshotting administrator states (ADM-002), group configuration editing, successor creation, per-group report definitions and storage profile in the page (ADM-007), the conflict workspace's resolution flow in the page (ADM-062), finalization with a formal report snapshot and FinalizationOutcomeUnknown reconciliation (ADM-066), importing a text file through Limen's files capability (ADM-008), and Aegis boundaries for export and download mechanisms (ADM-077). Also carries WI-0048's remainders: report-definition and dashboard impacts of template upgrades (ADM-049) and semantic diffs of report, dashboard and visualization definitions, analysis expressions, privacy policies, policy packs and configuration packages (ADM-051). Also carries WI-0049's remainders: saving dashboard definitions to the dataset with non-PII filters and the recommendation-frequency, Don't-Know and snapshot-status blocks (ADM-018); regression fixtures for report definitions and the browser-level assertions (focus order, supported widths, clipping, high contrast, colour-blind simulation) (ADM-050).",
       "tags": [
         "signal",
         "order:13",
@@ -1156,7 +1156,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:10.206Z",
-      "updatedAt": "2026-10-08T18:28:54.000Z",
+      "updatedAt": "2026-10-08T18:53:16.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1448,7 +1448,7 @@
     {
       "id": "WI-0062",
       "title": "Signal 09b: render ReportData through Folio and the page - the standard results print profile, HTML/PDF renderers, localization, respondent/facilitator/360 families, benchmark comparisons and respondent detail in reports (RPT-001..006, SRPP-001..185)",
-      "description": "WI-0046 built the format-neutral reporting contract (GroupResult, ReportModel, Report, ReportExport). This slice is the rendering half: a Folio report profile consuming ReportData without recomputation, print-friendly HTML and PDF, TOC/cover/reading order, localization of labels and reason codes, dispersion and longitudinal displays, and the remaining report families. It touches web/ and the Folio dependency, so it is not a pure-domain slice and was left out of the 2026-10-08 pull-forward.",
+      "description": "WI-0046 built the format-neutral reporting contract (GroupResult, ReportModel, Report, ReportExport). This slice is the rendering half: a Folio report profile consuming ReportData without recomputation, print-friendly HTML and PDF, TOC/cover/reading order, localization of labels and reason codes, dispersion and longitudinal displays, and the remaining report families. It touches web/ and the Folio dependency, so it is not a pure-domain slice and was left out of the 2026-10-08 pull-forward. Also carries WI-0049's remainder: applying the Locale presentation transformation (numbers, percentages, dates, plurals, right-to-left layout) to rendered reports, with long translated labels and font fallback (ADM-069).",
       "tags": [
         "signal",
         "order:09b",
@@ -1459,7 +1459,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T16:26:31.000Z",
-      "updatedAt": "2026-10-08T16:26:31.000Z",
+      "updatedAt": "2026-10-08T18:53:16.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
