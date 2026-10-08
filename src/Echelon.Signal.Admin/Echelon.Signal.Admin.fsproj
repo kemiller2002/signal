@@ -36,10 +36,12 @@
     <Compile Include="Dashboard.fs" />
     <Compile Include="Locale.fs" />
     <Compile Include="Regression.fs" />
+    <Compile Include="ReportLabels.fs" />
     <Compile Include="Routes.fs" />
     <Compile Include="AdminNavigation.fs" />
     <Compile Include="AdminApp.fs" />
     <Compile Include="AdminRouteView.fs" />
+    <Compile Include="AdminReportView.fs" />
     <Compile Include="AdminView.fs" />
   </ItemGroup>
 

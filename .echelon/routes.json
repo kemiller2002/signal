@@ -359,6 +359,55 @@
       "guards": [
         "signedIn"
       ],
+      "name": "report",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "name": "group",
+          "required": true,
+          "type": "string",
+          "values": null
+        },
+        {
+          "default": "administrator-group",
+          "in": "query",
+          "name": "family",
+          "required": false,
+          "type": "enum",
+          "values": [
+            "administrator-group",
+            "executive-summary",
+            "detailed-section",
+            "anonymous-aggregate",
+            "identified-detail",
+            "audit"
+          ]
+        },
+        {
+          "default": "en-US",
+          "in": "query",
+          "name": "locale",
+          "required": false,
+          "type": "enum",
+          "values": [
+            "en-US",
+            "de-DE",
+            "fr-FR",
+            "ar-EG"
+          ]
+        }
+      ],
+      "pattern": "/groups/{group:string}/report",
+      "requires": [
+        "dataset"
+      ],
+      "returnTarget": true
+    },
+    {
+      "guards": [
+        "signedIn"
+      ],
       "name": "compare",
       "params": [
         {
