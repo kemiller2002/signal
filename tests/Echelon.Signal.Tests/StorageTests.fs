@@ -202,6 +202,23 @@ let ``pointing a dataset at another location is a migration, never an edit`` () 
     let copied = InMemory.writeExternally ns.Location "deployments/prod/signal/datasets/ds_engagement/arca-manifest.json" (Some((read original manifestPath state |> function ReadOutcome.Found f -> f.Content | _ -> ""))) state
     Assert.Equal<string list>([ "SIGNAL.STORAGE.NAMESPACE_UNUSABLE" ], openNamespace ns (read ns manifestPath copied) |> codes)
 
+[<Fact>]
+let ``a dataset in the middle of a migration is not mistaken for an active store`` () =
+    let binding, state = initialized production
+    let ns = datasetNamespace production binding "ds_engagement" |> ok
+
+    let migrating =
+        match read ns manifestPath state with
+        | ReadOutcome.Found found ->
+            let manifest = Manifest.decode found.Content |> ok
+            let text = Manifest.encode { manifest with Migration = Some { MigrationId = "mig-1"; Phase = MigrationPhase.Copying } }
+            ReadOutcome.Found { found with Content = text }
+        | ReadOutcome.Absent -> failwith "no manifest"
+
+    match openNamespace ns migrating with
+    | Error [ NamespaceUnusable(_, detail) ] -> Assert.Contains("migration mig-1 is in progress", detail)
+    | other -> failwith $"%A{other}"
+
 // ---- ARCA-LOC-008: no production data in a public repository ----------------------------
 
 [<Fact>]

@@ -13,6 +13,9 @@
     <Compile Include="Deployment.fs" />
     <Compile Include="DatasetManifest.fs" />
     <Compile Include="Storage.fs" />
+    <Compile Include="ProviderContract.fs" />
+    <Compile Include="Loading.fs" />
+    <Compile Include="Growth.fs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -181,16 +181,19 @@ WI-0034 adds is the pure domain beneath ADM-008 through ADM-011; it does not by
 itself satisfy any ADM group, which also needs storage, UI and concurrency.
 WI-0038 adds the administrator domain project (`Echelon.Signal.Admin`) over
 Arca: deployment configuration, storage profiles, Signal's namespace and the
-storage manifest. Each group has its own row from WI-0038 on.
+storage manifest. Each group has its own row from WI-0038 on. WI-0039 adds
+the provider contract (`ProviderContract`), staged untrusted loading
+(`Loading`), growth warnings (`Growth`) and the application's GitHub failure
+translation through Aegis (`StorageFaults`).
 
 | Group | Baseline | Current | Evidence or gap | Work items |
 |---|---|---|---|---|
 | ADM-001 | missing | missing | Administrator Product Boundary and No-PII Contract: not built yet. | WI-0047 |
 | ADM-002 | missing | missing | Administrator State System: not built yet. | WI-0047 |
-| ADM-003 | missing | missing | Storage Provider Abstraction: not built yet. | WI-0039 |
-| ADM-004 | missing | partial | **WI-0038:** the repository owner/name, branch and base path are deployment configuration (`Deployment`), never constants; Signal owns `<base>/signal` and keeps every dataset in `datasets/<id>` beside other applications' data; records are Arca canonical JSON; the layout is versioned in the storage manifest; the configuration has no place for a token. The GitHub provider itself, its credential and capability checks before writes are WI-0039 and WI-0040. | WI-0038, WI-0039, WI-0040 |
-| ADM-005 | missing | partial | **WI-0038:** each dataset carries a Signal storage manifest (`DatasetManifest`): dataset id, root namespace, storage layout, canonicalization, result, group-result, template, administrator-state, report-definition and visualization schema versions, supported encodings and the creating application version, beside Arca's manifest (storage schema, provider contract, location, migration state). It holds no personal data; a future version, another dataset's manifest, another folder or a tampered record fails explicitly. Staging loading so validation completes before mutable capabilities exist is WI-0039. | WI-0038, WI-0039 |
-| ADM-006 | missing | missing | Future Installable Service Storage Option: not built yet. | WI-0039 |
+| ADM-003 | missing | partial | **WI-0039:** Signal's provider is Arca's provider-neutral `StorageProvider`; every ADM-003 capability has explicit, versioned knowledge (`ProviderContract.knowledge`: Available with version, Unavailable with the reason, or Unverified with evidence), nothing undeclared is assumed, and missing write capabilities refuse writes. Reconstructing the same SurveyGroupResult through two providers needs stored results (WI-0041). | WI-0039, WI-0041 |
+| ADM-004 | missing | partial | **WI-0038:** the repository owner/name, branch and base path are deployment configuration (`Deployment`), never constants; Signal owns `<base>/signal` and keeps every dataset in `datasets/<id>` beside other applications' data; records are Arca canonical JSON; the layout is versioned in the storage manifest; the configuration has no place for a token. **WI-0039:** the application references Arca's GitHub provider and Aegis's GitHub integration. Driving it from the store and checking the credential's capability before writes are WI-0040. | WI-0038, WI-0039, WI-0040 |
+| ADM-005 | missing | tested | **WI-0038:** each dataset carries a Signal storage manifest (`DatasetManifest`): dataset id, root namespace, storage layout, canonicalization, result, group-result, template, administrator-state, report-definition and visualization schema versions, supported encodings and the creating application version, beside Arca's manifest (storage schema, provider contract, location, migration state). It holds no personal data; a future version, another dataset's manifest, another folder or a tampered record fails explicitly; a dataset mid-migration does not open. **WI-0039:** loading is staged by type: only `Loading.verify` (both manifests proven) yields the `VerifiedDataset` that record loading needs. | WI-0038, WI-0039 |
+| ADM-006 | missing | tested | **WI-0039:** the provider type is configuration and a provider this version does not offer is refused, never simulated; the survey engine references no storage assembly and names no repository, branch, commit or SHA concept (`ProviderTests`); capabilities GitHub lacks (transactions, server-side query and aggregation, streaming) are discovered as Unavailable. | WI-0039 |
 | ADM-007 | missing | missing | Group Administration: not built yet. | WI-0047 |
 | ADM-008 | missing | missing | Submission Intake and Import Queue: not built yet. | WI-0041 |
 | ADM-009 | missing | missing | Import Idempotency, Concurrency, and Unknown Effects: not built yet. | WI-0041 |
@@ -209,8 +212,8 @@ storage manifest. Each group has its own row from WI-0038 on.
 | ADM-022 | missing | missing | Report Snapshots and Reproducibility: not built yet. | WI-0050 |
 | ADM-023 | missing | missing | Exports: not built yet. | WI-0050 |
 | ADM-024 | missing | missing | Privacy-Preserving Aggregation and Disclosure Controls: not built yet. | WI-0051 |
-| ADM-025 | missing | missing | Storage Security and Integrity: not built yet. | WI-0038, WI-0039 |
-| ADM-026 | missing | missing | GitHub Rate Limits, Scale, and Performance: not built yet. | WI-0039 |
+| ADM-025 | missing | partial | **WI-0039:** every record has Arca's `sha256:` content hash; tampering, truncation, wrong schema, misplaced and wrong-dataset records are detected on load (`Loading`, `LoadingTests`); transport success is never taken as validity. Optional encryption stays deferred (SIG-DATALOC-005). Keeping locators and credentials out of exports and shareable reports is WI-0050. | WI-0038, WI-0039, WI-0050 |
+| ADM-026 | missing | partial | **WI-0039:** rate limits, object-size failures, conflicts, network interruption, partial listings and stale change tokens are typed (`ProviderContract.meaning`); a rate limit is retried only after the provider's retry-after or reset evidence and never automatically. The remaining request budget is not exposed (Unverified). Caching, conditional reads, scale modes and performance tests are WI-0053. | WI-0039, WI-0053 |
 | ADM-027 | missing | missing | Rebuildable Indexes and Materialized Views: not built yet. | WI-0041 |
 | ADM-028 | missing | missing | Storage Migration and Provider Portability: not built yet. | WI-0052 |
 | ADM-029 | missing | missing | Backup, Restore, and Disaster Recovery: not built yet. | WI-0052 |
@@ -228,9 +231,9 @@ storage manifest. Each group has its own row from WI-0038 on.
 | ADM-041 | missing | missing | Change-Impact Preview and Obligation Planning: not built yet. | WI-0048 |
 | ADM-042 | missing | missing | Administrator Sandbox and Simulation Mode: not built yet. | WI-0054 |
 | ADM-043 | missing | missing | Synthetic and Adversarial Survey Data Generator: not built yet. | WI-0054 |
-| ADM-044 | missing | missing | Storage Provider Conformance Suite: not built yet. | WI-0039 |
+| ADM-044 | missing | partial | **WI-0039:** Arca's provider conformance suite runs in Signal's tests against the in-memory provider in Signal's dataset namespace; providers claim only declared capabilities. Running it against the GitHub adapter in Signal's CI is WI-0053 (Arca's own CI covers the adapter). | WI-0039, WI-0053 |
 | ADM-045 | missing | missing | Data Lifecycle, Retention, Archival, and Deletion Semantics: not built yet. | WI-0051 |
-| ADM-046 | missing | missing | Durable Store as Untrusted Input: not built yet. | WI-0039 |
+| ADM-046 | missing | partial | **WI-0039:** loading is staged (`Loading.verify`, `load`, `writable`): path, object size, schema version, canonical encoding, content hash, dataset identity, object type, unique ids, required references and reference cycles are validated with typed codes; unusable objects are held aside with their revision, never overwritten; a partial listing is reported; writes are granted only to a clean, verified dataset. Expression, visualization, dashboard and analysis complexity limits arrive with those stored objects (WI-0057, WI-0049, WI-0048). | WI-0039, WI-0048, WI-0049, WI-0057 |
 | ADM-047 | missing | missing | Portable Configuration Packages: not built yet. | WI-0050 |
 | ADM-048 | missing | missing | Versioned Policy Packs: not built yet. | WI-0050 |
 | ADM-049 | missing | missing | Template Upgrade and Successor-Group Impact Analysis: not built yet. | WI-0048 |
@@ -241,8 +244,8 @@ storage manifest. Each group has its own row from WI-0038 on.
 | ADM-054 | missing | missing | End-to-End Derived-State Invalidation and Dependency Graph: not built yet. | WI-0048 |
 | ADM-055 | missing | missing | Template Registry and Exact Template Resolution: not built yet. | WI-0039 |
 | ADM-056 | missing | missing | Credential Lifecycle and Capability Revalidation: not built yet. | WI-0040 |
-| ADM-057 | missing | partial | **WI-0038:** storage profiles bind a provider type, locator, branch and base path under a stable id; datasets name their profile by id; labels are presentation (relabelling moves nothing); a dataset whose profile is gone is a configuration error; a location edited under existing data does not open (a migration is required). The credential slot and verification state are WI-0040 and WI-0039. | WI-0038, WI-0039, WI-0040 |
-| ADM-058 | missing | missing | GitHub Repository Growth, Rollover, and Compaction Strategy: not built yet. | WI-0039 |
+| ADM-057 | missing | partial | **WI-0038:** storage profiles bind a provider type, locator, branch and base path under a stable id; datasets name their profile by id; labels are presentation (relabelling moves nothing); a dataset whose profile is gone is a configuration error; a location edited under existing data does not open (a migration is required). **WI-0039:** a profile's verification state is provider evidence (`ProviderContract.verify`: repository id, write mode, missing capabilities). The credential slot is WI-0040. | WI-0038, WI-0039, WI-0040 |
+| ADM-058 | missing | partial | **WI-0039:** growth is assessed from Arca's measurement under a policy whose defaults cite GitHub's guidance and which a deployment may replace (`Growth`); warnings come before limits, and an incomplete measurement says so. Archive repositories, rollover and compaction are WI-0052. | WI-0039, WI-0052 |
 | ADM-059 | missing | missing | Storage Cost and Operation Budget Estimation: not built yet. | WI-0053 |
 | ADM-060 | missing | missing | Batch Import Transaction and Resume Semantics: not built yet. | WI-0041 |
 | ADM-061 | missing | missing | Quarantine Boundary for Untrusted Artifacts: not built yet. | WI-0041 |
@@ -257,7 +260,7 @@ storage manifest. Each group has its own row from WI-0038 on.
 | ADM-070 | missing | missing | Offline and Interrupted Administrator Session Behavior: not built yet. | WI-0047 |
 | ADM-071 | missing | missing | Browser Secret Storage Policy: not built yet. | WI-0040 |
 | ADM-072 | missing | missing | Cross-Tab Credential and Capability Coherence: not built yet. | WI-0040 |
-| ADM-073 | missing | missing | GitHub Branch Protection and Pull Request Storage Mode: not built yet. | WI-0039 |
+| ADM-073 | missing | partial | **WI-0039:** the write mode distinguishes DirectWriteAvailable, ReadOnlyByPermission, ProtectedBranchRequiresReview, BranchMissing, RepositoryArchived and ProviderPolicyUnknown (`ProviderContract.writeMode`); phase 1 writes directly only and refuses anything else explicitly (`Loading.writable`). Resolving the snapshot whenever a dataset opens is WI-0040. | WI-0039, WI-0040 |
 | ADM-074 | missing | missing | Operational Repair Preview and Plan: not built yet. | WI-0052 |
 | ADM-075 | missing | missing | Invariant Health Dashboard: not built yet. | WI-0052 |
 | ADM-076 | missing | missing | Proof-Carrying Derived Artifacts: not built yet. | WI-0052 |
@@ -292,7 +295,9 @@ storage manifest. Each group has its own row from WI-0038 on.
 | Range | Baseline | Current | Evidence or gap |
 |---|---|---|---|
 | AER-001, AER-004 to AER-009 | tested | tested | Core package pinned centrally, configured once, validated, stable identity `Signal`, declared stderr sink (`Boundary.configure`, `FoundationsConformanceTests`). |
-| AER-002, AER-003, AER-032 | n/a | n/a | Signal calls no GitHub API yet; required when ADM storage lands (WI-0012). |
+| AER-002 | n/a | tested | **WI-0039:** the application references `EchelonFoundry.Aegis.Integration.GitHub` and classifies GitHub outcomes with its failure model through Arca's GitHub adapter (`StorageFaults`), never by its own reclassification. |
+| AER-003 | n/a | n/a | Signal does not persist Aegis events to GitHub, so the GitHub store package is not added. |
+| AER-032 | n/a | tested | **WI-0039:** authentication, authorization, not found, rate limiting (primary and secondary), timeout, network failure, malformed response, transient provider failure and the uncertain write outcome each translate deterministically (`ProviderTests`). |
 | AER-010 to AER-020 | tested | tested | Boundary manifest, capture at dispatch, typed refusals not faults, defects fail loud, stable codes, single translation, safe presentation through Forma (`BoundaryTests`). |
 | AER-021 to AER-031 | partial | partial | Fault presentation is accessible text; redaction holds (no answer state in faults); no retry, unknown-effect or offline paths exist yet. |
 | AER-033 to AER-035 | tested | tested | Collector sinks, fault-path evidence for the declared boundary, happy path unchanged. |
@@ -319,6 +324,6 @@ Counts of the **Current** column, recomputed by each change that updates it
 |---|---:|---:|---:|---:|---:|
 | Core survey engine | 72 | 15 | 55 | 2 | 0 |
 | Advanced stress trial | 15 | 0 | 13 | 2 | 0 |
-| Administrator console | 77 | 0 | 4 | 73 | 0 |
+| Administrator console | 77 | 2 | 10 | 65 | 0 |
 | Scoring and selector completeness | 19 | 7 | 11 | 0 | 1 |
-| **Ledger total** | **183** | **22** | **83** | **77** | **1** |
+| **Ledger total** | **183** | **24** | **89** | **69** | **1** |

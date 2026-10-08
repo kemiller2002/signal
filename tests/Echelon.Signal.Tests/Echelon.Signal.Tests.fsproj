@@ -32,6 +32,8 @@
     <Compile Include="StructureTests.fs" />
     <Compile Include="ReportingTests.fs" />
     <Compile Include="StorageTests.fs" />
+    <Compile Include="ProviderTests.fs" />
+    <Compile Include="LoadingTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

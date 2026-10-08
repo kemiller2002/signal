@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T16:58:58.000Z",
+  "updatedAt": "2026-10-08T17:00:30.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -1564,6 +1564,17 @@
       },
       "completedAt": "2026-10-08T16:58:58.000Z",
       "conclusion": "Signal's data location is deployment configuration with storage profiles; Signal owns <base>/signal, datasets live in their profile's repository, production data is refused in public repositories, and every dataset carries a validated ADM-005 storage manifest. ADM-004, ADM-005 and ADM-057 are partial; remainders are named in WI-0039 and WI-0040."
+    },
+    {
+      "id": "WI-0039",
+      "type": "implementation",
+      "state": "active",
+      "semanticState": "active",
+      "evidence": [],
+      "updatedAt": "2026-10-08T17:00:30.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261008T170031651Z-4e3d4920"
+      ]
     }
   ]
 }

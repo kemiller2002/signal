@@ -12,6 +12,7 @@
          Directory.Build.props. -->
     <PackageVersion Include="FSharp.Core" Version="10.1.401" />
     <PackageVersion Include="EchelonFoundry.Aegis.Core" Version="1.0.0" />
+    <PackageVersion Include="EchelonFoundry.Aegis.Integration.GitHub" Version="1.0.0" />
     <!-- Arca 0.2.1 and Fides 0.2.0: attested GitHub release assets in
          vendor/nuget, installed and proven by Conditor (conditor.json,
          vendor/nuget/arca.lock, vendor/nuget/fides.lock). Fides.Client is the

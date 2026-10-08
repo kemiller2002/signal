@@ -867,10 +867,10 @@
         "depends:arca"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:06.459Z",
-      "updatedAt": "2026-10-08T16:57:07.000Z",
+      "updatedAt": "2026-10-08T17:00:30.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -885,7 +885,7 @@
     {
       "id": "WI-0040",
       "title": "Signal 03: administrator sign-in through Fides - credential lifecycle, browser secret policy, cross-tab coherence (ADM-056, ADM-071, ADM-072)",
-      "description": "Depends on fides slice 7 (WASM client and Arca token provider, FID-CLI) and arca slice 5 (token-provider port, ARCA-AUTH). Memory-only by default, typed credential states, capability recomputation on permission change, and dataset identity checks on credential replacement. Refines WI-0011 and WI-0017. Also closes WI-0038's remainder of ADM-057: the profile's credential slot (which signed-in credential a profile uses), and ADM-004's check of the credential's repository capability before writes are enabled.",
+      "description": "Depends on fides slice 7 (WASM client and Arca token provider, FID-CLI) and arca slice 5 (token-provider port, ARCA-AUTH). Memory-only by default, typed credential states, capability recomputation on permission change, and dataset identity checks on credential replacement. Refines WI-0011 and WI-0017. Also closes WI-0038's remainder of ADM-057: the profile's credential slot (which signed-in credential a profile uses), and ADM-004's check of the credential's repository capability before writes are enabled. Also carries WI-0039's remainders: resolving the credential's capability snapshot (Arca's Identity.resolve) whenever a dataset is opened, so the profile's verification and write mode (ADM-073, ADM-057) are current, and driving Arca's GitHub provider from the application's store (ADM-004).",
       "tags": [
         "signal",
         "order:03",
@@ -896,7 +896,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:06.779Z",
-      "updatedAt": "2026-10-08T16:57:07.000Z",
+      "updatedAt": "2026-10-08T17:12:34.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -911,7 +911,7 @@
     {
       "id": "WI-0041",
       "title": "Signal 04: durable import, concurrency, OutcomeUnknown and rebuildable indexes (ADM-008..011, ADM-027, ADM-060, ADM-061, ADM-067; ARP-003..006; ARX-008; LURL-003, LURL-005)",
-      "description": "Depends on WI-0039. Persist the pure import and aggregation core from WI-0034 through Arca: set-based accepted contributions with commuting additions, idempotent imports, OutcomeUnknown reconciliation, AdminReportState persistence, batch resume, quarantine and rebuildable indexes. Refines WI-0008 and WI-0013. Also closes the remaining parts of ACR-005, ARP-002, URLC-002, URLC-003 (see their gap-analysis rows).",
+      "description": "Depends on WI-0039. Persist the pure import and aggregation core from WI-0034 through Arca: set-based accepted contributions with commuting additions, idempotent imports, OutcomeUnknown reconciliation, AdminReportState persistence, batch resume, quarantine and rebuildable indexes. Refines WI-0008 and WI-0013. Also closes the remaining parts of ACR-005, ARP-002, URLC-002, URLC-003 (see their gap-analysis rows). Also carries WI-0039's remainder of ADM-003: the same logical administrator state stored through two conforming providers reconstructs the same SurveyGroupResult and report projections.",
       "tags": [
         "signal",
         "order:04",
@@ -923,7 +923,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:07.102Z",
-      "updatedAt": "2026-10-08T07:48:07.102Z",
+      "updatedAt": "2026-10-08T17:12:34.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1095,7 +1095,7 @@
     {
       "id": "WI-0048",
       "title": "Signal 11: analytics, comparisons, lineage, change-impact and dependency invalidation (ADM-012..014, ADM-019, ADM-020, ADM-041, ADM-049, ADM-051, ADM-054; ARX-012 remainder)",
-      "description": "Depends on WI-0041. Refines WI-0014.",
+      "description": "Depends on WI-0041. Refines WI-0014. Also carries WI-0039's remainder of ADM-046: analysis-expression limits when stored analyses are loaded.",
       "tags": [
         "signal",
         "order:11",
@@ -1105,7 +1105,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:09.436Z",
-      "updatedAt": "2026-10-08T07:48:09.436Z",
+      "updatedAt": "2026-10-08T17:12:34.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1120,7 +1120,7 @@
     {
       "id": "WI-0049",
       "title": "Signal 12: visualization grammar, dashboards and accessibility (ADM-015..018, ADM-050, ADM-069)",
-      "description": "Depends on WI-0048. Refines WI-0015.",
+      "description": "Depends on WI-0048. Refines WI-0015. Also carries WI-0039's remainder of ADM-046: visualization and dashboard complexity limits when stored definitions are loaded.",
       "tags": [
         "signal",
         "order:12",
@@ -1130,7 +1130,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:09.810Z",
-      "updatedAt": "2026-10-08T07:48:09.810Z",
+      "updatedAt": "2026-10-08T17:12:34.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1145,7 +1145,7 @@
     {
       "id": "WI-0050",
       "title": "Signal 13: report builder, snapshots, exports, configuration packages and policy packs (ADM-021..023, ADM-047, ADM-048, ADM-063)",
-      "description": "Depends on WI-0046 and WI-0048. Refines WI-0016.",
+      "description": "Depends on WI-0046 and WI-0048. Refines WI-0016. Also carries WI-0039's remainder of ADM-025: storage locators and credentials never appear in exports or shareable report artifacts.",
       "tags": [
         "signal",
         "order:13",
@@ -1156,7 +1156,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:10.206Z",
-      "updatedAt": "2026-10-08T07:48:10.206Z",
+      "updatedAt": "2026-10-08T17:12:34.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1197,7 +1197,7 @@
     {
       "id": "WI-0052",
       "title": "Signal 15: storage migration, backup and restore, schema evolution and operational repair (ADM-028, ADM-029, ADM-034, ADM-053, ADM-074..076)",
-      "description": "Depends on WI-0041 and arca slice 10 (derived indexes and migration, ARCA-MIG). Refines WI-0018.",
+      "description": "Depends on WI-0041 and arca slice 10 (derived indexes and migration, ARCA-MIG). Refines WI-0018. Also carries WI-0039's remainder of ADM-058: archive repositories, dataset rollover to a successor repository and compaction of rebuildable projections, all as migrations.",
       "tags": [
         "signal",
         "order:15",
@@ -1209,7 +1209,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:10.842Z",
-      "updatedAt": "2026-10-08T07:48:10.842Z",
+      "updatedAt": "2026-10-08T17:12:34.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1224,7 +1224,7 @@
     {
       "id": "WI-0053",
       "title": "Signal 16: cross-cutting verification - static analysis, differential and model tests, performance budgets, incremental evaluation, time semantics (ARX-001, ARX-004, ARX-005, ARX-010, ARX-011, ARX-015, CAN-007, ADM-036..038, ADM-059, ADM-068; ACR-006 localization)",
-      "description": "Depends on WI-0047. Refines WI-0010 and WI-0020. Also closes the remaining parts of ARX-003, ARX-007 (see their gap-analysis rows). Also carries ARX-014's dependency-closure incremental evaluation and AST-004's characterization and differential corpus from WI-0044. Also carries WI-0045's measured URL budgets for generic templates and incremental evaluation (CAN-004, LURL-004).",
+      "description": "Depends on WI-0047. Refines WI-0010 and WI-0020. Also closes the remaining parts of ARX-003, ARX-007 (see their gap-analysis rows). Also carries ARX-014's dependency-closure incremental evaluation and AST-004's characterization and differential corpus from WI-0044. Also carries WI-0045's measured URL budgets for generic templates and incremental evaluation (CAN-004, LURL-004). Also carries WI-0039's remainders: ADM-026 immutable-object caching, conditional reads, small/medium/large scale modes and performance tests; ADM-044 running Arca's conformance suite against the GitHub adapter (through a GitHub test double) in Signal's CI.",
       "tags": [
         "signal",
         "order:16",
@@ -1234,7 +1234,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:11.208Z",
-      "updatedAt": "2026-10-08T16:15:08.000Z",
+      "updatedAt": "2026-10-08T17:12:34.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1324,7 +1324,7 @@
     {
       "id": "WI-0057",
       "title": "Signal 05b: persist the template catalog through Arca and finish the authoring remainders WI-0042 left (CAN-001, CAN-005, CAN-008, URLC-004, ACR-003, ACR-008, ACR-009, CAN-003, VER-001, VER-003, VER-004, VER-007, AUT-001..007, ARX-002, SCS-017)",
-      "description": "WI-0042 built the pure domain: Template, TemplateCanonical and Authoring (drafts, validation, fixtures, diff, derived lifecycle, immutable catalog). Remaining here: storing drafts and the published catalog through Arca (depends on WI-0039); test-mode/preview submission isolation and production import refusal (AUT-006 §60); preview mode on the respondent page and the respondent page paginating generic templates (AUT-003 §20, VER-004); locale and invitation expiry carriage (VER-003); DraftEditor/Reviewer/Publisher role separation (AUT-006 §64); cross-device sample-URL checks (AUT-006 §§61-62). Rule, scoring-trace, primitive and report remainders of the same groups are WI-0043..WI-0046. Also carries ARP-001's remainder from WI-0043: the import pipeline on generic templates carrying facts and recommendations into SurveyResult. Also carries WI-0044's authoring remainders: reading templates (including custom expressions) from their stored JSON form (AST-002, AST-006) and the authoring surface for presets, traces and the custom-expression boundary (AST-005, ALG-004). Also carries WI-0045's UI remainders: the respondent page rendering generic templates with the SCS-018 component families and their interaction rules (SCS-010, SCS-011, SCS-012, SCS-013, SCS-014, SCS-018), and wiring content banks and the selection seed into evaluation and the envelope, timer enforcement, and browser back/forward through Limen (ARX-013). Also carries URLC-005's remainder: administrator-side persistence of the portable URL artifact.",
+      "description": "WI-0042 built the pure domain: Template, TemplateCanonical and Authoring (drafts, validation, fixtures, diff, derived lifecycle, immutable catalog). Remaining here: storing drafts and the published catalog through Arca (depends on WI-0039); test-mode/preview submission isolation and production import refusal (AUT-006 §60); preview mode on the respondent page and the respondent page paginating generic templates (AUT-003 §20, VER-004); locale and invitation expiry carriage (VER-003); DraftEditor/Reviewer/Publisher role separation (AUT-006 §64); cross-device sample-URL checks (AUT-006 §§61-62). Rule, scoring-trace, primitive and report remainders of the same groups are WI-0043..WI-0046. Also carries ARP-001's remainder from WI-0043: the import pipeline on generic templates carrying facts and recommendations into SurveyResult. Also carries WI-0044's authoring remainders: reading templates (including custom expressions) from their stored JSON form (AST-002, AST-006) and the authoring surface for presets, traces and the custom-expression boundary (AST-005, ALG-004). Also carries WI-0045's UI remainders: the respondent page rendering generic templates with the SCS-018 component families and their interaction rules (SCS-010, SCS-011, SCS-012, SCS-013, SCS-014, SCS-018), and wiring content banks and the selection seed into evaluation and the envelope, timer enforcement, and browser back/forward through Limen (ARX-013). Also carries URLC-005's remainder: administrator-side persistence of the portable URL artifact. Also carries WI-0039's remainder of ADM-046: expression complexity limits when stored templates are loaded.",
       "tags": [
         "signal",
         "order:05b",
@@ -1335,7 +1335,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T15:11:46.000Z",
-      "updatedAt": "2026-10-08T16:19:56.000Z",
+      "updatedAt": "2026-10-08T17:12:34.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
