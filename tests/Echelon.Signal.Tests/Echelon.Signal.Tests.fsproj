@@ -30,6 +30,7 @@
     <Compile Include="PrimitivesTests.fs" />
     <Compile Include="EncodingTests.fs" />
     <Compile Include="StructureTests.fs" />
+    <Compile Include="ReportingTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

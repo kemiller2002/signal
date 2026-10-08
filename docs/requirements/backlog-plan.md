@@ -18,6 +18,7 @@ Captured 2026-10-08 (WI-0037) from the missing and partial groups of [`implement
 | 8 | WI-0045 | Signal 08: answer primitives and selectors - multi-choice, matrix, ranking/allocation, timers and banking, encodings (ANS-002, ANS-004 remainder, SCS-009..014, SCS-016, SCS-018, ARX-013, CAN-004/LURL-004 remainders) | WI-0042 |
 | 8b | WI-0060 | Signal 08b: encoding remainders after WI-0045 (signed submission policy, presence-bitmap evaluation) | WI-0045 (complete) |
 | 9 | WI-0046 | Signal 09: reporting contract and Folio renderers - report blocks, group reports, comparisons, the standard results print profile (RPT-001..006, SRPP-001..185) | WI-0044 |
+| 9b | WI-0062 | Signal 09b: render ReportData through Folio and the page (print profile, HTML/PDF, localization, remaining report families, benchmark comparisons in reports) | WI-0046 (complete); touches web/ and Folio |
 | 10 | WI-0047 | Signal 10: administrator application state and UX on Limen/Forma - groups, read-only and degraded modes, conflict workspace, sealing and finalization (ADM-001, ADM-002, ADM-007, ADM-031..033, ADM-035, ADM-062, ADM-065, ADM-066, ADM-070, ADM-077) | WI-0040 and WI-0041 |
 | 11 | WI-0048 | Signal 11: analytics, comparisons, lineage, change-impact and dependency invalidation (ADM-012..014, ADM-019, ADM-020, ADM-041, ADM-049, ADM-051, ADM-054; ARX-012 remainder) | WI-0041 |
 | 12 | WI-0049 | Signal 12: visualization grammar, dashboards and accessibility (ADM-015..018, ADM-050, ADM-069) | WI-0048 |
