@@ -302,7 +302,7 @@ let ``an administrator creates a group, imports into it, and finalization waits 
     Assert.False(page.Flag "explorePercent")
     Assert.Equal($"#/groups/{key}/results?section={first}", browser.Hash)
     // The report state travels in the URL while it is small (ARP-004).
-    Assert.StartsWith("a=1.", page.Text "reportFragment")
+    Assert.StartsWith("a=2.", page.Text "reportFragment")
 
     // Finalizing needs a current contribution index (ADM-066).
     page.Event("transition", value = "finalize")

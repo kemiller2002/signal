@@ -126,26 +126,13 @@ let ``a small anonymous group's state suppresses its scores`` () =
     Assert.Equal(None, projected.WeakestArea)
 
 [<Fact>]
-let ``the state round-trips and resumes importing where it left off`` () =
-    let state, _, projected = stateFor 5 IdentifiedGroup
+let ``the state round-trips through its canonical form, and a version 1 state is refused`` () =
+    let _, _, projected = stateFor 5 IdentifiedGroup
     let back = ReportState.ofJson (ReportState.toJson projected) |> ok
     Assert.Equal(ReportState.canonical projected, ReportState.canonical back)
-
-    // Resume: the next import is decided against the state's identities.
-    let resumed = ReportState.resume (definition IdentifiedGroup) back |> ok
-    let next = random 99
-    let newcomer = submission next 77 IdentifiedGroup
-    let duplicate = submission (random 5) 1 IdentifiedGroup
-
-    match evaluateAgainst (definition IdentifiedGroup) (Incremental.acceptedFor resumed) newcomer with
-    | Accepted result ->
-        let after = Incremental.add result resumed |> ok
-        let full = importOne state newcomer |> fst
-        Assert.Equal(sprintf "%A" (aggregate policy full), sprintf "%A" (Incremental.result policy after))
-    | other -> failwith $"%A{other}"
-
-    Assert.Equal(AlreadyImported(Instance(opaque 1)), evaluateAgainst (definition IdentifiedGroup) (Incremental.acceptedFor resumed) duplicate)
-    Assert.Equal(Error ReportState.OtherGroup, ReportState.resume { definition IdentifiedGroup with Group = opaque 3 } back |> Result.map ignore)
+    // Version 1 states carried per-respondent evidence and identity keys (WI-0067).
+    let fragment = ReportState.embedded projected
+    Assert.Equal(Error(ReportState.UnsupportedVersion 1), ReportState.readEmbedded ("a=1" + fragment.Substring 3) |> Result.map ignore)
 
 // ---- ARP-004: persistence chosen by size, with integrity ----------------------------------------
 
@@ -153,12 +140,17 @@ let ``the state round-trips and resumes importing where it left off`` () =
 let ``a small state travels in the URL; a large one is stored and referenced`` () =
     let _, _, small = stateFor 3 IdentifiedGroup
     let _, _, large = stateFor 60 IdentifiedGroup
+    // Aggregates only (WI-0067): the state no longer grows with the group, so a
+    // state outgrows a deployment's budget only when that budget is small.
+    let tight = { ReportState.defaultBudget with MaximumUrlLength = 1200 }
 
     match ReportState.persistence ReportState.defaultBudget small with
     | ReportState.EmbeddedInUrl fragment -> Assert.Equal(ReportState.canonical small, ReportState.readEmbedded fragment |> ok |> ReportState.canonical)
     | other -> failwith $"%A{other}"
 
-    match ReportState.persistence ReportState.defaultBudget large with
+    Assert.True((ReportState.embedded large).Length < (ReportState.embedded small).Length + 200)
+
+    match ReportState.persistence tight large with
     | ReportState.ExternalStore(id, fragment) ->
         Assert.StartsWith("rs-", id)
         Assert.Equal(Some id, ReportState.referencedId fragment)
@@ -191,45 +183,73 @@ let ``tampered, truncated, wrong-group and unknown references are refused`` () =
 
 // ---- SIG-LINK-008: what the report state can put in a URL --------------------------------------
 
-/// The embedded report state is the only report state meant for a URL. It
-/// carries no item-level answer, no submission URL and no respondent text:
-/// its fields are a fixed schema of section summaries, counts, hashes and
-/// opaque identity keys. (Its per-respondent dimension scores and, in
-/// identified groups, invitation-linked keys are recorded as a privacy
-/// obligation for WI-0051; see DF-SIGNAL-2026-0003.) No administrator route
-/// can carry it: route parameters are an allow-list (RoutesTests).
+// ---- WI-0067: aggregates that pass the group's privacy rules, nothing per respondent -----------
+
+let private accumulate mode (texts: string list) =
+    texts
+    |> List.fold
+        (fun acc text ->
+            match evaluateAgainst (definition mode) (fun _ -> None) text with
+            | Accepted result -> Incremental.add result acc |> ok
+            | other -> failwith $"%A{other}")
+        (Incremental.empty (definition mode))
+
+/// The same answers, each under a respondent identity drawn from `seed`.
+let private responses mode (seed: int) (answerSets: Map<string, Answer> list) =
+    answerSets
+    |> List.mapi (fun i answers ->
+        let id = opaque (seed + i)
+        let binding = match mode with AnonymousGroup -> Anonymous(id, groupId) | IdentifiedGroup -> Identified(id, groupId)
+        "https://signal.example" + LiveUrl.urlFor pilot "/web/" "" { Binding = binding; Answers = answers })
+
+let private answerSets (count: int) =
+    let next = random 31
+    [ for _ in 1..count -> pilot.Items |> List.map (fun item -> item.Id, answers[next answers.Length]) |> Map.ofList ]
+
 [<Fact>]
-let ``the embedded report state carries no answers, submission URLs or respondent text`` () =
+let ``the report state holds only aggregates: the same answers from other respondents give the same state`` () =
     for mode in [ AnonymousGroup; IdentifiedGroup ] do
-        let next = random 77
-        let texts = [ for i in 1..6 -> submission next (900 + i) mode ]
+        let sets = answerSets 6
+        let first = responses mode 300 sets
+        let others = responses mode 700 (List.rev sets)
+        let a = ReportState.project policy (accumulate mode first)
+        let b = ReportState.project policy (accumulate mode others)
+        // Different respondents, different order, same answers: nothing in the state tells them apart,
+        // except the derivation hash, the one set-level lineage hash over which submissions were
+        // accepted (ADM-020): it identifies the input set, never a respondent or a value.
+        Assert.Equal(ReportState.canonical { a with DerivationHash = "" }, ReportState.canonical { b with DerivationHash = "" })
+        Assert.StartsWith("sha256:", a.DerivationHash)
 
-        let accumulator =
-            texts
-            |> List.fold
-                (fun acc text ->
-                    match evaluateAgainst (definition mode) (fun _ -> None) text with
-                    | Accepted result -> Incremental.add result acc |> ok
-                    | other -> failwith $"%A{other}")
-                (Incremental.empty (definition mode))
-
+        let accumulator = accumulate mode first
         let fragment = ReportState.embedded (ReportState.project policy accumulator)
-        let payload = fragment.Split('.')[1]
-        let json = Text.Encoding.UTF8.GetString(Buffers.Text.Base64Url.DecodeFromChars(payload.AsSpan()))
+        let json = Text.Encoding.UTF8.GetString(Buffers.Text.Base64Url.DecodeFromChars((fragment.Split('.')[1]).AsSpan()))
         let document = Text.Json.JsonDocument.Parse json
 
-        let schema = set [ "version"; "group"; "mode"; "expected"; "accepted"; "complete"; "template"; "weakest"; "strongest"; "sections"; "coverage"; "derivation"; "identities"; "evidence"; "answered"; "nonNumeric" ]
-        let fields = document.RootElement.EnumerateObject() |> Seq.map _.Name |> Set.ofSeq
-        // A fixed schema: a new field is a deliberate privacy review.
-        Assert.Equal<Set<string>>(schema, fields)
-        // `answered` and `nonNumeric` are counts, not answers.
-        Assert.Equal(Text.Json.JsonValueKind.Number, document.RootElement.GetProperty("answered").ValueKind)
+        // A fixed schema of aggregates and hashes: a new field is a deliberate privacy review.
+        let schema = set [ "version"; "group"; "mode"; "expected"; "accepted"; "complete"; "template"; "weakest"; "strongest"; "sections"; "coverage"; "derivation" ]
+        Assert.Equal<Set<string>>(schema, document.RootElement.EnumerateObject() |> Seq.map _.Name |> Set.ofSeq)
+
+        // No identity key, submission hash, answer, item or URL.
+        for key, hash in accumulator.Accepted |> Map.toList do
+            Assert.DoesNotContain(key, json)
+            Assert.DoesNotContain(hash, json)
 
         for item in pilot.Items do
             Assert.DoesNotContain(item.Id, json)
 
-        for text in texts do
-            Assert.DoesNotContain("#r=", json)
+        for text in first do
             Assert.DoesNotContain(text.Substring(text.IndexOf "#r=" + 3, 24), json)
 
         Assert.DoesNotContain("http", json)
+
+[<Fact>]
+let ``below an anonymous group's minimum the report state holds only the counts`` () =
+    let state = ReportState.project policy (accumulate AnonymousGroup (responses AnonymousGroup 500 (answerSets 2)))
+    Assert.Equal(2, state.AcceptedSurveyCount)
+    Assert.All(state.Sections, fun s -> Assert.True(s.Suppressed && s.AggregateScore.IsNone && s.Scored = 0 && s.Unscored = 0))
+    Assert.Equal((None, None, None), (state.WeakestArea, state.StrongestArea, state.Coverage))
+
+    // At the minimum the aggregates are reportable again.
+    let reportable = ReportState.project policy (accumulate AnonymousGroup (responses AnonymousGroup 500 (answerSets 3)))
+    Assert.True(reportable.Sections |> List.exists (fun s -> s.AggregateScore.IsSome))
+    Assert.True(reportable.Coverage.IsSome)
