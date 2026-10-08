@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T15:00:27.000Z",
+  "updatedAt": "2026-10-08T15:12:08.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -1076,13 +1076,56 @@
     {
       "id": "WI-0042",
       "type": "feature",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-08T15:00:27.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/Template.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/TemplateCanonical.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/Authoring.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/TemplateTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/AuthoringTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-08T15:12:08.000Z",
       "telemetryExecutionIds": [
         "EXE-20261008T150027687Z-19558d28"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "e02e40e584aca63ebc818e1c",
+        "recordedAt": "2026-10-08T15:12:07.000Z",
+        "executionId": "EXE-20261008T150027687Z-19558d28",
+        "repository": "echelon-signal",
+        "branch": "feat/template-authoring",
+        "commit": "a5b1e6712e1b62e4120c71b782e9169ae2a64fa4",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feat/template-authoring",
+        "remoteCommit": "a5b1e6712e1b62e4120c71b782e9169ae2a64fa4",
+        "summary": "Template, TemplateCanonical and Authoring with 23 new tests; gap analysis updated; remainder captured as WI-0057",
+        "nextAction": "Complete WI-0042 and open the PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T15:12:08.000Z",
+      "conclusion": "Pure canonical template, authoring, validation, fixtures, diff, lifecycle and immutable publication; 114/114 tests; persistence and UI remainders in WI-0057"
     }
   ]
 }
