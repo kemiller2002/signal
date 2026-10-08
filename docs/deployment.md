@@ -43,7 +43,8 @@ Fides exchange's origin; never a secret), add the exchange's origin and
 
 **Security on Pages.** Pages cannot set response headers, so the policy is
 a `<meta http-equiv="Content-Security-Policy">` that the assembly inserts
-first in `<head>`: scripts, styles and connections from the site's own
+first in `<head>` of every published page (`web/` and `web/admin/`,
+`pages` in `tools/pages/assemble-site.mjs`, WI-0068): scripts, styles and connections from the site's own
 origin only, `'wasm-unsafe-eval'` for the .NET WebAssembly runtime, no
 inline script or style, `object-src 'none'`, `base-uri 'self'`.
 Known deviation: `frame-ancestors` (and `X-Frame-Options`) cannot be

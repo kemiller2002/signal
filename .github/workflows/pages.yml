@@ -68,6 +68,9 @@ jobs:
           grep -q 'http-equiv="Content-Security-Policy"' "$site/web/index.html"
           grep -q "'wasm-unsafe-eval'" "$site/web/index.html"
           grep -q 'data-pages-banner' "$site/web/index.html"
+          # Every published page carries the policy and the banner (WI-0068).
+          grep -q 'http-equiv="Content-Security-Policy"' "$site/web/admin/index.html"
+          grep -q 'data-pages-banner' "$site/web/admin/index.html"
           echo "Site: $(find "$site" -type f | wc -l) files, $(du -sh "$site" | cut -f1)"
 
       - name: Upload the Pages artifact
