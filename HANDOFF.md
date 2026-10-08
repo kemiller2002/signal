@@ -48,6 +48,11 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
     bound to an exact version, matrices, forward-only navigation, seeded
     banking and timers (WI-0045). The respondent page does not render
     generic templates yet (WI-0057).
+  - `GroupResult`, `ReportModel`, `Report`, `ReportExport`: the generic
+    group result with its hash, the format-neutral reporting contract
+    (definitions, blocks, privacy classes, value states, warnings, status,
+    comparisons), JSON/CSV exports, report snapshots and the V1 report
+    families (WI-0046). Rendering through Folio is WI-0062.
 - Application (`src/Echelon.Signal.Application`): Limen protocol (navigation
   replace and clipboard writeText effects), Aegis dispatch boundary, the
   entropy edge.

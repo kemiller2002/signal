@@ -1049,10 +1049,10 @@
         "folio"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:08.783Z",
-      "updatedAt": "2026-10-08T15:50:07.000Z",
+      "updatedAt": "2026-10-08T16:28:10.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1374,7 +1374,7 @@
     {
       "id": "WI-0059",
       "title": "Signal 07b: scoring remainders after WI-0044 - ipsative, confidence- and completeness-adjusted scoring, per-section direction, weakest/strongest section and confidence outputs, single-response NPS guard, recommendations reading the overall and group result, shared group metadata (ALG-002, ALG-003, SCS-003, CAN-006, VER-005, VER-006, ACR-002, ACR-007, CAN-002)",
-      "description": "Pure domain, no Arca or Fides dependency; builds on Composite, Expression, Interpretation, SurveyResult and GroupScoring from WI-0044. Each item is reversible configuration in the sense of DF-SIGNAL-2026-0002 and needs no new owner answer, except that confidence scoring needs a definition of confidence that the requirements do not give. Also carries WI-0045's remainders: key explanations in SurveyResult traces (SCS-004), BlockScore/ReturnUnavailable special-state policies (SCS-008), and flow that restricts choices or changes presentation (ACR-001).",
+      "description": "Pure domain, no Arca or Fides dependency; builds on Composite, Expression, Interpretation, SurveyResult and GroupScoring from WI-0044. Each item is reversible configuration in the sense of DF-SIGNAL-2026-0002 and needs no new owner answer, except that confidence scoring needs a definition of confidence that the requirements do not give. Also carries WI-0045's remainders: key explanations in SurveyResult traces (SCS-004), BlockScore/ReturnUnavailable special-state policies (SCS-008), and flow that restricts choices or changes presentation (ACR-001). Also carries ARX-006's decimal/fixed canonical numeric semantics from WI-0046.",
       "tags": [
         "signal",
         "order:07b",
@@ -1384,7 +1384,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T15:50:06.000Z",
-      "updatedAt": "2026-10-08T16:15:08.000Z",
+      "updatedAt": "2026-10-08T16:26:32.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1434,6 +1434,32 @@
       "attachments": [],
       "createdAt": "2026-10-08T16:19:54.000Z",
       "updatedAt": "2026-10-08T16:20:17.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0062",
+      "title": "Signal 09b: render ReportData through Folio and the page - the standard results print profile, HTML/PDF renderers, localization, respondent/facilitator/360 families, benchmark comparisons and respondent detail in reports (RPT-001..006, SRPP-001..185)",
+      "description": "WI-0046 built the format-neutral reporting contract (GroupResult, ReportModel, Report, ReportExport). This slice is the rendering half: a Folio report profile consuming ReportData without recomputation, print-friendly HTML and PDF, TOC/cover/reading order, localization of labels and reason codes, dispersion and longitudinal displays, and the remaining report families. It touches web/ and the Folio dependency, so it is not a pure-domain slice and was left out of the 2026-10-08 pull-forward.",
+      "tags": [
+        "signal",
+        "order:09b",
+        "reporting",
+        "folio"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T16:26:31.000Z",
+      "updatedAt": "2026-10-08T16:26:31.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
