@@ -70,3 +70,4 @@
 | WI-0055 | Stop the Chromium install from hanging the browser-suite CI (unbounded apt-get update in playwright install --with-deps) | complete | ci, playwright, reliability | high |
 | WI-0056 | Record the pure-domain pull-forward (WI-0042..WI-0046) in DF-SIGNAL-2026-0001, propose answers to the 12 scoring open questions (DF-SIGNAL-2026-0002), and close out GH-5 | complete | planning, decisions, scoring | high |
 | WI-0057 | Signal 05b: persist the template catalog through Arca and finish the authoring remainders WI-0042 left (CAN-001, CAN-005, CAN-008, URLC-004, ACR-003, ACR-008, ACR-009, CAN-003, VER-001, VER-003, VER-004, VER-007, AUT-001..007, ARX-002, SCS-017) | captured | signal, order:05b, authoring, depends:arca | medium |
+| WI-0058 | Decompose Authoring.fs (859 lines, SDE-STRUCT-001 under Ordo strict verification) into Drafts, Validation, TemplateDiff and Publication | ready | quality, ordo | high |

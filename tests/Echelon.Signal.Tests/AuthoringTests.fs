@@ -6,7 +6,10 @@ open System
 open Xunit
 open Echelon.Signal.Engine
 open Echelon.Signal.Engine.Template
-open Echelon.Signal.Engine.Authoring
+open Echelon.Signal.Engine.Drafts
+open Echelon.Signal.Engine.Validation
+open Echelon.Signal.Engine.TemplateDiff
+open Echelon.Signal.Engine.Publication
 
 let private at = DateTimeOffset(2026, 10, 8, 15, 0, 0, TimeSpan.Zero)
 

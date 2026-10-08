@@ -22,7 +22,8 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   - `Submission`: identified/anonymous finalization (WI-0033).
   - `Import`, `Aggregation`: import pipeline and SurveyGroupResult (WI-0034).
   - `Session`: respondent state machine and view.
-  - `Template`, `TemplateCanonical`, `Authoring`: the generic canonical
+  - `Template`, `TemplateCanonical`, `Drafts`, `Validation`, `TemplateDiff`,
+    `Publication`: the generic canonical
     template, its canonical form `signal-template/1` and hash, and pure
     authoring, validation, fixtures, diff and immutable publication into a
     catalog (WI-0042). `Pilot.content` is SDRA in that form; the respondent
