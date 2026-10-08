@@ -89,7 +89,20 @@ let loadGroups (env: Env) (opened: Store.Opened) =
         match! GroupAdmin.listGroups (env.Now()) opened with
         | Error failure -> return Error failure
         | Ok ids ->
-            let! groups = ids |> List.map (fun id -> GroupStore.openGroup env.Resolve id (env.Now()) opened) |> Async.Sequential
-            return Ok(groups |> Array.toList |> List.choose Result.toOption)
+            // One after another on this thread. Async.Sequential is Async.Parallel
+            // with one worker: it hops to the thread pool, so the result would
+            // land after the kernel step that started it and wait for the next
+            // message (the page sat "busy" after sign-in).
+            let rec openEach (opened': Store.Opened) acc ids =
+                async {
+                    match ids with
+                    | [] -> return List.rev acc
+                    | id :: rest ->
+                        let! group = GroupStore.openGroup env.Resolve id (env.Now()) opened'
+                        return! openEach opened' (group :: acc) rest
+                }
+
+            let! groups = openEach opened [] ids
+            return Ok(groups |> List.choose Result.toOption)
     }
 

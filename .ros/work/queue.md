@@ -78,3 +78,5 @@
 | WI-0063 | Accept DF-SIGNAL-2026-0002 answers 2-12 (coordinator, on the owner's standing instruction, 2026-10-08); Q1 stays open | complete | decisions, scoring | high |
 | WI-0064 | Move Signal to echelon-current 1.9.0 with Conditor 0.6.0 and install Arca 0.2.1 and Fides 0.2.0 through Conditor | complete | platform, conditor, depends:arca, depends:fides | high |
 | WI-0065 | Deploy Signal to GitHub Pages in demo mode: Pages workflow, CSP meta, demo banner, docs | complete |  | medium |
+| WI-0066 | Deep linking: all navigable state in the URL through Limen-compatible hash routes - route model and codec, .echelon/routes.json inventory, Copy link, sign-in return targets, not-found pages, no answers or respondent data in URLs (SIG-LINK-001..010) | complete | signal, routing, limen, privacy | high |
+| WI-0067 | Report-state privacy: the embedded AdminReportState carries per-respondent sorted dimension scores (Evidence) and, in identified groups, invitation-linked identity keys; replace with sufficient statistics and keyed hashes, and keep it out of any URL until then (ID-003, ARX-009, SIG-LINK-008; found in WI-0066) | captured | privacy, signal | high |

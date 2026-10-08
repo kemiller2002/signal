@@ -188,3 +188,48 @@ let ``tampered, truncated, wrong-group and unknown references are refused`` () =
     let _, _, other = stateFor 4 IdentifiedGroup
     Assert.Equal(Error ReportState.IntegrityMismatch, ReportState.checkReference reference groupId other |> Result.map ignore)
     Assert.Equal(None, ReportState.referencedId "s=12.ab.cd")
+
+// ---- SIG-LINK-008: what the report state can put in a URL --------------------------------------
+
+/// The embedded report state is the only report state meant for a URL. It
+/// carries no item-level answer, no submission URL and no respondent text:
+/// its fields are a fixed schema of section summaries, counts, hashes and
+/// opaque identity keys. (Its per-respondent dimension scores and, in
+/// identified groups, invitation-linked keys are recorded as a privacy
+/// obligation for WI-0051; see DF-SIGNAL-2026-0003.) No administrator route
+/// can carry it: route parameters are an allow-list (RoutesTests).
+[<Fact>]
+let ``the embedded report state carries no answers, submission URLs or respondent text`` () =
+    for mode in [ AnonymousGroup; IdentifiedGroup ] do
+        let next = random 77
+        let texts = [ for i in 1..6 -> submission next (900 + i) mode ]
+
+        let accumulator =
+            texts
+            |> List.fold
+                (fun acc text ->
+                    match evaluateAgainst (definition mode) (fun _ -> None) text with
+                    | Accepted result -> Incremental.add result acc |> ok
+                    | other -> failwith $"%A{other}")
+                (Incremental.empty (definition mode))
+
+        let fragment = ReportState.embedded (ReportState.project policy accumulator)
+        let payload = fragment.Split('.')[1]
+        let json = Text.Encoding.UTF8.GetString(Buffers.Text.Base64Url.DecodeFromChars(payload.AsSpan()))
+        let document = Text.Json.JsonDocument.Parse json
+
+        let schema = set [ "version"; "group"; "mode"; "expected"; "accepted"; "complete"; "template"; "weakest"; "strongest"; "sections"; "coverage"; "derivation"; "identities"; "evidence"; "answered"; "nonNumeric" ]
+        let fields = document.RootElement.EnumerateObject() |> Seq.map _.Name |> Set.ofSeq
+        // A fixed schema: a new field is a deliberate privacy review.
+        Assert.Equal<Set<string>>(schema, fields)
+        // `answered` and `nonNumeric` are counts, not answers.
+        Assert.Equal(Text.Json.JsonValueKind.Number, document.RootElement.GetProperty("answered").ValueKind)
+
+        for item in pilot.Items do
+            Assert.DoesNotContain(item.Id, json)
+
+        for text in texts do
+            Assert.DoesNotContain("#r=", json)
+            Assert.DoesNotContain(text.Substring(text.IndexOf "#r=" + 3, 24), json)
+
+        Assert.DoesNotContain("http", json)

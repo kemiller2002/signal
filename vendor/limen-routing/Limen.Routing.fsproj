@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Limen engine library, vendored: Routing.fs is byte-for-byte
+       kemiller2002/limen libraries/fsharp/Limen.Routing/Routing.fs at e935da7
+       (PR #101, WI-0168), SHA-256
+       c7fc955063b2b4490d1fbcc29aa7302e2f16f0310609d45dd0679c32ba664338, pinned by
+       VendoredRoutingTests. Never edit it here. When Limen 0.9.0 ships
+       EchelonFoundry.Limen.Routing, delete this folder and reference the
+       package (DF-SIGNAL-2026-0003). Pure: no browser, interop, network or I/O. -->
+  <PropertyGroup>
+    <AssemblyName>Limen.Routing</AssemblyName>
+    <RootNamespace>Limen.Routing</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Routing.fs" />
+  </ItemGroup>
+</Project>

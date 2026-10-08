@@ -6,17 +6,21 @@ Signal is published to GitHub Pages by `.github/workflows/pages.yml` on
 every push to `main` (and on demand, with *Run workflow*). Pull requests
 build and verify the site but never deploy it.
 
-- **Address:** <https://kevinmmiller.us/signal/>. The account's user site
-  has a custom domain, so `https://kemiller2002.github.io/signal/`
-  redirects there. The site root sends the browser to the assessment page
+- **Address:** <https://signal.echelonfoundry.com/web/> (the administrator
+  page is at `web/admin/`). The older addresses,
+  `https://kemiller2002.github.io/signal/` and `https://kevinmmiller.us/signal/`,
+  redirect there. The site root sends the browser to the assessment page
   at `web/`.
 - **What is published:** the repository's layout (`web/`, `web-kernel/`,
   `build/wasm/wwwroot/` from `npm run build:wasm` in Release, and the
   `dist`/`src` folders of the Limen, Forma and Folio packages), assembled by
   `tools/pages/assemble-site.mjs`. Every address in the page is relative,
   so the site works under `/signal/` or at a domain's root alike; no
-  `<base href>` is set. The page has no client-side routes, so no
-  `404.html` fallback is needed. `.nojekyll` is added. The `.br`/`.gz`
+  `<base href>` is set. The administrator page's routes live in the
+  fragment (`web/admin/#/groups/…`, SIG-LINK-002), so the server only ever
+  sees `web/admin/` and no `404.html` fallback is needed. The browser suite
+  opens deep links cold against the assembled site served under a sub-path
+  (Playwright project `pages`). `.nojekyll` is added. The `.br`/`.gz`
   copies are left out: Pages compresses on its own and serves `.wasm` as
   `application/wasm`.
 - **Demo mode.** Signal has no sign-in and no storage yet. The page is the

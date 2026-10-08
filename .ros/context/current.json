@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T18:55:15.000Z",
+  "updatedAt": "2026-10-08T20:47:31.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -1954,6 +1954,59 @@
       },
       "completedAt": "2026-10-08T18:55:15.000Z",
       "conclusion": "Visualization grammar, dashboards, localization, regression and page exploration built; 308 .NET and 10 browser tests pass. ADM-015..017 and ADM-019 tested; ADM-018, ADM-050 and ADM-069 partial with remainders on WI-0050 and WI-0062; ADM-046 remainder on WI-0057."
+    },
+    {
+      "id": "WI-0066",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/Routes.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/AdminLinkTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/deep-links.spec.js"
+        },
+        {
+          "type": "requirements",
+          "path": "docs/requirements/SIGNAL-DEEP-LINKING.md"
+        },
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-SIGNAL-2026-0003--deep-linking-through-limen-routing.md"
+        }
+      ],
+      "updatedAt": "2026-10-08T20:47:31.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261008T194621846Z-e49f32ce"
+      ],
+      "latestCheckpoint": {
+        "id": "b800fa92b0040245262ba34f",
+        "recordedAt": "2026-10-08T20:47:23.000Z",
+        "executionId": "EXE-20261008T194621846Z-e49f32ce",
+        "repository": "echelon-signal",
+        "branch": "feature/deep-linking",
+        "commit": "d92e8f6329fd9f629d65dc3dd3a6202e60926e0f",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feature/deep-linking",
+        "remoteCommit": "d92e8f6329fd9f629d65dc3dd3a6202e60926e0f",
+        "summary": "Deep linking implemented: vendored Limen.Routing, route model and inventory, admin page routed with Copy link, sign-in return and not-found pages; 338 .NET and 21 browser tests pass locally",
+        "nextAction": "Wait for every check on the PR head, then complete WI-0066 and merge #43 with sha",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T20:47:31.000Z"
     }
   ]
 }

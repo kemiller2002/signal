@@ -13,7 +13,7 @@ const configured = {
     application: "signal-admin",
     provider: "github",
     clientId: "Iv23liTEST",
-    redirectUri: "http://127.0.0.1:4321/web/admin/index.html"
+    redirectUri: `http://127.0.0.1:${process.env.SIGNAL_TEST_PORT ?? 4321}/web/admin/index.html`
   },
   profiles: [{ id: "primary", label: "Survey data", provider: "github",
     location: { owner: "acme", repository: "signal-data", branch: "main", basePath: "prod" } }],

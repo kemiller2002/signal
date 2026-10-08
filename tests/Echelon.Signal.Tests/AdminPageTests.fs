@@ -18,35 +18,37 @@ open Echelon.Signal.Engine.UrlState
 open Echelon.Signal.Admin
 open Echelon.Signal.Application
 
-let private accessToken = "gho_SIGNALADMINACCESSTOKEN0123456789"
-let private refreshToken = "ghr_SIGNALADMINREFRESHTOKEN0123456789"
-let private start = DateTimeOffset(2026, 10, 8, 18, 0, 0, TimeSpan.Zero)
+let accessToken = "gho_SIGNALADMINACCESSTOKEN0123456789"
+let refreshToken = "ghr_SIGNALADMINREFRESHTOKEN0123456789"
+let start = DateTimeOffset(2026, 10, 8, 18, 0, 0, TimeSpan.Zero)
 
-let private configured =
+let configured =
     """{"environment":"production","environmentName":"production",
 "identity":{"exchange":"https://fides.test","application":"signal-admin","provider":"github","clientId":"Iv23liTEST","redirectUri":"http://127.0.0.1:4321/web/admin/index.html"},
 "profiles":[{"id":"primary","label":"Survey data","provider":"github","location":{"owner":"acme","repository":"signal-data","branch":"main","basePath":"prod"}}],
 "datasets":[{"id":"ds_engagement","label":"Engagement","profile":"primary","administrators":["583231"]}]}"""
 
-let private local = """{"environment":"local","environmentName":"local"}"""
+let local = """{"environment":"local","environmentName":"local"}"""
 
-let private offer =
+let offer =
     $"""{{"protocol":{{"major":1,"minor":4}},"contract":{{"unit":"limen.core","version":1,"fingerprint":"{Limen.core.Fingerprint}"}},"capabilities":[{{"id":"{AdminProtocol.schedule.Id}","version":1,"fingerprint":"{AdminProtocol.schedule.Fingerprint}"}},{{"id":"{AdminProtocol.host.Id}","version":1,"fingerprint":"{AdminProtocol.host.Fingerprint}"}}]}}"""
 
-let private initialize (query: string) (hash: string) =
+let initialize (query: string) (hash: string) =
     $"""{{"kind":"Initialize","protocolVersion":1,"capabilities":["Http","Storage","Clipboard","Navigation"],"location":{{"origin":"http://127.0.0.1:4321","path":"/web/admin/index.html","query":"{query}","hash":"{hash}"}},"handshake":{offer}}}"""
 
-let private json (value: string) = JsonSerializer.Serialize value
+let json (value: string) = JsonSerializer.Serialize value
 
 /// The browser around the page: storage, the deployment's configuration, the
 /// exchange and what it was asked.
-type private Browser(configuration: string option) =
+type Browser(configuration: string option) =
     member val Tab = Dictionary<string, string>()
     member val Device = Dictionary<string, string>()
     member val Left = List<string>()
     member val Broadcasts = List<string>()
     member val Requests = List<string>()
     member val Hash = "" with get, set
+    member val Copied = List<string>()
+    member val Navigations = List<string>()
 
     member this.Exchange (url: string) (body: string) =
         let at (offset: TimeSpan) = start.UtcDateTime.Add(offset).ToString("yyyy-MM-ddTHH:mm:ssZ")
@@ -102,14 +104,19 @@ type private Browser(configuration: string option) =
                 | _, _ -> """{"kind":"Done"}"""
 
             Some $"""{{"kind":"EffectResult","result":{{"kind":"CapabilityResult","correlationId":"{id}","capability":"{field "capability"}","version":1,"outcome":{{"kind":"Completed","result":{result}}}}}}}"""
+        | "Clipboard" ->
+            this.Copied.Add(field "text")
+            Some $"""{{"kind":"EffectResult","result":{{"kind":"ClipboardResult","correlationId":"{id}","outcome":{{"kind":"Success"}}}}}}"""
         | "Navigation" ->
             let url = field "url"
+            let operation = field "operation"
+            this.Navigations.Add $"{operation} {url}"
             this.Hash <- (match url.IndexOf '#' with -1 -> "" | i -> url.Substring i)
             Some $"""{{"kind":"EffectResult","result":{{"kind":"NavigationResult","correlationId":"{id}","outcome":{{"kind":"Success","location":{{"path":"/web/admin/index.html","hash":"{this.Hash}"}}}}}}}}"""
         | _ -> None
 
 /// The page: the wire, its environment and the latest view.
-type private Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
+type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
     let keys = ref 0
     let bridge = Bridge.Bridge<AdminWork.Outcome>()
 
@@ -154,7 +161,8 @@ type private Page(browser: Browser, github: InMemoryStore, reachable: unit -> bo
             [ { Hash = Canonical.templateHash Pilot.assessment
                 SurveyIdentifier = Pilot.assessment.Id
                 Version = Pilot.assessment.Version
-                Title = Pilot.assessment.Title } ]
+                Title = Pilot.assessment.Title
+                Content = Pilot.assessment } ]
           ApplicationVersion = "signal-admin/test" }
 
     let aegis = Boundary.configure [ (Sinks.Collector()).Sink() ]
@@ -186,7 +194,7 @@ type private Page(browser: Browser, github: InMemoryStore, reachable: unit -> bo
     member _.Items(name: string) = view[name].AsArray() |> Seq.map (fun item -> item.AsObject()) |> List.ofSeq
     member _.ViewText = view.ToJsonString()
 
-let private openPage (configuration: string option) =
+let openPage (configuration: string option) =
     let browser = Browser(configuration)
     let github = InMemoryStore()
     let page = Page(browser, github, fun () -> true)
@@ -194,7 +202,7 @@ let private openPage (configuration: string option) =
     browser, github, page
 
 /// Signs in through the provider's callback, in a fresh page load.
-let private signedIn () =
+let signedIn () =
     let browser, github, page = openPage (Some configured)
     page.Event("signIn")
     let state = Uri(browser.Left[0]).Query.TrimStart('?').Split('&') |> Array.find (fun p -> p.StartsWith "state=") |> fun p -> p.Substring 6
@@ -238,7 +246,7 @@ let ``the configured administrator signs in, and the dataset is set up and opene
 
 // ---- Groups, imports and the lifecycle -----------------------------------------------------------
 
-let private link (seed: byte) (group: OpaqueId) =
+let link (seed: byte) (group: OpaqueId) =
     let answers = Pilot.assessment.Items |> List.map (fun item -> item.Id, Assessment.Rated Assessment.Often) |> Map.ofList
     "https://signal.example" + LiveUrl.urlFor Pilot.assessment "/web/" "" { Binding = Anonymous((OpaqueId.ofBytes (Array.init 16 (fun i -> seed + byte i))).Value, group); Answers = answers }
 
@@ -273,13 +281,17 @@ let ``an administrator creates a group, imports into it, and finalization waits 
     Assert.Equal(Pilot.assessment.Dimensions.Length, page.Items("chart").Length)
     Assert.Contains("Section means", page.Text "chartDescription")
     let first = Pilot.assessment.Dimensions.Head.Id
+    page.Event("navigate", key = $"/groups/{key}/results")
+    Assert.True(page.Flag "viewResults")
     page.Event("exploreSection", key = first)
     Assert.True(page.Flag "hasDistribution")
     Assert.Equal(5, page.Items("distribution").Length)
     page.Event("exploreDisplay", value = "percent")
     Assert.True(page.Flag "explorePercent")
     let explored = browser.Hash
-    Assert.Contains($"/explore/{first}/name/percent", explored)
+    Assert.Equal($"#/groups/{key}/results?section={first}&display=percent", explored)
+    // Refinements replace the history entry; moving to the results pushed one (SIG-LINK-004).
+    Assert.Equal($"replace #/groups/{key}/results?section={first}&display=percent", Seq.last browser.Navigations)
     page.Send $"""{{"kind":"LocationChanged","location":{{"path":"/web/admin/index.html","hash":"#/groups/{key}"}}}}"""
     Assert.False(page.Flag "hasDistribution")
     page.Send $"""{{"kind":"LocationChanged","location":{{"path":"/web/admin/index.html","hash":"{explored}"}}}}"""
@@ -288,7 +300,7 @@ let ``an administrator creates a group, imports into it, and finalization waits 
     // Limen sends a checkbox's value either way, with whether it is checked.
     page.Send $"""{{"kind":"Event","event":{{"name":"exploreDisplay","value":"percent","checked":false}}}}"""
     Assert.False(page.Flag "explorePercent")
-    Assert.EndsWith("/count", browser.Hash)
+    Assert.Equal($"#/groups/{key}/results?section={first}", browser.Hash)
     // The report state travels in the URL while it is small (ARP-004).
     Assert.StartsWith("a=1.", page.Text "reportFragment")
 

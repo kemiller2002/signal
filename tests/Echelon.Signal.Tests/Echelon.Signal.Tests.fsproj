@@ -41,8 +41,12 @@
     <Compile Include="ReportStateTests.fs" />
     <Compile Include="AdminStateTests.fs" />
     <Compile Include="AdminPageTests.fs" />
+    <Compile Include="AdminLinkTests.fs" />
     <Compile Include="AnalyticsTests.fs" />
     <Compile Include="VisualizationTests.fs" />
+    <Compile Include="LimenRoutingVectors.fs" />
+    <Compile Include="LimenRoutingConformanceTests.fs" />
+    <Compile Include="RoutesTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -56,6 +60,7 @@
     <ProjectReference Include="../../src/Echelon.Signal.Engine/Echelon.Signal.Engine.fsproj" />
     <ProjectReference Include="../../src/Echelon.Signal.Application/Echelon.Signal.Application.fsproj" />
     <ProjectReference Include="../../src/Echelon.Signal.Admin/Echelon.Signal.Admin.fsproj" />
+    <ProjectReference Include="../../vendor/limen-routing/Limen.Routing.fsproj" />
   </ItemGroup>
 
 </Project>

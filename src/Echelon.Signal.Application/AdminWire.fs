@@ -19,6 +19,7 @@ open Echelon.Signal.Application.AdminWork
 type Purpose =
     | Navigation
     | Copying
+    | ReturnTarget
     | Configuration
     | BridgeCall
 
@@ -27,6 +28,7 @@ type State =
     { Model: AdminApp.Model option
       Origin: string
       Path: string
+      Query: string
       Capabilities: CapabilityOffer list
       Effects: string list
       Pending: Map<string, Purpose>
@@ -40,6 +42,7 @@ let initial =
     { Model = None
       Origin = ""
       Path = "/"
+      Query = ""
       Capabilities = []
       Effects = []
       Pending = Map.empty
@@ -58,6 +61,14 @@ let configurationUrl (state: State) =
 
 [<Literal>]
 let RequestTimeoutMs = 15000
+
+/// The tab-storage key that carries a sign-in's return target across the
+/// identity provider's round trip (SIG-LINK-006).
+[<Literal>]
+let ReturnTargetKey = "signal.admin.returnTo"
+
+let private page (state: State) (hash: string) : Limen.Routing.PageLocation =
+    { Origin = state.Origin; Path = state.Path; Query = state.Query; Hash = hash }
 
 let private kernelRequest (state: State) (id: string) (call: Bridge.KernelCall) =
     let hostCall operation arguments =
@@ -246,9 +257,32 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
             })
 
         state, []
-    | AdminApp.Navigate hash ->
+    // Relative `#/…` URLs: same-origin by construction (SIG-LINK-002).
+    | AdminApp.Go move ->
         let id, state = mint Navigation state
-        state, [ Push(id, state.Path + hash) ]
+
+        match move with
+        | AdminNavigation.Push url -> state, [ Push(id, url) ]
+        | AdminNavigation.Replace url -> state, [ Replace(id, url) ]
+    | AdminApp.CopyLink url when List.contains "Clipboard" state.Effects ->
+        let id, state = mint Copying state
+        state, [ Copy(id, url) ]
+    | AdminApp.CopyLink _ ->
+        start (async.Return [ ToEngine(AdminApp.LinkCopied false) ])
+        state, []
+    // The return target lives in this tab only, through signal.host (DF-SIGNAL-2026-0003 §3).
+    | AdminApp.RememberReturn target when negotiated host state ->
+        let id, state = mint ReturnTarget state
+        state, [ Host(id, "tabSet", [ "key", ReturnTargetKey; "value", target ]) ]
+    | AdminApp.RecallReturn when negotiated host state ->
+        let id, state = mint ReturnTarget state
+        state, [ Host(id, "tabGet", [ "key", ReturnTargetKey ]) ]
+    | AdminApp.ForgetReturn when negotiated host state ->
+        let id, state = mint Navigation state
+        state, [ Host(id, "tabRemove", [ "key", ReturnTargetKey ]) ]
+    | AdminApp.RememberReturn _
+    | AdminApp.RecallReturn
+    | AdminApp.ForgetReturn -> state, []
 
 // ---- The loop ---------------------------------------------------------------------------------
 
@@ -333,7 +367,7 @@ let private answerBridge (env: Env) (id: string) (answer: Bridge.KernelAnswer) =
 /// Pure apart from `env`: (state, message) -> (state, reply).
 let step (env: Env) (state: State) (inbound: Inbound) =
     match inbound with
-    | Initialize(protocolVersion, effects, origin, path, query, hash, offer) ->
+    | Initialize(protocolVersion, effects, origin, path, query, rawQuery, hash, offer) ->
         if protocolVersion <> 1 then
             raise (MalformedInput("$.protocolVersion", $"Unsupported protocol version {protocolVersion}"))
         elif not (List.contains "Navigation" effects && List.contains "Http" effects && List.contains "Storage" effects) then
@@ -347,24 +381,29 @@ let step (env: Env) (state: State) (inbound: Inbound) =
                     Model = Some(AdminApp.initial env.Catalog)
                     Origin = origin
                     Path = path
+                    // Fides removes a provider callback from the address (LCP-109).
+                    Query = (if query |> List.exists (fun (k, _) -> k = "state") then "" else rawQuery)
                     Capabilities = capabilities
                     Effects = effects }
 
-            let next, sent = advance env started (AdminApp.Started(hash, query)) []
+            let next, sent = advance env started (AdminApp.Started(page started hash, query)) []
             next, encode (view next) sent (Some handshake)
     | other ->
         let state, msg =
             match other with
             | Event(name, key, value) -> state, Some(AdminApp.Ui(name, key, defaultArg value ""))
-            | LocationChanged hash -> state, Some(AdminApp.LocationMoved hash)
+            | LocationChanged hash -> state, Some(AdminApp.LocationMoved(page state hash))
             | NavigationResult(id, outcome) ->
                 let _, state = take id state
 
                 match outcome with
-                | Moved hash -> state, Some(AdminApp.LocationMoved hash)
+                | Moved hash -> state, Some(AdminApp.LocationMoved(page state hash))
                 | Dispatched
                 | NavigationFailed _ -> state, None
-            | ClipboardResult(id, _) -> snd (take id state), None
+            | ClipboardResult(id, succeeded) ->
+                match take id state with
+                | Copying, state -> state, Some(AdminApp.LinkCopied succeeded)
+                | _, state -> state, None
             | CapabilityResult(id, _, outcome) ->
                 match take id state, outcome with
                 | (BridgeCall, state), Completed result ->
@@ -377,6 +416,12 @@ let step (env: Env) (state: State) (inbound: Inbound) =
                 | (BridgeCall, state), NotExecuted _ ->
                     answerBridge env id (Bridge.Read None)
                     state, None
+                | (ReturnTarget, state), Completed result ->
+                    // tabGet answers { kind: "Value", value? }; tabSet answers { kind: "Done" }.
+                    match tryField "kind" result |> Option.map (asString "$.result.kind") with
+                    | Some "Value" -> state, Some(AdminApp.ReturnRecalled(tryField "value" result |> Option.map (asString "$.result.value")))
+                    | _ -> state, None
+                | (ReturnTarget, state), NotExecuted _ -> state, Some(AdminApp.ReturnRecalled None)
                 | (_, state), _ -> state, None
             | HttpResponse(id, result) ->
                 match take id state, result with

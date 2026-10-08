@@ -122,6 +122,52 @@
     "version": "1.0.0"
   },
   {
+    "created": "2026-10-08",
+    "id": "DF-SIGNAL-2026-0003",
+    "owners": [
+      "signal"
+    ],
+    "path": "research/decisions/DF-SIGNAL-2026-0003--deep-linking-through-limen-routing.md",
+    "provenance": {
+      "contributions": {
+        "EXE-20261008T194621846Z-e49f32ce": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-08T19:55:41.000Z",
+          "last": "2026-10-08T20:47:10.000Z",
+          "operations": [
+            "created",
+            "modified"
+          ],
+          "reason": "Decide deep linking through Limen routing, the interim Limen.Routing copy and the respondent answer document"
+        }
+      }
+    },
+    "related_documents": [
+      "docs/requirements/SIGNAL-DEEP-LINKING.md",
+      ".echelon/routes.json",
+      "vendor/limen-routing/Limen.Routing.fsproj"
+    ],
+    "review_cycle": "on-trigger",
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "routing",
+      "deep-linking",
+      "limen",
+      "privacy"
+    ],
+    "title": "Deep linking through Limen's routing semantics, Limen.Routing vendored byte for byte, and the respondent answer document",
+    "updated": "2026-10-08",
+    "version": "1.0.0"
+  },
+  {
     "created": "2026-10-05",
     "id": "DF-SIGNAL-FND-2026-0001",
     "owners": [
