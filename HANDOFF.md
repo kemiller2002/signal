@@ -6,6 +6,14 @@ Build Signal toward the charter's first bounded outcome (template, live URL,
 anonymous finalization, import, deterministic results) on the declared
 foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
 
+## Platform (2026-10-08)
+
+- echelon-current 1.9.0 through Conditor 0.6.0 (`conditor.json`,
+  `.conditor/`): Praxis 3.7.2, Ordo 1.5.0, Visual Engineering 1.0.1, and
+  Arca 0.2.1 and Fides 0.2.0 as attested NuGet release assets in
+  `vendor/nuget` (mapped in `NuGet.config`, pinned in
+  `Directory.Packages.props`). `conditor verify` passes.
+
 ## Current state (2026-10-07)
 
 - Requirement coverage is tracked per requirement group in
