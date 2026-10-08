@@ -68,4 +68,4 @@
 | WI-0053 | Signal 16: cross-cutting verification - static analysis, differential and model tests, performance budgets, incremental evaluation, time semantics (ARX-001, ARX-004, ARX-005, ARX-010, ARX-011, ARX-015, CAN-007, ADM-036..038, ADM-059, ADM-068; ACR-006 localization) | captured | signal, order:16, quality | medium |
 | WI-0054 | Signal 17: administrator sandbox, synthetic data generator and optional analytics extensions (ADM-039, ADM-040, ADM-042, ADM-043) | captured | signal, order:17, sandbox | low |
 | WI-0055 | Stop the Chromium install from hanging the browser-suite CI (unbounded apt-get update in playwright install --with-deps) | complete | ci, playwright, reliability | high |
-| WI-0056 | Record the pure-domain pull-forward (WI-0042..WI-0046) in DF-SIGNAL-2026-0001, propose answers to the 12 scoring open questions (DF-SIGNAL-2026-0002), and close out GH-5 | active | planning, decisions, scoring | high |
+| WI-0056 | Record the pure-domain pull-forward (WI-0042..WI-0046) in DF-SIGNAL-2026-0001, propose answers to the 12 scoring open questions (DF-SIGNAL-2026-0002), and close out GH-5 | complete | planning, decisions, scoring | high |

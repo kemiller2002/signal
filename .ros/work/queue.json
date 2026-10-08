@@ -1306,10 +1306,10 @@
         "scoring"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T14:55:00.000Z",
-      "updatedAt": "2026-10-08T14:55:00.000Z",
+      "updatedAt": "2026-10-08T14:57:35.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
