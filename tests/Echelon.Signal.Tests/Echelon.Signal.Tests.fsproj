@@ -23,6 +23,8 @@
     <Compile Include="ScoringTests.fs" />
     <Compile Include="TemplateTests.fs" />
     <Compile Include="AuthoringTests.fs" />
+    <Compile Include="RulesTests.fs" />
+    <Compile Include="GroupsTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,31 +10,13 @@ open System
 open System.Security.Cryptography
 open System.Text
 open System.Text.RegularExpressions
+open Echelon.Signal.Engine.Responses
+open Echelon.Signal.Engine.RuleModel
 open Echelon.Signal.Engine.Template
+open Echelon.Signal.Engine.Layout
 open Echelon.Signal.Engine.Drafts
-
-type Category =
-    | StructuralCategory
-    | AnswerCategory
-    | ScoringCategory
-    | CompletionCategory
-    | CompatibilityCategory
-    | EncodingCategory
-    | PrivacyCategory
-    | FixturesCategory
-
-type Severity =
-    | Blocker
-    | Warning
-
-/// A finding with a stable reason code (ARX-012 "stable reason codes").
-type Finding =
-    { Code: string
-      Category: Category
-      Severity: Severity
-      /// The id the finding is about ("" for the template as a whole).
-      Subject: string
-      Message: string }
+open Echelon.Signal.Engine.Findings
+open Echelon.Signal.Engine.RuleChecks
 
 type Policy =
     { /// The longest respondent URL supported, all characters included.
@@ -55,16 +37,6 @@ let defaultPolicy =
       RequireFixtures = true
       PiiPromptsBlock = false
       LowScoringItemCount = 3 }
-
-let private finding category severity code subject message =
-    { Code = code
-      Category = category
-      Severity = severity
-      Subject = subject
-      Message = message }
-
-let private duplicates (ids: string list) =
-    ids |> List.countBy id |> List.filter (fun (_, n) -> n > 1) |> List.map fst
 
 let private structural (draft: Draft) =
     let c = draft.Content
@@ -261,31 +233,52 @@ let private outcomeText =
     | Scoring.Score(v, included, excluded) -> $"score {v:R} {included} {excluded}"
     | Scoring.NotScored reason -> $"not-scored {reason}"
 
-/// Runs one fixture. Invalid answers are failures, not crashes.
+let private sectionText =
+    function
+    | Rules.SectionScored outcome -> outcomeText outcome
+    | Rules.SectionNotApplicable -> "not-applicable"
+
+/// Runs one fixture through the whole evaluation (`Rules.evaluate`), so
+/// flow, facts, validation and completion are tested exactly as they run.
+/// Invalid answers are failures, not crashes.
 let runFixture (content: Content) (fixture: Fixture) : FixtureResult =
-    let problems = checkAnswers content fixture.Answers |> List.map (sprintf "invalid answer: %A")
-    let sections = scoreSections content fixture.Answers
-    let complete = isComplete content fixture.Answers
+    let e = Rules.evaluate content fixture.Answers
+    let problems = e.AnswerProblems |> List.map (sprintf "invalid answer: %A")
+    let complete = Rules.isSubmittable e.Completion
+    let triggered = e.Recommendations |> List.map _.Id |> Set.ofList
 
     let failures =
         fixture.Expect
         |> List.choose (fun assertion ->
             match assertion with
-            | Completion expected when expected <> complete -> Some $"completion: expected {expected}, got {complete}"
-            | Completion _ -> None
-            | SectionScore(id, expected) ->
-                match sections |> List.tryFind (fun (s, _) -> s.Id = id) with
+            | ExpectComplete expected when expected <> complete -> Some $"completion: expected {expected}, got {e.Completion}"
+            | ExpectComplete _ -> None
+            | ExpectApplicable(id, expected) when expected <> e.Applicability.Questions.Contains id ->
+                Some $"applicability of '{id}': expected {expected}"
+            | ExpectApplicable _ -> None
+            | ExpectRecommended(id, expected) when expected <> triggered.Contains id -> Some $"recommendation '{id}': expected {expected}"
+            | ExpectRecommended _ -> None
+            | ExpectFact(id, expected) ->
+                match e.Facts |> List.tryFind (fun (f, _) -> f = id) with
+                | Some(_, actual) when actual = expected -> None
+                | Some(_, actual) -> Some $"fact '{id}': expected {expected}, got {actual}"
+                | None -> Some $"fact '{id}' is not defined"
+            | ExpectSectionScore(id, expected) ->
+                match e.Sections |> List.tryFind (fun (s, _) -> s = id) with
                 | None -> Some $"section '{id}' is not scored"
-                | Some(_, outcome) ->
-                    match expected, outcome with
-                    | Some e, Scoring.Score(v, _, _) when e = v -> None
-                    | None, Scoring.NotScored _ -> None
-                    | _ -> Some $"section '{id}': expected {expected}, got {outcomeText outcome}")
+                | Some(_, result) ->
+                    match expected, result with
+                    | Some x, Rules.SectionScored(Scoring.Score(v, _, _)) when x = v -> None
+                    | None, Rules.SectionScored(Scoring.NotScored _)
+                    | None, Rules.SectionNotApplicable -> None
+                    | _ -> Some $"section '{id}': expected {expected}, got {sectionText result}")
 
     let canonical =
-        sections
-        |> List.map (fun (s, o) -> $"{s.Id}={outcomeText o}")
-        |> List.append [ $"complete={complete}" ]
+        [ $"completion={e.Completion}"
+          yield! e.Applicability.Questions |> Set.toList |> List.map (sprintf "applicable=%s")
+          yield! e.Facts |> List.map (fun (f, v) -> $"fact {f}=%A{v}")
+          yield! e.Sections |> List.map (fun (s, r) -> $"{s}={sectionText r}")
+          yield! e.Recommendations |> List.map (fun r -> $"recommendation={r.Id}") ]
         |> String.concat "\n"
 
     { FixtureId = fixture.Id
@@ -322,6 +315,7 @@ let validate (policy: Policy) (draft: Draft) : ValidationReport =
         @ compatibility draft
         @ encoding policy draft
         @ privacy policy draft
+        @ RuleChecks.check draft.Content
         @ fixtures policy draft results
       Capacity = capacity draft.Content
       Fixtures = results }

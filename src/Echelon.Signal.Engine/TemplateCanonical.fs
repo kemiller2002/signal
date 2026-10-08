@@ -21,7 +21,10 @@ open System
 open System.Buffers
 open System.Security.Cryptography
 open System.Text.Json
+open Echelon.Signal.Engine.Responses
+open Echelon.Signal.Engine.RuleModel
 open Echelon.Signal.Engine.Template
+open Echelon.Signal.Engine.Layout
 
 /// Identifies this canonical form inside the bytes.
 [<Literal>]
@@ -44,11 +47,7 @@ let private numberList (w: Utf8JsonWriter) (name: string) (values: float list) =
     values |> List.iter w.WriteNumberValue
     w.WriteEndArray()
 
-let specialName =
-    function
-    | DontKnow -> "dont-know"
-    | NotObserved -> "not-observed"
-    | NotApplicable -> "not-applicable"
+let specialName = RuleCanonical.specialName
 
 let presetName =
     function
@@ -338,6 +337,12 @@ let bytes (surveyId: string) (version: string) (content: Content) : byte[] =
         w.WriteStartArray "sections"
         content.Sections |> List.iter (writeSection w)
         w.WriteEndArray()
+
+        // Written only when present (extension rule), so a template without
+        // rules keeps the hash it had before rules existed.
+        if content.Rules <> noRules then
+            w.WritePropertyName "rules"
+            RuleCanonical.write w content.Rules
 
         w.WriteEndObject()
     )

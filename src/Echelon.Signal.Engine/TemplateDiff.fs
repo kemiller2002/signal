@@ -3,6 +3,7 @@
 /// (AUT-005 §§44-48).
 module Echelon.Signal.Engine.TemplateDiff
 
+open Echelon.Signal.Engine.Responses
 open Echelon.Signal.Engine.Template
 
 type Change =
@@ -28,6 +29,11 @@ type Change =
     | OptionScoresChanged of questionId: string
     | SpecialStatesChanged of questionId: string
     | SelectorChanged of questionId: string
+    | FlowChanged
+    | FactsChanged
+    | ValidationRulesChanged
+    | CompletionChanged
+    | RecommendationsChanged
 
 /// Whether a change can alter scores, alter how stored answers are read, or
 /// only how the survey looks.
@@ -48,7 +54,12 @@ let impact (change: Change) =
     | QuestionRequirementChanged _
     | CompatibilityChanged -> { Scoring = false; Encoding = false }
     | SectionScoringChanged _
-    | OptionScoresChanged _ -> { Scoring = true; Encoding = false }
+    | OptionScoresChanged _
+    | FlowChanged
+    | FactsChanged -> { Scoring = true; Encoding = false }
+    | ValidationRulesChanged
+    | CompletionChanged
+    | RecommendationsChanged -> { Scoring = false; Encoding = false }
     | SectionAdded _
     | SectionRemoved _
     | QuestionAdded _
@@ -75,6 +86,11 @@ let diff (before: Content) (after: Content) : Change list =
     let afterQuestionOrder = questions after |> List.map (fun (_, q) -> q.Id)
 
     [ if before.Metadata <> after.Metadata then MetadataChanged
+      if before.Rules.Flow <> after.Rules.Flow then FlowChanged
+      if before.Rules.Facts <> after.Rules.Facts then FactsChanged
+      if before.Rules.Validation <> after.Rules.Validation then ValidationRulesChanged
+      if before.Rules.Completion <> after.Rules.Completion then CompletionChanged
+      if before.Rules.Recommendations <> after.Rules.Recommendations then RecommendationsChanged
       if before.Presentation <> after.Presentation then PresentationChanged
       if before.Runtime <> after.Runtime then RuntimeChanged
       if before.Compatibility <> after.Compatibility then CompatibilityChanged
@@ -145,6 +161,8 @@ let comparability (changes: Change list) =
             | QuestionMovedSection id -> Some $"question '{id}' moved section"
             | SectionAdded id -> Some $"section '{id}' added"
             | SectionRemoved id -> Some $"section '{id}' removed"
+            | FlowChanged -> Some "flow changed which questions apply"
+            | FactsChanged -> Some "derived facts changed"
             | _ -> None)
 
     let caution =
@@ -154,6 +172,9 @@ let comparability (changes: Change list) =
             | QuestionRequirementChanged id -> Some $"requirement of '{id}' changed"
             | SectionRequirementChanged id -> Some $"requirement of section '{id}' changed"
             | OptionsChanged id -> Some $"options of '{id}' reordered or relabelled"
+            | ValidationRulesChanged -> Some "validation rules changed"
+            | CompletionChanged -> Some "completion policy changed"
+            | RecommendationsChanged -> Some "recommendations changed"
             | _ -> None)
 
     match notComparable, caution with

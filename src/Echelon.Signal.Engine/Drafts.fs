@@ -7,6 +7,8 @@
 /// `Publication`.
 module Echelon.Signal.Engine.Drafts
 
+open Echelon.Signal.Engine.Responses
+open Echelon.Signal.Engine.RuleModel
 open Echelon.Signal.Engine.Template
 
 /// The published version a draft was derived from (AUT-001 §9).
@@ -14,9 +16,14 @@ type ParentReference = { Version: string; Hash: string }
 
 /// An authored expectation of a fixture (AUT-003 §26).
 type Assertion =
-    /// The section's score, or None for "not scored".
-    | SectionScore of sectionId: string * expected: float option
-    | Completion of complete: bool
+    /// The section's score, or None for "not scored" or not applicable.
+    | ExpectSectionScore of sectionId: string * expected: float option
+    /// Whether the response is submittable (ready, or terminated early).
+    | ExpectComplete of complete: bool
+    | ExpectApplicable of questionId: string * applicable: bool
+    /// A derived fact's value, or None for unknown.
+    | ExpectFact of factId: string * expected: FactValue option
+    | ExpectRecommended of recommendationId: string * triggered: bool
 
 /// A response simulated directly from answer state (AUT-003 §24).
 type Fixture =
@@ -50,7 +57,8 @@ let newDraft (surveyId: string) (title: string) : Draft =
           Compatibility = defaultCompatibility
           Presentation = defaultPresentation
           Runtime = defaultRuntime
-          Sections = [] }
+          Sections = []
+          Rules = noRules }
       Fixtures = [] }
 
 let sectionIds (content: Content) = content.Sections |> List.map _.Id

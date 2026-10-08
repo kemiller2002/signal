@@ -8,7 +8,11 @@ open System.Text
 open Xunit
 open Microsoft.FSharp.Reflection
 open Echelon.Signal.Engine
+open Echelon.Signal.Engine.Responses
+open Echelon.Signal.Engine.RuleModel
 open Echelon.Signal.Engine.Template
+open Echelon.Signal.Engine.Layout
+open Echelon.Signal.Engine.Instance
 
 let private sdra = Pilot.content
 

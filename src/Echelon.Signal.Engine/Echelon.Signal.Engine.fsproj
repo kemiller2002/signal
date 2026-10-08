@@ -9,7 +9,15 @@
     <Compile Include="View.fs" />
     <Compile Include="Scoring.fs" />
     <Compile Include="Assessment.fs" />
+    <Compile Include="Responses.fs" />
+    <Compile Include="RuleModel.fs" />
     <Compile Include="Template.fs" />
+    <Compile Include="Layout.fs" />
+    <Compile Include="Instance.fs" />
+    <Compile Include="Rules.fs" />
+    <Compile Include="Findings.fs" />
+    <Compile Include="RuleChecks.fs" />
+    <Compile Include="RuleCanonical.fs" />
     <Compile Include="TemplateCanonical.fs" />
     <Compile Include="Drafts.fs" />
     <Compile Include="Validation.fs" />
@@ -22,6 +30,7 @@
     <Compile Include="Submission.fs" />
     <Compile Include="Import.fs" />
     <Compile Include="Aggregation.fs" />
+    <Compile Include="Groups.fs" />
     <Compile Include="Session.fs" />
   </ItemGroup>
 

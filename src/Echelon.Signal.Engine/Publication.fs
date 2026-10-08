@@ -10,7 +10,9 @@ module Echelon.Signal.Engine.Publication
 
 open System
 open Echelon.Signal.Engine.Template
+open Echelon.Signal.Engine.Layout
 open Echelon.Signal.Engine.Drafts
+open Echelon.Signal.Engine.Findings
 open Echelon.Signal.Engine.Validation
 open Echelon.Signal.Engine.TemplateDiff
 
