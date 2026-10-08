@@ -16,8 +16,9 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   `NuGet.config`, pinned in `Directory.Packages.props`): Arca 0.3.0 (Core,
   GitHub, Limen), Fides 0.2.0 and limen-fsharp 0.9.0. `conditor verify`
   passes. `EchelonFoundry.Arca.Limen` is pinned, but no project references it:
-  Arca's offline write queue stays off (DF-SIGNAL-2026-0001 decision 5), and
-  wiring it, or only its read cache, needs that decision revisited (WI-0072).
+  Arca's IndexedDB write queue and read cache were evaluated and declined
+  (DF-SIGNAL-2026-0001 decision 5, WI-0074): per-respondent data stays off
+  the device.
 - Administrator domain (`src/Echelon.Signal.Admin`, pure F# over Arca.Core,
   WI-0038 onward): `Deployment` (closed, validated deployment configuration:
   environment, Fides identity, storage profiles, datasets and their bootstrap

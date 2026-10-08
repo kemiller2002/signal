@@ -30,8 +30,8 @@
     <!-- Arca 0.3.0's Limen adapter (IndexedDB queue and read cache, arca
          docs/consuming-arca.md section 5a) and the Limen 0.9.0 packages it
          brings, declared with limen-fsharp in conditor.json (WI-0072). Pinned
-         here; no project references them yet: Signal keeps Arca's offline
-         write queue off (DF-SIGNAL-2026-0001 decision 5). -->
+         here and never referenced: the queue and read cache were evaluated
+         and declined (DF-SIGNAL-2026-0001 decision 5, WI-0074). -->
     <PackageVersion Include="EchelonFoundry.Arca.Limen" Version="0.3.0" />
     <PackageVersion Include="EchelonFoundry.Limen.Store" Version="0.9.0" />
     <PackageVersion Include="EchelonFoundry.Limen.Contract" Version="0.9.0" />

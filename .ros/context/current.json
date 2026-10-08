@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T22:44:01.000Z",
+  "updatedAt": "2026-10-08T22:52:25.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -2327,6 +2327,51 @@
         }
       },
       "completedAt": "2026-10-08T22:15:51.000Z"
+    },
+    {
+      "id": "WI-0074",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "research/decisions/DF-SIGNAL-2026-0001--storage-through-arca-sign-in-through-fides-built-after-summa.md"
+        },
+        {
+          "type": "implementation",
+          "path": "Directory.Packages.props"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/FoundationsConformanceTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-08T22:52:25.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261008T224935854Z-d024938c"
+      ],
+      "latestCheckpoint": {
+        "id": "1ac93da3658f475d5e4d4c4d",
+        "recordedAt": "2026-10-08T22:52:24.000Z",
+        "executionId": "EXE-20261008T224935854Z-d024938c",
+        "repository": "echelon-signal",
+        "branch": "docs/arca-limen-declined",
+        "commit": "3c98b7cc2c086400901bae7b635eceed13882dd5",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "docs/arca-limen-declined",
+        "remoteCommit": "3c98b7cc2c086400901bae7b635eceed13882dd5",
+        "summary": "Decision 5 amended: Arca.Limen queue and read cache declined; package stays pinned and unreferenced",
+        "nextAction": "Complete, PR and merge; then WI-0050",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T22:52:25.000Z"
     }
   ]
 }
