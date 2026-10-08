@@ -64,6 +64,9 @@
     <section id="questions" class="ef-stack" aria-labelledby="questions-title">
       <h2 id="questions-title">Questions</h2>
       <p class="ef-field__description">Answer for the last eight weeks. If you do not know, have not observed it, or it does not apply, say so: those answers are not counted as zero.</p>
+      <!-- The address is the respondent's own answer link (LURL-001, ARX-007,
+           DF-SIGNAL-2026-0003 decision 4): say so plainly. -->
+      <p id="link-disclosure" class="ef-field__description">This page's address contains your answers, so you can come back to them. Anyone you give the address to can see them; it is never sent to a server.</p>
 
       <div class="ef-survey-progress">
         <div class="ef-survey-progress__header">
@@ -186,7 +189,7 @@
   <template data-if="submitted">
     <section id="submitted" class="ef-stack" aria-labelledby="submitted-title">
       <h2 id="submitted-title">Submitted</h2>
-      <p>Your answers are final. Send this link to the person who invited you; it holds your answers and nothing that identifies you. Submission type: <strong id="submission-kind" data-text="submissionKind"></strong>.</p>
+      <p id="submission-disclosure">Your answers are final. This link contains your answers, and nothing that identifies you. Send it to the person who invited you. Submission type: <strong id="submission-kind" data-text="submissionKind"></strong>.</p>
       <label class="ef-field">
         <span class="ef-field__label">Submission link</span>
         <input id="submission-link" type="text" readonly data-bind-value="submissionLink" />

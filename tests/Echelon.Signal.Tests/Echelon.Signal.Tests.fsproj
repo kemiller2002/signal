@@ -43,6 +43,7 @@
     <Compile Include="AdminPageTests.fs" />
     <Compile Include="AdminLinkTests.fs" />
     <Compile Include="ReportViewTests.fs" />
+    <Compile Include="RespondentLinkTests.fs" />
     <Compile Include="AnalyticsTests.fs" />
     <Compile Include="VisualizationTests.fs" />
     <Compile Include="LimenRoutingVectors.fs" />

@@ -145,6 +145,20 @@
             "modified"
           ],
           "reason": "Decide deep linking through Limen routing, the interim Limen.Routing copy and the respondent answer document"
+        },
+        "EXE-20261008T213653081Z-8b5e5cfc": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-08T21:36:54.000Z",
+          "operations": [
+            "modified"
+          ],
+          "reason": "Close decision 4: the respondent answer link is an accepted, scoped exception (WI-0070)"
         }
       }
     },

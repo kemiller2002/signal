@@ -9,6 +9,10 @@ async function answer(page, itemId, value) {
   await expect(choice(page, itemId, value)).toBeChecked();
 }
 
+test("the page says plainly that its address contains the answers", async ({ assessment: page }) => {
+  await expect(page.locator("#link-disclosure")).toContainText("This page's address contains your answers");
+});
+
 test("the page runs on Limen, Forma and Folio from the pinned packages", async ({ assessment: page }) => {
   await expect(page.getByRole("heading", { level: 1, name: "Software Delivery Reality Assessment" })).toBeVisible();
   await expect(page.locator("#assessment-version")).toHaveText("SDRA 0.1.0-draft");

@@ -24,6 +24,16 @@ provenance:
         model: unknown
         runtime: claude-code
       reason: "Record the owner's deep-linking portfolio requirement as SIG-LINK-001..012"
+    EXE-20261008T213653081Z-8b5e5cfc:
+      operations: [modified]
+      at: 2026-10-08T21:36:55.000Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "SIG-LINK-008 names the accepted respondent-link exception (WI-0070)"
 ---
 
 # SIG-LINK — deep linking
@@ -93,8 +103,9 @@ random bytes, instrument, section and question ids). Parameter names
 reserved for credentials (`token`, `secret`, `key`, `session`, `auth`,
 `code` and the rest of LCP-109) are refused when the table is defined. The
 group list filters by typed values (status, identity mode, survey), not by
-free text. The respondent page's answer document is not a route; see
-DF-SIGNAL-2026-0003 decision 4.
+free text. The respondent page's answer link (`#r=`) is the one accepted exception,
+scoped to that page and disclosed to the respondent (DF-SIGNAL-2026-0003
+decision 4).
 
 **SIG-LINK-009 Route inventory.** `.echelon/routes.json` MUST be the route
 table's `echelon.routes/v1` inventory: sorted keys, two-space indentation, a
