@@ -1,0 +1,2031 @@
+{
+  "artifactType": "signal-survey-template-draft",
+  "canonicalSurveyTemplate": false,
+  "warning": "Acceptance fixture for Signal generic template/answer work. Not usable for human research coding until Signal publishes it canonically and the published template hash is frozen in Praxis WI-0075.",
+  "survey": {
+    "id": "A021-ARCH-CODE-V1",
+    "title": "Independent Architecture Coding",
+    "version": "1.0.0-draft",
+    "identityMode": "Anonymous",
+    "piiPolicy": "No PII",
+    "freeFormAnswers": false,
+    "scoring": "None",
+    "consumer": "Praxis WI-0075"
+  },
+  "instructions": [
+    "X, Y, M, and N are anonymous implementation labels only.",
+    "Do not search for experiment names, branch names, prior evaluations, publication materials, or treatment mappings.",
+    "Code each implementation independently before comparing it with its peer.",
+    "Choose only from the declared category and confidence options.",
+    "Complete the companion evidence worksheet separately using the same study/arm/dimension join key.",
+    "If treatment mapping or prior ratings become known, report the exposure and stop."
+  ],
+  "categoryDefinitions": [
+    {
+      "id": "unified",
+      "definition": "One implementation or shared rule serves every item that needs the concern, with one invariant/behavior for reachable equivalent inputs."
+    },
+    {
+      "id": "duplicated-compatible",
+      "definition": "More than one implementation or representation exists, but no reachable equivalent input is shown to produce contradictory behavior or invariants."
+    },
+    {
+      "id": "divergent",
+      "definition": "The same concern is derived or enforced differently and concrete code evidence shows different behavior or invariants for reachable equivalent inputs."
+    },
+    {
+      "id": "missing",
+      "definition": "The concern is required by the supplied task/specification but is absent where required."
+    },
+    {
+      "id": "not-assessable",
+      "definition": "The supplied anonymous material is insufficient for a defensible category judgment."
+    }
+  ],
+  "sections": [
+    {
+      "id": "ELIG",
+      "title": "Blind-coder eligibility"
+    },
+    {
+      "id": "S1-X",
+      "title": "Study 1 / Arm X"
+    },
+    {
+      "id": "S1-Y",
+      "title": "Study 1 / Arm Y"
+    },
+    {
+      "id": "S2-M",
+      "title": "Study 2 / Arm M"
+    },
+    {
+      "id": "S2-N",
+      "title": "Study 2 / Arm N"
+    },
+    {
+      "id": "VALID",
+      "title": "Final validity checks"
+    }
+  ],
+  "items": [
+    {
+      "id": "ELIG-01",
+      "section": "ELIG",
+      "prompt": "Have you seen or been told which X/Y/M/N implementation corresponds to either experimental treatment?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "no",
+            "label": "No"
+          },
+          {
+            "id": "yes",
+            "label": "Yes"
+          }
+        ]
+      },
+      "required": true
+    },
+    {
+      "id": "ELIG-02",
+      "section": "ELIG",
+      "prompt": "Have you read PR #202, the A021 publication manuscript, or a summary of its conclusions?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "no",
+            "label": "No"
+          },
+          {
+            "id": "yes",
+            "label": "Yes"
+          }
+        ]
+      },
+      "required": true
+    },
+    {
+      "id": "ELIG-03",
+      "section": "ELIG",
+      "prompt": "Have you seen prior ratings or conclusions about the architecture of X, Y, M, or N?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "no",
+            "label": "No"
+          },
+          {
+            "id": "yes",
+            "label": "Yes"
+          }
+        ]
+      },
+      "required": true
+    },
+    {
+      "id": "ELIG-04",
+      "section": "ELIG",
+      "prompt": "Did you implement, evaluate, or otherwise participate in A021 or its R2 execution?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "no",
+            "label": "No"
+          },
+          {
+            "id": "yes",
+            "label": "Yes"
+          }
+        ]
+      },
+      "required": true
+    },
+    {
+      "id": "S1X-D1-CAT",
+      "section": "S1-X",
+      "prompt": "Persistence and store model: Does this implementation use one coherent persistence/state model for group declarations, membership, and checkpoints where a shared model is needed?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D1"
+    },
+    {
+      "id": "S1X-D1-CONF",
+      "section": "S1-X",
+      "prompt": "Confidence in your D1 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D1"
+    },
+    {
+      "id": "S1X-D2-CAT",
+      "section": "S1-X",
+      "prompt": "Member admission and repository rule: Do create, add, and related admission paths enforce the same eligibility and repository-placement rules for equivalent work items?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D2"
+    },
+    {
+      "id": "S1X-D2-CONF",
+      "section": "S1-X",
+      "prompt": "Confidence in your D2 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D2"
+    },
+    {
+      "id": "S1X-D3-CAT",
+      "section": "S1-X",
+      "prompt": "Lifecycle and member classification: Do commands that display or checkpoint group progress classify equivalent lifecycle states consistently, including active, ready, complete, blocked, abandoned, or external states where observable?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D3"
+    },
+    {
+      "id": "S1X-D3-CONF",
+      "section": "S1-X",
+      "prompt": "Confidence in your D3 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D3"
+    },
+    {
+      "id": "S1X-D4-CAT",
+      "section": "S1-X",
+      "prompt": "Checkpoint ownership and durability: Is there one coherent rule for checkpoint ownership, member references, required fields, durability, and revalidation?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D4"
+    },
+    {
+      "id": "S1X-D4-CONF",
+      "section": "S1-X",
+      "prompt": "Confidence in your D4 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D4"
+    },
+    {
+      "id": "S1X-D5-CAT",
+      "section": "S1-X",
+      "prompt": "Error, JSON, and CLI contract: Do related commands expose a consistent external contract for equivalent failures, including error structure, JSON shape, exit codes, invalid input, and not-found behavior?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D5"
+    },
+    {
+      "id": "S1X-D5-CONF",
+      "section": "S1-X",
+      "prompt": "Confidence in your D5 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D5"
+    },
+    {
+      "id": "S1X-D6-CAT",
+      "section": "S1-X",
+      "prompt": "Mutation and concurrency model: Do related mutations use a coherent read-decide-write and locking/atomicity strategy, or do they provide materially different concurrency guarantees?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D6"
+    },
+    {
+      "id": "S1X-D6-CONF",
+      "section": "S1-X",
+      "prompt": "Confidence in your D6 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D6"
+    },
+    {
+      "id": "S1X-D7-CAT",
+      "section": "S1-X",
+      "prompt": "Reuse of baseline rules and abstractions: When the baseline already provides a relevant rule or abstraction, does this implementation reuse it consistently rather than reimplementing it with different behavior?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D7"
+    },
+    {
+      "id": "S1X-D7-CONF",
+      "section": "S1-X",
+      "prompt": "Confidence in your D7 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D7"
+    },
+    {
+      "id": "S1X-D8-CAT",
+      "section": "S1-X",
+      "prompt": "Duplicated incompatible abstractions: Does this implementation introduce multiple abstractions for the same concept that encode incompatible rules or behavior?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D8"
+    },
+    {
+      "id": "S1X-D8-CONF",
+      "section": "S1-X",
+      "prompt": "Confidence in your D8 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/X/D8"
+    },
+    {
+      "id": "S1Y-D1-CAT",
+      "section": "S1-Y",
+      "prompt": "Persistence and store model: Does this implementation use one coherent persistence/state model for group declarations, membership, and checkpoints where a shared model is needed?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D1"
+    },
+    {
+      "id": "S1Y-D1-CONF",
+      "section": "S1-Y",
+      "prompt": "Confidence in your D1 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D1"
+    },
+    {
+      "id": "S1Y-D2-CAT",
+      "section": "S1-Y",
+      "prompt": "Member admission and repository rule: Do create, add, and related admission paths enforce the same eligibility and repository-placement rules for equivalent work items?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D2"
+    },
+    {
+      "id": "S1Y-D2-CONF",
+      "section": "S1-Y",
+      "prompt": "Confidence in your D2 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D2"
+    },
+    {
+      "id": "S1Y-D3-CAT",
+      "section": "S1-Y",
+      "prompt": "Lifecycle and member classification: Do commands that display or checkpoint group progress classify equivalent lifecycle states consistently, including active, ready, complete, blocked, abandoned, or external states where observable?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D3"
+    },
+    {
+      "id": "S1Y-D3-CONF",
+      "section": "S1-Y",
+      "prompt": "Confidence in your D3 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D3"
+    },
+    {
+      "id": "S1Y-D4-CAT",
+      "section": "S1-Y",
+      "prompt": "Checkpoint ownership and durability: Is there one coherent rule for checkpoint ownership, member references, required fields, durability, and revalidation?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D4"
+    },
+    {
+      "id": "S1Y-D4-CONF",
+      "section": "S1-Y",
+      "prompt": "Confidence in your D4 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D4"
+    },
+    {
+      "id": "S1Y-D5-CAT",
+      "section": "S1-Y",
+      "prompt": "Error, JSON, and CLI contract: Do related commands expose a consistent external contract for equivalent failures, including error structure, JSON shape, exit codes, invalid input, and not-found behavior?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D5"
+    },
+    {
+      "id": "S1Y-D5-CONF",
+      "section": "S1-Y",
+      "prompt": "Confidence in your D5 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D5"
+    },
+    {
+      "id": "S1Y-D6-CAT",
+      "section": "S1-Y",
+      "prompt": "Mutation and concurrency model: Do related mutations use a coherent read-decide-write and locking/atomicity strategy, or do they provide materially different concurrency guarantees?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D6"
+    },
+    {
+      "id": "S1Y-D6-CONF",
+      "section": "S1-Y",
+      "prompt": "Confidence in your D6 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D6"
+    },
+    {
+      "id": "S1Y-D7-CAT",
+      "section": "S1-Y",
+      "prompt": "Reuse of baseline rules and abstractions: When the baseline already provides a relevant rule or abstraction, does this implementation reuse it consistently rather than reimplementing it with different behavior?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D7"
+    },
+    {
+      "id": "S1Y-D7-CONF",
+      "section": "S1-Y",
+      "prompt": "Confidence in your D7 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D7"
+    },
+    {
+      "id": "S1Y-D8-CAT",
+      "section": "S1-Y",
+      "prompt": "Duplicated incompatible abstractions: Does this implementation introduce multiple abstractions for the same concept that encode incompatible rules or behavior?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D8"
+    },
+    {
+      "id": "S1Y-D8-CONF",
+      "section": "S1-Y",
+      "prompt": "Confidence in your D8 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S1/Y/D8"
+    },
+    {
+      "id": "S2M-D1-CAT",
+      "section": "S2-M",
+      "prompt": "Persistence and store model: Does this implementation use one coherent persistence/state model for group declarations, membership, and checkpoints where a shared model is needed?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D1"
+    },
+    {
+      "id": "S2M-D1-CONF",
+      "section": "S2-M",
+      "prompt": "Confidence in your D1 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D1"
+    },
+    {
+      "id": "S2M-D2-CAT",
+      "section": "S2-M",
+      "prompt": "Member admission and repository rule: Do create, add, and related admission paths enforce the same eligibility and repository-placement rules for equivalent work items?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D2"
+    },
+    {
+      "id": "S2M-D2-CONF",
+      "section": "S2-M",
+      "prompt": "Confidence in your D2 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D2"
+    },
+    {
+      "id": "S2M-D3-CAT",
+      "section": "S2-M",
+      "prompt": "Lifecycle and member classification: Do commands that display or checkpoint group progress classify equivalent lifecycle states consistently, including active, ready, complete, blocked, abandoned, or external states where observable?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D3"
+    },
+    {
+      "id": "S2M-D3-CONF",
+      "section": "S2-M",
+      "prompt": "Confidence in your D3 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D3"
+    },
+    {
+      "id": "S2M-D4-CAT",
+      "section": "S2-M",
+      "prompt": "Checkpoint ownership and durability: Is there one coherent rule for checkpoint ownership, member references, required fields, durability, and revalidation?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D4"
+    },
+    {
+      "id": "S2M-D4-CONF",
+      "section": "S2-M",
+      "prompt": "Confidence in your D4 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D4"
+    },
+    {
+      "id": "S2M-D5-CAT",
+      "section": "S2-M",
+      "prompt": "Error, JSON, and CLI contract: Do related commands expose a consistent external contract for equivalent failures, including error structure, JSON shape, exit codes, invalid input, and not-found behavior?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D5"
+    },
+    {
+      "id": "S2M-D5-CONF",
+      "section": "S2-M",
+      "prompt": "Confidence in your D5 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D5"
+    },
+    {
+      "id": "S2M-D6-CAT",
+      "section": "S2-M",
+      "prompt": "Mutation and concurrency model: Do related mutations use a coherent read-decide-write and locking/atomicity strategy, or do they provide materially different concurrency guarantees?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D6"
+    },
+    {
+      "id": "S2M-D6-CONF",
+      "section": "S2-M",
+      "prompt": "Confidence in your D6 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D6"
+    },
+    {
+      "id": "S2M-D7-CAT",
+      "section": "S2-M",
+      "prompt": "Reuse of baseline rules and abstractions: When the baseline already provides a relevant rule or abstraction, does this implementation reuse it consistently rather than reimplementing it with different behavior?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D7"
+    },
+    {
+      "id": "S2M-D7-CONF",
+      "section": "S2-M",
+      "prompt": "Confidence in your D7 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D7"
+    },
+    {
+      "id": "S2M-D8-CAT",
+      "section": "S2-M",
+      "prompt": "Duplicated incompatible abstractions: Does this implementation introduce multiple abstractions for the same concept that encode incompatible rules or behavior?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D8"
+    },
+    {
+      "id": "S2M-D8-CONF",
+      "section": "S2-M",
+      "prompt": "Confidence in your D8 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/M/D8"
+    },
+    {
+      "id": "S2N-D1-CAT",
+      "section": "S2-N",
+      "prompt": "Persistence and store model: Does this implementation use one coherent persistence/state model for group declarations, membership, and checkpoints where a shared model is needed?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D1"
+    },
+    {
+      "id": "S2N-D1-CONF",
+      "section": "S2-N",
+      "prompt": "Confidence in your D1 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D1"
+    },
+    {
+      "id": "S2N-D2-CAT",
+      "section": "S2-N",
+      "prompt": "Member admission and repository rule: Do create, add, and related admission paths enforce the same eligibility and repository-placement rules for equivalent work items?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D2"
+    },
+    {
+      "id": "S2N-D2-CONF",
+      "section": "S2-N",
+      "prompt": "Confidence in your D2 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D2"
+    },
+    {
+      "id": "S2N-D3-CAT",
+      "section": "S2-N",
+      "prompt": "Lifecycle and member classification: Do commands that display or checkpoint group progress classify equivalent lifecycle states consistently, including active, ready, complete, blocked, abandoned, or external states where observable?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D3"
+    },
+    {
+      "id": "S2N-D3-CONF",
+      "section": "S2-N",
+      "prompt": "Confidence in your D3 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D3"
+    },
+    {
+      "id": "S2N-D4-CAT",
+      "section": "S2-N",
+      "prompt": "Checkpoint ownership and durability: Is there one coherent rule for checkpoint ownership, member references, required fields, durability, and revalidation?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D4"
+    },
+    {
+      "id": "S2N-D4-CONF",
+      "section": "S2-N",
+      "prompt": "Confidence in your D4 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D4"
+    },
+    {
+      "id": "S2N-D5-CAT",
+      "section": "S2-N",
+      "prompt": "Error, JSON, and CLI contract: Do related commands expose a consistent external contract for equivalent failures, including error structure, JSON shape, exit codes, invalid input, and not-found behavior?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D5"
+    },
+    {
+      "id": "S2N-D5-CONF",
+      "section": "S2-N",
+      "prompt": "Confidence in your D5 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D5"
+    },
+    {
+      "id": "S2N-D6-CAT",
+      "section": "S2-N",
+      "prompt": "Mutation and concurrency model: Do related mutations use a coherent read-decide-write and locking/atomicity strategy, or do they provide materially different concurrency guarantees?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D6"
+    },
+    {
+      "id": "S2N-D6-CONF",
+      "section": "S2-N",
+      "prompt": "Confidence in your D6 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D6"
+    },
+    {
+      "id": "S2N-D7-CAT",
+      "section": "S2-N",
+      "prompt": "Reuse of baseline rules and abstractions: When the baseline already provides a relevant rule or abstraction, does this implementation reuse it consistently rather than reimplementing it with different behavior?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D7"
+    },
+    {
+      "id": "S2N-D7-CONF",
+      "section": "S2-N",
+      "prompt": "Confidence in your D7 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D7"
+    },
+    {
+      "id": "S2N-D8-CAT",
+      "section": "S2-N",
+      "prompt": "Duplicated incompatible abstractions: Does this implementation introduce multiple abstractions for the same concept that encode incompatible rules or behavior?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "unified",
+            "label": "Unified"
+          },
+          {
+            "id": "duplicated-compatible",
+            "label": "Duplicated-compatible"
+          },
+          {
+            "id": "divergent",
+            "label": "Divergent"
+          },
+          {
+            "id": "missing",
+            "label": "Missing"
+          },
+          {
+            "id": "not-assessable",
+            "label": "Not assessable"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D8"
+    },
+    {
+      "id": "S2N-D8-CONF",
+      "section": "S2-N",
+      "prompt": "Confidence in your D8 classification",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "high",
+            "label": "High"
+          },
+          {
+            "id": "medium",
+            "label": "Medium"
+          },
+          {
+            "id": "low",
+            "label": "Low"
+          }
+        ]
+      },
+      "required": true,
+      "joinKey": "S2/N/D8"
+    },
+    {
+      "id": "VALID-01",
+      "section": "VALID",
+      "prompt": "During this coding exercise, did you learn or infer the treatment mapping or see prior architecture ratings?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "no",
+            "label": "No"
+          },
+          {
+            "id": "yes",
+            "label": "Yes"
+          }
+        ]
+      },
+      "required": true
+    },
+    {
+      "id": "VALID-02",
+      "section": "VALID",
+      "prompt": "Have you completed the companion evidence worksheet for all 32 architecture category judgments?",
+      "answer": {
+        "type": "SingleChoice",
+        "options": [
+          {
+            "id": "no",
+            "label": "No"
+          },
+          {
+            "id": "yes",
+            "label": "Yes"
+          }
+        ]
+      },
+      "required": true
+    }
+  ],
+  "validation": {
+    "validBlindCoding": [
+      {
+        "item": "ELIG-01",
+        "equals": "no"
+      },
+      {
+        "item": "ELIG-02",
+        "equals": "no"
+      },
+      {
+        "item": "ELIG-03",
+        "equals": "no"
+      },
+      {
+        "item": "ELIG-04",
+        "equals": "no"
+      },
+      {
+        "item": "VALID-01",
+        "equals": "no"
+      },
+      {
+        "item": "VALID-02",
+        "equals": "yes"
+      },
+      {
+        "allRequiredAnswered": true
+      }
+    ],
+    "invalidStatus": "ineligible-or-contaminated",
+    "neverCoerceMissing": true
+  },
+  "resultExport": {
+    "stableFields": [
+      "templateHash",
+      "submissionHash",
+      "validationStatus",
+      "itemId",
+      "optionId",
+      "optionLabel"
+    ],
+    "agreementComputedExternally": true,
+    "companionEvidenceJoinKey": "study/arm/dimension"
+  },
+  "counts": {
+    "eligibility": 4,
+    "category": 32,
+    "confidence": 32,
+    "validity": 2,
+    "total": 70
+  }
+}
