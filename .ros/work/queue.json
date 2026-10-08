@@ -814,10 +814,10 @@
         "requirements"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:04.000Z",
-      "updatedAt": "2026-10-08T07:48:04.000Z",
+      "updatedAt": "2026-10-08T07:49:12.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
