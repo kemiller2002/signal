@@ -28,13 +28,23 @@ provenance:
         model: unknown
         runtime: claude-code
       reason: "Decide deep linking through Limen routing, the interim Limen.Routing copy and the respondent answer document"
+    EXE-20261008T213653081Z-8b5e5cfc:
+      operations: [modified]
+      at: 2026-10-08T21:36:54.000Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Close decision 4: the respondent answer link is an accepted, scoped exception (WI-0070)"
 ---
 
 # DF-SIGNAL-2026-0003 — Deep linking through Limen routing
 
 - **Date:** 2026-10-08
-- **Status:** accepted, except decision 4, which is the agent's interim
-  reading and awaits the owner's confirmation.
+- **Status:** accepted. Decision 4 was confirmed by the coordinator on the
+  owner's standing instruction, 2026-10-08 (WI-0070).
 - **Work item:** WI-0066. **Requirements:** SIG-LINK-001..012.
 
 ## Context
@@ -74,23 +84,22 @@ later is mechanical.
    the provider's URL or its `state`. It is only a route location (opaque
    identifiers and view parameters), resumed through `ReturnTo.resume`, and
    removed once used.
-4. **The respondent page's answer document is not a route (interim; owner
-   to confirm).** The respondent page (`web/`) keeps its answers in its
-   fragment, `#r=<envelope>`, by accepted requirements LURL-001 and ARX-007:
-   the link is the respondent's own resumable state, and the finalized link
-   is how a submission reaches the administrator (import, ARP-001). That
-   conflicts with the new rule "never answers in URLs" read literally.
-   Signal's reading, until the owner decides: the rule governs **route
-   URLs** (navigable state, the links people copy and share, and every link
-   "Copy link" produces), which never carry answers or respondent data. The
-   respondent page is therefore not routed and its answer document is
-   unchanged. Removing answers from the respondent link would replace the
-   submission model the charter's first outcome rests on; that is the
-   owner's decision, not an agent's. Options for the owner: (a) keep this
-   reading; (b) keep answers in the fragment but give the respondent page
-   routes too, which needs a combined fragment Limen does not define;
-   (c) move answers out of the URL entirely (browser storage plus a
-   different submission transport), which supersedes LURL-001 and ARX-007.
+4. **The respondent's answer link is an accepted, scoped exception.** The
+   respondent page (`web/`) keeps its answers in its fragment, `#r=<envelope>`.
+   This is required by LURL-001 and ARX-007: the link is the respondent's own
+   hand-off transport, and the finalized link is how a submission reaches the
+   administrator (ARP-001). Decided 2026-10-08 (WI-0070) as an accepted,
+   documented exception to "never answers in URLs", with this scope:
+   - **Where:** the respondent page only, in the fragment, which browsers
+     never send to a server.
+   - **Never logged:** no Aegis fault record or kernel diagnostic carries it.
+   - **Never a route:** no route of the inventory names it.
+   - **Never produced by Copy link** on an administrator view.
+   - **Disclosed:** the respondent page says plainly that its address and
+     the submission link contain the answers.
+
+   `RespondentLinkTests` proves each point. Every other URL follows the
+   rule: route URLs never carry answers or respondent data (SIG-LINK-008).
 5. **Typed filters replace the free-text group filter.** Filters are
    navigable state, and free text a person typed is the kind of data LCP-109
    keeps out of URLs. The group list filters by status, identity mode and
@@ -111,7 +120,6 @@ later is mechanical.
 - Moving to Limen 0.9.0 changes two project files and deletes one vendored folder.
 - Every administrator view gains a URL; an unknown identifier or an invalid
   parameter renders its own page.
-- Decision 4 must be confirmed or changed by the owner.
 - The embedded administrator report state (ARP-003) is not a route and no
   route can carry it, but it holds per-respondent dimension scores and, in
   identified groups, invitation-linked identity keys. Replacing those is

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 70,
+  "nextSeq": 71,
   "items": [
     {
       "id": "WI-0001",
@@ -1630,6 +1630,30 @@
       "attachments": [],
       "createdAt": "2026-10-08T21:21:21.285Z",
       "updatedAt": "2026-10-08T21:26:54.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0070",
+      "title": "Close DF-SIGNAL-2026-0003 decision 4: the respondent's #r= answer link is an accepted, scoped exception (respondent page only, fragment never logged, never a route, never produced by admin Copy link); the respondent page says plainly the link contains their answers",
+      "description": null,
+      "tags": [
+        "privacy",
+        "signal"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-10-08T21:33:50.204Z",
+      "updatedAt": "2026-10-08T21:40:38.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
