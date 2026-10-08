@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T17:00:30.000Z",
+  "updatedAt": "2026-10-08T17:14:51.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -1568,13 +1568,52 @@
     {
       "id": "WI-0039",
       "type": "implementation",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-08T17:00:30.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/ProviderContract.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/Loading.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/ProviderTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/LoadingTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-08T17:14:51.000Z",
       "telemetryExecutionIds": [
         "EXE-20261008T170031651Z-4e3d4920"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "685b287adcdd8cc447dabc1c",
+        "recordedAt": "2026-10-08T17:14:50.000Z",
+        "executionId": "EXE-20261008T170031651Z-4e3d4920",
+        "repository": "echelon-signal",
+        "branch": "feature/storage-provider",
+        "commit": "d2032ff00a3b42e96f8caf7f15a013416366e10b",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feature/storage-provider",
+        "remoteCommit": "d2032ff00a3b42e96f8caf7f15a013416366e10b",
+        "summary": "Provider contract, staged loading, growth, GitHub fault translation; 219 tests",
+        "nextAction": "Complete WI-0039 and open the PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T17:14:51.000Z",
+      "conclusion": "Signal programs against Arca's provider-neutral StorageProvider with explicit capability knowledge, write modes and failure meanings; loading is staged and validates everything as untrusted; GitHub failures are classified through Aegis. ADM-005 and ADM-006 are tested; ADM-003, 025, 026, 044, 046, 058, 073 are partial with remainders named in WI-0040, 0041, 0048, 0049, 0050, 0052, 0053 and 0057."
     }
   ]
 }
