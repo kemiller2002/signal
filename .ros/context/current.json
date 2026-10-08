@@ -2480,7 +2480,27 @@
       "updatedAt": "2026-10-08T23:57:45.000Z",
       "telemetryExecutionIds": [
         "EXE-20261008T235745840Z-4b2d64a9"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "2e373dc2c06d55265c6b8619",
+        "recordedAt": "2026-10-08T23:57:58.000Z",
+        "executionId": "EXE-20261008T235745840Z-4b2d64a9",
+        "repository": "echelon-signal",
+        "branch": "feature/privacy-in-store",
+        "commit": "a75f9e44edd6f64b6c5b3ddfb31e94d83adb6e41",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feature/privacy-in-store",
+        "remoteCommit": "a75f9e44edd6f64b6c5b3ddfb31e94d83adb6e41",
+        "summary": "Part 1: audit records stored with every change (GovernanceRecord, GovernanceStore) and the dataset lifecycle gating writes; 376 .NET and 22 browser tests",
+        "nextAction": "Part 2: retention enforcement and tree removal with reproducibility evidence; part 3: disclosure in the page and snapshots; part 4: PII-injection fixtures",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
