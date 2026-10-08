@@ -132,7 +132,7 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
     generic URL codec (bit-for-bit the SDRA layout for SDRA), invitations
     bound to an exact version, matrices, forward-only navigation, seeded
     banking and timers (WI-0045). The respondent page does not render
-    generic templates yet (WI-0057).
+    generic templates yet (WI-0073).
   - `GroupResult`, `ReportModel`, `Report`, `ReportExport`: the generic
     group result with its hash, the format-neutral reporting contract
     (definitions, blocks, privacy classes, value states, warnings, status,
@@ -161,6 +161,23 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   answer link is an accepted, scoped, disclosed exception.
 - Browser suite: `SIGNAL_TEST_PORT` moves it off 4321 when that port is taken;
   the `pages` project serves the assembled site under `/signal/`.
+
+## Template catalog (WI-0057, 2026-10-08)
+
+- `TemplateDecodeCore`/`TemplateDecode` (Engine) read a template's canonical
+  form `signal-template/1` back to the typed `Content`; every form
+  round-trips to the same bytes and hash (`TemplateDecodeTests`).
+- `TemplateRecord` (Admin) defines three Arca record types: the immutable
+  `signal.template` (canonical bytes, re-hashed on every read), the mutable
+  `signal.template-draft` per survey, and the mutable
+  `signal.template-catalog` holding the hidden versions.
+- `TemplateStore` (Application): `load`, `saveDraft` (`EditDrafts`, at a
+  revision), `publish` (`PublishTemplates`, `Publication.publish` then one
+  `Create`), `hide` (`PublishTemplates`). `TemplateStoreTests` run against
+  Arca's in-memory provider.
+- Not yet wired: the console still starts groups from the pilot, and there
+  are no catalog or draft screens (WI-0073, with the authoring and
+  respondent UI remainders).
 
 ## Validation
 

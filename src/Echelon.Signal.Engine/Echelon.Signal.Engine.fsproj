@@ -38,6 +38,8 @@
     <Compile Include="ItemKeyCanonical.fs" />
     <Compile Include="ResultCanonical.fs" />
     <Compile Include="TemplateCanonical.fs" />
+    <Compile Include="TemplateDecodeCore.fs" />
+    <Compile Include="TemplateDecode.fs" />
     <Compile Include="Drafts.fs" />
     <Compile Include="Validation.fs" />
     <Compile Include="TemplateDiff.fs" />

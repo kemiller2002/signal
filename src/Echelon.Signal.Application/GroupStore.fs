@@ -54,14 +54,16 @@ type GroupFailure =
     /// The group's lifecycle refuses it.
     | LifecycleRefused of GroupLifecycle.Refusal
 
-let private failed now (failure: StorageFailure) =
+let failed now (failure: StorageFailure) =
     match failure with
     | StorageFailure.ProviderFailed(_, true, _) -> Offline(ProviderContract.meaning now failure)
     | _ -> Storage(ProviderContract.meaning now failure)
 
-let private call now work = work |> mapError (failed now)
+/// A provider call, its failure classified (offline or storage).
+let call now work = work |> mapError (failed now)
 
-let private permitted (opened: Store.Opened) (actor: Store.Actor) (capability: Access.Capability) =
+/// The capability's grant, or why it is refused (or read-only).
+let permitted (opened: Store.Opened) (actor: Store.Actor) (capability: Access.Capability) =
     match Access.authorize opened.Roster.Roster opened.DatasetId actor.Principal.PrincipalId capability, opened.Grant with
     | Error refusal, _ -> Error(NotPermitted refusal)
     | Ok(), None -> Error(ReadOnly opened.ReadOnlyReasons)
@@ -97,7 +99,7 @@ let create (actor: Store.Actor) (config: GroupRecord.GroupConfig) (now: DateTime
     }
 
 /// Reads every record file under a folder and its sub-folders (the shards).
-let private readTree now (provider: StorageProvider) (ns: Namespace) (folder: RelativePath) =
+let readTree now (provider: StorageProvider) (ns: Namespace) (folder: RelativePath) =
     asyncResult {
         let! top = call now (provider.List ns folder)
         let shards = top.Entries |> List.filter _.IsFolder |> List.map _.Path
