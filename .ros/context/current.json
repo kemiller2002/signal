@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T17:30:07.000Z",
+  "updatedAt": "2026-10-08T17:50:02.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -1726,6 +1726,64 @@
       },
       "completedAt": "2026-10-08T17:14:10.060Z",
       "conclusion": "Signal publishes to GitHub Pages in demo mode; live verification follows the merge"
+    },
+    {
+      "id": "WI-0041",
+      "type": "implementation",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/GroupStore.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/Intake.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/Incremental.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/ReportState.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/DurableImportTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/ReportStateTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-08T17:50:02.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261008T173231877Z-1824efa2"
+      ],
+      "latestCheckpoint": {
+        "id": "0460e2e4f0010c1c3e657aa8",
+        "recordedAt": "2026-10-08T17:50:01.000Z",
+        "executionId": "EXE-20261008T173231877Z-1824efa2",
+        "repository": "echelon-signal",
+        "branch": "feature/durable-import",
+        "commit": "f77a8a8a352878fc140d7cdc4cc901f46c2312a5",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feature/durable-import",
+        "remoteCommit": "f77a8a8a352878fc140d7cdc4cc901f46c2312a5",
+        "summary": "Durable import with quarantine, resumable batches, incremental aggregation, report state persistence and contribution index; 269 tests",
+        "nextAction": "Complete WI-0041 and open the PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T17:50:02.000Z",
+      "conclusion": "Imports are durable through Arca: immutable sharded contributions written as conditioned creates (commuting, never overwritten), quarantine with explicit promotion, order-independent resumable idempotent batches, provenance without person identity, incremental aggregation equal to full recomputation, AdminReportState embedded or stored by size with integrity and resume, and a rebuildable derived index. Remainders are named in WI-0047, WI-0048, WI-0050, WI-0052, WI-0053 and WI-0059."
     }
   ]
 }

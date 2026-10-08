@@ -40,6 +40,18 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   reconciled after an unknown outcome), `Flow`. There is still no
   administrator page: the Limen host for Arca's GitHub adapter and Fides'
   ports is WI-0047.
+- Durable import (WI-0041): `GroupRecord` (group configuration, exact
+  template by hash, submission retention), `ResultRecord` (immutable
+  contributions at `records/signal.result/<group>/<shard>/<identity>.json`,
+  provenance without person identity), `Intake` (quarantine, order-independent
+  batches with a stable id, promotion, resumable batch records),
+  `Incremental` in the engine (incremental aggregation equal to full
+  recomputation), `ReportState` (AdminReportState, embedded-or-stored by
+  size, integrity, resume), `ContributionIndex` (Arca derived index).
+  Application `GroupStore`: create, open, import in chunks (concurrent
+  distinct imports commute; same identity decided again; unknown outcomes
+  reconciled; offline stops and resumes, nothing queued), report state
+  persistence, index validate/rebuild.
 
 ## Current state (2026-10-07)
 

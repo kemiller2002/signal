@@ -84,27 +84,32 @@ let private median (sorted: float list) =
     | n when n % 2 = 1 -> Some sorted[n / 2]
     | n -> Some(round1 ((sorted[n / 2 - 1] + sorted[n / 2]) / 2.0))
 
+/// A dimension's statistics from its scores in ascending order and the
+/// number of respondents whose dimension did not score.
+let statisticsOf (sortedScores: float list) (unscored: int) =
+    { Scored = sortedScores.Length
+      Unscored = unscored
+      Mean = if sortedScores.IsEmpty then None else Some(round1 (List.average sortedScores))
+      Median = median sortedScores
+      Minimum = List.tryHead sortedScores
+      Maximum = List.tryLast sortedScores }
+
+/// A respondent's score on a dimension, when it scored.
+let scoreOn (dimension: Dimension) (result: SurveyResult) =
+    result.Dimensions
+    |> List.tryFind (fun (d, _) -> d.Id = dimension.Id)
+    |> Option.bind (fun (_, r) ->
+        match r with
+        | Scored(score, _, _) -> Some score
+        | Unscored _ -> None)
+
 let private statistics (results: SurveyResult list) (dimension: Dimension) =
-    let scores =
-        results
-        |> List.choose (fun result ->
-            result.Dimensions
-            |> List.tryFind (fun (d, _) -> d.Id = dimension.Id)
-            |> Option.bind (fun (_, r) ->
-                match r with
-                | Scored(score, _, _) -> Some score
-                | Unscored _ -> None))
-        |> List.sort
+    let scores = results |> List.choose (scoreOn dimension) |> List.sort
+    statisticsOf scores (results.Length - scores.Length)
 
-    { Scored = scores.Length
-      Unscored = results.Length - scores.Length
-      Mean = if scores.IsEmpty then None else Some(round1 (List.average scores))
-      Median = median scores
-      Minimum = List.tryHead scores
-      Maximum = List.tryLast scores }
-
-let private lineage (policy: Policy) (templateHash: string) (results: SurveyResult list) =
-    let hashes = results |> List.map _.SubmissionHash |> List.sort
+/// The lineage of a group result from its accepted SubmissionHashes.
+let lineageOf (policy: Policy) (templateHash: string) (submissionHashes: string list) =
+    let hashes = submissionHashes |> List.sort
 
     let material =
         String.Join("\n", [ $"result-version:{ResultVersion}"; $"template:{templateHash}"; $"policy-minimum:{policy.MinimumReportableCount}" ] @ hashes)
@@ -115,21 +120,21 @@ let private lineage (policy: Policy) (templateHash: string) (results: SurveyResu
       PolicyMinimum = policy.MinimumReportableCount
       DerivationHash = "sha256:" + Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes material)).ToLowerInvariant() }
 
-/// The group result for the current accepted results.
-let aggregate (policy: Policy) (state: GroupState) : SurveyGroupResult =
-    let definition = state.Definition
+/// The group result from what is known about the accepted results: their
+/// count, each dimension's statistics, answer counts and SubmissionHashes.
+/// Both the full aggregation and the incremental one assemble through here.
+let assemble
+    (policy: Policy)
+    (definition: GroupDefinition)
+    (accepted: int)
+    (dimensionStatistics: Dimension -> DimensionStatistics)
+    (answers: int)
+    (nonNumeric: int)
+    (submissionHashes: string list)
+    : SurveyGroupResult =
     let assessment = definition.Template
-    // Map iteration is by key, so the order is the same whatever the
-    // import order was.
-    let results = state.Results |> Map.toList |> List.map snd
-    let accepted = results.Length
     let templateHash = Canonical.templateHash assessment
-
-    let suppressed =
-        definition.Mode = AnonymousGroup && accepted < policy.MinimumReportableCount
-
-    let answers = results |> List.sumBy _.AnsweredCount
-    let nonNumeric = results |> List.sumBy _.NonNumericCount
+    let suppressed = definition.Mode = AnonymousGroup && accepted < policy.MinimumReportableCount
 
     { Group = definition.Group
       Mode = definition.Mode
@@ -149,6 +154,21 @@ let aggregate (policy: Policy) (state: GroupState) : SurveyGroupResult =
             if suppressed then
                 Suppressed(accepted, policy.MinimumReportableCount)
             else
-                Aggregated(statistics results dimension))
+                Aggregated(dimensionStatistics dimension))
       NonNumericShare = if answers = 0 then None else Some(round1 (100.0 * float nonNumeric / float answers) / 100.0)
-      Lineage = lineage policy templateHash results }
+      Lineage = lineageOf policy templateHash submissionHashes }
+
+/// The group result for the current accepted results.
+let aggregate (policy: Policy) (state: GroupState) : SurveyGroupResult =
+    // Map iteration is by key, so the order is the same whatever the
+    // import order was.
+    let results = state.Results |> Map.toList |> List.map snd
+
+    assemble
+        policy
+        state.Definition
+        results.Length
+        (statistics results)
+        (results |> List.sumBy _.AnsweredCount)
+        (results |> List.sumBy _.NonNumericCount)
+        (results |> List.map _.SubmissionHash)

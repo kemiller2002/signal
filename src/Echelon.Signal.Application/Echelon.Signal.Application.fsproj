@@ -15,6 +15,7 @@
     <Compile Include="Flow.fs" />
     <Compile Include="Identity.fs" />
     <Compile Include="Store.fs" />
+    <Compile Include="GroupStore.fs" />
   </ItemGroup>
 
   <ItemGroup>

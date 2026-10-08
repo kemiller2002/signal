@@ -37,6 +37,8 @@
     <Compile Include="AccessTests.fs" />
     <Compile Include="SignInTests.fs" />
     <Compile Include="AdminStoreTests.fs" />
+    <Compile Include="DurableImportTests.fs" />
+    <Compile Include="ReportStateTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
