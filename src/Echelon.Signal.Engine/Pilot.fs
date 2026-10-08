@@ -64,3 +64,53 @@ let assessment: Assessment =
             DimensionId = "D03"
             Prompt = "Work that has not met the team's completion/quality criteria is not counted as finished merely because the iteration ended." } ]
       MinimumNumericAnswers = 3 }
+
+/// The same pilot as a generic canonical template (WI-0042): one section per
+/// dimension, five-point frequency questions offering the three special
+/// states, each section scored by the SDRA catalog scorer. A differential
+/// test holds its section scores equal to `Assessment.score`.
+let content: Template.Content =
+    let question (item: Item) : Template.Question =
+        { Id = item.Id
+          Prompt = item.Prompt
+          HelpText = None
+          Answer = Template.Ordinal 5
+          Selector =
+            { Preset = Template.Frequency5
+              Labels = [ Never; Rarely; Sometimes; Often; AlmostAlways ] |> List.map frequencyLabel }
+          SpecialStates = Template.specialStates
+          Required = true
+          Tags = [] }
+
+    { Metadata =
+        { Title = assessment.Title
+          ShortTitle = Some assessment.Id
+          Description = None
+          Instructions = None
+          Tags = [] }
+      Compatibility = Template.defaultCompatibility
+      Presentation = Template.defaultPresentation
+      Runtime = Template.defaultRuntime
+      Sections =
+        assessment.Dimensions
+        |> List.map (fun d ->
+            { Id = d.Id
+              Title = d.Label
+              Description = None
+              Required = true
+              Questions = itemsOf assessment d |> List.map question
+              Presentation = Template.defaultSectionPresentation
+              Scoring =
+                Some
+                    { Scorer = dimensionScorer assessment
+                      Questions = [] } }) }
+
+/// Assessment answers as generic answer state.
+let answerState (answer: Answer) : Template.AnswerState =
+    match answer with
+    | Rated f -> Template.Value(Template.Point(frequencyValue f))
+    | Withheld DontKnow -> Template.Special Template.DontKnow
+    | Withheld NotObserved -> Template.Special Template.NotObserved
+    | Withheld NotApplicable -> Template.Special Template.NotApplicable
+
+let answers (answers: Answers) : Template.Answers = answers |> Map.map (fun _ a -> answerState a)

@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T14:57:35.000Z",
+  "updatedAt": "2026-10-08T15:16:34.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -1072,6 +1072,106 @@
       },
       "completedAt": "2026-10-08T14:57:35.000Z",
       "conclusion": "Pull-forward recorded; scoring answers proposed pending owner confirmation; GH-5 abandoned. Records-only change: praxis validate passes and GapAnalysisTests (which reads the changed queue) passes with the full suite, 91/91."
+    },
+    {
+      "id": "WI-0042",
+      "type": "feature",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/Template.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/TemplateCanonical.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/Authoring.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/TemplateTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/AuthoringTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-08T15:12:08.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261008T150027687Z-19558d28"
+      ],
+      "latestCheckpoint": {
+        "id": "e02e40e584aca63ebc818e1c",
+        "recordedAt": "2026-10-08T15:12:07.000Z",
+        "executionId": "EXE-20261008T150027687Z-19558d28",
+        "repository": "echelon-signal",
+        "branch": "feat/template-authoring",
+        "commit": "a5b1e6712e1b62e4120c71b782e9169ae2a64fa4",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feat/template-authoring",
+        "remoteCommit": "a5b1e6712e1b62e4120c71b782e9169ae2a64fa4",
+        "summary": "Template, TemplateCanonical and Authoring with 23 new tests; gap analysis updated; remainder captured as WI-0057",
+        "nextAction": "Complete WI-0042 and open the PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T15:12:08.000Z",
+      "conclusion": "Pure canonical template, authoring, validation, fixtures, diff, lifecycle and immutable publication; 114/114 tests; persistence and UI remainders in WI-0057"
+    },
+    {
+      "id": "WI-0058",
+      "type": "maintenance",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/Publication.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/Validation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/AuthoringTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-08T15:16:34.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261008T151612029Z-41daf8f1"
+      ],
+      "latestCheckpoint": {
+        "id": "3cdb93fa9d973b076f0d88a5",
+        "recordedAt": "2026-10-08T15:16:33.000Z",
+        "executionId": "EXE-20261008T151612029Z-41daf8f1",
+        "repository": "echelon-signal",
+        "branch": "feat/template-authoring",
+        "commit": "93c340aebbf61422696b8a823cf81bfa2ce4ca80",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feat/template-authoring",
+        "remoteCommit": "93c340aebbf61422696b8a823cf81bfa2ce4ca80",
+        "summary": "Authoring.fs split into four modules; Ordo strict passes locally",
+        "nextAction": "Complete WI-0058 and re-run PR #28 checks",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T15:16:34.000Z",
+      "conclusion": "SDE-STRUCT-001 resolved by decomposition; ordo verify --strict passes; 114/114 tests"
     }
   ]
 }

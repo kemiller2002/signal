@@ -9,6 +9,12 @@
     <Compile Include="View.fs" />
     <Compile Include="Scoring.fs" />
     <Compile Include="Assessment.fs" />
+    <Compile Include="Template.fs" />
+    <Compile Include="TemplateCanonical.fs" />
+    <Compile Include="Drafts.fs" />
+    <Compile Include="Validation.fs" />
+    <Compile Include="TemplateDiff.fs" />
+    <Compile Include="Publication.fs" />
     <Compile Include="Pilot.fs" />
     <Compile Include="Canonical.fs" />
     <Compile Include="UrlState.fs" />
