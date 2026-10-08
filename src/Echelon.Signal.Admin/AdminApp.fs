@@ -40,6 +40,10 @@ type GroupSummary =
       /// Each item of the last batch: artifact hash and outcome code.
       Items: (string * string) list
       UnreconciledBatches: int
+      /// Calculated measures per section (ADM-012): section, measure, value or reason.
+      Analysis: (string * string * string) list
+      /// The group result's derivation hash and contribution count (ADM-020).
+      Lineage: string
       Problems: string list }
 
 /// What the page shows about the open dataset.

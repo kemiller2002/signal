@@ -155,6 +155,13 @@
                 <tbody><template data-each="sections" data-key="id"><tr><td data-text="id"></td><td data-text="score"></td></tr></template></tbody>
               </table>
               <p>Report state: <code id="report-fragment" data-text="reportFragment"></code></p>
+              <details id="analysis"><summary>Analysis (calculated, not the canonical result)</summary>
+                <table>
+                  <thead><tr><th>Section</th><th>Measure</th><th>Value</th></tr></thead>
+                  <tbody><template data-each="analysis" data-key="key"><tr><td data-text="section"></td><td data-text="measure"></td><td data-text="value"></td></tr></template></tbody>
+                </table>
+                <p>Lineage: <code id="lineage" data-text="lineage"></code></p>
+              </details>
 
               <template data-if="canImport">
                 <form id="import" class="ef-stack" data-event="import">

@@ -162,6 +162,14 @@ let project (model: Model) : View =
       "groupProgress", text (selected |> Option.map (fun g -> $"{g.Accepted} of {g.Expected} accepted") |> Option.defaultValue "")
       "sections", Items(selected |> Option.map (fun g -> g.Sections |> List.map (fun (id, s) -> [ "id", Text id; "score", Text(score s) ])) |> Option.defaultValue [])
       "reportFragment", text (selected |> Option.map _.ReportFragment |> Option.defaultValue "")
+      // Analysis (ADM-012, ADM-013) and lineage (ADM-020): calculated, never canonical.
+      "analysis",
+      Items(
+          selected
+          |> Option.map (fun g -> g.Analysis |> List.map (fun (section, measure, value) -> [ "key", Text $"{section}/{measure}"; "section", Text section; "measure", Text measure; "value", Text value ]))
+          |> Option.defaultValue []
+      )
+      "lineage", text (selected |> Option.map _.Lineage |> Option.defaultValue "")
       "canImport", enabled AdminState.CanImportBatch
       "importText", text model.ImportText
       "importFile", flag (model.ImportOrigin = ResultRecord.ImportedTextFile)

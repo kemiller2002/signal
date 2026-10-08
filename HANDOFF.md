@@ -67,6 +67,14 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   a real deployment replaces it. Tested end to end in F# (`AdminPageTests`,
   a fake browser, the real Fides client, Arca's in-memory provider) and in
   Chromium (`tests/browser/admin.spec.js`: start-up and GitHub sign-in).
+- Analytics (WI-0048): `Analysis` (measures with prerequisites, typed
+  unavailability, distributions, AnalysisExpression v1 with limits),
+  `Comparison` (semantic comparability with versioned continuity
+  declarations, change, effect size, lineage traces), `Dependencies`
+  (derived-state graph, closure invalidation, impact preview, semantic diffs,
+  template upgrades), `AnalysisState` (URL-safe analysis state, saved
+  analyses, inverse roster commands). The page shows each open group's
+  calculated measures and lineage.
 
 ## Current state (2026-10-07)
 
