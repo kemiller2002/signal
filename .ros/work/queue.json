@@ -1179,10 +1179,10 @@
         "security"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:10.523Z",
-      "updatedAt": "2026-10-08T23:24:14.000Z",
+      "updatedAt": "2026-10-08T23:33:13.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
