@@ -920,10 +920,10 @@
         "depends:arca"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:07.102Z",
-      "updatedAt": "2026-10-08T17:32:31.000Z",
+      "updatedAt": "2026-10-08T17:50:02.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
