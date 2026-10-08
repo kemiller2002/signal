@@ -242,7 +242,7 @@ translation through Aegis (`StorageFaults`).
 | ADM-052 | missing | missing | Reversible Administration, Saved Views, and Capability Explanation: not built yet. | WI-0047 |
 | ADM-053 | missing | missing | Operational Diagnostics and Localization Preview: not built yet. | WI-0052 |
 | ADM-054 | missing | missing | End-to-End Derived-State Invalidation and Dependency Graph: not built yet. | WI-0048 |
-| ADM-055 | missing | missing | Template Registry and Exact Template Resolution: not built yet. | WI-0039 |
+| ADM-055 | missing | missing | Template Registry and Exact Template Resolution: not built yet. | WI-0057 |
 | ADM-056 | missing | missing | Credential Lifecycle and Capability Revalidation: not built yet. | WI-0040 |
 | ADM-057 | missing | partial | **WI-0038:** storage profiles bind a provider type, locator, branch and base path under a stable id; datasets name their profile by id; labels are presentation (relabelling moves nothing); a dataset whose profile is gone is a configuration error; a location edited under existing data does not open (a migration is required). **WI-0039:** a profile's verification state is provider evidence (`ProviderContract.verify`: repository id, write mode, missing capabilities). The credential slot is WI-0040. | WI-0038, WI-0039, WI-0040 |
 | ADM-058 | missing | partial | **WI-0039:** growth is assessed from Arca's measurement under a policy whose defaults cite GitHub's guidance and which a deployment may replace (`Growth`); warnings come before limits, and an incomplete measurement says so. Archive repositories, rollover and compaction are WI-0052. | WI-0039, WI-0052 |
