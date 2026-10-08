@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 55,
+  "nextSeq": 56,
   "items": [
     {
       "id": "WI-0001",
@@ -1259,6 +1259,31 @@
       "attachments": [],
       "createdAt": "2026-10-08T07:48:11.592Z",
       "updatedAt": "2026-10-08T07:48:11.592Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0055",
+      "title": "Stop the Chromium install from hanging the browser-suite CI (unbounded apt-get update in playwright install --with-deps)",
+      "description": null,
+      "tags": [
+        "ci",
+        "playwright",
+        "reliability"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-10-08T08:04:50.878Z",
+      "updatedAt": "2026-10-08T08:04:51.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
