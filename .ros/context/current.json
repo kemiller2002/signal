@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T07:49:12.000Z",
+  "updatedAt": "2026-10-08T08:13:34.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -983,6 +983,47 @@
         }
       },
       "completedAt": "2026-10-08T07:49:12.000Z"
+    },
+    {
+      "id": "WI-0055",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": ".github/workflows/build.yml"
+        },
+        {
+          "type": "tests",
+          "path": ".github/workflows/build.yml"
+        }
+      ],
+      "updatedAt": "2026-10-08T08:13:34.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261008T080451688Z-a407a8ab"
+      ],
+      "latestCheckpoint": {
+        "id": "3b045b8d35a091d906a61366",
+        "recordedAt": "2026-10-08T08:13:33.000Z",
+        "executionId": "EXE-20261008T080451688Z-a407a8ab",
+        "repository": "echelon-signal",
+        "branch": "fix/ci-browser-install-hang",
+        "commit": "6f80c938dc8f171f3999ee643813050bd5892428",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "fix/ci-browser-install-hang",
+        "remoteCommit": "6f80c938dc8f171f3999ee643813050bd5892428",
+        "summary": "Browser-install fix merged with latest main; Chromium cached by the lockfile Playwright version, OS libraries proved offline with ldd, bounded apt fallback, 20-minute job ceiling. Green on the cache-miss and cache-hit paths and after merging main.",
+        "nextAction": "Complete, push the Praxis state for the final green run, then merge PR #24",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T08:13:34.000Z"
     }
   ]
 }
