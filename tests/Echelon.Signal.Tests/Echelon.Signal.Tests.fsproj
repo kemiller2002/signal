@@ -41,6 +41,7 @@
     <Compile Include="ReportStateTests.fs" />
     <Compile Include="AdminStateTests.fs" />
     <Compile Include="AdminPageTests.fs" />
+    <Compile Include="AnalyticsTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

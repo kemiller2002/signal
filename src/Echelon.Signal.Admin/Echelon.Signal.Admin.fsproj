@@ -30,6 +30,10 @@
     <Compile Include="Conflicts.fs" />
     <Compile Include="AdminApp.fs" />
     <Compile Include="AdminView.fs" />
+    <Compile Include="Analysis.fs" />
+    <Compile Include="Comparison.fs" />
+    <Compile Include="Dependencies.fs" />
+    <Compile Include="AnalysisState.fs" />
   </ItemGroup>
 
   <ItemGroup>

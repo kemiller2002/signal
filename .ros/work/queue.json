@@ -1102,10 +1102,10 @@
         "analytics"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:09.436Z",
-      "updatedAt": "2026-10-08T18:16:49.000Z",
+      "updatedAt": "2026-10-08T18:21:11.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1120,7 +1120,7 @@
     {
       "id": "WI-0049",
       "title": "Signal 12: visualization grammar, dashboards and accessibility (ADM-015..018, ADM-050, ADM-069)",
-      "description": "Depends on WI-0048. Refines WI-0015. Also carries WI-0039's remainder of ADM-046: visualization and dashboard complexity limits when stored definitions are loaded.",
+      "description": "Depends on WI-0048. Refines WI-0015. Also carries WI-0039's remainder of ADM-046: visualization and dashboard complexity limits when stored definitions are loaded. Also carries WI-0048's remainder of ADM-019: interactive exploration in the page (filter, sort, drill from section to aggregate metrics, count/percentage toggle, chart-mark selection with lineage) over the AnalysisState, with back/forward through Limen history.",
       "tags": [
         "signal",
         "order:12",
@@ -1130,7 +1130,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:09.810Z",
-      "updatedAt": "2026-10-08T17:12:34.000Z",
+      "updatedAt": "2026-10-08T18:28:54.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1145,7 +1145,7 @@
     {
       "id": "WI-0050",
       "title": "Signal 13: report builder, snapshots, exports, configuration packages and policy packs (ADM-021..023, ADM-047, ADM-048, ADM-063)",
-      "description": "Depends on WI-0046 and WI-0048. Refines WI-0016. Also carries WI-0039's remainder of ADM-025: storage locators and credentials never appear in exports or shareable report artifacts. Also carries WI-0041's remainders: saved report definitions and immutable report snapshots as stored layers (ADM-010), and quarantine for configuration packages (ADM-061). Also carries WI-0047's remainders: the page's Reports, Dashboards, Snapshots and Audit areas (ADM-001, ADM-031), the Reporting and Snapshotting administrator states (ADM-002), group configuration editing, successor creation, per-group report definitions and storage profile in the page (ADM-007), the conflict workspace's resolution flow in the page (ADM-062), finalization with a formal report snapshot and FinalizationOutcomeUnknown reconciliation (ADM-066), importing a text file through Limen's files capability (ADM-008), and Aegis boundaries for export and download mechanisms (ADM-077).",
+      "description": "Depends on WI-0046 and WI-0048. Refines WI-0016. Also carries WI-0039's remainder of ADM-025: storage locators and credentials never appear in exports or shareable report artifacts. Also carries WI-0041's remainders: saved report definitions and immutable report snapshots as stored layers (ADM-010), and quarantine for configuration packages (ADM-061). Also carries WI-0047's remainders: the page's Reports, Dashboards, Snapshots and Audit areas (ADM-001, ADM-031), the Reporting and Snapshotting administrator states (ADM-002), group configuration editing, successor creation, per-group report definitions and storage profile in the page (ADM-007), the conflict workspace's resolution flow in the page (ADM-062), finalization with a formal report snapshot and FinalizationOutcomeUnknown reconciliation (ADM-066), importing a text file through Limen's files capability (ADM-008), and Aegis boundaries for export and download mechanisms (ADM-077). Also carries WI-0048's remainders: report-definition and dashboard impacts of template upgrades (ADM-049) and semantic diffs of report, dashboard and visualization definitions, analysis expressions, privacy policies, policy packs and configuration packages (ADM-051).",
       "tags": [
         "signal",
         "order:13",
@@ -1156,7 +1156,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:10.206Z",
-      "updatedAt": "2026-10-08T18:16:49.000Z",
+      "updatedAt": "2026-10-08T18:28:54.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1249,7 +1249,7 @@
     {
       "id": "WI-0054",
       "title": "Signal 17: administrator sandbox, synthetic data generator and optional analytics extensions (ADM-039, ADM-040, ADM-042, ADM-043)",
-      "description": "Depends on WI-0047. Refines WI-0019.",
+      "description": "Depends on WI-0047. Refines WI-0019. Also carries WI-0048's remainder of ADM-013: correlation matrices, response entropy, skew indicators and outlier flags as optional analytics, with their prerequisites, once per-respondent section vectors are retained under a privacy policy.",
       "tags": [
         "signal",
         "order:17",
@@ -1259,7 +1259,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:11.592Z",
-      "updatedAt": "2026-10-08T07:48:11.592Z",
+      "updatedAt": "2026-10-08T18:28:54.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

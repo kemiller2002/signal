@@ -143,6 +143,22 @@ let transition (actor: Store.Actor) (name: string) (now: DateTimeOffset) (group:
 
 // ---- Summaries for the page ------------------------------------------------------------------
 
+/// The measures the page shows for each section, with the reason when one
+/// has no value (ADM-012, ADM-013).
+let private analysisRows (group: OpenedGroup) =
+    let source = Analysis.source group.Config group.Accumulator
+
+    let show =
+        function
+        | Analysis.Value v -> v.ToString("0.0#", Globalization.CultureInfo.InvariantCulture)
+        | Analysis.Unavailable(Analysis.Suppressed(minimum, _)) -> $"suppressed below {minimum}"
+        | Analysis.Unavailable(Analysis.InsufficientSample(required, found)) -> $"needs {required} scores, has {found}"
+        | Analysis.Unavailable reason -> $"unavailable: %A{reason}"
+
+    [ for section in source.Scores |> Map.keys do
+          for m in [ Analysis.Mean; Analysis.Median; Analysis.StandardDeviation; Analysis.InterquartileRange; Analysis.ConfidenceLower95; Analysis.ConfidenceUpper95 ] ->
+              section, Analysis.measureName m, show (Analysis.measure source (Some section) m) ]
+
 /// What the page shows about a group.
 let summary (unreconciled: int) (imported: Imported option) (group: OpenedGroup) : AdminApp.GroupSummary =
     let state = reportState group
@@ -176,6 +192,10 @@ let summary (unreconciled: int) (imported: Imported option) (group: OpenedGroup)
       LastBatch = lastBatch
       Items = items
       UnreconciledBatches = unreconciled
+      Analysis = analysisRows group
+      Lineage =
+        let result = result group
+        $"{result.Lineage.DerivationHash} from {result.Lineage.SubmissionHashes.Length} accepted contribution(s), template {result.Lineage.TemplateHash}"
       Problems = group.Problems |> List.map Problems.code }
 
 /// What the page shows about a dataset.

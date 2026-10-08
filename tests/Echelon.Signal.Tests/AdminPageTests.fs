@@ -265,6 +265,9 @@ let ``an administrator creates a group, imports into it, and finalization waits 
     Assert.Equal(3, page.Items("importItems").Length)
     // ADM-008: separate views by outcome.
     Assert.Equal((2, 1, 0), (page.Items("importAccepted").Length, page.Items("importRejected").Length, page.Items("importDuplicate").Length))
+    // Calculated analysis and lineage sit beside the canonical result (ADM-012, ADM-020).
+    Assert.NotEmpty(page.Items "analysis")
+    Assert.StartsWith("sha256:", page.Text "lineage")
     // The report state travels in the URL while it is small (ARP-004).
     Assert.StartsWith("a=1.", page.Text "reportFragment")
 
