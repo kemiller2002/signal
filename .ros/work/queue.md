@@ -49,3 +49,4 @@
 | WI-0034 | Administrator import pipeline, deduplication and SurveyResult/SurveyGroupResult aggregation (ARP-001, ARP-002, LURL-003, ARX-008, ID-003) | complete | admin,import,aggregation | high |
 | WI-0035 | Standard built-in scoring catalog with explicit missing policy (ANS-003, SCS-002, SCS-003, SCS-005, SCS-008, ALG-001) | complete | scoring | high |
 | WI-0036 | Move signal to Ordo 1.5.0 via echelon-current 1.2.0 (conditor upgrade --current) | complete |  | medium |
+| WI-0037 | Fix the browser-suite CI hang: Chromium install blocks indefinitely in an unbounded apt-get update run by playwright install --with-deps | ready | ci,playwright,reliability | high |
