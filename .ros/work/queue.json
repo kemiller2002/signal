@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 37,
+  "nextSeq": 55,
   "items": [
     {
       "id": "WI-0001",
@@ -794,6 +794,471 @@
       "attachments": [],
       "createdAt": "2026-10-08T07:20:54.015Z",
       "updatedAt": "2026-10-08T07:21:59.338Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0037",
+      "title": "Capture the remaining Signal requirements as dependency-ordered backlog slices; add SIG-DATALOC-001 and record the 2026-10-08 decisions",
+      "description": "Turn every missing or partial group of docs/requirements/implementation-gap-analysis.md into deliverable slices ordered by dependency. Each slice refines the broad ledger items WI-0002..WI-0020. Storage and sign-in slices declare their dependency on Arca and Fides. Add SIG-DATALOC-001..005 and decision DF-SIGNAL-2026-0001 (storage through Arca, no Strata, Fides sign-in, built after Chrona and Summa, read-only offline mode). Add a test that fails when a group that is not yet tested is not named by an open work item.",
+      "tags": [
+        "planning",
+        "requirements"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:04.000Z",
+      "updatedAt": "2026-10-08T07:48:04.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0038",
+      "title": "Signal 01: configurable data location and Signal-owned namespace through Arca (SIG-DATALOC-001, ADM-004 location/namespace, ADM-005, ADM-057)",
+      "description": "Build order: Signal comes after Chrona and Summa (user decision 2026-10-08). Depends on arca slice 2 (data location, ARCA-LOC) and arca slice 3 (record format, ARCA-REC). New requirement SIG-DATALOC-001 (docs/requirements/SIGNAL-DATA-LOCATION.md): the data repository is configured per deployment, never hard-coded; Signal creates and owns its namespace and never assumes it is alone in the repository; its data must be separable under different permissions, which means its own repository, because GitHub permissions are per repository; no at-rest encryption for now (ADM-025's optional encryption stays deferred). Storage manifest and storage profiles. Refines ledger item WI-0012.",
+      "tags": [
+        "signal",
+        "order:01",
+        "data-location",
+        "depends:arca"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:06.146Z",
+      "updatedAt": "2026-10-08T07:48:06.146Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0039",
+      "title": "Signal 02: storage provider contract implemented on Arca's GitHub provider (ADM-003, ADM-004, ADM-006, ADM-025, ADM-026, ADM-044, ADM-046, ADM-058, ADM-073; AER-002, AER-003, AER-032)",
+      "description": "Depends on WI-0038, arca slice 6 (GitHub adapter, ARCA-API/OUT), arca slice 7 (conformance suite, ARCA-TEST) and arca slice 8 (integrity, ARCA-INT). Signal's StorageProvider is Arca's interface; Signal owns only its domain mapping. Capability negative knowledge, untrusted-input loading, rate limits, growth warnings, protected-branch failure, and Aegis GitHub boundaries. Run Arca's conformance suite in Signal's CI. Refines WI-0012. Also closes the remaining parts of ADM-055 (see their gap-analysis rows).",
+      "tags": [
+        "signal",
+        "order:02",
+        "storage",
+        "depends:arca"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:06.459Z",
+      "updatedAt": "2026-10-08T07:48:06.459Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0040",
+      "title": "Signal 03: administrator sign-in through Fides - credential lifecycle, browser secret policy, cross-tab coherence (ADM-056, ADM-071, ADM-072)",
+      "description": "Depends on fides slice 7 (WASM client and Arca token provider, FID-CLI) and arca slice 5 (token-provider port, ARCA-AUTH). Memory-only by default, typed credential states, capability recomputation on permission change, and dataset identity checks on credential replacement. Refines WI-0011 and WI-0017.",
+      "tags": [
+        "signal",
+        "order:03",
+        "auth",
+        "depends:fides"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:06.779Z",
+      "updatedAt": "2026-10-08T07:48:06.779Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0041",
+      "title": "Signal 04: durable import, concurrency, OutcomeUnknown and rebuildable indexes (ADM-008..011, ADM-027, ADM-060, ADM-061, ADM-067; ARP-003..006; ARX-008; LURL-003, LURL-005)",
+      "description": "Depends on WI-0039. Persist the pure import and aggregation core from WI-0034 through Arca: set-based accepted contributions with commuting additions, idempotent imports, OutcomeUnknown reconciliation, AdminReportState persistence, batch resume, quarantine and rebuildable indexes. Refines WI-0008 and WI-0013. Also closes the remaining parts of ACR-005, ARP-002, URLC-002, URLC-003 (see their gap-analysis rows).",
+      "tags": [
+        "signal",
+        "order:04",
+        "import",
+        "concurrency",
+        "depends:arca"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:07.102Z",
+      "updatedAt": "2026-10-08T07:48:07.102Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0042",
+      "title": "Signal 05: canonical domain contracts, template authoring, publication and versioning (CAN-001, CAN-005, CAN-008, URLC-004, ACR-003, ACR-008, VER-003, VER-004, VER-007, AUT-001..007, ARX-002)",
+      "description": "No storage dependency for the pure parts; publication persistence depends on WI-0039. Refines WI-0002 and WI-0003. Also closes the remaining parts of ACR-009, CAN-003, VER-001, VER-002, SCS-017 (see their gap-analysis rows).",
+      "tags": [
+        "signal",
+        "order:05",
+        "domain",
+        "authoring"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:07.426Z",
+      "updatedAt": "2026-10-08T07:48:07.426Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0043",
+      "title": "Signal 06: rules, flow, validation, completion and recommendations; group identity semantics (ACR-001, ACR-002, ACR-007, CAN-002, VER-006, ID-001, ID-004 remainders)",
+      "description": "Depends on WI-0042. Refines WI-0005 and WI-0006. Also closes the remaining parts of ARP-001 (see their gap-analysis rows).",
+      "tags": [
+        "signal",
+        "order:06",
+        "rules",
+        "identity"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:07.763Z",
+      "updatedAt": "2026-10-08T07:48:07.763Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0044",
+      "title": "Signal 07: scoring AST, advanced algorithms and explainability (AST-001..006, ALG-002..004, SCS-002/003 remainders, SCS-004, SCS-006, SCS-007, SCS-015, CAN-006, VER-005, ARX-014)",
+      "description": "Depends on WI-0042. Builds on the WI-0035 catalog. Refines WI-0007. Also closes the remaining parts of ANS-003, ANS-005, ALG-001, SCS-003, SCS-005, SCS-008 (see their gap-analysis rows).",
+      "tags": [
+        "signal",
+        "order:07",
+        "scoring"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:08.074Z",
+      "updatedAt": "2026-10-08T07:48:08.074Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0045",
+      "title": "Signal 08: answer primitives and selectors - multi-choice, matrix, ranking/allocation, timers and banking, encodings (ANS-002, ANS-004 remainder, SCS-009..014, SCS-016, SCS-018, ARX-013, CAN-004/LURL-004 remainders)",
+      "description": "Depends on WI-0042. Refines WI-0004. Also closes the remaining parts of ACR-004, ANS-001, URLC-005 (see their gap-analysis rows).",
+      "tags": [
+        "signal",
+        "order:08",
+        "selectors",
+        "encoding"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:08.417Z",
+      "updatedAt": "2026-10-08T07:48:08.417Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0046",
+      "title": "Signal 09: reporting contract and Folio renderers - report blocks, group reports, comparisons, the standard results print profile (RPT-001..006, SRPP-001..185)",
+      "description": "Depends on WI-0044. PDFs through Folio (every app except Helix uses Folio). Refines WI-0009. Also closes the remaining parts of ARX-006 (see their gap-analysis rows).",
+      "tags": [
+        "signal",
+        "order:09",
+        "reporting",
+        "folio"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:08.783Z",
+      "updatedAt": "2026-10-08T07:48:08.783Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0047",
+      "title": "Signal 10: administrator application state and UX on Limen/Forma - groups, read-only and degraded modes, conflict workspace, sealing and finalization (ADM-001, ADM-002, ADM-007, ADM-031..033, ADM-035, ADM-062, ADM-065, ADM-066, ADM-070, ADM-077)",
+      "description": "Depends on WI-0040 and WI-0041. Offline administrator writes are not allowed (ADM-070): Signal opts out of Arca's offline queue and uses read-only degraded mode. Refines WI-0011. Also closes the remaining parts of ADM-052 (see their gap-analysis rows).",
+      "tags": [
+        "signal",
+        "order:10",
+        "admin",
+        "ui",
+        "limen",
+        "forma"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:09.109Z",
+      "updatedAt": "2026-10-08T07:48:09.109Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0048",
+      "title": "Signal 11: analytics, comparisons, lineage, change-impact and dependency invalidation (ADM-012..014, ADM-019, ADM-020, ADM-041, ADM-049, ADM-051, ADM-054; ARX-012 remainder)",
+      "description": "Depends on WI-0041. Refines WI-0014.",
+      "tags": [
+        "signal",
+        "order:11",
+        "analytics"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:09.436Z",
+      "updatedAt": "2026-10-08T07:48:09.436Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0049",
+      "title": "Signal 12: visualization grammar, dashboards and accessibility (ADM-015..018, ADM-050, ADM-069)",
+      "description": "Depends on WI-0048. Refines WI-0015.",
+      "tags": [
+        "signal",
+        "order:12",
+        "visualization"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:09.810Z",
+      "updatedAt": "2026-10-08T07:48:09.810Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0050",
+      "title": "Signal 13: report builder, snapshots, exports, configuration packages and policy packs (ADM-021..023, ADM-047, ADM-048, ADM-063)",
+      "description": "Depends on WI-0046 and WI-0048. Refines WI-0016.",
+      "tags": [
+        "signal",
+        "order:13",
+        "reports",
+        "exports"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:10.206Z",
+      "updatedAt": "2026-10-08T07:48:10.206Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0051",
+      "title": "Signal 14: administrator privacy, audit without PII, retention and deletion (ADM-024, ADM-030, ADM-045, ADM-064; ARX-009; ID-003 remainder)",
+      "description": "Depends on WI-0041. Refines WI-0017. Also closes the remaining parts of SCS-001 (see their gap-analysis rows).",
+      "tags": [
+        "signal",
+        "order:14",
+        "privacy",
+        "security"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:10.523Z",
+      "updatedAt": "2026-10-08T07:48:10.523Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0052",
+      "title": "Signal 15: storage migration, backup and restore, schema evolution and operational repair (ADM-028, ADM-029, ADM-034, ADM-053, ADM-074..076)",
+      "description": "Depends on WI-0041 and arca slice 10 (derived indexes and migration, ARCA-MIG). Refines WI-0018.",
+      "tags": [
+        "signal",
+        "order:15",
+        "migration",
+        "backup",
+        "depends:arca"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:10.842Z",
+      "updatedAt": "2026-10-08T07:48:10.842Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0053",
+      "title": "Signal 16: cross-cutting verification - static analysis, differential and model tests, performance budgets, incremental evaluation, time semantics (ARX-001, ARX-004, ARX-005, ARX-010, ARX-011, ARX-015, CAN-007, ADM-036..038, ADM-059, ADM-068; ACR-006 localization)",
+      "description": "Depends on WI-0047. Refines WI-0010 and WI-0020. Also closes the remaining parts of ARX-003, ARX-007 (see their gap-analysis rows).",
+      "tags": [
+        "signal",
+        "order:16",
+        "quality"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:11.208Z",
+      "updatedAt": "2026-10-08T07:48:11.208Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0054",
+      "title": "Signal 17: administrator sandbox, synthetic data generator and optional analytics extensions (ADM-039, ADM-040, ADM-042, ADM-043)",
+      "description": "Depends on WI-0047. Refines WI-0019.",
+      "tags": [
+        "signal",
+        "order:17",
+        "sandbox"
+      ],
+      "priority": "low",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-08T07:48:11.592Z",
+      "updatedAt": "2026-10-08T07:48:11.592Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
