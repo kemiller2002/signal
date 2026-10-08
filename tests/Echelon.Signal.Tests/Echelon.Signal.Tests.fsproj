@@ -34,6 +34,9 @@
     <Compile Include="StorageTests.fs" />
     <Compile Include="ProviderTests.fs" />
     <Compile Include="LoadingTests.fs" />
+    <Compile Include="AccessTests.fs" />
+    <Compile Include="SignInTests.fs" />
+    <Compile Include="AdminStoreTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -16,6 +16,10 @@
     <Compile Include="ProviderContract.fs" />
     <Compile Include="Loading.fs" />
     <Compile Include="Growth.fs" />
+    <Compile Include="Access.fs" />
+    <Compile Include="AdministratorRecord.fs" />
+    <Compile Include="RosterStore.fs" />
+    <Compile Include="Credential.fs" />
   </ItemGroup>
 
   <ItemGroup>
