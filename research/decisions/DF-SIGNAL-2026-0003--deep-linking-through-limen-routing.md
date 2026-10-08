@@ -18,8 +18,9 @@ tags: [routing, deep-linking, limen, privacy]
 provenance:
   contributions:
     EXE-20261008T194621846Z-e49f32ce:
-      operations: [created]
+      operations: [created, modified]
       at: 2026-10-08T19:55:41.000Z
+      last: 2026-10-08T20:47:10.000Z
       actor:
         kind: agent
         id: anthropic/claude-code
@@ -111,3 +112,7 @@ later is mechanical.
 - Every administrator view gains a URL; an unknown identifier or an invalid
   parameter renders its own page.
 - Decision 4 must be confirmed or changed by the owner.
+- The embedded administrator report state (ARP-003) is not a route and no
+  route can carry it, but it holds per-respondent dimension scores and, in
+  identified groups, invitation-linked identity keys. Replacing those is
+  WI-0067.
