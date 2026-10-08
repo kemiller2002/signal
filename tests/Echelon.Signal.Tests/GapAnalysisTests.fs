@@ -79,3 +79,49 @@ let ``the current summary counts are the counts of the current column`` () =
     check "Advanced stress trial" [ "ARX" ] (0, 0)
     check "Scoring and selector completeness" [ "SCS" ] (0, 0)
     check "Administrator console" [ "ADM" ] (1, 76)
+
+/// Every group that is not yet `tested` (and not `n/a`) is planned: an open
+/// work item in the Praxis queue (captured, ready, active or blocked) names
+/// it, directly (`ADM-052`) or inside a range of the same family
+/// (`ADM-008..011`). ADM-001..076 share one range row, so each is checked on
+/// its own. A gap that no open work item names would be silently dropped from
+/// the backlog.
+let private openWorkText =
+    use queue = System.Text.Json.JsonDocument.Parse(readRepoFile ".ros/work/queue.json")
+
+    queue.RootElement.GetProperty("items").EnumerateArray()
+    |> Seq.filter (fun item ->
+        match item.GetProperty("status").GetString() with
+        | "complete"
+        | "abandoned" -> false
+        | _ -> true)
+    |> Seq.map (fun item ->
+        let text (name: string) =
+            match item.TryGetProperty name with
+            | true, value when value.ValueKind = System.Text.Json.JsonValueKind.String -> string (value.GetString())
+            | _ -> ""
+
+        text "title" + "\n" + text "description")
+    |> String.concat "\n"
+
+let private plannedGroups =
+    let direct = Regex.Matches(openWorkText, groupPattern) |> Seq.map _.Value
+
+    let ranges =
+        Regex.Matches(openWorkText, @"\b([A-Z]+)-(\d{3})\.\.(?:[A-Z]+-)?(\d{3})")
+        |> Seq.collect (fun m ->
+            let family, low, high = m.Groups[1].Value, int m.Groups[2].Value, int m.Groups[3].Value
+            seq { for n in low..high -> sprintf "%s-%03d" family n })
+
+    Seq.append direct ranges |> Set.ofSeq
+
+[<Fact>]
+let ``every group that is not yet tested is named by an open work item`` () =
+    let open' =
+        (statusRows
+         |> List.filter (fun (_, _, current) -> current = "partial" || current = "missing")
+         |> List.map (fun (group, _, _) -> group))
+        @ [ for n in 1..76 -> sprintf "ADM-%03d" n ]
+
+    let unplanned = open' |> List.filter (plannedGroups.Contains >> not)
+    Assert.Empty unplanned

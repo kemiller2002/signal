@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T07:49:50.000Z",
+  "updatedAt": "2026-10-08T07:49:12.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -947,38 +947,42 @@
       "evidence": [
         {
           "type": "implementation",
-          "path": ".github/workflows/build.yml"
+          "path": "docs/requirements/backlog-plan.md"
+        },
+        {
+          "type": "implementation",
+          "path": "docs/requirements/SIGNAL-DATA-LOCATION.md"
         },
         {
           "type": "tests",
-          "path": ".github/workflows/build.yml"
+          "path": "tests/Echelon.Signal.Tests/GapAnalysisTests.fs"
         }
       ],
-      "updatedAt": "2026-10-08T07:49:50.000Z",
+      "updatedAt": "2026-10-08T07:49:12.000Z",
       "telemetryExecutionIds": [
-        "EXE-20261008T073732220Z-eb4a7882"
+        "EXE-20261008T074805556Z-fd72229f"
       ],
       "latestCheckpoint": {
-        "id": "275de98dbac1bf9f9683edfa",
-        "recordedAt": "2026-10-08T07:49:49.000Z",
-        "executionId": "EXE-20261008T073732220Z-eb4a7882",
+        "id": "f41f29238344a85a756b6f8a",
+        "recordedAt": "2026-10-08T07:49:11.000Z",
+        "executionId": "EXE-20261008T074805556Z-fd72229f",
         "repository": "echelon-signal",
-        "branch": "fix/ci-browser-install-hang",
-        "commit": "e02b4033dffe655414ac5d714c89033f5d46bd1d",
+        "branch": "plan/requirements-backlog-slices",
+        "commit": "b85bdd24093d769793b99ceacc0eca4954eb798d",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "fix/ci-browser-install-hang",
-        "remoteCommit": "e02b4033dffe655414ac5d714c89033f5d46bd1d",
-        "summary": "Chromium install no longer runs apt on the normal path: browser cached by the lockfile's Playwright version, OS libraries proved offline with ldd, bounded fallback, 20-minute job ceiling. First push green (push and pull_request Build runs, 8 browser tests, cache saved).",
-        "nextAction": "Complete the work item, push the Praxis state for the second green CI run, then merge",
+        "remoteBranch": "plan/requirements-backlog-slices",
+        "remoteCommit": "b85bdd24093d769793b99ceacc0eca4954eb798d",
+        "summary": "17 ordered slices captured, data-location requirement and decision recorded, traceability test passing",
+        "nextAction": "Open PR, get CI green, merge",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
         }
       },
-      "completedAt": "2026-10-08T07:49:50.000Z"
+      "completedAt": "2026-10-08T07:49:12.000Z"
     }
   ]
 }
