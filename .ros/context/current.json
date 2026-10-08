@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T17:50:02.000Z",
+  "updatedAt": "2026-10-08T18:19:47.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -1784,6 +1784,64 @@
       },
       "completedAt": "2026-10-08T17:50:02.000Z",
       "conclusion": "Imports are durable through Arca: immutable sharded contributions written as conditioned creates (commuting, never overwritten), quarantine with explicit promotion, order-independent resumable idempotent batches, provenance without person identity, incremental aggregation equal to full recomputation, AdminReportState embedded or stored by size with integrity and resume, and a rebuildable derived index. Remainders are named in WI-0047, WI-0048, WI-0050, WI-0052, WI-0053 and WI-0059."
+    },
+    {
+      "id": "WI-0047",
+      "type": "implementation",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/AdminApp.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/AdminWire.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "web/admin/index.html"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/AdminPageTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/AdminStateTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/admin.spec.js"
+        }
+      ],
+      "updatedAt": "2026-10-08T18:19:47.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261008T175141640Z-0754554f"
+      ],
+      "latestCheckpoint": {
+        "id": "dfa42e25e4d63223a2d054d4",
+        "recordedAt": "2026-10-08T18:19:46.000Z",
+        "executionId": "EXE-20261008T175141640Z-0754554f",
+        "repository": "echelon-signal",
+        "branch": "feature/admin-app",
+        "commit": "f1ee7e9c3dd2bd677251dcc4c9556c2b4a7d3351",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feature/admin-app",
+        "remoteCommit": "f1ee7e9c3dd2bd677251dcc4c9556c2b4a7d3351",
+        "summary": "Administrator page on Limen/Forma with lifecycle, states, conflicts, Fides/Arca wiring; 285 .NET and 10 browser tests",
+        "nextAction": "Complete WI-0047 and open the PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-08T18:19:47.000Z",
+      "conclusion": "The administrator page runs on Limen and Forma with F# owning state, capabilities and obligations; sign-in is the real Fides client and storage is Arca through Limen's Http effect; groups have a legal lifecycle with finalization obligations and sealing; read-only, degraded and offline modes are explicit; tabs coordinate through token-free announcements. ADM-033, 035, 056, 065, 070, 072 and LURL-005 are tested; ADM-001, 002, 007, 008, 031, 032, 052, 062, 066 and 077 are partial with remainders in WI-0048, WI-0050 and WI-0052."
     }
   ]
 }

@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Signal · Administration</title>
+<link rel="icon" href="data:," />
+<link rel="stylesheet" href="./admin.css" />
+</head>
+<body>
+<!-- Structure and presentation only (ADM-035). Every value is projected by
+     the F# engine (src/Echelon.Signal.Admin/AdminView.fs) through Limen's
+     data-* bindings, every control sends a named event back to it, and every
+     action is enabled only when the engine's capabilities allow it. No
+     personal data appears: administrators are GitHub account numbers, groups
+     and contributions opaque ids and hashes (ADM-001). -->
+<main class="admin ef-stack">
+  <header class="ef-record-header page-header">
+    <div class="ef-record-header__main">
+      <div class="ef-record-header__title">
+        <div><span class="ef-record-header__type">Signal</span><h1>Administration</h1></div>
+      </div>
+      <p id="principal" data-text="principal"></p>
+    </div>
+  </header>
+
+  <template data-if="hasOperationalFault">
+    <aside class="ef-fault ef-fault--inline" id="operational-fault" role="alert">
+      <p class="ef-fault__title"><strong data-text="operationalFaultTitle"></strong></p>
+      <p class="ef-fault__message" data-text="operationalFaultMessage"></p>
+      <p class="ef-fault-reference">Reference <code data-text="operationalFaultReference"></code></p>
+    </aside>
+  </template>
+
+  <!-- Domain refusals and infrastructure notices: a sentence, with the stable
+       code as technical detail (ADM-031). -->
+  <template data-if="hasNotice">
+    <aside id="notice" class="ef-alert" role="status" data-tone="attention">
+      <p id="notice-message" data-text="notice"></p>
+      <details><summary>Technical detail</summary><code id="notice-code" data-text="noticeCode"></code></details>
+      <button type="button" class="ef-button" data-event="dismissNotice">Dismiss</button>
+    </aside>
+  </template>
+
+  <template data-if="screenLoading">
+    <p id="loading" role="status">Loading the deployment's configuration…</p>
+  </template>
+
+  <template data-if="screenMisconfigured">
+    <section id="misconfigured" class="ef-stack" role="alert">
+      <h2>This deployment is not configured correctly</h2>
+      <p data-text="configurationProblem"></p>
+    </section>
+  </template>
+
+  <template data-if="screenUnconfigured">
+    <section id="unconfigured" class="ef-stack">
+      <h2>No data store is configured</h2>
+      <p>This deployment configures no storage profile, so there is nothing to administer. Configure a profile, an identity exchange and a dataset in <code>signal.deployment.json</code>.</p>
+    </section>
+  </template>
+
+  <template data-if="screenSignIn">
+    <section id="sign-in" class="ef-stack" aria-labelledby="sign-in-title">
+      <h2 id="sign-in-title">Sign in with GitHub</h2>
+      <form class="ef-stack" data-event="signIn">
+        <fieldset class="ef-choice-group">
+          <legend>Keep me signed in</legend>
+          <label><input type="radio" name="retention" value="page" id="retention-page" data-event="retention" data-bind-checked="retentionPage" /> On this page only</label>
+          <label><input type="radio" name="retention" value="tab" id="retention-tab" data-event="retention" data-bind-checked="retentionTab" /> In this tab until I close it</label>
+        </fieldset>
+        <p id="retention-disclosure" data-text="retentionDisclosure"></p>
+        <button type="submit" class="ef-button" id="sign-in-button" data-bind-disabled="signInBusy">Sign in</button>
+      </form>
+    </section>
+  </template>
+
+  <template data-if="screenDatasets">
+    <section id="datasets" class="ef-stack">
+      <h2>Datasets</h2>
+      <ul>
+        <template data-each="datasets" data-key="id">
+          <li><button type="button" class="ef-button" data-event="openDataset" data-text="label"></button></li>
+        </template>
+      </ul>
+      <button type="button" class="ef-button" data-event="signOut">Sign out</button>
+    </section>
+  </template>
+
+  <template data-if="screenDataset">
+    <section id="dataset" class="ef-stack">
+      <!-- Status: credential, read-only and offline state (ADM-033, ADM-056, ADM-070). -->
+      <div id="status" class="ef-operation-status" role="status">
+        <p><strong data-text="datasetLabel"></strong> · <span id="credential" data-text="credential"></span></p>
+        <template data-if="readOnly"><p id="read-only">Read-only. <span data-text="readOnlyReasons"></span></p></template>
+        <template data-if="offline"><p id="offline">Offline: what is shown was last verified <span data-text="lastVerified"></span> and may be out of date. Changes are unavailable and nothing is queued.</p></template>
+        <button type="button" class="ef-button" data-event="refresh" data-bind-disabled="busy">Refresh</button>
+        <button type="button" class="ef-button" data-event="signOut">Sign out</button>
+      </div>
+
+      <nav class="ef-navigation-shell" aria-label="Administration">
+        <template data-each="areas" data-key="key">
+          <button type="button" class="ef-button" data-event="navigate" data-bind-aria-current="current" data-text="label"></button>
+        </template>
+      </nav>
+
+      <template data-if="routeOverview">
+        <section id="overview" class="ef-stack">
+          <h2>Overview</h2>
+          <p><span data-text="groupsWaiting"></span> group(s) waiting for imports · <span data-text="groupsComplete"></span> complete</p>
+          <h3>Unresolved work</h3>
+          <ul id="obligations">
+            <template data-each="obligations" data-key="code"><li data-text="text"></li></template>
+          </ul>
+        </section>
+      </template>
+
+      <template data-if="routeGroups">
+        <section id="groups" class="ef-stack">
+          <h2>Groups</h2>
+          <label>Filter <input type="search" id="group-filter" data-event="filter" data-bind-value="filter" /></label>
+          <table>
+            <thead><tr><th>Group</th><th>Survey</th><th>Identity</th><th>Accepted</th><th>State</th></tr></thead>
+            <tbody>
+              <template data-each="groups" data-key="key">
+                <tr>
+                  <td><button type="button" class="ef-button" data-event="openGroup" data-text="key"></button></td>
+                  <td data-text="survey"></td><td data-text="mode"></td><td data-text="progress"></td><td data-text="phase"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+
+          <template data-if="canCreateGroup">
+            <form id="new-group" class="ef-stack" data-event="createGroup">
+              <h3>New group</h3>
+              <label>Template
+                <select data-event="newGroupTemplate">
+                  <template data-each="catalog" data-key="hash"><option data-bind-value="hash" data-bind-selected="selected" data-text="label"></option></template>
+                </select>
+              </label>
+              <label><input type="checkbox" data-event="newGroupMode" value="identified" data-bind-checked="newGroupIdentified" /> Identified (one submission per invited instance)</label>
+              <label>Expected surveys <input type="number" min="1" data-event="newGroupExpected" data-bind-value="newGroupExpected" /></label>
+              <label>Minimum reportable count <input type="number" min="1" data-event="newGroupMinimum" data-bind-value="newGroupMinimum" /></label>
+              <button type="submit" class="ef-button" data-bind-disabled="busy">Create group</button>
+            </form>
+          </template>
+
+          <template data-if="hasGroup">
+            <section id="group" class="ef-stack">
+              <h3>Group <code data-text="groupKey"></code></h3>
+              <p><span data-text="groupProgress"></span> · <span id="group-phase" data-text="groupPhase"></span></p>
+              <table>
+                <thead><tr><th>Section</th><th>Mean</th></tr></thead>
+                <tbody><template data-each="sections" data-key="id"><tr><td data-text="id"></td><td data-text="score"></td></tr></template></tbody>
+              </table>
+              <p>Report state: <code id="report-fragment" data-text="reportFragment"></code></p>
+
+              <template data-if="canImport">
+                <form id="import" class="ef-stack" data-event="import">
+                  <label>Completed survey links, one per line
+                    <textarea rows="6" data-event="importText" data-bind-value="importText"></textarea>
+                  </label>
+                  <label><input type="checkbox" data-event="importOrigin" value="file" data-bind-checked="importFile" /> These came from a text file</label>
+                  <button type="submit" class="ef-button" data-bind-disabled="busy">Import</button>
+                </form>
+              </template>
+
+              <section id="last-import" aria-label="Last import">
+                <!-- ADM-008's separate views of the last batch, by outcome. -->
+                <details id="importPending"><summary>Pending</summary><ul><template data-each="importPending" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
+                <details id="importAccepted"><summary>Accepted</summary><ul><template data-each="importAccepted" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
+                <details id="importDuplicate"><summary>Duplicates</summary><ul><template data-each="importDuplicate" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
+                <details id="importRejected"><summary>Rejected</summary><ul><template data-each="importRejected" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
+                <details id="importReconciliation"><summary>Requiring reconciliation</summary><ul><template data-each="importReconciliation" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
+                <details id="importBlockedTemplate"><summary>Blocked by a missing template</summary><ul><template data-each="importBlockedTemplate" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
+                <details id="importBlockedEncoding"><summary>Blocked by an unsupported encoding</summary><ul><template data-each="importBlockedEncoding" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
+                <p><strong data-text="batchStatus"></strong> <span data-text="batchCounts"></span></p>
+                <table>
+                  <thead><tr><th>Artifact</th><th>Outcome</th></tr></thead>
+                  <tbody><template data-each="importItems" data-key="artifact"><tr><td><code data-text="artifact"></code></td><td data-text="outcome"></td></tr></template></tbody>
+                </table>
+              </section>
+
+              <div class="ef-stack" id="lifecycle">
+                <template data-if="canClose"><button type="button" class="ef-button" data-event="transition" value="close">Close incomplete</button></template>
+                <template data-if="canReopen"><button type="button" class="ef-button" data-event="transition" value="reopen">Reopen</button></template>
+                <template data-if="canFinalize"><button type="button" class="ef-button" data-event="transition" value="finalize">Finalize</button></template>
+                <template data-if="canSeal"><button type="button" class="ef-button" data-event="transition" value="seal">Seal</button></template>
+              </div>
+            </section>
+          </template>
+        </section>
+      </template>
+
+      <template data-if="routeAdministrators">
+        <section id="administrators" class="ef-stack">
+          <h2>Administrators</h2>
+          <table>
+            <thead><tr><th>Account</th><th>Capabilities</th><th></th></tr></thead>
+            <tbody>
+              <template data-each="administrators" data-key="id">
+                <tr>
+                  <td data-text="id"></td><td data-text="capabilities"></td>
+                  <td><button type="button" class="ef-button" data-event="removeAdministrator" data-bind-disabled="busy">Remove</button></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+          <template data-if="canManageAdministrators">
+            <form id="admit" class="ef-stack" data-event="admit">
+              <label>GitHub account number <input type="text" inputmode="numeric" data-event="admitAccount" data-bind-value="admitAccount" /></label>
+              <label>Grant
+                <select data-event="admitGrant">
+                  <option value="analyst">Analyst</option>
+                  <option value="importer">Importer</option>
+                  <option value="draftEditor">Draft editor</option>
+                  <option value="reviewer">Reviewer</option>
+                  <option value="publisher">Publisher</option>
+                  <option value="administrator">Administrator</option>
+                </select>
+              </label>
+              <button type="submit" class="ef-button" data-bind-disabled="busy">Admit</button>
+            </form>
+          </template>
+        </section>
+      </template>
+
+      <template data-if="routeStorage">
+        <section id="storage" class="ef-stack">
+          <h2>Storage</h2>
+          <p id="verification" data-text="verification"></p>
+          <template data-if="canRepairIndex"><button type="button" class="ef-button" data-event="rebuildIndex">Rebuild the contribution index</button></template>
+          <p>Capabilities now: <code id="capabilities" data-text="capabilityList"></code></p>
+        </section>
+      </template>
+    </section>
+  </template>
+</main>
+<script type="module" src="./admin.js"></script>
+</body>
+</html>

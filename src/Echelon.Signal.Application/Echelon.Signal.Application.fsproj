@@ -10,12 +10,18 @@
     <Compile Include="Limen.fs" />
     <Compile Include="Boundary.fs" />
     <Compile Include="Wire.fs" />
-    <Compile Include="Runtime.fs" />
     <Compile Include="StorageFaults.fs" />
     <Compile Include="Flow.fs" />
     <Compile Include="Identity.fs" />
     <Compile Include="Store.fs" />
     <Compile Include="GroupStore.fs" />
+    <Compile Include="GroupAdmin.fs" />
+    <Compile Include="Bridge.fs" />
+    <Compile Include="AdminProtocol.fs" />
+    <Compile Include="AdminPorts.fs" />
+    <Compile Include="AdminWork.fs" />
+    <Compile Include="AdminWire.fs" />
+    <Compile Include="Runtime.fs" />
   </ItemGroup>
 
   <ItemGroup>

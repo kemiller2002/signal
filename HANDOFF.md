@@ -52,6 +52,21 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   distinct imports commute; same identity decided again; unknown outcomes
   reconciled; offline stops and resumes, nothing queued), report state
   persistence, index validate/rebuild.
+- Administrator page (WI-0047): `web/admin/index.html` on Limen and Forma,
+  engine `AdminApp` (state, messages, effects) and `AdminView` (projection)
+  in `Echelon.Signal.Admin`, with `GroupLifecycle` (close, reopen, finalize
+  with obligations, seal, supersede), `AdminState` (states, capabilities,
+  obligations) and `Conflicts` (versioned configuration changes, conflict
+  workspace). The application wires it through Limen: `AdminProtocol`
+  (Http, Storage, Navigation, `limen.schedule`, `signal.host`), `Bridge`
+  (async Fides and Arca work inside the request/reply loop), `AdminPorts`
+  (Fides ports and Arca's GitHub host; a 401 is reported to Fides),
+  `AdminWork`, `AdminWire`, `GroupAdmin`; `Runtime.dispatchAdmin` and the
+  `DispatchAdmin` export. `web-kernel/host.js` is the `signal.host` pack.
+  The deployment's `web/admin/signal.deployment.json` is local (no store);
+  a real deployment replaces it. Tested end to end in F# (`AdminPageTests`,
+  a fake browser, the real Fides client, Arca's in-memory provider) and in
+  Chromium (`tests/browser/admin.spec.js`: start-up and GitHub sign-in).
 
 ## Current state (2026-10-07)
 

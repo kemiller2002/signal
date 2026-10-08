@@ -340,7 +340,8 @@ let readEmbedded (fragment: string) : Result<AdminReportState, FragmentError> =
         match Int32.TryParse(head.Substring 2), tryFromBase64Url payload with
         | (true, version), _ when version <> StateVersion -> Error(UnsupportedVersion version)
         | (true, _), Some bytes ->
-            let text = try Some(UTF8Encoding(false, true).GetString bytes) with _ -> None
+            let text =
+                if Unicode.Utf8.IsValid(ReadOnlySpan bytes) then Some(Encoding.UTF8.GetString bytes) else None
 
             match text with
             | Some text when base64 ((sha256 text)[0..15]) = integrity ->

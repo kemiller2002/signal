@@ -197,3 +197,22 @@ let afterNotice (notice: TabNotice) (state: CredentialState) =
         | CredentialValidReadWrite
         | CredentialValidReadOnly _ -> CredentialUnverifiable "another tab changed something; checking again"
         | other -> other
+
+/// The message a tab announces after changing a dataset: what changed and
+/// where; never a token, an account or content.
+let announcement (datasetId: string) (notice: TabNotice) =
+    let what =
+        match notice with
+        | RosterChangedElsewhere -> "roster"
+        | StorageChangedElsewhere -> "storage"
+        | SignedOutElsewhere -> "signed-out"
+        | SessionRenewedElsewhere -> "renewed"
+
+    $"signal:{datasetId}:{what}"
+
+/// Another tab's announcement about this dataset, if it is one.
+let ofAnnouncement (datasetId: string) (message: string) =
+    match message.Split(':') with
+    | [| "signal"; dataset; "roster" |] when dataset = datasetId -> Some RosterChangedElsewhere
+    | [| "signal"; dataset; "storage" |] when dataset = datasetId -> Some StorageChangedElsewhere
+    | _ -> None

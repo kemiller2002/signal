@@ -55,13 +55,26 @@ const diagnostics = {
   }
 };
 
-// Starts the kernel for the page. `exportName` is the SignalWasm export.
-// The kernel's status is published on <html data-kernel> so the page (and
-// its browser tests) can tell "running" from a failed start.
-export async function startPage(exportName) {
+// Starts the kernel for a page. `exportName` is the SignalWasm export;
+// `capabilities` are the optional Limen packs the page's engine may select.
+// The kernel's status is published on <html data-kernel> as soon as it
+// leaves "starting", so the page (and its browser tests) can tell "running"
+// from a failed start even while start-up effects are still completing.
+export async function startPage(exportName, capabilities = []) {
   const kernel = new BrowserKernel(new WasmEngineTransport(exportName), document, diagnostics, {
-    requireHandshake: true
+    requireHandshake: true,
+    capabilities
   });
+  const publish = () => {
+    document.documentElement.dataset.kernel = kernel.status;
+  };
+  const watch = setInterval(() => {
+    if (kernel.status !== "unstarted" && kernel.status !== "starting") {
+      publish();
+      clearInterval(watch);
+    }
+  }, 50);
   await kernel.start();
-  document.documentElement.dataset.kernel = kernel.status;
+  clearInterval(watch);
+  publish();
 }

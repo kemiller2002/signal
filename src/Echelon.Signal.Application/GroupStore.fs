@@ -37,6 +37,9 @@ type OpenedGroup =
       /// Contributions by identity key.
       Contributions: Map<string, Loading.Stored<ResultRecord.StoredContribution>>
       Accumulator: Incremental.Accumulator
+      /// The group's lifecycle and the revision it was read at (None: never stored).
+      Lifecycle: GroupLifecycle.Lifecycle
+      LifecycleRevision: Revision option
       Problems: Problem list }
 
 /// Why a group operation did not happen.
@@ -48,6 +51,8 @@ type GroupFailure =
     | TemplateUnavailable of reason: string
     | Storage of ProviderContract.FailureMeaning
     | Offline of ProviderContract.FailureMeaning
+    /// The group's lifecycle refuses it.
+    | LifecycleRefused of GroupLifecycle.Refusal
 
 let private failed now (failure: StorageFailure) =
     match failure with
@@ -68,10 +73,22 @@ let create (actor: Store.Actor) (config: GroupRecord.GroupConfig) (now: DateTime
         let! _ = permitted opened actor Access.ManageGroups |> lift
 
         let! operation =
-            match GroupRecord.path config.Group, GroupRecord.encode opened.DatasetId { config with Revision = 1 } with
-            | Ok target, Ok content -> Storage.operation opened.Namespace (actor.NewContext()) $"create group {GroupRecord.groupKey config.Group}" [ Change.Create(target, content) ]
-            | Error problem, _
-            | _, Error problem -> Error [ problem ]
+            match
+                GroupRecord.path config.Group,
+                GroupRecord.encode opened.DatasetId { config with Revision = 1 },
+                GroupLifecycle.path config.Group,
+                GroupLifecycle.encode opened.DatasetId (GroupLifecycle.initial config.Group None)
+            with
+            | Ok target, Ok content, Ok lifecyclePath, Ok lifecycle ->
+                Storage.operation
+                    opened.Namespace
+                    (actor.NewContext())
+                    $"create group {GroupRecord.groupKey config.Group}"
+                    [ Change.Create(target, content); Change.Create(lifecyclePath, lifecycle) ]
+            | Error problem, _, _, _
+            | _, Error problem, _, _
+            | _, _, Error problem, _
+            | _, _, _, Error problem -> Error [ problem ]
             |> Result.mapError Unusable
             |> lift
 
@@ -113,6 +130,20 @@ let openGroup (resolve: GroupRecord.TemplateResolver) (group: UrlState.OpaqueId)
             |> lift
 
         let config = found.Value.Config
+        let! lifecyclePath = GroupLifecycle.path group |> Result.mapError (List.singleton >> Unusable) |> lift
+        let! storedLifecycle = call now (opened.Provider.Read opened.Namespace lifecyclePath)
+
+        let! lifecycle, lifecycleRevision =
+            match storedLifecycle with
+            | ReadOutcome.Absent -> Ok(GroupLifecycle.initial group None, None)
+            | ReadOutcome.Found found ->
+                let loaded = Loading.load opened.Verified GroupLifecycle.reader GroupRecord.folder { Entries = []; Complete = true } [ found ]
+
+                match loaded.Records |> Map.tryFind (GroupRecord.groupKey group), loaded.Problems with
+                | Some stored, [] -> Ok(stored.Value.Lifecycle, Some stored.Revision)
+                | _, problems -> Error(Unusable problems)
+            |> lift
+
         let! definition = GroupRecord.definition resolve config |> Result.mapError TemplateUnavailable |> lift
         let folder = ResultRecord.groupFolder group
         let! listing, objects = readTree now opened.Provider opened.Namespace folder
@@ -140,6 +171,8 @@ let openGroup (resolve: GroupRecord.TemplateResolver) (group: UrlState.OpaqueId)
               Definition = definition
               Contributions = contributions
               Accumulator = accumulator
+              Lifecycle = lifecycle
+              LifecycleRevision = lifecycleRevision
               Problems =
                 loaded.Problems
                 @ (foreign |> Map.toList |> List.map (fun (_, stored) -> MisplacedRecord(RelativePath.render stored.Path))) }
@@ -263,6 +296,13 @@ let importBatch
 
     asyncResult {
         let! _ = permitted opened actor Access.ImportSubmissions |> lift
+
+        do!
+            if GroupLifecycle.acceptsContributions group.Lifecycle.Status then
+                lift (Ok())
+            else
+                lift (Error(LifecycleRefused(GroupLifecycle.Illegal(GroupLifecycle.statusName group.Lifecycle.Status, "import"))))
+
         let fresh = Intake.start group.Config.Group origin (artifacts |> Map.toList |> List.map snd)
         let! stored, revision = readBatch now opened fresh
         let! final, batch, stopped = run 0 group stored revision

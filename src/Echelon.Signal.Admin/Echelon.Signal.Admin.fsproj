@@ -25,6 +25,11 @@
     <Compile Include="Intake.fs" />
     <Compile Include="ReportState.fs" />
     <Compile Include="ContributionIndex.fs" />
+    <Compile Include="GroupLifecycle.fs" />
+    <Compile Include="AdminState.fs" />
+    <Compile Include="Conflicts.fs" />
+    <Compile Include="AdminApp.fs" />
+    <Compile Include="AdminView.fs" />
   </ItemGroup>
 
   <ItemGroup>
