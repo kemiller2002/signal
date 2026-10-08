@@ -1,9 +1,9 @@
-/// Signal's vendored Limen.Routing (vendor/limen-routing) against Limen's
+/// Limen 0.9.0's EchelonFoundry.Limen.Routing package against Limen's
 /// own language-neutral vectors: every resolve, build, session, definition,
 /// return-target, location, outcome and inventory vector of
-/// conformance/routing at limen e935da7 (LCP-005, LCP-088..112). They pass
-/// unchanged when the vendored copy is replaced by the Limen 0.9.0 package,
-/// which is what makes that switch mechanical (WI-0066, DF-SIGNAL-2026-0003).
+/// conformance/routing at limen v0.9.0 (LCP-005, LCP-088..112). They held
+/// against the vendored copy before 0.9.0 and hold against the package now
+/// (WI-0066, WI-0071, DF-SIGNAL-2026-0003).
 module Echelon.Signal.Tests.LimenRoutingConformanceTests
 
 open System
@@ -11,19 +11,6 @@ open System.Text.Json.Nodes
 open Xunit
 open Limen.Routing
 open Echelon.Signal.Tests.LimenRoutingVectors
-open Echelon.Signal.Tests.Support
-
-/// The vendored router is Limen's file byte for byte (limen e935da7): any
-/// edit, or a different upstream file, changes the digest and fails here.
-[<Fact>]
-let ``the vendored router is Limen's Routing.fs at e935da7, unmodified`` () =
-    let bytes = System.IO.File.ReadAllBytes(repoFile "vendor/limen-routing/Routing.fs")
-    let digest = System.Security.Cryptography.SHA256.HashData bytes |> Convert.ToHexStringLower
-    Assert.Equal("c7fc955063b2b4490d1fbcc29aa7302e2f16f0310609d45dd0679c32ba664338", digest)
-
-    let vectors name = System.IO.File.ReadAllBytes(repoFile $"tests/limen-routing/{name}") |> System.Security.Cryptography.SHA256.HashData |> Convert.ToHexStringLower
-    Assert.Equal("27ded668bde4646653d8bb8eb2e472f88d683acf49dc91239625d74efc47cf70", vectors "routing.vectors.json")
-    Assert.Equal("8c3bf1c5bc06b790d7e4eeb201c89150fd397539c85b55258b622454c677bd9b", vectors "url-state.vectors.json")
 
 /// One vector: its name, the expected result and the library's.
 [<NoComparison>]

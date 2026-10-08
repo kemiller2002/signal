@@ -9,7 +9,7 @@
 /// location changes, and navigation and clipboard results. Anything else is not a message
 /// this engine could have caused.
 ///
-/// See the `protocol` export of `@echelon-foundry/limen` (0.7.1).
+/// See the `protocol` export of `@echelon-foundry/limen` (0.9.0; protocol unchanged since 0.7.1).
 module Echelon.Signal.Application.Limen
 
 open System.Text.Json

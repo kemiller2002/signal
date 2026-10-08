@@ -25,7 +25,7 @@ let private folioRelease =
 let ``foundations.json requires every foundation, at the echelon-current versions`` () =
     let capabilities = (json ".echelon/foundations.json").["capabilities"]
 
-    for name, version in [ "aegis", "1.0.0"; "forma", "0.4.1"; "folio", "0.3.0"; "limen", "0.7.1" ] do
+    for name, version in [ "aegis", "1.0.0"; "forma", "0.4.1"; "folio", "0.3.0"; "limen", "0.9.0" ] do
         Assert.True(capabilities.[name].["required"].GetValue<bool>(), $"{name} must be required")
         Assert.Equal(version, str capabilities.[name].["version"])
 
@@ -36,14 +36,14 @@ let ``the npm foundations are pinned to immutable releases and locked`` () =
     let dependencies = (json "package.json").["dependencies"]
     Assert.Equal(formaRelease, str dependencies.["@echelon-foundry/design-system"])
     Assert.Equal(folioRelease, str dependencies.["@echelon-foundry/print-components"])
-    Assert.Equal("0.7.1", str dependencies.["@echelon-foundry/limen"])
+    Assert.Equal("0.9.0", str dependencies.["@echelon-foundry/limen"])
 
     let packages = (json "package-lock.json").["packages"]
 
     for name, version in
         [ "@echelon-foundry/design-system", "0.4.1"
           "@echelon-foundry/print-components", "0.3.0"
-          "@echelon-foundry/limen", "0.7.1" ] do
+          "@echelon-foundry/limen", "0.9.0" ] do
         let locked = packages.[$"node_modules/{name}"]
         Assert.Equal(version, str locked.["version"])
         Assert.StartsWith("sha512-", str locked.["integrity"])
@@ -145,14 +145,11 @@ let ``Aegis is referenced, pinned and its boundary codes are declared`` () =
 
 [<Fact>]
 let ``the Limen boundary names the F# engine and the browser kernel`` () =
-    // vendor/limen-routing is Limen's own engine library (Limen.Routing,
-    // vendored until 0.9.0 ships it): pure engine code, so it sits inside
-    // the engine boundary (DF-SIGNAL-2026-0003).
     let boundary = (json "limen.config.json").["boundary"]
     let paths (name: string) = boundary.[name].AsArray() |> Seq.map str |> Seq.toList
 
     Assert.Null(boundary.["notApplicable"])
-    Assert.Equal<string list>([ "src/Echelon.Signal.Engine"; "src/Echelon.Signal.Admin"; "src/Echelon.Signal.Application"; "vendor/limen-routing" ], paths "engine")
+    Assert.Equal<string list>([ "src/Echelon.Signal.Engine"; "src/Echelon.Signal.Admin"; "src/Echelon.Signal.Application" ], paths "engine")
     Assert.Equal<string list>([ "src/Echelon.Signal.Browser"; "web"; "web-kernel" ], paths "kernel")
 
     for path in paths "engine" @ paths "kernel" do

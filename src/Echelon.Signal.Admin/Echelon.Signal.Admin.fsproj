@@ -47,11 +47,11 @@
 
   <ItemGroup>
     <PackageReference Include="EchelonFoundry.Arca.Core" />
+    <PackageReference Include="EchelonFoundry.Limen.Routing" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="../Echelon.Signal.Engine/Echelon.Signal.Engine.fsproj" />
-    <ProjectReference Include="../../vendor/limen-routing/Limen.Routing.fsproj" />
   </ItemGroup>
 
 </Project>

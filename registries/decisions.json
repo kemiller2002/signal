@@ -159,13 +159,27 @@
             "modified"
           ],
           "reason": "Close decision 4: the respondent answer link is an accepted, scoped exception (WI-0070)"
+        },
+        "EXE-20261008T214707523Z-5fa741d0": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-08T21:51:51.000Z",
+          "operations": [
+            "modified"
+          ],
+          "reason": "Decision 1: Limen.Routing is now the Limen 0.9.0 package (WI-0071)"
         }
       }
     },
     "related_documents": [
       "docs/requirements/SIGNAL-DEEP-LINKING.md",
       ".echelon/routes.json",
-      "vendor/limen-routing/Limen.Routing.fsproj"
+      "vendor/nuget/limen-fsharp.lock"
     ],
     "review_cycle": "on-trigger",
     "status": "accepted",
@@ -177,7 +191,7 @@
       "limen",
       "privacy"
     ],
-    "title": "Deep linking through Limen's routing semantics, Limen.Routing vendored byte for byte, and the respondent answer document",
+    "title": "Deep linking through Limen's routing semantics and the Limen.Routing package, and the respondent answer document",
     "updated": "2026-10-08",
     "version": "1.0.0"
   },

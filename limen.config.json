@@ -4,8 +4,7 @@
     "engine": [
       "src/Echelon.Signal.Engine",
       "src/Echelon.Signal.Admin",
-      "src/Echelon.Signal.Application",
-      "vendor/limen-routing"
+      "src/Echelon.Signal.Application"
     ],
     "kernel": [
       "src/Echelon.Signal.Browser",

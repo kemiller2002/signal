@@ -1,6 +1,6 @@
 ---
 id: DF-SIGNAL-2026-0003
-title: Deep linking through Limen's routing semantics, Limen.Routing vendored byte for byte, and the respondent answer document
+title: Deep linking through Limen's routing semantics and the Limen.Routing package, and the respondent answer document
 status: accepted
 version: 1.0.0
 created: 2026-10-08
@@ -13,7 +13,7 @@ superseded_by: []
 related_documents:
   - docs/requirements/SIGNAL-DEEP-LINKING.md
   - .echelon/routes.json
-  - vendor/limen-routing/Limen.Routing.fsproj
+  - vendor/nuget/limen-fsharp.lock
 tags: [routing, deep-linking, limen, privacy]
 provenance:
   contributions:
@@ -38,6 +38,16 @@ provenance:
         model: unknown
         runtime: claude-code
       reason: "Close decision 4: the respondent answer link is an accepted, scoped exception (WI-0070)"
+    EXE-20261008T214707523Z-5fa741d0:
+      operations: [modified]
+      at: 2026-10-08T21:51:51.000Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "Decision 1: Limen.Routing is now the Limen 0.9.0 package (WI-0071)"
 ---
 
 # DF-SIGNAL-2026-0003 — Deep linking through Limen routing
@@ -57,21 +67,17 @@ later is mechanical.
 
 ## Decisions
 
-1. **Limen.Routing, vendored byte for byte.** `vendor/limen-routing/Routing.fs`
-   is Limen's F# reference library from `kemiller2002/limen` PR #101 at
-   `e935da7` (WI-0168), unmodified: SHA-256
-   `c7fc955063b2b4490d1fbcc29aa7302e2f16f0310609d45dd0679c32ba664338`,
-   pinned by a test that fails on any drift. A first draft split the file to
-   fit Ordo's 500-line review threshold. It was replaced, on the
-   coordinator's advice and as Summa did (summa#43, DF-SUMMA-2026-0010), by
-   the unmodified file under `vendor/`, which Ordo's structural review
-   excludes. There is no second implementation to prove. Limen's own
-   conformance vectors (`tests/limen-routing`, byte-identical and pinned
-   too) run against it. The folder sits inside the Limen engine boundary
-   (`limen.config.json`), because it is pure engine code. **When Limen 0.9.0
-   is released**, delete the folder, reference `EchelonFoundry.Limen.Routing`
-   from `Echelon.Signal.Admin` and the tests, and keep the vectors: they
-   then test the package.
+1. **Limen.Routing, now the Limen 0.9.0 package.** Signal first vendored
+   Limen's F# reference router byte for byte (limen PR #101 at `e935da7`,
+   SHA-256 pinned) in `vendor/limen-routing`. Since Limen 0.9.0 (WI-0071) it
+   references `EchelonFoundry.Limen.Routing` 0.9.0: an attested release asset
+   that Conditor installs into `vendor/nuget` from echelon-current 1.11.0
+   (`limen-fsharp`, `vendor/nuget/limen-fsharp.lock`). The swap changed only
+   project references, because the namespace, modules and signatures were the
+   package's own. Limen's conformance vectors (`tests/limen-routing`, from
+   v0.9.0, identical to `e935da7`) run against the package, and
+   `.echelon/routes.json` validates against the shipped
+   `contract/routes.schema.json`.
 2. **Hash mode for the administrator application.** Routes live in the
    fragment of `web/admin/`, links are relative (`#/…`), the canonical form
    is Limen's, and the inventory is written to `.echelon/routes.json`.
@@ -117,7 +123,7 @@ later is mechanical.
 
 ## Consequences
 
-- Moving to Limen 0.9.0 changes two project files and deletes one vendored folder.
+- Moving to Limen 0.9.0 (WI-0071) changed two project files and deleted one vendored folder.
 - Every administrator view gains a URL; an unknown identifier or an invalid
   parameter renders its own page.
 - The embedded administrator report state (ARP-003) is not a route and no
