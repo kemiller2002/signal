@@ -1356,10 +1356,10 @@
         "ordo"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T15:16:11.000Z",
-      "updatedAt": "2026-10-08T15:16:11.000Z",
+      "updatedAt": "2026-10-08T15:16:34.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
