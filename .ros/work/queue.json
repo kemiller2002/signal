@@ -471,13 +471,14 @@
         "readiness,bootstrap"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-09-22T22:12:02.322Z",
-      "updatedAt": "2026-09-22T22:12:02.000Z",
+      "updatedAt": "2026-10-08T14:55:06.000Z",
       "createdBy": "agent:chatgpt",
       "source": "github-issue",
-      "sourceReference": "https://github.com/kemiller2002/echelon-signal/issues/5"
+      "sourceReference": "https://github.com/kemiller2002/echelon-signal/issues/5",
+      "abandonedReason": "Superseded: the baseline GH-5 was preparing landed on main through WI-0031..WI-0036 at current foundation pins. Draft PR #8 (work/gh-5-readiness) was closed unmerged on 2026-10-08 with that pointer: https://github.com/kemiller2002/signal/pull/8"
     },
     {
       "id": "WI-0021",
@@ -1284,6 +1285,31 @@
       "attachments": [],
       "createdAt": "2026-10-08T08:04:50.878Z",
       "updatedAt": "2026-10-08T08:13:34.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0056",
+      "title": "Record the pure-domain pull-forward (WI-0042..WI-0046) in DF-SIGNAL-2026-0001, propose answers to the 12 scoring open questions (DF-SIGNAL-2026-0002), and close out GH-5",
+      "description": "Coordinator decision of 2026-10-08: the pure-domain slices with no Arca or Fides dependency (WI-0042..WI-0046) start now, ahead of the Chrona-then-Summa order; the rest of the order stands. Records that in DF-SIGNAL-2026-0001; writes the scoring design's 12 open questions with recommended answers as DF-SIGNAL-2026-0002, proposed pending owner confirmation, ahead of WI-0044; abandons GH-5, whose draft PR #8 is superseded by main.",
+      "tags": [
+        "planning",
+        "decisions",
+        "scoring"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-10-08T14:55:00.000Z",
+      "updatedAt": "2026-10-08T14:55:00.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

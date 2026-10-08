@@ -21,12 +21,28 @@
             "created"
           ],
           "reason": "Record user decisions of 2026-10-08 and the per-application data-location requirement"
+        },
+        "EXE-20261008T145501158Z-2a5cd831": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-08T14:56:36.269Z",
+          "operations": [
+            "modified"
+          ],
+          "reason": "Amendment 1: record the coordinator decision of 2026-10-08 pulling the pure-domain slices WI-0042..WI-0046 forward"
         }
       }
     },
     "related_documents": [
       "docs/requirements/implementation-gap-analysis.md",
-      "docs/requirements/SIGNAL-DATA-LOCATION.md"
+      "docs/requirements/SIGNAL-DATA-LOCATION.md",
+      "docs/requirements/backlog-plan.md",
+      "research/decisions/DF-SIGNAL-2026-0002--scoring-open-questions-proposed-answers.md"
     ],
     "review_cycle": "on-trigger",
     "status": "accepted",
@@ -40,7 +56,56 @@
     ],
     "title": "Signal's administrator storage is implemented through Arca (no Strata), sign-in goes through Fides, and Signal is built after Chrona and Summa",
     "updated": "2026-10-08",
-    "version": "1.0.0"
+    "version": "1.1.0"
+  },
+  {
+    "created": "2026-10-08",
+    "derived_from": [
+      "DF-SIGNAL-2026-0001"
+    ],
+    "id": "DF-SIGNAL-2026-0002",
+    "owners": [
+      "signal"
+    ],
+    "path": "research/decisions/DF-SIGNAL-2026-0002--scoring-open-questions-proposed-answers.md",
+    "provenance": {
+      "contributions": {
+        "EXE-20261008T145501158Z-2a5cd831": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-08T14:56:36.665Z",
+          "operations": [
+            "created"
+          ],
+          "reason": "Propose answers to the scoring design's 12 open questions ahead of WI-0044, pending owner confirmation"
+        }
+      }
+    },
+    "related_documents": [
+      "input-documents/echelon-survey-scoring-expression-tree-approach.txt",
+      "input-documents/survey-engine-scoring-algorithms.txt",
+      "input-documents/survey-engine-scoring-selector-completeness-requirements.txt",
+      "input-documents/survey-engine-advanced-ros-ordo-limen-stress-requirements.txt",
+      "input-documents/survey-instance-template-versioning-requirements.txt",
+      "research/decisions/DF-SIGNAL-2026-0001--storage-through-arca-sign-in-through-fides-built-after-summa.md"
+    ],
+    "review_cycle": "on-trigger",
+    "status": "review",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "scoring",
+      "open-questions",
+      "proposed"
+    ],
+    "title": "Proposed answers to the scoring design's twelve open questions (proposed, pending owner confirmation)",
+    "updated": "2026-10-08",
+    "version": "0.1.0"
   },
   {
     "created": "2026-10-05",
