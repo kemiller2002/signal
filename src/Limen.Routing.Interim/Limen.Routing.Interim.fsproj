@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Limen engine library: Limen's routing semantics (conformance/routing,
+       LCP-005 and LCP-088..112), the namespace Limen.Routing. An interim copy
+       of the F# reference library at limen e935da7 until Limen 0.9.0 ships
+       it as EchelonFoundry.Limen.Routing; then this project is deleted and the
+       package referenced instead (DF-SIGNAL-2026-0003). Pure: no browser,
+       interop, network or I/O, and nothing but FSharp.Core. -->
+  <PropertyGroup>
+    <AssemblyName>Limen.Routing</AssemblyName>
+    <RootNamespace>Limen.Routing</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Types.fs" />
+    <Compile Include="Route.fs" />
+    <Compile Include="Router.fs" />
+    <Compile Include="RouteTable.fs" />
+    <Compile Include="Location.fs" />
+    <Compile Include="Inventory.fs" />
+  </ItemGroup>
+</Project>

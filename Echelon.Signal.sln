@@ -17,6 +17,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Echelon.Signal.Tests", "tes
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Echelon.Signal.Admin", "src\Echelon.Signal.Admin\Echelon.Signal.Admin.fsproj", "{97D43C6E-2ED0-4268-A6BA-468562CD5315}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Limen.Routing.Interim", "src\Limen.Routing.Interim\Limen.Routing.Interim.fsproj", "{AA0417D6-924B-4F6E-84F5-E844C6EFBA61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,18 @@ Global
 		{97D43C6E-2ED0-4268-A6BA-468562CD5315}.Release|x64.Build.0 = Release|Any CPU
 		{97D43C6E-2ED0-4268-A6BA-468562CD5315}.Release|x86.ActiveCfg = Release|Any CPU
 		{97D43C6E-2ED0-4268-A6BA-468562CD5315}.Release|x86.Build.0 = Release|Any CPU
+		{AA0417D6-924B-4F6E-84F5-E844C6EFBA61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA0417D6-924B-4F6E-84F5-E844C6EFBA61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA0417D6-924B-4F6E-84F5-E844C6EFBA61}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AA0417D6-924B-4F6E-84F5-E844C6EFBA61}.Debug|x64.Build.0 = Debug|Any CPU
+		{AA0417D6-924B-4F6E-84F5-E844C6EFBA61}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AA0417D6-924B-4F6E-84F5-E844C6EFBA61}.Debug|x86.Build.0 = Debug|Any CPU
+		{AA0417D6-924B-4F6E-84F5-E844C6EFBA61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA0417D6-924B-4F6E-84F5-E844C6EFBA61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA0417D6-924B-4F6E-84F5-E844C6EFBA61}.Release|x64.ActiveCfg = Release|Any CPU
+		{AA0417D6-924B-4F6E-84F5-E844C6EFBA61}.Release|x64.Build.0 = Release|Any CPU
+		{AA0417D6-924B-4F6E-84F5-E844C6EFBA61}.Release|x86.ActiveCfg = Release|Any CPU
+		{AA0417D6-924B-4F6E-84F5-E844C6EFBA61}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,5 +111,6 @@ Global
 		{21E83DCC-4564-409A-8526-64B27C26EC81} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{5C99F6CF-0AFD-49B0-BBDB-5EE780374B52} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{97D43C6E-2ED0-4268-A6BA-468562CD5315} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{AA0417D6-924B-4F6E-84F5-E844C6EFBA61} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal
