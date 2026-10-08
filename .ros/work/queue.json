@@ -1700,10 +1700,10 @@
         "arca"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T22:12:04.106Z",
-      "updatedAt": "2026-10-08T22:12:09.000Z",
+      "updatedAt": "2026-10-08T22:15:51.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
