@@ -946,10 +946,10 @@
         "authoring"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:07.426Z",
-      "updatedAt": "2026-10-08T07:48:07.426Z",
+      "updatedAt": "2026-10-08T15:00:26.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

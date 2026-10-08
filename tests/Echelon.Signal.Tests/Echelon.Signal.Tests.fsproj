@@ -21,6 +21,8 @@
     <Compile Include="SubmissionTests.fs" />
     <Compile Include="ImportTests.fs" />
     <Compile Include="ScoringTests.fs" />
+    <Compile Include="TemplateTests.fs" />
+    <Compile Include="AuthoringTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

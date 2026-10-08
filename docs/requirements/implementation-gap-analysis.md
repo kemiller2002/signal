@@ -1,6 +1,6 @@
 # Requirement implementation gap analysis
 
-Work item: WI-0030 (gap analysis); implementation items WI-0031 through WI-0035  
+Work item: WI-0030 (gap analysis); implementation items WI-0031 through WI-0035, then WI-0042 onward  
 Baseline: `main` at `8f2f956` (2026-10-07)  
 Authoritative corpus: `input-documents/` and the migration ledger
 [`survey-engine-requirements-migration.md`](survey-engine-requirements-migration.md)
@@ -87,27 +87,27 @@ Everything else stays assigned to the work items the ledger already names
 | AST-006 | missing | missing | Scoring architecture not built. | WI-0007 |
 | ACR-001 | partial | partial | Completion = every item answered (`Session.update ResultsRequested`, `SessionTests`). No flow, branching, derived facts or cross-question validation. | WI-0006 |
 | ACR-002 | missing | missing | No respondent/subject/role or group dependency semantics. | WI-0005 |
-| ACR-003 | missing | missing | No template lineage, compatibility or capability metadata. | WI-0003 |
+| ACR-003 | missing | partial | No template lineage, compatibility or capability metadata. **WI-0042:** lineage (parent version and hash, outside the hash), schema/engine/encoding compatibility and declared capabilities that fail explicitly when unsupported; presets embedded, so a published template is self-contained (`AuthoringTests`). | WI-0003, WI-0042 |
 | ACR-004 | missing | partial | No URL payload, version or integrity policy. **WI-0031:** integrity-only policy with corruption reported separately from template mismatch and impossible content (`UrlStateTests`). Signed (authenticity) policy not built. | WI-0031 |
 | ACR-005 | missing | partial | Import-side replay/revision not built. **WI-0034:** import-side replay is idempotent and a different artifact for an accepted instance is rejected, not substituted (URLC-002 refinement). | WI-0034 |
 | ACR-006 | partial | partial | Accessible presentation via Forma components, native radios, labelled progress; Playwright suite. No localization or randomization constraints. | WI-0003, WI-0010 |
 | ACR-007 | missing | missing | No recommendation/action rules. | WI-0006 |
-| ACR-008 | missing | missing | No publication validation. | WI-0003 |
-| ACR-009 | partial | partial | Scoring is a pure deterministic function of immutable inputs (`AssessmentTests`). Other invariants depend on missing groups. | WI-0002 |
+| ACR-008 | missing | partial | No publication validation. **WI-0042:** publication gates for identity, structure, answers, scoring, compatibility, encoding, privacy and fixtures; candidate template fields. Instance and group fields remain (WI-0043). | WI-0003, WI-0042 |
+| ACR-009 | partial | partial | Scoring is a pure deterministic function of immutable inputs (`AssessmentTests`). Other invariants depend on missing groups. **WI-0042:** the template-plus-answers result is deterministic for generic templates (3,000-sample differential against the SDRA assessment). | WI-0002, WI-0042 |
 | ARP-001 | missing | partial | No import pipeline, SurveyResult or SurveyGroupResult. **WI-0034:** pure import pipeline in ARP §1 order, SurveyResult (identity, template hash, SubmissionHash, dimension results, answer counts) and SurveyGroupResult (`Import`, `Aggregation`, `ImportTests`). Facts, recommendations and AdminReportState remain. | WI-0034 |
 | ARP-002 | missing | partial | No counts, deduplication or aggregates. **WI-0034:** expected/accepted/missing counts, one identity mode per group, completion, unique contribution per identity, dimension mean/median/min/max, non-numeric coverage share, template summary, ResultVersion 1. Group confidence remains. | WI-0034 |
 | ARP-003 | missing | missing | No AdminReportState. | WI-0008 |
 | ARP-004 | missing | missing | No report persistence. | WI-0008 |
 | ARP-005 | missing | partial | No import errors or group enforcement. **WI-0034:** typed import errors and group/mode enforcement; rejected imports change nothing. Persistence-model F# types remain. | WI-0034 |
 | ARP-006 | missing | partial | Depends on ARP-001. **WI-0034:** raw submission to deterministic, order-independent results is proven; persistence-transparent reporting remains. | WI-0008 |
-| CAN-001 | partial | partial | `Assessment`, `Dimension`, `Item`, `Answer` types exist; no selectors or compatibility metadata. | WI-0002 |
+| CAN-001 | partial | partial | `Assessment`, `Dimension`, `Item`, `Answer` types exist; no selectors or compatibility metadata. **WI-0042:** generic canonical `Template` (identity, compatibility, metadata, presentation, sections, questions with Boolean/Ordinal/SingleChoice answer primitives, selector presets as presentation, distinct special states) with canonical form `signal-template/1` (`TemplateTests`). Multi-choice, bounded integer, ranking and allocation primitives remain (WI-0045). | WI-0002, WI-0042 |
 | CAN-002 | partial | partial | Mean scoring and deterministic evaluation; no facts, flow, validation rules or recommendations. | WI-0006, WI-0007 |
-| CAN-003 | missing | partial | No instance, group or template reference. **WI-0033:** instance, group and template reference travel in the submission. | WI-0033 |
+| CAN-003 | missing | partial | No instance, group or template reference. **WI-0033:** instance, group and template reference travel in the submission. **WI-0042:** catalog resolution of a template by compact reference, hash or identity and version. | WI-0033, WI-0042 |
 | CAN-004 | missing | partial | No answer encoding, versioning, integrity or submission hash. **WI-0031:** bit packing, base64url, ResponseEncodingVersion 1, truncated-SHA-256 integrity, golden vector (`UrlStateTests`). Measured URL budgets and the import-side SubmissionHash remain. | WI-0031 |
-| CAN-005 | missing | missing | No publication validation or canonical publishing. | WI-0003 |
+| CAN-005 | missing | partial | No publication validation or canonical publishing. **WI-0042:** publication validation with stable reason codes (identity, questions, sections, scoring references/weights/mapping completeness, compatibility, encoding capacity) and the deterministic publish sequence (`Authoring.publish`, `AuthoringTests`). Flow, derived-fact, recommendation and group-aggregation gates remain (WI-0043, WI-0044). | WI-0003, WI-0042 |
 | CAN-006 | partial | partial | `DimensionResult` carries coverage separately from score; no canonical survey result or explainability. | WI-0007 |
 | CAN-007 | partial | partial | Unit and browser tests exist; no representative fixture corpus or reproducibility checks. | WI-0010 |
-| CAN-008 | partial | partial | Deterministic interpreter for scoring only. | WI-0002 |
+| CAN-008 | partial | partial | Deterministic interpreter for scoring only. **WI-0042:** invariants 1-5, 9, 10, 15, 21 and 24 hold for generic templates (immutable artifact, deterministic hash, new version per change, superseded versions resolvable, explicit unsupported-feature failure, embedded presets). | WI-0002, WI-0042 |
 | LURL-001 | missing | tested | Session state lives only in the WASM process; the URL never changes. **WI-0032:** every accepted change requests one Limen Navigation `replace` of the fragment (no new history entries); Initialize and LocationChanged resume from the URL; the URL holds only the envelope; completion stays derived (`LiveUrlTests`, Playwright live-URL tests). | WI-0032 |
 | LURL-002 | missing | tested | No anonymous finalization. **WI-0033:** live anonymous invitation carries the instance for resume; finalization validates completion, draws a fresh AnonymousSubmissionId, removes the instance and verifies no instance bytes survive; identified finalization keeps instance and group (`Submission`, `SubmissionTests`, Playwright submission test). | WI-0033 |
 | LURL-003 | missing | partial | No administrator import. **WI-0034:** import pipeline, derived group state and the anonymous duplicate limitation (stated in `Import`). Persistence escalation remains. | WI-0034 |
@@ -128,36 +128,36 @@ Everything else stays assigned to the work items the ledger already names
 | ALG-002 | missing | missing | No advanced algorithms. | WI-0007 |
 | ALG-003 | missing | missing | No weakest-link or composition. | WI-0007 |
 | ALG-004 | missing | missing | No precompiled/custom boundary. | WI-0007 |
-| AUT-001 | missing | missing | Pilot is a literal; no authoring lifecycle. | WI-0003 |
-| AUT-002 | missing | missing | No authoring capabilities. | WI-0003 |
-| AUT-003 | missing | missing | No preview, traces or simulation fixtures. | WI-0003 |
-| AUT-004 | missing | missing | No validation or canonicalization preview. | WI-0003, WI-0031 |
-| AUT-005 | missing | missing | No template diff or publication transaction. | WI-0003 |
-| AUT-006 | missing | missing | No supersession or rollback. | WI-0003 |
-| AUT-007 | missing | missing | No authoring invariants. | WI-0003 |
+| AUT-001 | missing | partial | Pilot is a literal; no authoring lifecycle. **WI-0042:** draft to published immutable artifact, derived lifecycle (Draft/Validated/Published/Superseded), versions assigned at publication, parent lineage, no PII primitive by construction (`Authoring`, `AuthoringTests`). Workspace areas for flow, facts, recommendations, localization and reporting remain. | WI-0003, WI-0042 |
+| AUT-002 | missing | partial | No authoring capabilities. **WI-0042:** pure section and question edits (add, remove, rename, reorder, move between sections) with stable unique ids; selector presets; catalog scoring per section. Rule, fact, recommendation and completion authoring remain (WI-0043, WI-0044). | WI-0003, WI-0042 |
+| AUT-003 | missing | partial | No preview, traces or simulation fixtures. **WI-0042:** scoring preview (`Template.scoreSections`), response simulation fixtures with score and completion assertions that block publication on failure, URL capacity diagnostics, PII-like prompt warnings (or blockers by policy). Preview mode UI and rule traces remain. | WI-0003, WI-0042 |
+| AUT-004 | missing | partial | No validation or canonicalization preview. **WI-0042:** structural, answer, scoring, basic completion, compatibility, encoding and privacy validation; canonicalization preview (canonical bytes, TemplateHash, layout fingerprint). Flow, fact, recommendation and reporting validation remain. | WI-0003, WI-0031, WI-0042 |
+| AUT-005 | missing | partial | No template diff or publication transaction. **WI-0042:** semantic diff with scoring/encoding/presentation impact, comparability (Comparable / ComparableWithCaution / NotComparable with reasons), validation summary per category, blockers separate from acknowledged warnings, publication preview and transaction (`AuthoringTests`). Rule and report-definition diffs remain. | WI-0003, WI-0042 |
+| AUT-006 | missing | partial | No supersession or rollback. **WI-0042:** supersession without removal, rollback as a new derived version, hide without unresolvability, published test manifest (fixture result hashes), deterministic publication independent of publisher and time, hash lock (`verify`). Test-mode submission isolation, cross-device checks and role separation remain. | WI-0003, WI-0042 |
+| AUT-007 | missing | partial | No authoring invariants. **WI-0042:** invariants 1-8, 14-18, 21-24, 27 and 28 hold and are tested; the rule, recommendation and reporting invariants wait for WI-0043 and WI-0046. | WI-0003, WI-0042 |
 | URLC-001 | partial | tested | No server-side respondent state exists (true by construction); the URL transport does not. **WI-0032:** the URL is the transport and resume state; nothing respondent-side is persisted elsewhere (`LiveUrlTests`). | WI-0032 |
 | URLC-002 | missing | partial | No logical response/portable submission distinction. **WI-0033:** live response versus finalized portable submission, sealed after submission; completion derived. Import-side replay/revision remains. | WI-0033 |
 | URLC-003 | missing | partial | No portable envelope or explicit decode errors. **WI-0031:** self-contained versioned envelope with explicit errors for every URLC-003 §6 case (`DecodeError`, `UrlStateTests`). Optional admin persistence remains. | WI-0031, WI-0033 |
-| URLC-004 | missing | missing | No revised canonical entities. | WI-0002 |
+| URLC-004 | missing | partial | No revised canonical entities. **WI-0042:** the template owns meaning (`Template.Content`), the response owns state (`Template.Answers`), and the template-plus-answers result is a pure function. The revised instance/group entities on generic templates remain (WI-0045). | WI-0002, WI-0042 |
 | URLC-005 | missing | partial | No URL artifact. **WI-0031:** the URL artifact format exists. | WI-0031, WI-0033 |
 | ID-001 | missing | partial | No instance identity. **WI-0033:** opaque 16-byte instance and group ids; identified submission keeps them for external mapping. Group metadata remains (WI-0005). | WI-0033 |
 | ID-002 | missing | tested | No anonymous submission. **WI-0033:** unlinkable anonymous submission from CSPRNG entropy at the edge; identified/anonymous shapes; no PII field exists (`SubmissionTests`). | WI-0033 |
 | ID-003 | missing | tested | No counts or import-side deduplication. **WI-0033:** anonymous conversion and entropy tests (distinct draws, no stuck bits). Counts and import deduplication remain (WI-0034). **WI-0034:** accepted/expected/missing counts, import-side deduplication by instance or anonymous id, anonymous small-group suppression under an explicit policy, and anonymous randomness tests (`ImportTests`, `SubmissionTests`). | WI-0034 |
 | ID-004 | missing | partial | No identity model. **WI-0033:** identified/anonymous canonical model and the anonymous invariant. Group-level identity configuration remains. | WI-0033 |
-| VER-001 | partial | partial | Assessment `Id` and `Version`; no TemplateHash. **WI-0031:** deterministic TemplateHash added. | WI-0031 |
-| VER-002 | missing | partial | No canonical hashing or compact reference. **WI-0031:** canonical form v1 and SHA-256 TemplateHash with golden vector; 8-byte compact reference verified on decode (`Canonical`, `UrlStateTests`). Immutable publication lifecycle remains (WI-0003). | WI-0031 |
-| VER-003 | missing | missing | No instance runtime information. | WI-0003 |
-| VER-004 | partial | partial | Dimensions and prompts; no pagination or navigation policy. | WI-0003 |
+| VER-001 | partial | partial | Assessment `Id` and `Version`; no TemplateHash. **WI-0031:** deterministic TemplateHash added. **WI-0042:** stable SurveyIdentifier across versions, exact TemplateVersion assigned at publication, deterministic TemplateHash for generic templates. Result definitions and completion rules in the template remain (WI-0043, WI-0046). | WI-0031, WI-0042 |
+| VER-002 | missing | tested | No canonical hashing or compact reference. **WI-0031:** canonical form v1 and SHA-256 TemplateHash with golden vector; 8-byte compact reference verified on decode (`Canonical`, `UrlStateTests`). Immutable publication lifecycle remains (WI-0003). **WI-0042:** published templates are immutable values with a hash lock; derived lifecycle; any content change is a new version and unchanged content is refused; canonical hashing of generic templates with a golden vector; resolution by compact reference (`AuthoringTests`, `TemplateTests`). | WI-0031, WI-0042 |
+| VER-003 | missing | partial | No instance runtime information. **WI-0042:** template runtime policy (resume, changes after completion default false, show results, result mode) and derived instance status in which completeness alone never completes (`Template.instanceStatus`, `TemplateTests`). Locale and invitation expiry carriage remain. | WI-0003, WI-0042 |
+| VER-004 | partial | partial | Dimensions and prompts; no pagination or navigation policy. **WI-0042:** complete interpretive template contents and pagination as a pure function (survey and per-section items per page, explicit page breaks, section-starts-new-page; randomization fixed to none) that leaves the layout and scores unchanged (`TemplateTests`). The respondent page does not yet paginate generic templates. | WI-0003, WI-0042 |
 | VER-005 | partial | partial | Dimension (section) scoring; no survey-level hierarchy or applicability. | WI-0007 |
 | VER-006 | partial | partial | Explicit completion; scalar result only. | WI-0006, WI-0007 |
-| VER-007 | partial | partial | Minimal response is the answers map; no response model or persistence semantics. | WI-0031 |
+| VER-007 | partial | partial | Minimal response is the answers map; no response model or persistence semantics. **WI-0042:** generic minimal response (question id to value or special state, absence is unanswered) with per-answer validation (`Template.checkAnswers`). | WI-0031, WI-0042 |
 
 ## Advanced stress trial (ARX)
 
 | Group | Baseline | Current | Evidence or gap | Work items |
 |---|---|---|---|---|
 | ARX-001 | partial | partial | CI runs Praxis validation, Limen verify, foundations and browser suites. Framework friction evidence not recorded. | WI-0010 |
-| ARX-002 | partial | partial | Session phases with legal transitions; no capability/obligation/unknown-effect model. | WI-0002 |
+| ARX-002 | partial | partial | Session phases with legal transitions; no capability/obligation/unknown-effect model. **WI-0042:** template lifecycle as explicit derived state with capabilities (allowed actions) derived from it, not granted separately. | WI-0002, WI-0042 |
 | ARX-003 | partial | partial | F# authority through Limen, tested (`BoundaryTests`, Playwright). Navigation, clipboard and entropy not yet used. **WI-0032:** Navigation now crosses the real F# WASM/Limen boundary with browser evidence. Clipboard and entropy remain. | WI-0032 |
 | ARX-004 | missing | partial | No focus, entropy or clock capability. **WI-0033:** cryptographic entropy from the WASM runtime's CSPRNG (Web Crypto) at the application edge, refused if unusable. Not yet a negotiated Limen entropy pack; focus and clock not built. | WI-0033 |
 | ARX-005 | missing | missing | No execution plan or incremental evaluator. | WI-0010 |
@@ -205,7 +205,7 @@ group, which also needs storage, UI and concurrency.
 | SCS-014 | partial | partial | Native radios, keyboard operable, no default answer. | WI-0004 |
 | SCS-015 | missing | missing | No selector-to-scorer compatibility check. | WI-0007 |
 | SCS-016 | missing | missing | No encoding. | WI-0031 |
-| SCS-017 | missing | missing | No authoring obligations. | WI-0003 |
+| SCS-017 | missing | partial | No authoring obligations. **WI-0042:** ordinary built-in scorers are authored without expressions; scoring preview and fixtures cover included/excluded counts and final values. The contribution-level preview (mapping, weighting, numerator/denominator, bands) is WI-0044's trace. | WI-0003, WI-0042 |
 | SCS-018 | missing | missing | No web-component handoff catalog. | WI-0004 |
 | SCS-019 | n/a | n/a | Non-goals; respected (no custom expression or free text added). | n/a |
 
@@ -239,8 +239,8 @@ Counts of the **Current** column, recomputed by each change that updates it
 
 | Corpus | Groups | Current tested | Current partial | Current missing | n/a |
 |---|---:|---:|---:|---:|---:|
-| Core survey engine | 72 | 5 | 42 | 25 | 0 |
+| Core survey engine | 72 | 6 | 53 | 13 | 0 |
 | Advanced stress trial | 15 | 0 | 12 | 3 | 0 |
 | Administrator console | 77 | 0 | 1 | 76 | 0 |
-| Scoring and selector completeness | 19 | 0 | 8 | 10 | 1 |
-| **Ledger total** | **183** | **5** | **63** | **114** | **1** |
+| Scoring and selector completeness | 19 | 0 | 9 | 9 | 1 |
+| **Ledger total** | **183** | **6** | **75** | **101** | **1** |
