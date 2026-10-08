@@ -244,7 +244,7 @@ let private link (seed: byte) (group: OpaqueId) =
 
 [<Fact>]
 let ``an administrator creates a group, imports into it, and finalization waits for its obligations`` () =
-    let _, _, page = signedIn ()
+    let browser, _, page = signedIn ()
     page.Event("navigate", key = "groups")
     Assert.True(page.Flag "canCreateGroup")
     page.Event("newGroupExpected", value = "2")
@@ -268,6 +268,27 @@ let ``an administrator creates a group, imports into it, and finalization waits 
     // Calculated analysis and lineage sit beside the canonical result (ADM-012, ADM-020).
     Assert.NotEmpty(page.Items "analysis")
     Assert.StartsWith("sha256:", page.Text "lineage")
+    // Exploration (ADM-019): a chart of section means, drill into a section's
+    // distribution, show percentages; the address holds it, so back restores it.
+    Assert.Equal(Pilot.assessment.Dimensions.Length, page.Items("chart").Length)
+    Assert.Contains("Section means", page.Text "chartDescription")
+    let first = Pilot.assessment.Dimensions.Head.Id
+    page.Event("exploreSection", key = first)
+    Assert.True(page.Flag "hasDistribution")
+    Assert.Equal(5, page.Items("distribution").Length)
+    page.Event("exploreDisplay", value = "percent")
+    Assert.True(page.Flag "explorePercent")
+    let explored = browser.Hash
+    Assert.Contains($"/explore/{first}/name/percent", explored)
+    page.Send $"""{{"kind":"LocationChanged","location":{{"path":"/web/admin/index.html","hash":"#/groups/{key}"}}}}"""
+    Assert.False(page.Flag "hasDistribution")
+    page.Send $"""{{"kind":"LocationChanged","location":{{"path":"/web/admin/index.html","hash":"{explored}"}}}}"""
+    Assert.True(page.Flag "hasDistribution")
+    Assert.True(page.Flag "explorePercent")
+    // Limen sends a checkbox's value either way, with whether it is checked.
+    page.Send $"""{{"kind":"Event","event":{{"name":"exploreDisplay","value":"percent","checked":false}}}}"""
+    Assert.False(page.Flag "explorePercent")
+    Assert.EndsWith("/count", browser.Hash)
     // The report state travels in the URL while it is small (ARP-004).
     Assert.StartsWith("a=1.", page.Text "reportFragment")
 

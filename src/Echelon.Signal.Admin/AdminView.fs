@@ -63,6 +63,104 @@ let private obligations (dataset: DatasetSummary) =
           if not g.Problems.IsEmpty then AdminState.RepairCorruptRecords g.Problems.Length ])
     |> List.distinct
 
+let private glyph =
+    function
+    | "circle" -> "●"
+    | "square" -> "■"
+    | "triangle" -> "▲"
+    | "diamond" -> "◆"
+    | "star" -> "★"
+    | "plus" -> "✚"
+    | _ -> "○"
+
+let private marks (compiled: Visualization.Compiled) =
+    compiled.Marks
+    |> List.map (fun m ->
+        [ "key", Text m.Category
+          "category", Text m.Category
+          "value", Text m.Text
+          "position", Number(defaultArg m.Position 0.0)
+          "unavailable", Flag(not m.Available)
+          "pattern", Text m.Pattern
+          "symbol", Text(glyph m.Symbol)
+          "colour", Text m.Colour ])
+
+let private warningText =
+    function
+    | Visualization.TruncatedAxis -> "The axis does not start at zero."
+    | Visualization.TooManyCategories n -> $"{n} categories: a table may read better."
+    | Visualization.MissingValues n -> $"{n} value(s) cannot be shown and are marked, not drawn as zero."
+    | Visualization.TotalWithheldForSuppression -> "The total is withheld so suppressed values cannot be inferred."
+
+/// The open group's charts (ADM-015..017, ADM-019): section means, and the
+/// distribution of a section the person drilled into.
+let private charts (model: Model) (group: GroupSummary option) =
+    let e = model.Exploration
+
+    let sectionChart =
+        group
+        |> Option.map (fun g ->
+            let spec =
+                { Visualization.defaultSpec Visualization.Bar "Section means" with
+                    Sort = if e.SortByValue then Visualization.ByValueDescending else Visualization.ByOrder }
+
+            let data =
+                g.Sections
+                |> List.mapi (fun i (id, score) ->
+                    ({ Category = id
+                       Value =
+                         match score with
+                         | Some v -> Analysis.Value v
+                         | None -> Analysis.Unavailable(Analysis.Suppressed(g.MinimumReportable, g.Accepted))
+                       Order = i }: Visualization.Datum))
+
+            Visualization.compile spec data)
+
+    let distribution =
+        match group, e.Section with
+        | Some g, Some section ->
+            match g.Distributions.TryFind section with
+            | Some(Ok bins) ->
+                let total = bins |> List.sumBy (fun (_, _, n) -> n)
+
+                let spec =
+                    { Visualization.defaultSpec Visualization.Histogram $"Distribution of {section}" with
+                        Dimension = Visualization.Binned
+                        Sort = Visualization.ByOrder
+                        Unit = if e.Percent then Visualization.Percent0To1 else Visualization.Count
+                        Scale = { Minimum = 0.0; Maximum = (if e.Percent then 1.0 else float (max 1 total)) } }
+
+                let data =
+                    bins
+                    |> List.mapi (fun i (lower, upper, n) ->
+                        ({ Category = $"{lower:F0}-{upper:F0}"
+                           Value = Analysis.Value(if e.Percent then (if total = 0 then 0.0 else float n / float total) else float n)
+                           Order = i }: Visualization.Datum))
+
+                Some(Visualization.compile spec data)
+            | Some(Error reason) -> Some(Error [ Visualization.IllegalShape("Histogram", $"%A{reason}") ])
+            | None -> None
+        | _ -> None
+
+    let items (compiled: Result<Visualization.Compiled, Visualization.Refusal list> option) =
+        match compiled with
+        | Some(Ok c) -> Items(marks c), Value(Text c.Description), Value(Text(c.Warnings |> List.map warningText |> String.concat " "))
+        | Some(Error refusals) -> Items [], Value(Text $"This chart cannot be drawn: %A{refusals.Head}"), Value(Text "")
+        | None -> Items [], Value(Text ""), Value(Text "")
+
+    let sectionItems, sectionDescription, sectionWarnings = items sectionChart
+    let distributionItems, distributionDescription, _ = items distribution
+
+    [ "chart", sectionItems
+      "chartDescription", sectionDescription
+      "chartWarnings", sectionWarnings
+      "hasDistribution", Value(Flag distribution.IsSome)
+      "distribution", distributionItems
+      "distributionDescription", distributionDescription
+      "exploreByValue", Value(Flag e.SortByValue)
+      "explorePercent", Value(Flag e.Percent)
+      "exploreSection", Value(Text(e.Section |> Option.defaultValue "")) ]
+
 /// The last batch's items by the view ADM-008 names.
 let private importViews: (string * (string -> bool)) list =
     [ "importPending", (fun code -> code = "pending")
@@ -170,6 +268,7 @@ let project (model: Model) : View =
           |> Option.defaultValue []
       )
       "lineage", text (selected |> Option.map _.Lineage |> Option.defaultValue "")
+      yield! charts model selected
       "canImport", enabled AdminState.CanImportBatch
       "importText", text model.ImportText
       "importFile", flag (model.ImportOrigin = ResultRecord.ImportedTextFile)

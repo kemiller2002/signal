@@ -30,6 +30,8 @@ type GroupSummary =
       Mode: IdentityMode
       Expected: int
       Accepted: int
+      /// The privacy minimum below which scores are suppressed.
+      MinimumReportable: int
       Status: GroupLifecycle.Status
       Phase: AdminState.GroupPhase
       /// Section scores as the report state shows them (suppressed are None).
@@ -42,6 +44,8 @@ type GroupSummary =
       UnreconciledBatches: int
       /// Calculated measures per section (ADM-012): section, measure, value or reason.
       Analysis: (string * string * string) list
+      /// Score distribution bins per section, or why there are none.
+      Distributions: Map<string, Result<(float * float * int) list, Analysis.Unavailable>>
       /// The group result's derivation hash and contribution count (ADM-020).
       Lineage: string
       Problems: string list }
@@ -69,6 +73,7 @@ let routeOf (hash: string) =
     match hash.TrimStart('#').Split('/', StringSplitOptions.RemoveEmptyEntries) with
     | [| "groups" |] -> Groups
     | [| "groups"; key |] -> Group key
+    | [| "groups"; key; "explore"; _; _; _ |] -> Group key
     | [| "administrators" |] -> Administrators
     | [| "storage" |] -> Storage
     | _ -> Overview
@@ -80,6 +85,38 @@ let hashOf =
     | Group key -> $"#/groups/{key}"
     | Administrators -> "#/administrators"
     | Storage -> "#/storage"
+
+/// How the open group is being explored (ADM-019): the section drilled
+/// into, the sort and counts or percentages. It lives in the address, so
+/// back and forward restore it.
+type Exploration =
+    { Section: string option
+      SortByValue: bool
+      Percent: bool }
+
+let defaultExploration =
+    { Section = None
+      SortByValue = false
+      Percent = false }
+
+/// The address of a group explored this way.
+let explorationHash (key: string) (exploration: Exploration) =
+    if exploration = defaultExploration then
+        hashOf (Group key)
+    else
+        let section = exploration.Section |> Option.defaultValue "all"
+        let sort = if exploration.SortByValue then "value" else "name"
+        let display = if exploration.Percent then "percent" else "count"
+        $"#/groups/{key}/explore/{section}/{sort}/{display}"
+
+/// The exploration an address holds.
+let explorationOf (hash: string) =
+    match hash.TrimStart('#').Split('/', StringSplitOptions.RemoveEmptyEntries) with
+    | [| "groups"; _; "explore"; section; sort; display |] ->
+        { Section = (if section = "all" then None else Some section)
+          SortByValue = (sort = "value")
+          Percent = (display = "percent") }
+    | _ -> defaultExploration
 
 /// A message for the person: a stable code and a sentence (ADM-031).
 type Notice =
@@ -108,6 +145,7 @@ type Model =
       Notice: Notice option
       Busy: bool
       Conflict: Conflicts.Conflict option
+      Exploration: Exploration
       /// The provider's callback parameters the page was opened with, if any.
       CallbackQuery: (string * string) list }
 
@@ -130,6 +168,7 @@ let initial (catalog: CatalogEntry list) =
       Notice = None
       Busy = false
       Conflict = None
+      Exploration = defaultExploration
       CallbackQuery = [] }
 
 /// What the page asks the application to do.
@@ -242,6 +281,21 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
             let route = Group groupKey
             { model with Route = route; Busy = true; Notice = None }, [ Navigate(hashOf route); OpenGroup groupKey ]
         | None -> model, []
+    | "exploreSort"
+    | "exploreDisplay"
+    | "exploreSection" ->
+        match routeKey with
+        | Some groupKey ->
+            let e = model.Exploration
+
+            let next =
+                match name with
+                | "exploreSort" -> { e with SortByValue = (value = "value") }
+                | "exploreDisplay" -> { e with Percent = (value = "percent") }
+                | _ -> { e with Section = (match key with Some "all" | None -> None | Some section -> Some section) }
+
+            { model with Exploration = next }, [ Navigate(explorationHash groupKey next) ]
+        | None -> model, []
     | "filter" -> { model with Filter = value }, []
     | "importText" -> { model with ImportText = value }, []
     | "importOrigin" ->
@@ -307,7 +361,7 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
 /// The next model and the effects to perform.
 let update (msg: Msg) (model: Model) : Model * Effect list =
     match msg with
-    | Started(hash, query) -> { model with Route = routeOf hash; CallbackQuery = query }, [ ReadConfiguration ]
+    | Started(hash, query) -> { model with Route = routeOf hash; Exploration = explorationOf hash; CallbackQuery = query }, [ ReadConfiguration ]
     | ConfigurationRead None -> { model with ConfigurationProblem = Some "This deployment's configuration could not be read." }, []
     | ConfigurationRead(Some text) ->
         match Deployment.parse text with
@@ -364,5 +418,5 @@ let update (msg: Msg) (model: Model) : Model * Effect list =
             Notice = Some { Code = "SIGNAL.STORAGE.OFFLINE"; Message = "The data store cannot be reached. What is shown may be out of date; changes are unavailable."; Infrastructure = true } },
         []
     | ConflictFound conflict -> { model with Conflict = Some conflict; Busy = false }, []
-    | LocationMoved hash -> { model with Route = routeOf hash }, []
+    | LocationMoved hash -> { model with Route = routeOf hash; Exploration = explorationOf hash }, []
     | Ui(name, key, value) -> onUi model name key value

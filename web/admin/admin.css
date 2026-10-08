@@ -2,3 +2,12 @@
    tokens, foundations and components, from the installed package, never a copy. */
 @import "../../node_modules/@echelon-foundry/design-system/dist/all.css";
 @import "../../web-kernel/page.css";
+
+/* Chart marks: a pattern beside every colour, so colour is never the only
+   carrier (ADM-017). Values and positions come from the engine. */
+.chart meter { inline-size: 100%; min-block-size: 1rem; }
+.chart tr[data-pattern="diagonal"] meter { background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgb(0 0 0 / 0.25) 4px 6px); }
+.chart tr[data-pattern="dots"] meter { background-image: radial-gradient(rgb(0 0 0 / 0.3) 1px, transparent 1.5px); background-size: 6px 6px; }
+.chart tr[data-pattern="cross"] meter { background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgb(0 0 0 / 0.2) 4px 5px), repeating-linear-gradient(-45deg, transparent 0 4px, rgb(0 0 0 / 0.2) 4px 5px); }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+@media (forced-colors: active) { .chart meter { forced-color-adjust: auto; } }

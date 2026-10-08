@@ -75,6 +75,16 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   template upgrades), `AnalysisState` (URL-safe analysis state, saved
   analyses, inverse roster commands). The page shows each open group's
   calculated measures and lineage.
+- Visualization (WI-0049): `Visualization` (typed specification compiled
+  and validated in F#: legal shapes, suitability warnings, explicit missing
+  values, withheld totals, accessible description and table, palette with
+  patterns and symbols, contrast), `Dashboard` (versioned definitions,
+  legal edits, device projections, limits on read), `Locale` (presentation
+  only: numbers, percentages, dates, plurals, right-to-left), `Regression`
+  (semantic assertions and what a change broke). The page explores the open
+  group (section chart, drill to a distribution, sort, counts or
+  percentages) with the exploration in the address. A checkbox event that
+  arrives unchecked carries an empty value (`AdminProtocol`).
 
 ## Current state (2026-10-07)
 

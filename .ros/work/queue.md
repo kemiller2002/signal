@@ -61,7 +61,7 @@
 | WI-0046 | Signal 09: reporting contract and Folio renderers - report blocks, group reports, comparisons, the standard results print profile (RPT-001..006, SRPP-001..185) | complete | signal, order:09, reporting, folio | medium |
 | WI-0047 | Signal 10: administrator application state and UX on Limen/Forma - groups, read-only and degraded modes, conflict workspace, sealing and finalization (ADM-001, ADM-002, ADM-007, ADM-031..033, ADM-035, ADM-062, ADM-065, ADM-066, ADM-070, ADM-077) | complete | signal, order:10, admin, ui, limen, forma | high |
 | WI-0048 | Signal 11: analytics, comparisons, lineage, change-impact and dependency invalidation (ADM-012..014, ADM-019, ADM-020, ADM-041, ADM-049, ADM-051, ADM-054; ARX-012 remainder) | complete | signal, order:11, analytics | medium |
-| WI-0049 | Signal 12: visualization grammar, dashboards and accessibility (ADM-015..018, ADM-050, ADM-069) | captured | signal, order:12, visualization | medium |
+| WI-0049 | Signal 12: visualization grammar, dashboards and accessibility (ADM-015..018, ADM-050, ADM-069) | active | signal, order:12, visualization | medium |
 | WI-0050 | Signal 13: report builder, snapshots, exports, configuration packages and policy packs (ADM-021..023, ADM-047, ADM-048, ADM-063) | captured | signal, order:13, reports, exports | medium |
 | WI-0051 | Signal 14: administrator privacy, audit without PII, retention and deletion (ADM-024, ADM-030, ADM-045, ADM-064; ARX-009; ID-003 remainder) | captured | signal, order:14, privacy, security | high |
 | WI-0052 | Signal 15: storage migration, backup and restore, schema evolution and operational repair (ADM-028, ADM-029, ADM-034, ADM-053, ADM-074..076) | captured | signal, order:15, migration, backup, depends:arca | medium |

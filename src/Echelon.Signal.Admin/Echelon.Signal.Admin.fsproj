@@ -28,12 +28,16 @@
     <Compile Include="GroupLifecycle.fs" />
     <Compile Include="AdminState.fs" />
     <Compile Include="Conflicts.fs" />
-    <Compile Include="AdminApp.fs" />
-    <Compile Include="AdminView.fs" />
     <Compile Include="Analysis.fs" />
     <Compile Include="Comparison.fs" />
     <Compile Include="Dependencies.fs" />
     <Compile Include="AnalysisState.fs" />
+    <Compile Include="Visualization.fs" />
+    <Compile Include="Dashboard.fs" />
+    <Compile Include="Locale.fs" />
+    <Compile Include="Regression.fs" />
+    <Compile Include="AdminApp.fs" />
+    <Compile Include="AdminView.fs" />
   </ItemGroup>
 
   <ItemGroup>
