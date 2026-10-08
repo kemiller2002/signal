@@ -9,6 +9,7 @@ applications; see `DF-SIGNAL-FND-2026-0002`:
 | Tier | Path | Role |
 |---|---|---|
 | Limen engine (pure) | `src/Echelon.Signal.Engine` | Assessment, scoring, session transitions, view projection. |
+| Limen engine (administrator domain) | `src/Echelon.Signal.Admin` | Deployment configuration, storage profiles, Signal's Arca namespace and storage manifest (pure, over Arca.Core). |
 | Limen engine (application) | `src/Echelon.Signal.Application` | Limen protocol, handshake, Aegis boundary. |
 | Limen kernel (WASM shim) | `src/Echelon.Signal.Browser` | One `[JSExport]`; no decisions. |
 | Limen kernel (browser) | `web-kernel/`, `web/` | `BrowserKernel` start-up; Forma markup and Folio print surface. |

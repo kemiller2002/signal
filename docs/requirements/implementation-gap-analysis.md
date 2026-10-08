@@ -174,16 +174,94 @@ Everything else stays assigned to the work items the ledger already names
 
 ## Administrator console (ADM)
 
-No administrator application exists at baseline. ADM-001 through ADM-076 are
-`missing`; their work items are those in the ledger (WI-0011 through WI-0020).
-The import, deduplication and aggregation core that WI-0034 adds is the pure
-domain beneath ADM-008 through ADM-011; it does not by itself satisfy any ADM
-group, which also needs storage, UI and concurrency.
+No administrator application exists at baseline. ADM-001 through ADM-076 were
+`missing`; the ledger's work items (WI-0011 through WI-0020) are refined by
+WI-0038 through WI-0054. The import, deduplication and aggregation core that
+WI-0034 adds is the pure domain beneath ADM-008 through ADM-011; it does not by
+itself satisfy any ADM group, which also needs storage, UI and concurrency.
+WI-0038 adds the administrator domain project (`Echelon.Signal.Admin`) over
+Arca: deployment configuration, storage profiles, Signal's namespace and the
+storage manifest. Each group has its own row from WI-0038 on.
 
-| Group | Baseline | Current | Evidence or gap |
-|---|---|---|---|
-| ADM-001 to ADM-076 | missing | missing | No administrator product, storage provider, analytics, visualization, report builder or lifecycle. |
-| ADM-077 | partial | partial | Aegis is required and used at the respondent boundary; no administrator boundary exists. |
+| Group | Baseline | Current | Evidence or gap | Work items |
+|---|---|---|---|---|
+| ADM-001 | missing | missing | Administrator Product Boundary and No-PII Contract: not built yet. | WI-0047 |
+| ADM-002 | missing | missing | Administrator State System: not built yet. | WI-0047 |
+| ADM-003 | missing | missing | Storage Provider Abstraction: not built yet. | WI-0039 |
+| ADM-004 | missing | partial | **WI-0038:** the repository owner/name, branch and base path are deployment configuration (`Deployment`), never constants; Signal owns `<base>/signal` and keeps every dataset in `datasets/<id>` beside other applications' data; records are Arca canonical JSON; the layout is versioned in the storage manifest; the configuration has no place for a token. The GitHub provider itself, its credential and capability checks before writes are WI-0039 and WI-0040. | WI-0038, WI-0039, WI-0040 |
+| ADM-005 | missing | partial | **WI-0038:** each dataset carries a Signal storage manifest (`DatasetManifest`): dataset id, root namespace, storage layout, canonicalization, result, group-result, template, administrator-state, report-definition and visualization schema versions, supported encodings and the creating application version, beside Arca's manifest (storage schema, provider contract, location, migration state). It holds no personal data; a future version, another dataset's manifest, another folder or a tampered record fails explicitly. Staging loading so validation completes before mutable capabilities exist is WI-0039. | WI-0038, WI-0039 |
+| ADM-006 | missing | missing | Future Installable Service Storage Option: not built yet. | WI-0039 |
+| ADM-007 | missing | missing | Group Administration: not built yet. | WI-0047 |
+| ADM-008 | missing | missing | Submission Intake and Import Queue: not built yet. | WI-0041 |
+| ADM-009 | missing | missing | Import Idempotency, Concurrency, and Unknown Effects: not built yet. | WI-0041 |
+| ADM-010 | missing | missing | Durable Result and Aggregate Storage Model: not built yet. | WI-0041 |
+| ADM-011 | missing | missing | Incremental Aggregation Engine: not built yet. | WI-0041 |
+| ADM-012 | missing | missing | Query and Analysis Model: not built yet. | WI-0048 |
+| ADM-013 | missing | missing | Statistical and Measurement Analysis: not built yet. | WI-0048 |
+| ADM-014 | missing | missing | Cross-Group, Historical, and Version Comparison: not built yet. | WI-0048 |
+| ADM-015 | missing | missing | Signal Visualization Grammar: not built yet. | WI-0049 |
+| ADM-016 | missing | missing | Visualization Suitability and Anti-Misleading Rules: not built yet. | WI-0049 |
+| ADM-017 | missing | missing | Visualization Accessibility: not built yet. | WI-0049 |
+| ADM-018 | missing | missing | Dashboard System: not built yet. | WI-0049 |
+| ADM-019 | missing | missing | Interactive Exploration and Drill-Down: not built yet. | WI-0048 |
+| ADM-020 | missing | missing | Data-Lineage Explorer: not built yet. | WI-0048 |
+| ADM-021 | missing | missing | Report Builder: not built yet. | WI-0050 |
+| ADM-022 | missing | missing | Report Snapshots and Reproducibility: not built yet. | WI-0050 |
+| ADM-023 | missing | missing | Exports: not built yet. | WI-0050 |
+| ADM-024 | missing | missing | Privacy-Preserving Aggregation and Disclosure Controls: not built yet. | WI-0051 |
+| ADM-025 | missing | missing | Storage Security and Integrity: not built yet. | WI-0038, WI-0039 |
+| ADM-026 | missing | missing | GitHub Rate Limits, Scale, and Performance: not built yet. | WI-0039 |
+| ADM-027 | missing | missing | Rebuildable Indexes and Materialized Views: not built yet. | WI-0041 |
+| ADM-028 | missing | missing | Storage Migration and Provider Portability: not built yet. | WI-0052 |
+| ADM-029 | missing | missing | Backup, Restore, and Disaster Recovery: not built yet. | WI-0052 |
+| ADM-030 | missing | missing | Audit Without PII: not built yet. | WI-0051 |
+| ADM-031 | missing | missing | Administrator UX Information Architecture: not built yet. | WI-0047 |
+| ADM-032 | missing | missing | Search, Filtering, and Saved Analysis: not built yet. | WI-0047 |
+| ADM-033 | missing | missing | Read-Only and Degraded Modes: not built yet. | WI-0047 |
+| ADM-034 | missing | missing | Schema Evolution and Compatibility: not built yet. | WI-0052 |
+| ADM-035 | missing | missing | Limen Boundary for Administrator UI: not built yet. | WI-0047 |
+| ADM-036 | missing | missing | Advanced Stress and Adversarial Test Program: not built yet. | WI-0053 |
+| ADM-037 | missing | missing | Property and Model-Based Tests: not built yet. | WI-0053 |
+| ADM-038 | missing | missing | Performance and Resource Limits: not built yet. | WI-0053 |
+| ADM-039 | missing | missing | Optional Advanced Analytics Extensions: not built yet. | WI-0054 |
+| ADM-040 | missing | missing | Phase Boundaries: not built yet. | WI-0054 |
+| ADM-041 | missing | missing | Change-Impact Preview and Obligation Planning: not built yet. | WI-0048 |
+| ADM-042 | missing | missing | Administrator Sandbox and Simulation Mode: not built yet. | WI-0054 |
+| ADM-043 | missing | missing | Synthetic and Adversarial Survey Data Generator: not built yet. | WI-0054 |
+| ADM-044 | missing | missing | Storage Provider Conformance Suite: not built yet. | WI-0039 |
+| ADM-045 | missing | missing | Data Lifecycle, Retention, Archival, and Deletion Semantics: not built yet. | WI-0051 |
+| ADM-046 | missing | missing | Durable Store as Untrusted Input: not built yet. | WI-0039 |
+| ADM-047 | missing | missing | Portable Configuration Packages: not built yet. | WI-0050 |
+| ADM-048 | missing | missing | Versioned Policy Packs: not built yet. | WI-0050 |
+| ADM-049 | missing | missing | Template Upgrade and Successor-Group Impact Analysis: not built yet. | WI-0048 |
+| ADM-050 | missing | missing | Report and Visualization Regression Verification: not built yet. | WI-0049 |
+| ADM-051 | missing | missing | Definition and State Diffing: not built yet. | WI-0048 |
+| ADM-052 | missing | missing | Reversible Administration, Saved Views, and Capability Explanation: not built yet. | WI-0047 |
+| ADM-053 | missing | missing | Operational Diagnostics and Localization Preview: not built yet. | WI-0052 |
+| ADM-054 | missing | missing | End-to-End Derived-State Invalidation and Dependency Graph: not built yet. | WI-0048 |
+| ADM-055 | missing | missing | Template Registry and Exact Template Resolution: not built yet. | WI-0039 |
+| ADM-056 | missing | missing | Credential Lifecycle and Capability Revalidation: not built yet. | WI-0040 |
+| ADM-057 | missing | partial | **WI-0038:** storage profiles bind a provider type, locator, branch and base path under a stable id; datasets name their profile by id; labels are presentation (relabelling moves nothing); a dataset whose profile is gone is a configuration error; a location edited under existing data does not open (a migration is required). The credential slot and verification state are WI-0040 and WI-0039. | WI-0038, WI-0039, WI-0040 |
+| ADM-058 | missing | missing | GitHub Repository Growth, Rollover, and Compaction Strategy: not built yet. | WI-0039 |
+| ADM-059 | missing | missing | Storage Cost and Operation Budget Estimation: not built yet. | WI-0053 |
+| ADM-060 | missing | missing | Batch Import Transaction and Resume Semantics: not built yet. | WI-0041 |
+| ADM-061 | missing | missing | Quarantine Boundary for Untrusted Artifacts: not built yet. | WI-0041 |
+| ADM-062 | missing | missing | Conflict Resolution Workspace: not built yet. | WI-0047 |
+| ADM-063 | missing | missing | Explicit Dependency Pinning for Reports, Dashboards, and Snapshots: not built yet. | WI-0050 |
+| ADM-064 | missing | missing | Reproducibility Versus Deletion Policy Conflict: not built yet. | WI-0051 |
+| ADM-065 | missing | missing | Dataset Sealing: not built yet. | WI-0047 |
+| ADM-066 | missing | missing | Group Close and Formal Finalization Ceremony: not built yet. | WI-0047 |
+| ADM-067 | missing | missing | Import Provenance Without Person Identity: not built yet. | WI-0041 |
+| ADM-068 | missing | missing | Clock, Calendar, Time Zone, and Period Semantics: not built yet. | WI-0053 |
+| ADM-069 | missing | missing | Internationalization and Bidirectional Layout Semantics: not built yet. | WI-0049 |
+| ADM-070 | missing | missing | Offline and Interrupted Administrator Session Behavior: not built yet. | WI-0047 |
+| ADM-071 | missing | missing | Browser Secret Storage Policy: not built yet. | WI-0040 |
+| ADM-072 | missing | missing | Cross-Tab Credential and Capability Coherence: not built yet. | WI-0040 |
+| ADM-073 | missing | missing | GitHub Branch Protection and Pull Request Storage Mode: not built yet. | WI-0039 |
+| ADM-074 | missing | missing | Operational Repair Preview and Plan: not built yet. | WI-0052 |
+| ADM-075 | missing | missing | Invariant Health Dashboard: not built yet. | WI-0052 |
+| ADM-076 | missing | missing | Proof-Carrying Derived Artifacts: not built yet. | WI-0052 |
+| ADM-077 | partial | partial | Aegis is required and used at the respondent boundary; no administrator boundary exists. | WI-0047 |
 
 ## Scoring and selector completeness (SCS)
 
@@ -241,6 +319,6 @@ Counts of the **Current** column, recomputed by each change that updates it
 |---|---:|---:|---:|---:|---:|
 | Core survey engine | 72 | 15 | 55 | 2 | 0 |
 | Advanced stress trial | 15 | 0 | 13 | 2 | 0 |
-| Administrator console | 77 | 0 | 1 | 76 | 0 |
+| Administrator console | 77 | 0 | 4 | 73 | 0 |
 | Scoring and selector completeness | 19 | 7 | 11 | 0 | 1 |
-| **Ledger total** | **183** | **22** | **80** | **80** | **1** |
+| **Ledger total** | **183** | **22** | **83** | **77** | **1** |

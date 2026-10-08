@@ -13,6 +13,14 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   Arca 0.2.1 and Fides 0.2.0 as attested NuGet release assets in
   `vendor/nuget` (mapped in `NuGet.config`, pinned in
   `Directory.Packages.props`). `conditor verify` passes.
+- Administrator domain (`src/Echelon.Signal.Admin`, pure F# over Arca.Core,
+  WI-0038 onward): `Deployment` (closed, validated deployment configuration:
+  environment, Fides identity, storage profiles, datasets and their bootstrap
+  administrators by GitHub numeric id), `Storage` (Signal's namespace
+  `<base>/signal`, dataset folders `datasets/<id>` in their profile's
+  repository, set-up operations, opening against Arca's manifest),
+  `DatasetManifest` (ADM-005 storage manifest). Tests run against Arca's
+  in-memory provider (`StorageTests`).
 
 ## Current state (2026-10-07)
 
