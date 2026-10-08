@@ -25,6 +25,9 @@ let MessageInvalid = "SIGNAL.BOUNDARY.MESSAGE_INVALID"
 [<Literal>]
 let Unexpected = "SIGNAL.BOUNDARY.UNEXPECTED"
 
+[<Literal>]
+let CapabilityUnavailable = "SIGNAL.BOUNDARY.CAPABILITY_UNAVAILABLE"
+
 /// Aegis configured once for the application, and validated before it is
 /// trusted. The sink is standard error, which the browser runtime routes to
 /// the console; nothing is persisted (see aegis-boundaries.json).
@@ -41,6 +44,7 @@ let classify (aegis: AegisConfig) (scope: Scope) (ex: exn) =
         match ex with
         | :? JsonException
         | MalformedInput _ -> MessageInvalid, DataFailure, $"Signal could not read a message from the page. {unchanged}"
+        | CapabilityFailed _ -> CapabilityUnavailable, IntegrationFailure, $"This browser could not provide something Signal needs. {unchanged}"
         | _ -> Unexpected, IntegrationFailure, $"Signal encountered an unexpected problem. {unchanged}"
 
     Aegis.faultOf aegis scope (FaultCode code) category FaultSeverity.Error OperationOnly Transient Continue message ex

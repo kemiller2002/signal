@@ -1,0 +1,4 @@
+/* The administrator page. Forma (pinned @echelon-foundry/design-system) owns
+   tokens, foundations and components, from the installed package, never a copy. */
+@import "../../node_modules/@echelon-foundry/design-system/dist/all.css";
+@import "../../web-kernel/page.css";

@@ -15,4 +15,9 @@ public partial class SignalWasm
     [JSExport]
     internal static string Dispatch(string messageJson) =>
         Echelon.Signal.Application.Runtime.dispatch(messageJson);
+
+    /// <summary>One message for the administrator page (web/admin/).</summary>
+    [JSExport]
+    internal static string DispatchAdmin(string messageJson) =>
+        Echelon.Signal.Application.Runtime.dispatchAdmin(messageJson);
 }

@@ -21,6 +21,9 @@ open System.Text.Json.Nodes
 /// Externally sourced JSON did not have the shape the boundary expects.
 exception MalformedInput of path: string * expected: string
 
+/// The kernel cannot provide something the engine needs, or answered what it never asked.
+exception CapabilityFailed of capability: string * detail: string
+
 let parse (text: string) : JsonNode =
     // A JSON `null` document parses to a null reference.
     match Option.ofObj (JsonNode.Parse text) with

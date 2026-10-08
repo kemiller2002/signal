@@ -1077,10 +1077,10 @@
         "forma"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:09.109Z",
-      "updatedAt": "2026-10-08T17:47:11.000Z",
+      "updatedAt": "2026-10-08T17:51:40.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1095,7 +1095,7 @@
     {
       "id": "WI-0048",
       "title": "Signal 11: analytics, comparisons, lineage, change-impact and dependency invalidation (ADM-012..014, ADM-019, ADM-020, ADM-041, ADM-049, ADM-051, ADM-054; ARX-012 remainder)",
-      "description": "Depends on WI-0041. Refines WI-0014. Also carries WI-0039's remainder of ADM-046: analysis-expression limits when stored analyses are loaded. Also carries WI-0041's remainder of ADM-011: category counts, distribution bins, recommendation frequencies and comparison-ready metrics as incremental aggregate nodes.",
+      "description": "Depends on WI-0041. Refines WI-0014. Also carries WI-0039's remainder of ADM-046: analysis-expression limits when stored analyses are loaded. Also carries WI-0041's remainder of ADM-011: category counts, distribution bins, recommendation frequencies and comparison-ready metrics as incremental aggregate nodes. Also carries WI-0047's remainders: saved analysis definitions (ADM-032) and saved views and reversible administration (ADM-052).",
       "tags": [
         "signal",
         "order:11",
@@ -1105,7 +1105,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:09.436Z",
-      "updatedAt": "2026-10-08T17:47:11.000Z",
+      "updatedAt": "2026-10-08T18:16:49.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1145,7 +1145,7 @@
     {
       "id": "WI-0050",
       "title": "Signal 13: report builder, snapshots, exports, configuration packages and policy packs (ADM-021..023, ADM-047, ADM-048, ADM-063)",
-      "description": "Depends on WI-0046 and WI-0048. Refines WI-0016. Also carries WI-0039's remainder of ADM-025: storage locators and credentials never appear in exports or shareable report artifacts. Also carries WI-0041's remainders: saved report definitions and immutable report snapshots as stored layers (ADM-010), and quarantine for configuration packages (ADM-061).",
+      "description": "Depends on WI-0046 and WI-0048. Refines WI-0016. Also carries WI-0039's remainder of ADM-025: storage locators and credentials never appear in exports or shareable report artifacts. Also carries WI-0041's remainders: saved report definitions and immutable report snapshots as stored layers (ADM-010), and quarantine for configuration packages (ADM-061). Also carries WI-0047's remainders: the page's Reports, Dashboards, Snapshots and Audit areas (ADM-001, ADM-031), the Reporting and Snapshotting administrator states (ADM-002), group configuration editing, successor creation, per-group report definitions and storage profile in the page (ADM-007), the conflict workspace's resolution flow in the page (ADM-062), finalization with a formal report snapshot and FinalizationOutcomeUnknown reconciliation (ADM-066), importing a text file through Limen's files capability (ADM-008), and Aegis boundaries for export and download mechanisms (ADM-077).",
       "tags": [
         "signal",
         "order:13",
@@ -1156,7 +1156,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:10.206Z",
-      "updatedAt": "2026-10-08T17:47:11.000Z",
+      "updatedAt": "2026-10-08T18:16:49.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1197,7 +1197,7 @@
     {
       "id": "WI-0052",
       "title": "Signal 15: storage migration, backup and restore, schema evolution and operational repair (ADM-028, ADM-029, ADM-034, ADM-053, ADM-074..076)",
-      "description": "Depends on WI-0041 and arca slice 10 (derived indexes and migration, ARCA-MIG). Refines WI-0018. Also carries WI-0039's remainder of ADM-058: archive repositories, dataset rollover to a successor repository and compaction of rebuildable projections, all as migrations. Also carries WI-0041's remainder of ADM-061: quarantine for backup bundles, restored and migrated objects.",
+      "description": "Depends on WI-0041 and arca slice 10 (derived indexes and migration, ARCA-MIG). Refines WI-0018. Also carries WI-0039's remainder of ADM-058: archive repositories, dataset rollover to a successor repository and compaction of rebuildable projections, all as migrations. Also carries WI-0041's remainder of ADM-061: quarantine for backup bundles, restored and migrated objects. Also carries WI-0047's remainders: the StorageMigrationPlanned/Running/Verified administrator states (ADM-002) and Aegis boundaries for backup, restore and migration provider I/O (ADM-077).",
       "tags": [
         "signal",
         "order:15",
@@ -1209,7 +1209,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:10.842Z",
-      "updatedAt": "2026-10-08T17:47:11.000Z",
+      "updatedAt": "2026-10-08T18:16:49.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

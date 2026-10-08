@@ -15,6 +15,26 @@
       "$comment": "Every kernel message is parsed and dispatched inside Aegis.capture (Wire.handle). A message that is not the Limen shape the engine relies on, or that names an item or answer code the assessment does not define, is MESSAGE_INVALID. Programming defects (for example an event name index.html sends that the engine does not know) keep Aegis fail-loud semantics and surface as a Limen bridge error."
     },
     {
+      "name": "Limen engine message dispatch (administrator page)",
+      "kind": "ui-interop",
+      "owner": "Echelon.Signal.Application",
+      "codes": [
+        "SIGNAL.BOUNDARY.CAPABILITY_UNAVAILABLE",
+        "SIGNAL.BOUNDARY.MESSAGE_INVALID",
+        "SIGNAL.BOUNDARY.UNEXPECTED"
+      ],
+      "guarded": true,
+      "$comment": "Every administrator kernel message is parsed and dispatched inside Aegis.capture (AdminWire.handle), including the continuations of Fides' sign-in and Arca's storage work that the kernel's answers resume. A message that is not the Limen shape the engine relies on is MESSAGE_INVALID; a kernel that lacks the Http, Storage or signal.host support the page needs, or answers a request the engine never made, is CAPABILITY_UNAVAILABLE. Expected storage outcomes (conflicts, unknown outcomes, refusals, offline) are typed results shown as notices, not faults (AdminWire, ProviderContract.meaning)."
+    },
+    {
+      "name": "GitHub through Arca's GitHub adapter",
+      "kind": "external-integration",
+      "owner": "Echelon.Signal.Application",
+      "codes": [],
+      "guarded": true,
+      "$comment": "Operational GitHub failures are classified by Aegis's GitHub integration inside Arca's adapter (Arca.GitHub.Faults over Aegis.Integration.GitHub) and reach Signal as typed StorageFailure values with their Aegis fault code; Signal presents them through StorageFaults and never retries automatically (AER-002, AER-032, ADM-026)."
+    },
+    {
       "name": "Browser DOM, print, history navigation and clipboard",
       "kind": "browser-capability",
       "owner": "Limen BrowserKernel",
