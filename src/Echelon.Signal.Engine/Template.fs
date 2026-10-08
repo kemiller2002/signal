@@ -14,6 +14,8 @@ module Echelon.Signal.Engine.Template
 
 open System
 open System.Text.RegularExpressions
+open Echelon.Signal.Engine.Responses
+open Echelon.Signal.Engine.RuleModel
 
 /// The template schema this engine reads and writes.
 [<Literal>]
@@ -26,17 +28,6 @@ let EngineVersion = 1
 /// The response encoding the layout below is computed for (ResponseEncodingVersion).
 [<Literal>]
 let EncodingVersion = 1
-
-/// Answer states that are deliberately not values (CAN §6). Unanswered is
-/// the absence of an answer and is never declared.
-type SpecialState =
-    | DontKnow
-    | NotObserved
-    | NotApplicable
-
-/// Fixed order of special states: part of the canonical form and of the
-/// encoding layout (answer states follow values in this order).
-let specialStates = [ DontKnow; NotObserved; NotApplicable ]
 
 type ChoiceOption =
     { Id: string
@@ -143,8 +134,10 @@ type Capability =
     | UsesAdvancedValidation
     | UsesLocalization
 
-/// Capabilities this engine version supports. Later slices add to it.
-let supportedCapabilities: Set<Capability> = Set.empty
+/// Capabilities this engine version supports (WI-0043 added the rule
+/// capabilities). Later slices add to it.
+let supportedCapabilities: Set<Capability> =
+    Set.ofList [ UsesBranching; UsesConditionalSections; UsesDerivedFacts; UsesRecommendations; UsesAdvancedValidation ]
 
 type Compatibility =
     { SchemaVersion: int
@@ -182,7 +175,8 @@ type Content =
       Compatibility: Compatibility
       Presentation: Presentation
       Runtime: RuntimePolicy
-      Sections: Section list }
+      Sections: Section list
+      Rules: RuleSet }
 
 let defaultPresentation =
     { ItemsPerPage = None
@@ -241,20 +235,9 @@ let private identifierPattern = Regex(@"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$", Rege
 let isIdentifier (text: string) = identifierPattern.IsMatch text
 
 // ---------------------------------------------------------------------------
-// Answers (VER-007): the minimal response is a map from question id to a
-// state; absence is "unanswered".
+// Answer checking.
 // ---------------------------------------------------------------------------
 
-type AnswerValue =
-    | Flag of bool
-    | Point of int
-    | Choice of optionId: string
-
-type AnswerState =
-    | Value of AnswerValue
-    | Special of SpecialState
-
-type Answers = Map<string, AnswerState>
 
 /// Why an answer does not fit its question.
 type AnswerProblem =
@@ -310,139 +293,3 @@ let scoreSections (content: Content) (answers: Answers) : (Section * Scoring.Out
         |> Option.map (fun scoring ->
             let observations = scoredQuestions section |> List.map (fun q -> observation q (answers.TryFind q.Id))
             section, Scoring.evaluate scoring.Scorer observations))
-
-/// Explicit completion until WI-0043's rules: every required question of
-/// every required section has an answer (a special state is an answer).
-let isComplete (content: Content) (answers: Answers) =
-    content.Sections
-    |> List.filter _.Required
-    |> List.collect _.Questions
-    |> List.filter _.Required
-    |> List.forall (fun q -> answers.ContainsKey q.Id)
-
-// ---------------------------------------------------------------------------
-// Pagination (VER-004): presentation only; it never affects scoring or the
-// encoding layout, which follow template order.
-// ---------------------------------------------------------------------------
-
-type Page =
-    { Number: int
-      /// Question ids on the page, in template order.
-      Questions: string list }
-
-/// Pages, in order. A section starts a new page when the survey or the
-/// section says so; a page break starts one before its question; otherwise a
-/// page fills to the items-per-page of the section that opened it (the
-/// section's override, else the survey default, else unlimited).
-let pages (content: Content) : Page list =
-    let limitOf (section: Section) =
-        section.Presentation.ItemsPerPage |> Option.orElse content.Presentation.ItemsPerPage
-
-    // A page under construction: its limit and its question ids, newest first.
-    let step (closed: string list list, current: (int option * string list) option) (section: Section, index: int, question: Question) =
-        let startsSection = index = 0
-
-        let forcedBreak =
-            (startsSection && (content.Presentation.SectionStartsOnNewPage || section.Presentation.StartOnNewPage))
-            || List.contains question.Id section.Presentation.PageBreaksBefore
-
-        match current with
-        | None -> closed, Some(limitOf section, [ question.Id ])
-        | Some(limit, ids) ->
-            let full =
-                match limit with
-                | Some l -> ids.Length >= l
-                | None -> false
-
-            if forcedBreak || full then
-                List.rev ids :: closed, Some(limitOf section, [ question.Id ])
-            else
-                closed, Some(limit, question.Id :: ids)
-
-    let items = content.Sections |> List.collect (fun s -> s.Questions |> List.mapi (fun i q -> s, i, q))
-    let closed, last = items |> List.fold step ([], None)
-
-    let all =
-        match last with
-        | Some(_, ids) -> List.rev ids :: closed
-        | None -> closed
-
-    all |> List.rev |> List.mapi (fun i ids -> { Number = i + 1; Questions = ids })
-
-// ---------------------------------------------------------------------------
-// Encoding layout and URL capacity (CAN-004 §26, AUT-003 §27-28).
-// ---------------------------------------------------------------------------
-
-/// One question's fixed-width slot: state 0 is unanswered, then each value,
-/// then each offered special state, in `specialStates` order.
-type Slot =
-    { QuestionId: string
-      States: int
-      Bits: int }
-
-let private bitsFor states =
-    let rec go n = if (1 <<< n) >= states then n else go (n + 1)
-    go 1
-
-let layout (content: Content) : Slot list =
-    questions content
-    |> List.map (fun (_, q) ->
-        let states = 1 + cardinality q.Answer + q.SpecialStates.Length
-        { QuestionId = q.Id; States = states; Bits = bitsFor states })
-
-/// Bytes of a ResponseEncodingVersion 1 envelope around the answers: version
-/// and binding kind, the 8-byte template reference, the largest binding (two
-/// 16-byte ids), the 2-byte item count and the 4-byte integrity check.
-[<Literal>]
-let EnvelopeOverheadBytes = 2 + 8 + 32 + 2 + 4
-
-type Capacity =
-    { Questions: int
-      AnswerBits: int
-      AnswerBytes: int
-      EnvelopeBytes: int
-      /// Unpadded base64url characters of the largest envelope.
-      EncodedCharacters: int }
-
-let capacity (content: Content) : Capacity =
-    let slots = layout content
-    let bits = slots |> List.sumBy _.Bits
-    let answerBytes = (bits + 7) / 8
-    let envelope = answerBytes + EnvelopeOverheadBytes
-
-    { Questions = slots.Length
-      AnswerBits = bits
-      AnswerBytes = answerBytes
-      EnvelopeBytes = envelope
-      EncodedCharacters = (envelope * 8 + 5) / 6 }
-
-// ---------------------------------------------------------------------------
-// Instance runtime status (VER-003), derived, never stored. The clock is an
-// argument; nothing here reads one.
-// ---------------------------------------------------------------------------
-
-type InstanceStatus =
-    | NotStarted
-    | InProgress
-    | Completed
-    | Expired
-    | Cancelled
-
-/// What an instance is now. Completeness alone never makes it Completed:
-/// only finalization does (VER-003 "do not assume that response completeness
-/// alone is sufficient").
-let instanceStatus (cancelled: bool) (finalized: bool) (expiresAt: DateTimeOffset option) (now: DateTimeOffset) (answers: Answers) =
-    if cancelled then Cancelled
-    elif finalized then Completed
-    elif expiresAt |> Option.exists (fun e -> now >= e) then Expired
-    elif answers.IsEmpty then NotStarted
-    else InProgress
-
-/// Whether answers may still change under the template's runtime policy.
-let canChangeAnswers (runtime: RuntimePolicy) (status: InstanceStatus) =
-    match status with
-    | NotStarted
-    | InProgress -> true
-    | Completed -> runtime.AllowChangesAfterCompletion
-    | Expired
-    | Cancelled -> false

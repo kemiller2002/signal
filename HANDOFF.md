@@ -28,6 +28,10 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
     authoring, validation, fixtures, diff and immutable publication into a
     catalog (WI-0042). `Pilot.content` is SDRA in that form; the respondent
     page still runs on `Assessment`.
+  - `RuleModel`, `Rules`, `RuleChecks`, `RuleCanonical`: the shared typed
+    rule model (facts, flow, validation, completion, recommendations), its
+    deterministic evaluation, publication-time checks and canonical form
+    (WI-0043). `Groups`: roles, dependencies and group completion.
 - Application (`src/Echelon.Signal.Application`): Limen protocol (navigation
   replace and clipboard writeText effects), Aegis dispatch boundary, the
   entropy edge.

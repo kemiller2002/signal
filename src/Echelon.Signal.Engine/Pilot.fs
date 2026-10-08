@@ -78,7 +78,7 @@ let content: Template.Content =
           Selector =
             { Preset = Template.Frequency5
               Labels = [ Never; Rarely; Sometimes; Often; AlmostAlways ] |> List.map frequencyLabel }
-          SpecialStates = Template.specialStates
+          SpecialStates = Responses.specialStates
           Required = true
           Tags = [] }
 
@@ -103,14 +103,15 @@ let content: Template.Content =
               Scoring =
                 Some
                     { Scorer = dimensionScorer assessment
-                      Questions = [] } }) }
+                      Questions = [] } })
+      Rules = RuleModel.noRules }
 
 /// Assessment answers as generic answer state.
-let answerState (answer: Answer) : Template.AnswerState =
+let answerState (answer: Answer) : Responses.AnswerState =
     match answer with
-    | Rated f -> Template.Value(Template.Point(frequencyValue f))
-    | Withheld DontKnow -> Template.Special Template.DontKnow
-    | Withheld NotObserved -> Template.Special Template.NotObserved
-    | Withheld NotApplicable -> Template.Special Template.NotApplicable
+    | Rated f -> Responses.Value(Responses.Point(frequencyValue f))
+    | Withheld DontKnow -> Responses.Special Responses.DontKnow
+    | Withheld NotObserved -> Responses.Special Responses.NotObserved
+    | Withheld NotApplicable -> Responses.Special Responses.NotApplicable
 
-let answers (answers: Answers) : Template.Answers = answers |> Map.map (fun _ a -> answerState a)
+let answers (answers: Answers) : Responses.Answers = answers |> Map.map (fun _ a -> answerState a)

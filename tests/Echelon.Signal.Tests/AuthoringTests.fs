@@ -5,7 +5,11 @@ module Echelon.Signal.Tests.AuthoringTests
 open System
 open Xunit
 open Echelon.Signal.Engine
+open Echelon.Signal.Engine.Responses
+open Echelon.Signal.Engine.RuleModel
 open Echelon.Signal.Engine.Template
+open Echelon.Signal.Engine.Layout
+open Echelon.Signal.Engine.Instance
 open Echelon.Signal.Engine.Drafts
 open Echelon.Signal.Engine.Validation
 open Echelon.Signal.Engine.TemplateDiff
@@ -43,7 +47,7 @@ let private fixture =
     { Id = "all-fours"
       Name = "Every answer is 4"
       Answers = Map [ for i in 1..3 -> $"q{i}", Value(Point 4) ]
-      Expect = [ SectionScore("s", Some 4.0); Completion true ] }
+      Expect = [ ExpectSectionScore("s", Some 4.0); ExpectComplete true ] }
 
 let private ok (result: Result<'T, 'E>) : 'T =
     match result with
@@ -78,7 +82,7 @@ let ``the SDRA pilot validates and publishes as version 1`` () =
             [ { Id = "all-often"
                 Name = "Every answer Often"
                 Answers = Pilot.assessment.Items |> List.map (fun i -> i.Id, Value(Point 3)) |> Map.ofList
-                Expect = [ SectionScore("D01", Some 75.0); SectionScore("D02", Some 75.0); SectionScore("D03", Some 75.0); Completion true ] } ] }
+                Expect = [ ExpectSectionScore("D01", Some 75.0); ExpectSectionScore("D02", Some 75.0); ExpectSectionScore("D03", Some 75.0); ExpectComplete true ] } ] }
 
     let published, _ = publish defaultPolicy emptyCatalog Set.empty at "author" pilot |> ok
     Assert.Equal("1", published.Version)
@@ -149,7 +153,7 @@ let ``scoring, compatibility and encoding blockers`` () =
     Assert.Contains("SCORING-REFERENCE", blockersOf reference)
 
     let compat c = draft |> editContent (fun x -> { x with Compatibility = c })
-    Assert.Contains("COMPAT-CAPABILITY", blockersOf (compat { defaultCompatibility with Capabilities = [ UsesBranching ] }))
+    Assert.Contains("COMPAT-CAPABILITY", blockersOf (compat { defaultCompatibility with Capabilities = [ UsesRanking ] }))
     Assert.Contains("COMPAT-SCHEMA", blockersOf (compat { defaultCompatibility with SchemaVersion = 2 }))
     Assert.Contains("COMPAT-ENGINE", blockersOf (compat { defaultCompatibility with MinimumEngineVersion = 99 }))
     Assert.Contains("COMPAT-ENCODING", blockersOf (compat { defaultCompatibility with ResponseEncodingVersion = 2 }))
@@ -162,7 +166,7 @@ let ``scoring, compatibility and encoding blockers`` () =
 
 [<Fact>]
 let ``fixtures run, failures block, and a missing fixture blocks by policy`` () =
-    let wrong = { fixture with Id = "wrong"; Expect = [ SectionScore("s", Some 1.0) ] }
+    let wrong = { fixture with Id = "wrong"; Expect = [ ExpectSectionScore("s", Some 1.0) ] }
     let failing = draft |> addFixture wrong |> ok
     let report = validate defaultPolicy failing
     Assert.Contains("FIXTURES-FAILED", report.Blockers |> List.map _.Code)

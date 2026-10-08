@@ -972,10 +972,10 @@
         "identity"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:07.763Z",
-      "updatedAt": "2026-10-08T07:48:07.763Z",
+      "updatedAt": "2026-10-08T15:18:57.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -990,7 +990,7 @@
     {
       "id": "WI-0044",
       "title": "Signal 07: scoring AST, advanced algorithms and explainability (AST-001..006, ALG-002..004, SCS-002/003 remainders, SCS-004, SCS-006, SCS-007, SCS-015, CAN-006, VER-005, ARX-014)",
-      "description": "Depends on WI-0042. Builds on the WI-0035 catalog. Refines WI-0007. Also closes the remaining parts of ANS-003, ANS-005, ALG-001, SCS-003, SCS-005, SCS-008 (see their gap-analysis rows).",
+      "description": "Depends on WI-0042. Builds on the WI-0035 catalog. Refines WI-0007. Also closes the remaining parts of ANS-003, ANS-005, ALG-001, SCS-003, SCS-005, SCS-008 (see their gap-analysis rows). Also carries WI-0043's remainders: survey and group result steps of the evaluation order and group scoring (ACR-002, ACR-007, CAN-002, VER-006).",
       "tags": [
         "signal",
         "order:07",
@@ -1000,7 +1000,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:08.074Z",
-      "updatedAt": "2026-10-08T07:48:08.074Z",
+      "updatedAt": "2026-10-08T15:28:53.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1015,7 +1015,7 @@
     {
       "id": "WI-0045",
       "title": "Signal 08: answer primitives and selectors - multi-choice, matrix, ranking/allocation, timers and banking, encodings (ANS-002, ANS-004 remainder, SCS-009..014, SCS-016, SCS-018, ARX-013, CAN-004/LURL-004 remainders)",
-      "description": "Depends on WI-0042. Refines WI-0004. Also closes the remaining parts of ACR-004, ANS-001, URLC-005 (see their gap-analysis rows).",
+      "description": "Depends on WI-0042. Refines WI-0004. Also closes the remaining parts of ACR-004, ANS-001, URLC-005 (see their gap-analysis rows). Also carries WI-0043's remainders: selection-count, allocation, ranking and mutual-exclusion validation and choice restriction (ACR-001), and binding invitations to an exact generic template version (ID-001).",
       "tags": [
         "signal",
         "order:08",
@@ -1026,7 +1026,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T07:48:08.417Z",
-      "updatedAt": "2026-10-08T07:48:08.417Z",
+      "updatedAt": "2026-10-08T15:28:53.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1324,7 +1324,7 @@
     {
       "id": "WI-0057",
       "title": "Signal 05b: persist the template catalog through Arca and finish the authoring remainders WI-0042 left (CAN-001, CAN-005, CAN-008, URLC-004, ACR-003, ACR-008, ACR-009, CAN-003, VER-001, VER-003, VER-004, VER-007, AUT-001..007, ARX-002, SCS-017)",
-      "description": "WI-0042 built the pure domain: Template, TemplateCanonical and Authoring (drafts, validation, fixtures, diff, derived lifecycle, immutable catalog). Remaining here: storing drafts and the published catalog through Arca (depends on WI-0039); test-mode/preview submission isolation and production import refusal (AUT-006 §60); preview mode on the respondent page and the respondent page paginating generic templates (AUT-003 §20, VER-004); locale and invitation expiry carriage (VER-003); DraftEditor/Reviewer/Publisher role separation (AUT-006 §64); cross-device sample-URL checks (AUT-006 §§61-62). Rule, scoring-trace, primitive and report remainders of the same groups are WI-0043..WI-0046.",
+      "description": "WI-0042 built the pure domain: Template, TemplateCanonical and Authoring (drafts, validation, fixtures, diff, derived lifecycle, immutable catalog). Remaining here: storing drafts and the published catalog through Arca (depends on WI-0039); test-mode/preview submission isolation and production import refusal (AUT-006 §60); preview mode on the respondent page and the respondent page paginating generic templates (AUT-003 §20, VER-004); locale and invitation expiry carriage (VER-003); DraftEditor/Reviewer/Publisher role separation (AUT-006 §64); cross-device sample-URL checks (AUT-006 §§61-62). Rule, scoring-trace, primitive and report remainders of the same groups are WI-0043..WI-0046. Also carries ARP-001's remainder from WI-0043: the import pipeline on generic templates carrying facts and recommendations into SurveyResult.",
       "tags": [
         "signal",
         "order:05b",
@@ -1335,7 +1335,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-08T15:11:46.000Z",
-      "updatedAt": "2026-10-08T15:11:46.000Z",
+      "updatedAt": "2026-10-08T15:28:53.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
