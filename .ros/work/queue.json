@@ -1553,10 +1553,10 @@
         "privacy"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T19:46:13.855Z",
-      "updatedAt": "2026-10-08T19:46:21.000Z",
+      "updatedAt": "2026-10-08T20:47:31.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
