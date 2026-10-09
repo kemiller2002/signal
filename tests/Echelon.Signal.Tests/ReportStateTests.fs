@@ -42,7 +42,7 @@ let private submission (next: int -> int) (seed: int) mode =
     let chosen = pilot.Items |> List.map (fun item -> item.Id, answers[next answers.Length]) |> Map.ofList
     "https://signal.example" + LiveUrl.urlFor pilot "/web/" "" { Binding = binding; Answers = chosen }
 
-let private definition mode = { Group = groupId; Mode = mode; ExpectedCount = 12; Template = pilot }
+let private definition mode = { Group = groupId; Mode = mode; ExpectedCount = 12; Template = pilot; Generic = None }
 
 let private accepted (state: GroupState) = state.Results |> Map.toList |> List.map snd
 

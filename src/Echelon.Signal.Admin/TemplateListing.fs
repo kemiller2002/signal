@@ -59,10 +59,8 @@ let private listingOf (catalog: Catalog) (drafts: Drafts.Draft list) : Listing =
               Title = t.Content.Metadata.Title
               Hidden = visibility catalog t = HiddenFromDistribution
               Superseded = latest t.SurveyId <> Some t.Version
-              NotForGroups =
-                match assessmentOf t with
-                | Ok _ -> None
-                | Error reason -> Some reason })
+              // Every published template runs through the generic pipeline (WI-0078).
+              NotForGroups = None })
       Drafts = drafts |> List.map (fun d -> d.SurveyId, d.Content.Metadata.Title) |> List.sort
       Catalog = catalog
       DraftsById = drafts |> List.map (fun d -> d.SurveyId, d) |> Map.ofList

@@ -14,8 +14,8 @@ let private pilot = Pilot.assessment
 let private id (seed: byte) = (OpaqueId.ofBytes (Array.init 16 (fun i -> seed + byte i))).Value
 let private group = id 200uy
 
-let private anonymousGroup = empty { Group = group; Mode = AnonymousGroup; ExpectedCount = 6; Template = pilot }
-let private identifiedGroup = empty { Group = group; Mode = IdentifiedGroup; ExpectedCount = 3; Template = pilot }
+let private anonymousGroup = empty { Group = group; Mode = AnonymousGroup; ExpectedCount = 6; Template = pilot; Generic = None }
+let private identifiedGroup = empty { Group = group; Mode = IdentifiedGroup; ExpectedCount = 3; Template = pilot; Generic = None }
 
 let private all (answer: Answer) = pilot.Items |> List.map (fun item -> item.Id, answer) |> Map.ofList
 

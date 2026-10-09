@@ -47,13 +47,14 @@ let ``the pilot round-trips through its generic form, and other shapes are refus
     Assert.True(Pilot.assessmentOf "SDRA" "2" { Pilot.content with Sections = [] } |> Result.isError)
 
 [<Fact>]
-let ``stored templates join the catalog; a runnable one starts a group that imports its links`` () =
+let ``every stored template starts groups through the generic pipeline, and its links import (WI-0078)`` () =
     let _, github, page = signedIn ()
     let config = Deployment.parse configured |> ok
     let opened = Store.openDataset (backend github) config (actor octocat) None "signal-test" "ds_engagement" at |> run |> ok
 
     let runnable = publish opened "TEAM" (Pilot.contentOf team) [ fixture team ]
     let other = { Pilot.contentOf team with Metadata = { (Pilot.contentOf team).Metadata with Title = "Yes or no" } }
+
     let yesNo =
         { other with
             Sections = other.Sections |> List.map (fun s -> { s with Scoring = None; Questions = s.Questions |> List.map (fun q -> { q with Answer = Primitives.Boolean; Selector = { Preset = Selectors.YesNo; Labels = [ "No"; "Yes" ] }; SpecialStates = [] }) }) }
@@ -64,34 +65,42 @@ let ``stored templates join the catalog; a runnable one starts a group that impo
           Answers = team.Items |> List.map (fun i -> i.Id, Responses.Value(Responses.Flag true)) |> Map.ofList
           Expect = [ Drafts.ExpectComplete true ] }
 
-    publish opened "YESNO" yesNo [ yes ] |> ignore
+    let yesNoPublished = publish opened "YESNO" yesNo [ yes ]
     page.Event("openDataset", key = "ds_engagement")
 
     let catalog = page.Items "catalog" |> List.map (fun i -> i["label"].GetValue<string>())
     Assert.Contains("Team working agreement (TEAM 1)", catalog)
-    Assert.DoesNotContain(catalog, fun label -> label.Contains "YESNO")
+    Assert.Contains("Yes or no (YESNO 1)", catalog)
 
     page.Event("navigate", key = "/assessments")
-    let versions = page.Items "templateVersions" |> List.map (fun i -> i["label"].GetValue<string>(), i["groups"].GetValue<string>())
-    Assert.Contains(("Team working agreement (TEAM 1)", "Can start groups."), versions)
-    Assert.Contains(versions, fun (label, groups) -> label.Contains "YESNO" && groups.StartsWith "Cannot start groups")
+    Assert.All(page.Items "templateVersions", fun i -> Assert.Equal("Can start groups.", i["groups"].GetValue<string>()))
 
-    // A group from the stored template, and a link for it is accepted.
-    let entry = page.Items "catalog" |> List.find (fun i -> i["label"].GetValue<string>().Contains "TEAM")
+    // A group from the yes/no template, and a generic submission link for it is accepted.
+    let form = GenericImport.formOf "YESNO" yesNoPublished.Version yesNoPublished.Content
+    let entry = page.Items "catalog" |> List.find (fun i -> i["label"].GetValue<string>().Contains "YESNO")
+    Assert.Equal(form.Hash, entry["hash"].GetValue<string>())
     page.Event("navigate", key = "/groups")
-    page.Event("newGroupTemplate", value = entry["hash"].GetValue<string>())
+    page.Event("newGroupTemplate", value = form.Hash)
     page.Event("newGroupMinimum", value = "1")
     page.Event("createGroup")
     let key = page.Text "groupKey"
     let group = (OpaqueId.ofBytes (Convert.FromHexString key)).Value
-    let assessment = Pilot.assessmentOf "TEAM" runnable.Version runnable.Content |> ok
-    let answers = assessment.Items |> List.map (fun i -> i.Id, Assessment.Rated Assessment.Often) |> Map.ofList
-    let url = "https://signal.example" + LiveUrl.urlFor assessment "/web/" "" { Binding = Anonymous((OpaqueId.ofBytes (Array.init 16 byte)).Value, group); Answers = answers }
-    page.Event("importText", value = url)
-    page.Event("import")
-    Assert.Equal("1 of 10 accepted", page.Text "groupProgress")
 
-    // Hidden: still listed, no longer offered for new groups.
+    let submission seed =
+        let answers = team.Items |> List.map (fun i -> i.Id, Responses.Value(Responses.Flag true)) |> Map.ofList
+        "https://signal.example" + GenericImport.link form "/web/" { Binding = Anonymous((OpaqueId.ofBytes (Array.init 16 (fun i -> byte (seed + i)))).Value, group); Answers = answers }
+
+    page.Event("importText", value = String.concat "\n" [ submission 1; submission 40; "https://signal.example/web/#r=AAAA" ])
+    page.Event("import")
+    Assert.Equal("2 of 10 accepted", page.Text "groupProgress")
+    // An envelope of an encoding this version cannot read is held, not retried forever in the batch.
+    Assert.Equal((2, 1), (page.Items("importAccepted").Length, page.Items("importBlockedEncoding").Length))
+
+    // The report describes the generic template's own content.
+    page.Send $"""{{"kind":"LocationChanged","location":{{"path":"/web/admin/index.html","hash":"#/groups/{key}/report"}}}}"""
+    Assert.Contains(page.Items "reportSections", fun i -> i["section"].GetValue<string>().Contains "Plan Commitment")
+
+    // Hidden: still listed, no longer offered for new groups; its group still opens.
     TemplateStore.hide (actor octocat) at opened "TEAM" runnable.Version |> run |> ok
     page.Event("openDataset", key = "ds_engagement")
     Assert.DoesNotContain(page.Items "catalog", fun i -> i["label"].GetValue<string>().Contains "TEAM")

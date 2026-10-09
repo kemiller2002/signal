@@ -185,18 +185,23 @@ let reader: Loading.RecordReader<StoredGroup> =
 
 /// Resolves an exact template by its canonical hash; None when the catalog
 /// does not hold it.
-type TemplateResolver = string -> Assessment.Assessment option
+/// A group's template by the hash its configuration records: the pilot's
+/// assessment, or a generic template's shape with its form (WI-0078).
+type TemplateResolver = string -> (Assessment.Assessment * GenericForm option) option
 
 /// The import definition for a stored group, or why imports are blocked:
 /// the exact template it names is not available (ADM-008).
 let definition (resolve: TemplateResolver) (config: GroupConfig) : Result<GroupDefinition, string> =
+    let definitionOf template generic =
+        { Group = config.Group
+          Mode = config.Mode
+          ExpectedCount = config.ExpectedCount
+          Template = template
+          Generic = generic }
+
     match resolve config.TemplateHash with
-    | Some template when Canonical.templateHash template = config.TemplateHash ->
-        Ok
-            { Group = config.Group
-              Mode = config.Mode
-              ExpectedCount = config.ExpectedCount
-              Template = template }
+    | Some(template, Some form) when form.Hash = config.TemplateHash -> Ok(definitionOf template (Some form))
+    | Some(template, None) when Canonical.templateHash template = config.TemplateHash -> Ok(definitionOf template None)
     | Some _ -> Error $"the catalog's template does not hash to {config.TemplateHash}"
     | None -> Error $"template {config.SurveyIdentifier} {config.TemplateVersion} ({config.TemplateHash}) is not in the catalog"
 

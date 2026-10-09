@@ -22,7 +22,7 @@ let private run work = Async.RunSynchronously work
 let private pilot = Pilot.assessment
 let private opaque (seed: byte) = (OpaqueId.ofBytes (Array.init 16 (fun i -> seed + byte i))).Value
 let private groupId = opaque 200uy
-let private resolve: GroupRecord.TemplateResolver = fun hash -> if hash = Canonical.templateHash pilot then Some pilot else None
+let private resolve: GroupRecord.TemplateResolver = fun hash -> if hash = Canonical.templateHash pilot then Some(pilot, None) else None
 
 let private all (answer: Answer) = pilot.Items |> List.map (fun item -> item.Id, answer) |> Map.ofList
 
@@ -100,7 +100,7 @@ let private import texts group = GroupStore.importBatch actor resolve ResultReco
 
 let private stateOf (texts: string list) mode =
     texts
-    |> List.fold (fun s t -> importOne s t |> fst) (empty { Group = groupId; Mode = mode; ExpectedCount = 10; Template = pilot })
+    |> List.fold (fun s t -> importOne s t |> fst) (empty { Group = groupId; Mode = mode; ExpectedCount = 10; Template = pilot; Generic = None })
 
 // ---- ADM-008/010: accepted contributions are durable and reproduce the result -------------
 
@@ -434,3 +434,11 @@ let ``retiring a finalized group's results removes them from Signal's state, cla
     let records, _ = GovernanceStore.audit at group.Dataset |> run |> ok
     Assert.Equal("state-not-reproducible", GovernanceStore.reconstructionOf records (string groupId))
     Assert.Equal("state-full-reconstruction", GovernanceStore.reconstructionOf records "AAECAwQFBgcICQoLDA0ODw")
+
+[<Fact>]
+let ``an item blocked in a run is not retried in the same run, so an import always ends`` () =
+    let github = InMemoryStore()
+    let group = setUp github (fun () -> true) AnonymousGroup GroupRecord.NoneAfterImport
+    let imported = import [ anonymous 1uy Often; "https://signal.example/web/#r=AAAA" ] group
+    Assert.Equal(1, imported.Summary.AcceptedCount)
+    Assert.Equal(1, imported.Batch.Items |> List.filter (fun (_, o) -> match o with Some(Intake.BlockedUnsupportedEncoding _) -> true | _ -> false) |> List.length)

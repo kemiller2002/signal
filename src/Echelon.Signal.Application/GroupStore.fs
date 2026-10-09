@@ -297,9 +297,13 @@ let importBatch
     let revisionAfter (batch: Intake.Batch) (receipt: CommitReceipt) =
         Intake.path batch |> Result.toOption |> Option.bind (fun p -> receipt.Revisions.TryFind(RelativePath.render p)) |> Option.flatten
 
-    let rec run (round: int) (current: OpenedGroup) (batch: Intake.Batch) (revision: Revision option) =
+    // `tried` holds what this run already decided: an item it blocked (a
+    // template or encoding it cannot read now) stays for a later run, never
+    // retried in this one, so a run always ends.
+    let rec run (round: int) (tried: Set<string>) (current: OpenedGroup) (batch: Intake.Batch) (revision: Revision option) =
         async {
-            let pending = Intake.remaining batch |> List.choose artifacts.TryFind |> List.truncate ChunkSize
+            let pending = Intake.remaining batch |> List.filter (fun hash -> not (tried.Contains hash)) |> List.choose artifacts.TryFind |> List.truncate ChunkSize
+            let tried = tried + (pending |> List.map _.Hash |> Set.ofList)
 
             match pending with
             | [] -> return Ok(current, batch, None)
@@ -308,19 +312,19 @@ let importBatch
                 | Error problems -> return Ok(current, batch, Some(Unusable problems))
                 | Ok(operation, contributions, next) ->
                     match! opened.Provider.Commit operation with
-                    | Ok receipt -> return! run 0 (applied current contributions) next (revisionAfter next receipt)
+                    | Ok receipt -> return! run 0 tried (applied current contributions) next (revisionAfter next receipt)
                     | Error(StorageFailure.Conflicted _) when round = 0 ->
                         // Someone imported meanwhile: reload and decide again.
                         match! openGroup resolve current.Config.Group now opened with
                         | Ok fresh ->
                             match! readBatch now opened batch with
-                            | Ok(stored, storedRevision) -> return! run 1 fresh stored storedRevision
+                            | Ok(stored, storedRevision) -> return! run 1 (tried - (chunk |> List.map _.Hash |> Set.ofList)) fresh stored storedRevision
                             | Error failure -> return Ok(current, batch, Some failure)
                         | Error failure -> return Ok(current, batch, Some failure)
                     | Error(StorageFailure.OutcomeUnknown pending) ->
                         match! opened.Provider.Reconcile opened.Namespace pending with
-                        | Ok(ReconcileOutcome.Landed receipt) -> return! run 0 (applied current contributions) next (revisionAfter next receipt)
-                        | Ok ReconcileOutcome.NotLanded when round = 0 -> return! run 1 current batch revision
+                        | Ok(ReconcileOutcome.Landed receipt) -> return! run 0 tried (applied current contributions) next (revisionAfter next receipt)
+                        | Ok ReconcileOutcome.NotLanded when round = 0 -> return! run 1 (tried - (chunk |> List.map _.Hash |> Set.ofList)) current batch revision
                         | Ok _
                         | Error _ ->
                             let marked = Intake.record (chunk |> List.map (fun a -> a.Hash, Intake.ReconciliationRequired)) batch
@@ -339,7 +343,7 @@ let importBatch
 
         let fresh = Intake.start group.Config.Group origin (artifacts |> Map.toList |> List.map snd)
         let! stored, revision = readBatch now opened fresh
-        let! final, batch, stopped = run 0 group stored revision
+        let! final, batch, stopped = run 0 Set.empty group stored revision
 
         return
             { Group = final

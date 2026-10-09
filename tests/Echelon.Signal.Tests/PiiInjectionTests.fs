@@ -73,7 +73,7 @@ let ``no report label in any locale asks for identity`` () =
 // ---- Example submissions and import metadata ----------------------------------------------------
 
 let private group = (OpaqueId.ofBytes (Array.init 16 (fun i -> byte (40 + i)))).Value
-let private definition: GroupDefinition = { Group = group; Mode = AnonymousGroup; ExpectedCount = 5; Template = Pilot.assessment }
+let private definition: GroupDefinition = { Group = group; Mode = AnonymousGroup; ExpectedCount = 5; Template = Pilot.assessment; Generic = None }
 
 let private link =
     let answers = Pilot.assessment.Items |> List.map (fun item -> item.Id, Assessment.Rated Assessment.Often) |> Map.ofList

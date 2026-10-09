@@ -39,7 +39,7 @@ let private answersOf (values: int list) =
 
 /// A group with one respondent per answer pattern.
 let private accumulatorOf mode (patterns: int list list) =
-    let definition = { Group = groupId; Mode = mode; ExpectedCount = 10; Template = pilot }
+    let definition = { Group = groupId; Mode = mode; ExpectedCount = 10; Template = pilot; Generic = None }
 
     let state =
         patterns

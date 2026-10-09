@@ -31,12 +31,25 @@ type IdentityMode =
     | AnonymousGroup
 
 /// What the administrator declared when creating the group (ARP §17, §20).
+/// A generic template a group runs (WI-0078): its content, the compact
+/// reference its submissions carry, and its published hash.
+[<NoComparison>]
+type GenericForm =
+    { Content: Template.Content
+      Reference: byte[]
+      Hash: string }
+
 [<NoComparison>]
 type GroupDefinition =
     { Group: OpaqueId
       Mode: IdentityMode
       ExpectedCount: int
-      Template: Assessment }
+      /// The group's sections and questions as the result pipeline reads
+      /// them (for a generic template, its shape: one dimension per section).
+      Template: Assessment
+      /// Present when the group runs a generic template: submissions are its
+      /// generic envelopes, scored by its own scorers (`GenericImport`).
+      Generic: GenericForm option }
 
 /// The identity one accepted result contributes under: never both an
 /// instance and an anonymous id (ARP §4).
@@ -132,6 +145,26 @@ let private interpret (assessment: Assessment) (identity: SubmissionIdentity) (e
       AnsweredCount = envelope.Answers.Count
       NonNumericCount = envelope.Answers |> Map.filter (fun _ a -> (numericValue a).IsNone) |> Map.count }
 
+/// The identity a finalized submission contributes under, or why it cannot
+/// contribute to this group.
+let identify (definition: GroupDefinition) (binding: Binding) : Result<SubmissionIdentity, ImportError> =
+    let identity, group =
+        match binding with
+        | Identified(instance, group) -> Some(Instance instance, IdentifiedGroup), Some group
+        | Anonymous(submission, group) -> Some(AnonymousSubmission submission, AnonymousGroup), Some group
+        | Unbound
+        | IdentifiedInvitation _
+        | AnonymousInvitation _ -> None, None
+
+    match identity, group with
+    | None, _
+    | _, None -> Error NotFinalized
+    | Some _, Some group when group <> definition.Group -> Error WrongGroup
+    | Some(_, mode), _ when mode <> definition.Mode -> Error IdentityModeMismatch
+    | Some(identity, _), _ -> Ok identity
+
+let sha256Of (bytes: byte[]) = sha256Hex bytes
+
 /// Reads and validates one submission against a group definition and the
 /// group's accepted identities (`accepted` gives the SubmissionHash accepted
 /// for an identity key, if any), without changing anything. The accepted
@@ -145,20 +178,9 @@ let evaluateAgainst (definition: GroupDefinition) (accepted: string -> string op
         match decode assessment payload with
         | Error error -> Rejected(Unreadable error)
         | Ok envelope ->
-            let identity, group =
-                match envelope.Binding with
-                | Identified(instance, group) -> Some(Instance instance, IdentifiedGroup), Some group
-                | Anonymous(submission, group) -> Some(AnonymousSubmission submission, AnonymousGroup), Some group
-                | Unbound
-                | IdentifiedInvitation _
-                | AnonymousInvitation _ -> None, None
-
-            match identity, group with
-            | None, _
-            | _, None -> Rejected NotFinalized
-            | Some _, Some group when group <> definition.Group -> Rejected WrongGroup
-            | Some(_, mode), _ when mode <> definition.Mode -> Rejected IdentityModeMismatch
-            | Some(identity, _), _ ->
+            match identify definition envelope.Binding with
+            | Error error -> Rejected error
+            | Ok identity ->
                 match unanswered assessment envelope.Answers with
                 | missing when not missing.IsEmpty -> Rejected(IncompleteSubmission missing.Length)
                 | _ ->

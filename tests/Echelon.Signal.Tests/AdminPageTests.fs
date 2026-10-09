@@ -164,7 +164,8 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
                 SurveyIdentifier = Pilot.assessment.Id
                 Version = Pilot.assessment.Version
                 Title = Pilot.assessment.Title
-                Content = Pilot.assessment } ]
+                Content = Pilot.assessment
+                Generic = None } ]
           ApplicationVersion = "signal-admin/test" }
 
     let aegis = Boundary.configure [ (Sinks.Collector()).Sink() ]

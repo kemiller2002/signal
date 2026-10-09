@@ -243,6 +243,7 @@ let summary (unreconciled: int) (imported: Imported option) (live: OpenedGroup) 
         source.Scores |> Map.map (fun section _ -> distribution group source section)
       Report = Echelon.Signal.Engine.GroupResult.ofAccumulator group.Config.TemplateHash group.Config.MinimumReportableCount group.Accumulator
       Template = group.Definition.Template
+      Content = group.Definition.Generic |> Option.map _.Content |> Option.defaultValue (Echelon.Signal.Engine.Pilot.contentOf group.Definition.Template)
       Lineage =
         let result = result group
         $"{result.Lineage.DerivationHash} from {result.Lineage.SubmissionHashes.Length} accepted contribution(s), template {result.Lineage.TemplateHash}"
