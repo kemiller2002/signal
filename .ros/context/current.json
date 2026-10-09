@@ -2681,7 +2681,27 @@
       "updatedAt": "2026-10-09T04:24:46Z",
       "telemetryExecutionIds": [
         "EXE-20261009T042446720Z-a28d9579"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "d3dc12935035b099e0478f0d",
+        "recordedAt": "2026-10-09T04:38:56Z",
+        "executionId": "EXE-20261009T042446720Z-a28d9579",
+        "repository": "echelon-signal",
+        "branch": "feature/link-terms",
+        "commit": "9286bc091be6dd30ab6433c55439aa284e4f24f7",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feature/link-terms",
+        "remoteCommit": "9286bc091be6dd30ab6433c55439aa284e4f24f7",
+        "summary": "VER-003: link format 2 carries locale and expiry inside the integrity check; format 1 unchanged; page and intake enforce expiry; locale presentation only; SIG-LINK 1.1.0; DF-SIGNAL-2026-0006.",
+        "nextAction": "Merge the link-terms PR on a green gate, then the next WI-0081 slice (remaining answer kinds on the page, pagination and back/forward).",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
