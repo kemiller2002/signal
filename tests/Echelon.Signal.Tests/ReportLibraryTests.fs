@@ -44,6 +44,8 @@ let private source (report: ReportData) clock : Source =
       Report = report
       Locale = "en-US"
       ComparisonReferences = []
+      Mode = AnonymousGroup
+      MinimumReportable = 5
       Clock = clock }
 
 let private saved pins =
@@ -58,7 +60,7 @@ let ``an unused version is replaced, a used version never changes and editing it
     Assert.Equal(1, again.Definition.Version)
     Assert.Equal(1, (versions library "quarterly").Length)
 
-    let _, used = ReportLibrary.take library catalog (source (reportWith again.Definition at) None) |> ok
+    let _, used = ReportLibrary.take library catalog [] (source (reportWith again.Definition at) None) |> ok
     let library, next = ReportLibrary.save used { definition with Decimals = 0 } first.Pins |> ok
     Assert.Equal(2, next.Definition.Version)
     Assert.Equal(2, (resolve library "quarterly" 1 |> Option.get).Definition.Decimals)
@@ -76,30 +78,30 @@ let ``an unused version is replaced, a used version never changes and editing it
 let ``a snapshot resolves latest to the exact template, and an unresolvable or different pin is refused`` () =
     let library, entry = saved (currentPins (LatestTemplate "SDRA"))
     let report = reportWith entry.Definition at
-    let snapshot, _ = ReportLibrary.take library catalog (source report None) |> ok
+    let snapshot, _ = ReportLibrary.take library catalog [] (source report None) |> ok
     Assert.Equal(sdra, snapshot.Template)
 
-    match ReportLibrary.take library Publication.emptyCatalog (source report None) with
+    match ReportLibrary.take library Publication.emptyCatalog [] (source report None) with
     | Error(TemplateUnresolved "SDRA") -> ()
     | other -> failwith $"%A{other}"
 
     let other = { sdra with Version = "2"; Hash = "sha256:" + String('b', 64) }
 
-    match ReportLibrary.take library catalog { source report None with GroupTemplate = other } with
+    match ReportLibrary.take library catalog [] { source report None with GroupTemplate = other } with
     | Error(TemplateMismatch(pinned, group)) -> Assert.Equal((sdra, other), (pinned, group))
     | failed -> failwith $"%A{failed}"
 
     let stale, _ = saved { currentPins (ExactTemplate sdra) with AggregateSchema = 1 }
 
-    match ReportLibrary.take stale catalog (source report None) with
+    match ReportLibrary.take stale catalog [] (source report None) with
     | Error(SchemaUnsupported("aggregate", 1, _)) -> ()
     | failed -> failwith $"%A{failed}"
 
 [<Fact>]
 let ``the clock never changes a snapshot's identity, and opening one never reads current state`` () =
     let library, entry = saved (currentPins (ExactTemplate sdra))
-    let first, used = ReportLibrary.take library catalog (source (reportWith entry.Definition at) (Some at)) |> ok
-    let later, _ = ReportLibrary.take library catalog (source (reportWith entry.Definition (at.AddDays 3.0)) (Some(at.AddDays 3.0))) |> ok
+    let first, used = ReportLibrary.take library catalog [] (source (reportWith entry.Definition at) (Some at)) |> ok
+    let later, _ = ReportLibrary.take library catalog [] (source (reportWith entry.Definition (at.AddDays 3.0)) (Some(at.AddDays 3.0))) |> ok
     Assert.Equal(first.SnapshotId, later.SnapshotId)
     Assert.Equal(first.CanonicalReportDataHash, later.CanonicalReportDataHash)
     Assert.True(intact first)
@@ -118,7 +120,7 @@ let ``the clock never changes a snapshot's identity, and opening one never reads
 let ``exports come from the snapshot's report data, carry lineage, and never a locator or credential`` () =
     let library, entry = saved (currentPins (ExactTemplate sdra))
     let report = reportWith entry.Definition at
-    let snapshot, _ = ReportLibrary.take library catalog { source report None with ComparisonReferences = [ "baseline-2026q2" ] } |> ok
+    let snapshot, _ = ReportLibrary.take library catalog [] { source report None with ComparisonReferences = [ "baseline-2026q2" ] } |> ok
     let files = ReportLibrary.export snapshot report |> ok |> Map.ofList
 
     Assert.Equal<string list>([ "lineage.json"; "report.json"; "sections.csv" ], files |> Map.keys |> List.ofSeq)
@@ -187,10 +189,29 @@ let ``building reports and exporting need their own capabilities`` () =
 
     let library, entry = saved (currentPins (ExactTemplate sdra))
     let report = reportWith entry.Definition at
-    let snapshot, _ = ReportLibrary.take library catalog (source report None) |> ok
+    let snapshot, _ = ReportLibrary.take library catalog [] (source report None) |> ok
 
     match ReportStore.export (actor hubot) at editor snapshot report |> run with
     | Error(ReportStore.NotStored(GroupStore.NotPermitted _)) -> ()
     | failed -> failwith $"%A{failed}"
 
     Assert.True(ReportStore.export (actor octocat) at admin snapshot report |> run |> Result.isOk)
+
+[<Fact>]
+let ``an anonymous group's snapshots must differ by at least the minimum (ARX-009)`` () =
+    let library, entry = saved (currentPins (ExactTemplate sdra))
+    let report = reportWith entry.Definition at
+    let first, library = ReportLibrary.take library catalog [] (source report None) |> ok
+    Assert.Equal(5, first.Accepted)
+
+    let one = { report with Counts = { report.Counts with Accepted = 6 } }
+
+    match ReportLibrary.take library catalog [ first ] (source one None) with
+    | Error(WouldRevealDifference(earlier, 1)) -> Assert.Equal(first.SnapshotId, earlier)
+    | other -> failwith $"%A{other}"
+
+    // Five more, or an identified group, or the same state again: no difference revealed.
+    let five = { report with Counts = { report.Counts with Accepted = 10 } }
+    Assert.True(ReportLibrary.take library catalog [ first ] (source five None) |> Result.isOk)
+    Assert.True(ReportLibrary.take library catalog [ first ] { source one None with Mode = IdentifiedGroup } |> Result.isOk)
+    Assert.True(ReportLibrary.take library catalog [ first ] (source report None) |> Result.isOk)

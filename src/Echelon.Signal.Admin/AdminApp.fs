@@ -35,6 +35,9 @@ type GroupSummary =
       Mode: IdentityMode
       Expected: int
       Accepted: int
+      /// Accepted responses not yet in what the page shows (ARX-009: released
+      /// only when they cannot be singled out by difference).
+      Withheld: int
       /// The privacy minimum below which scores are suppressed.
       MinimumReportable: int
       Status: GroupLifecycle.Status

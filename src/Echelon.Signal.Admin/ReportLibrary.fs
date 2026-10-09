@@ -134,6 +134,8 @@ type Snapshot =
       ExportSchema: int
       ComparisonReferences: string list
       Locale: string
+      /// Accepted responses the report covers (the release ledger's count).
+      Accepted: int
       CanonicalReportDataHash: string
       /// The canonical report data (the structured export).
       ReportData: string
@@ -151,6 +153,9 @@ type Source =
       Report: ReportData
       Locale: string
       ComparisonReferences: string list
+      /// The group's identity mode and minimum: anonymous snapshots go through the release ledger.
+      Mode: IdentityMode
+      MinimumReportable: int
       Clock: DateTimeOffset option }
 
 type SnapshotProblem =
@@ -160,6 +165,9 @@ type SnapshotProblem =
     /// The pinned template is not the one the group was scored with.
     | TemplateMismatch of pinned: TemplateRef * group: TemplateRef
     | SchemaUnsupported of name: string * pinned: int * supported: int
+    /// With an earlier snapshot of the group, it would single out the
+    /// responses between them (ARX-009: repeated snapshots).
+    | WouldRevealDifference of earlier: string * difference: int
 
 let private sha256 (text: string) =
     "sha256:" + Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes text)).ToLowerInvariant()
@@ -202,13 +210,26 @@ let private identityText (s: Snapshot) =
           string s.ExportSchema
           String.concat "," s.ComparisonReferences
           s.Locale
+          string s.Accepted
           s.CanonicalReportDataHash ]
 
 let snapshotIdOf (s: Snapshot) = "snap-" + (sha256 (identityText s)).Substring(7, 32)
 
+/// Whether a new snapshot of the group would differ from an earlier one by
+/// fewer responses than the minimum (anonymous groups only).
+let private ledger (earlier: Snapshot list) (source: Source) =
+    let view id count : Disclosure.View = { Id = id; Filters = Set.empty; Count = count }
+    let views = earlier |> List.filter (fun s -> s.GroupId = source.GroupId) |> List.map (fun s -> view s.SnapshotId s.Accepted)
+    let policy = Disclosure.forGroup source.MinimumReportable
+
+    match fst (Disclosure.release policy source.Mode views (view "new" source.Report.Counts.Accepted)) with
+    | Disclosure.Withhold(Disclosure.Differencing(earlier, difference)) -> Error(WouldRevealDifference(earlier, difference))
+    | _ -> Ok()
+
 /// Takes a formal snapshot with the definition version it names, resolving
-/// every pin exactly; the definition version becomes used.
-let take (library: Library) (catalog: Publication.Catalog) (source: Source) : Result<Snapshot * Library, SnapshotProblem> =
+/// every pin exactly; the definition version becomes used. `earlier` are the
+/// snapshots already taken, for the release ledger.
+let take (library: Library) (catalog: Publication.Catalog) (earlier: Snapshot list) (source: Source) : Result<Snapshot * Library, SnapshotProblem> =
     let id, version = source.Report.Definition
 
     match resolve library id version with
@@ -218,7 +239,8 @@ let take (library: Library) (catalog: Publication.Catalog) (source: Source) : Re
         match schemas entry.Pins |> List.tryFind (fun (_, pinned, supported) -> pinned <> supported) with
         | Some(name, pinned, supported) -> Error(SchemaUnsupported(name, pinned, supported))
         | None ->
-            resolveTemplate catalog entry.Pins.Template
+            ledger earlier source
+            |> Result.bind (fun () -> resolveTemplate catalog entry.Pins.Template)
             |> Result.bind (fun template ->
                 if template <> source.GroupTemplate then Error(TemplateMismatch(template, source.GroupTemplate))
                 else Ok template)
@@ -239,6 +261,7 @@ let take (library: Library) (catalog: Publication.Catalog) (source: Source) : Re
                       ExportSchema = entry.Pins.ExportSchema
                       ComparisonReferences = source.ComparisonReferences |> List.distinct |> List.sort
                       Locale = source.Locale
+                      Accepted = source.Report.Counts.Accepted
                       CanonicalReportDataHash = sha256 data
                       ReportData = data
                       GeneratedAtEvidence = source.Clock

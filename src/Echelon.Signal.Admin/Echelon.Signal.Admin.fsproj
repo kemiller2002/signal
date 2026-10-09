@@ -38,9 +38,9 @@
     <Compile Include="Regression.fs" />
     <Compile Include="ReportLabels.fs" />
     <Compile Include="TemplateRecord.fs" />
+    <Compile Include="Disclosure.fs" />
     <Compile Include="ReportLibrary.fs" />
     <Compile Include="ReportRecord.fs" />
-    <Compile Include="Disclosure.fs" />
     <Compile Include="Audit.fs" />
     <Compile Include="Retention.fs" />
     <Compile Include="GovernanceRecord.fs" />

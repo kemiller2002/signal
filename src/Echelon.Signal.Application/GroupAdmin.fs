@@ -172,7 +172,26 @@ let private analysisRows (group: OpenedGroup) =
               section, Analysis.measureName m, show (Analysis.measure source (Some section) m) ]
 
 /// What the page shows about a group.
-let summary (unreconciled: int) (imported: Imported option) (group: OpenedGroup) : AdminApp.GroupSummary =
+/// A section's distribution, released only when the disclosure policy allows
+/// it (ADM-024): enough values, enough distinct ones, and no occupied bin
+/// small enough to single out its respondents.
+let private distribution (group: OpenedGroup) (source: Analysis.Source) (section: string) =
+    let policy = Disclosure.forGroup group.Config.MinimumReportableCount
+    let scores = source.Scores.TryFind section |> Option.defaultValue []
+
+    match Disclosure.distribution policy group.Config.Mode scores, Analysis.distribution source section 5 with
+    | Disclosure.Withhold _, Ok _ -> Error(Analysis.Suppressed(policy.MinimumDistribution, scores.Length))
+    | Disclosure.Release _, Ok bins when
+        group.Config.Mode = Echelon.Signal.Engine.Import.AnonymousGroup
+        && bins |> List.exists (fun (_, _, n) -> n > 0 && n < policy.MinimumCell)
+        ->
+        Error(Analysis.Suppressed(policy.MinimumCell, scores.Length))
+    | _, found -> found
+
+/// What the page shows about a group. Everything derived from responses
+/// comes from what the group has released (`Releases.shown`); the counts are live.
+let summary (unreconciled: int) (imported: Imported option) (live: OpenedGroup) : AdminApp.GroupSummary =
+    let group = Releases.shown live
     let state = reportState group
 
     let lastBatch, items =
@@ -186,7 +205,7 @@ let summary (unreconciled: int) (imported: Imported option) (group: OpenedGroup)
     // session's last batch adding its other outcomes, so a link to the view
     // shows the same list after a reload (SIG-LINK-001).
     let stored =
-        group.Contributions
+        live.Contributions
         |> Map.toList
         |> List.map (fun (_, c) -> c.Value.Contribution.Provenance.ArtifactHash, "accepted")
         |> List.filter (fun (hash, _) -> not (items |> List.exists (fun (h, _) -> h = hash)))
@@ -199,13 +218,14 @@ let summary (unreconciled: int) (imported: Imported option) (group: OpenedGroup)
       TemplateVersion = group.Config.TemplateVersion
       Mode = group.Config.Mode
       Expected = group.Config.ExpectedCount
-      Accepted = group.Accumulator.Accepted.Count
+      Accepted = live.Accumulator.Accepted.Count
+      Withheld = Releases.withheld live
       MinimumReportable = group.Config.MinimumReportableCount
       Status = group.Lifecycle.Status
       Phase =
         AdminState.phase
             { Status = group.Lifecycle.Status
-              Accepted = group.Accumulator.Accepted.Count
+              Accepted = live.Accumulator.Accepted.Count
               Expected = group.Config.ExpectedCount
               BatchRunning = lastBatch |> Option.exists (fun b -> b.Status = Intake.Running)
               UnreconciledBatches = unreconciled }
@@ -220,13 +240,13 @@ let summary (unreconciled: int) (imported: Imported option) (group: OpenedGroup)
       Analysis = analysisRows group
       Distributions =
         let source = Analysis.source group.Config group.Accumulator
-        source.Scores |> Map.map (fun section _ -> Analysis.distribution source section 5)
+        source.Scores |> Map.map (fun section _ -> distribution group source section)
       Report = Echelon.Signal.Engine.GroupResult.ofAccumulator group.Config.TemplateHash group.Config.MinimumReportableCount group.Accumulator
       Template = group.Definition.Template
       Lineage =
         let result = result group
         $"{result.Lineage.DerivationHash} from {result.Lineage.SubmissionHashes.Length} accepted contribution(s), template {result.Lineage.TemplateHash}"
-      Problems = group.Problems |> List.map Problems.code }
+      Problems = live.Problems |> List.map Problems.code }
 
 /// What the page shows about a dataset.
 let datasetSummary (config: Deployment.DeploymentConfig) (opened: Store.Opened) (groups: AdminApp.GroupSummary list) : AdminApp.DatasetSummary =

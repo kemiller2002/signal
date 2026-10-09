@@ -38,6 +38,16 @@ let defaultPolicy =
       MinimumComparison = 5
       MinimumDiversity = Some 3 }
 
+/// The policy a group's own minimum implies: cells, comparisons and the
+/// differencing rule use it; distributions need twice as many values and,
+/// above a minimum of one, a few distinct ones.
+let forGroup (minimum: int) =
+    { MinimumGroup = minimum
+      MinimumCell = minimum
+      MinimumDistribution = 2 * minimum
+      MinimumComparison = minimum
+      MinimumDiversity = if minimum > 1 then Some(min 3 minimum) else None }
+
 /// Why a value is withheld.
 type Reason =
     | BelowGroupMinimum of have: int * need: int
@@ -150,3 +160,10 @@ let release (policy: Policy) (mode: IdentityMode) (ledger: Ledger) (view: View) 
         match risky with
         | Some earlier -> Withhold(Differencing(earlier.Id, abs (earlier.Count - view.Count))), ledger
         | None -> Release view, ledger @ [ view ]
+
+/// Whether a group's live state may be released, given the count last
+/// released (ARX-009: repeated views as submissions arrive). A minimum of one
+/// or an identified group never needs the ledger.
+let releasable (policy: Policy) (mode: IdentityMode) (lastReleased: int option) (live: int) =
+    let earlier = lastReleased |> Option.map (fun n -> { Id = "released"; Filters = Set.empty; Count = n }) |> Option.toList
+    fst (release policy mode earlier { Id = "live"; Filters = Set.empty; Count = live })

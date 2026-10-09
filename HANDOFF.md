@@ -218,6 +218,11 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   deletes an immutable record, so retirement removes results from Signal's
   state only (a `signal.group-retirement` marker); removing them from the
   repository tree needs an Arca erasure path.
+- Disclosure in the page (WI-0076): an anonymous group with a minimum above
+  one shows its last released state (`Releases.shown`, recorded after each
+  import as a `signal.group-release` of opaque keys) and says how many newer
+  responses are held back; distributions are withheld when they could single
+  respondents out; snapshots go through the same ledger.
 
 ## Validation
 

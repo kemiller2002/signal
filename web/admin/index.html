@@ -223,6 +223,7 @@
             <section id="group" class="ef-stack">
               <h2>Group <code id="group-key" data-text="groupKey"></code></h2>
               <p><span data-text="groupProgress"></span> · <span id="group-phase" data-text="groupPhase"></span></p>
+              <template data-if="hasWithheld"><p id="withheld" class="ef-alert" role="status" data-tone="attention" data-text="withheldNotice"></p></template>
               <nav aria-label="Group" id="group-tabs">
                 <ul class="areas">
                   <li><a id="tab-group" data-bind-href="groupHref" data-bind-aria-current="viewGroup">Overview</a></li>

@@ -225,6 +225,7 @@ let encodeSnapshot (datasetId: string) (s: Snapshot) : Result<string, Problem> =
           "exportSchema", whole s.ExportSchema
           "comparisons", textArray s.ComparisonReferences
           "locale", Json.String s.Locale
+          "accepted", whole s.Accepted
           "reportDataHash", Json.String s.CanonicalReportDataHash
           "reportData", Json.String s.ReportData
           "generatedAt",
@@ -249,14 +250,14 @@ let snapshotOfBody (value: Json) : Decoded<StoredSnapshot> =
     let definition = both (text "definitionId" value) (integer "definitionVersion" value)
     let template = field "template" value |> Result.bind templateRefOf
     let schemas = both (integer "visualizationSpec" value) (both (integer "resultSchema" value) (both (integer "aggregateSchema" value) (both (integer "exportSchema" value) (integer "snapshotSchema" value))))
-    let data = both (texts "comparisons" value) (both (text "locale" value) (both (text "reportDataHash" value) (both (text "reportData" value) generatedAt)))
+    let data = both (texts "comparisons" value) (both (text "locale" value) (both (integer "accepted" value) (both (text "reportDataHash" value) (both (text "reportData" value) generatedAt))))
 
     closed
-        [ "aggregateSchema"; "comparisons"; "datasetId"; "definitionId"; "definitionVersion"; "exportSchema"; "generatedAt"; "groupId"; "groupResultHash"
+        [ "accepted"; "aggregateSchema"; "comparisons"; "datasetId"; "definitionId"; "definitionVersion"; "exportSchema"; "generatedAt"; "groupId"; "groupResultHash"
           "locale"; "reportData"; "reportDataHash"; "reportStateHash"; "resultSchema"; "snapshotId"; "snapshotSchema"; "template"; "visualizationSpec" ]
         value
     |> Result.bind (fun () -> both identity (both definition (both template (both schemas data))))
-    |> Result.bind (fun ((datasetId, (snapshotId, (groupId, (resultHash, stateHash)))), ((defId, defVersion), (t, ((viz, (result, (aggregate, (exportSchema, snapshotSchema)))), (comparisons, (locale, (dataHash, (reportData, at)))))))) ->
+    |> Result.bind (fun ((datasetId, (snapshotId, (groupId, (resultHash, stateHash)))), ((defId, defVersion), (t, ((viz, (result, (aggregate, (exportSchema, snapshotSchema)))), (comparisons, (locale, (accepted, (dataHash, (reportData, at))))))))) ->
         let s =
             { SnapshotId = snapshotId
               GroupId = groupId
@@ -271,6 +272,7 @@ let snapshotOfBody (value: Json) : Decoded<StoredSnapshot> =
               ExportSchema = exportSchema
               ComparisonReferences = comparisons
               Locale = locale
+              Accepted = accepted
               CanonicalReportDataHash = dataHash
               ReportData = reportData
               GeneratedAtEvidence = at

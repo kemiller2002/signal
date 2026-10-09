@@ -15,6 +15,7 @@
     <Compile Include="Identity.fs" />
     <Compile Include="Store.fs" />
     <Compile Include="GroupStore.fs" />
+    <Compile Include="Releases.fs" />
     <Compile Include="TemplateStore.fs" />
     <Compile Include="ReportStore.fs" />
     <Compile Include="GovernanceStore.fs" />

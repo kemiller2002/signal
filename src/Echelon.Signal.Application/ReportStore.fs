@@ -124,7 +124,7 @@ let takeSnapshot (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Opene
         match! stored now opened actor Access.BuildReports with
         | Error failure -> return Error failure
         | Ok reports ->
-            match ReportLibrary.take reports.Library reports.Catalog source with
+            match ReportLibrary.take reports.Library reports.Catalog reports.Snapshots source with
             | Error problem -> return Error(SnapshotRefused problem)
             | Ok(snapshot, library) ->
                 let changes =

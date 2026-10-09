@@ -43,6 +43,8 @@ type OpenedGroup =
       /// Set when the group's accepted results were retired (ADM-045): the
       /// reconstruction that remains. A retired group loads no contributions.
       SourcesRetired: GovernanceRecord.StoredRetirement option
+      /// What an anonymous group last released (ARX-009), and its revision.
+      Released: (GovernanceRecord.StoredRelease * Revision) option
       Problems: Problem list }
 
 /// Why a group operation did not happen.
@@ -161,6 +163,14 @@ let openGroup (resolve: GroupRecord.TemplateResolver) (group: UrlState.OpaqueId)
             | ReadOutcome.Absent -> Loading.load opened.Verified GovernanceRecord.retirementReader (GovernanceRecord.folderOf GovernanceRecord.retirementType) { Entries = []; Complete = true } []
 
         let retired = retirement.Records |> Map.tryPick (fun _ stored -> if stored.Value.Group = string group then Some stored.Value else None)
+        let! releasePath = GovernanceRecord.releasePath (string group) |> Result.mapError (List.singleton >> Unusable) |> lift
+        let! storedRelease = call now (opened.Provider.Read opened.Namespace releasePath)
+        let releaseFolder = GovernanceRecord.folderOf GovernanceRecord.releaseType
+
+        let release =
+            Loading.load opened.Verified GovernanceRecord.releaseReader releaseFolder { Entries = []; Complete = true } (match storedRelease with ReadOutcome.Found found -> [ found ] | ReadOutcome.Absent -> [])
+
+        let released = release.Records |> Map.tryPick (fun _ stored -> if stored.Value.Group = string group then Some(stored.Value, stored.Revision) else None)
         let folder = ResultRecord.groupFolder group
         let! listing, objects = readTree now opened.Provider opened.Namespace folder
         let loaded = Loading.load opened.Verified (ResultRecord.reader definition.Template) folder listing objects
@@ -191,8 +201,10 @@ let openGroup (resolve: GroupRecord.TemplateResolver) (group: UrlState.OpaqueId)
               Lifecycle = lifecycle
               LifecycleRevision = lifecycleRevision
               SourcesRetired = retired
+              Released = released
               Problems =
                 retirement.Problems
+                @ release.Problems
                 @ loaded.Problems
                 @ (foreign |> Map.toList |> List.map (fun (_, stored) -> MisplacedRecord(RelativePath.render stored.Path))) }
     }
