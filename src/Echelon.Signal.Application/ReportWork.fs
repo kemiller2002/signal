@@ -29,7 +29,11 @@ let private summaryOf (s: Snapshot) : AdminTypes.SnapshotSummary =
 let load (now: DateTimeOffset) (opened: Store.Opened) =
     async {
         match! ReportStore.load now opened with
-        | Ok stored -> return [ SnapshotsReady stored.Snapshots; ToEngine(AdminApp.SnapshotsLoaded(stored.Snapshots |> List.map summaryOf)) ]
+        | Ok stored ->
+            return
+                [ SnapshotsReady stored.Snapshots
+                  ToEngine(AdminApp.SnapshotsLoaded(stored.Snapshots |> List.map summaryOf))
+                  ToEngine(AdminApp.LibraryLoaded stored.Library) ]
         | Error failure -> return [ ToEngine(groupFailure failure) ]
     }
 
@@ -56,14 +60,19 @@ let take (catalog: TemplateCatalog.Loaded) (actor: Store.Actor) (model: AdminApp
     let key = GroupRecord.groupKey group.Config.Group
 
     async {
-        match model.Dataset |> Option.bind (fun d -> d.Groups |> List.tryFind (fun g -> g.Key = key)), ReportExport.families |> List.tryFind (fun d -> d.Id = family) with
-        | Some summary, Some familyDefinition ->
+        match model.Dataset |> Option.bind (fun d -> d.Groups |> List.tryFind (fun g -> g.Key = key)), AdminReportView.definitionOf model family with
+        | Some summary, Some chosen ->
             let template = { SurveyId = group.Config.SurveyIdentifier; Version = group.Config.TemplateVersion; Hash = group.Config.TemplateHash }
-            let definition, pins = definitionFor familyDefinition template
 
             match! ReportStore.load now opened with
             | Error f -> return [ ToEngine(groupFailure f) ]
             | Ok reports ->
+                // A family gets a definition pinned to this template; a saved definition keeps its own pins.
+                let definition, pins =
+                    match latest reports.Library family with
+                    | Some saved when not (ReportExport.families |> List.exists (fun d -> d.Id = family)) -> saved.Definition, saved.Pins
+                    | _ -> definitionFor chosen template
+
                 let same (e: Entry) = { e.Definition with Version = definition.Version } = definition && e.Pins = pins
 
                 let! saved =
@@ -95,6 +104,16 @@ let take (catalog: TemplateCatalog.Loaded) (actor: Store.Actor) (model: AdminApp
                             let! reloaded = load now opened
                             return reloaded @ [ ToEngine(AdminApp.Noted(notice "SIGNAL.REPORT.SNAPSHOT_TAKEN" $"Snapshot {snapshot.SnapshotId} was taken of {snapshot.Accepted} response(s)." false)) ]
         | _ -> return [ ToEngine(AdminApp.Failed(notice "SIGNAL.REPORT.NO_REPORT" "Open a group's report first." false)) ]
+    }
+
+/// Saves a definition from the builder; the next version when the one in use was used.
+let saveDefinition (actor: Store.Actor) (opened: Store.Opened) (definition: ReportModel.Definition) (pins: Pins) (now: DateTimeOffset) =
+    async {
+        match! ReportStore.saveDefinition actor now opened definition pins with
+        | Error f -> return [ ToEngine(failure f) ]
+        | Ok entry ->
+            let! reloaded = load now opened
+            return reloaded @ [ ToEngine(AdminApp.DefinitionSaved entry); ToEngine(AdminApp.Noted(notice "SIGNAL.REPORT.DEFINITION_SAVED" $"Report definition {entry.Definition.Id} was saved as version {entry.Definition.Version}." false)) ]
     }
 
 let private mimeOf (file: string) =

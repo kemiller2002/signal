@@ -46,6 +46,7 @@
     <Compile Include="GovernanceRecord.fs" />
     <Compile Include="TemplateListing.fs" />
     <Compile Include="Authoring.fs" />
+    <Compile Include="ReportBuilder.fs" />
     <Compile Include="Routes.fs" />
     <Compile Include="AdminNavigation.fs" />
     <Compile Include="AdminTypes.fs" />
@@ -53,6 +54,7 @@
     <Compile Include="AdminRouteView.fs" />
     <Compile Include="AuthoringView.fs" />
     <Compile Include="AdminReportView.fs" />
+    <Compile Include="ReportBuilderView.fs" />
     <Compile Include="AdminView.fs" />
   </ItemGroup>
 

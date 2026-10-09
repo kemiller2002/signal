@@ -34,6 +34,9 @@ type Model =
       Authoring: Authoring.Screen
       /// The dataset's formal report snapshots (WI-0075).
       Snapshots: SnapshotSummary list
+      /// The saved report definitions and the builder (WI-0075).
+      Library: ReportLibrary.Library
+      Builder: ReportBuilder.Screen
       SignIn: Credential.SignIn
       Principal: Principal option
       Retention: Credential.Retention
@@ -61,6 +64,8 @@ let initial (catalog: CatalogEntry list) =
       Templates = TemplateListing.empty
       Authoring = Authoring.emptyScreen
       Snapshots = []
+      Library = ReportLibrary.empty
+      Builder = ReportBuilder.emptyScreen
       SignIn = Credential.SignedOut
       Principal = None
       Retention = Credential.defaultRetention
@@ -100,6 +105,7 @@ type Effect =
     | ExportSnapshot of snapshotId: string * file: string
     /// Hand the person a file to save (Limen's files capability).
     | Download of fileName: string * mimeType: string * data: string
+    | SaveReportDefinition of Echelon.Signal.Engine.ReportModel.Definition * ReportLibrary.Pins
     /// A Navigation effect: push or replace a relative `#/…` URL.
     | Go of Move
     /// Write a view's link to the clipboard (SIG-LINK-005).
@@ -122,6 +128,8 @@ type Msg =
     /// A draft was stored, or published as a version.
     | DraftSaved of survey: string
     | SnapshotsLoaded of SnapshotSummary list
+    | LibraryLoaded of ReportLibrary.Library
+    | DefinitionSaved of ReportLibrary.Entry
     /// An export file is ready to hand over.
     | ExportReady of fileName: string * mimeType: string * data: string
     | DraftPublished of survey: string * version: string
@@ -353,6 +361,15 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
         | Some id when [ "report.json"; "sections.csv"; "lineage.json" ] |> List.contains value -> busy [ ExportSnapshot(id, value) ]
         | _ -> model, []
     | "exportSnapshot" -> { model with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "Exporting needs ExportData." }, []
+    | building when ReportBuilder.events.Contains building ->
+        let surveys = model.Catalog |> List.map _.SurveyIdentifier |> List.distinct
+        let screen, commands = ReportBuilder.update model.Library surveys name key value model.Builder
+        let model = { model with Builder = screen; Notice = None }
+
+        match commands with
+        | [ ReportBuilder.SaveDefinition(d, p) ] when can model AdminState.CanBuildReport -> busy [ SaveReportDefinition(d, p) ]
+        | [ _ ] -> { model with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "Saving a report definition needs BuildReports and a writable store." }, []
+        | _ -> model, []
     | authoring when Authoring.events.Contains authoring ->
         let survey = match place.View with Ok(Draft s) -> Some s | _ -> None
         let screen, commands = Authoring.update model.Templates survey name key value model.Authoring
@@ -421,6 +438,8 @@ let update (msg: Msg) (model: Model) : Model * Effect list =
         let template = if catalog |> List.exists (fun e -> e.Hash = model.NewGroup.Template) then model.NewGroup.Template else catalog |> List.tryHead |> Option.map _.Hash |> Option.defaultValue ""
         { model with Catalog = catalog; Templates = listing; NewGroup = {| model.NewGroup with Template = template |} }, []
     | SnapshotsLoaded snapshots -> { model with Snapshots = snapshots; Busy = false }, []
+    | LibraryLoaded library -> { model with Library = library }, []
+    | DefinitionSaved entry -> { model with Builder = ReportBuilder.saved entry model.Builder; Busy = false }, []
     | ExportReady(name, mime, data) -> { model with Busy = false }, [ Download(name, mime, data) ]
     | DraftSaved survey -> { model with Authoring = Authoring.saved survey model.Authoring; Busy = false }, []
     | DraftPublished(survey, _) -> { model with Authoring = Authoring.published survey model.Authoring; Busy = false }, []

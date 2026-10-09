@@ -374,15 +374,8 @@
           "in": "query",
           "name": "family",
           "required": false,
-          "type": "enum",
-          "values": [
-            "administrator-group",
-            "executive-summary",
-            "detailed-section",
-            "anonymous-aggregate",
-            "identified-detail",
-            "audit"
-          ]
+          "type": "string",
+          "values": null
         },
         {
           "default": "en-US",
@@ -449,6 +442,18 @@
         }
       ],
       "pattern": "/templates/{survey:string}/draft",
+      "requires": [
+        "dataset"
+      ],
+      "returnTarget": true
+    },
+    {
+      "guards": [
+        "signedIn"
+      ],
+      "name": "reports",
+      "params": [],
+      "pattern": "/reports",
       "requires": [
         "dataset"
       ],

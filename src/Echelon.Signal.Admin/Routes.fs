@@ -62,6 +62,8 @@ type AdminRoute =
     | Compare of groups: string list * section: string option
     /// A survey's draft in the authoring screens (WI-0073).
     | Draft of survey: string
+    /// The report builder and the saved definitions (WI-0075).
+    | Reports
     | Administrators
     | Storage
 
@@ -118,11 +120,13 @@ let private routes =
       Route.create "imports" "groups/{group}/imports" |> withQuery [ QueryParam.optional "outcome" (ParamType.Set outcomeValues) ] |> guarded
       Route.create "report" "groups/{group}/report"
       |> withQuery
-          [ QueryParam.optional "family" (ParamType.Enum familyValues) |> QueryParam.withDefault (Value.Text defaultFamily)
+          // A report family or a saved definition's id (WI-0075): an opaque id, typed as text.
+          [ QueryParam.optional "family" ParamType.String |> QueryParam.withDefault (Value.Text defaultFamily)
             QueryParam.optional "locale" (ParamType.Enum localeValues) |> QueryParam.withDefault (Value.Text defaultLocale) ]
       |> guarded
       Route.create "compare" "compare" |> withQuery [ QueryParam.optional "groups" (ParamType.Set []); section ] |> guarded
       Route.create "draft" "templates/{survey}/draft" |> guarded
+      Route.create "reports" "reports" |> guarded
       Route.create "administrators" "administrators" |> guarded
       Route.create "storage" "storage" |> guarded ]
 
@@ -181,6 +185,7 @@ let toTarget (route: AdminRoute) : Target =
     | Report(g, family, locale) -> target "report" [ "group", text g ] [ "family", text family; "locale", text locale ]
     | Compare(groups, s) -> target "compare" [] ([ "groups", members groups ] @ optionalText "section" s)
     | Draft survey -> target "draft" [ "survey", text survey ] []
+    | Reports -> target "reports" [] []
     | Administrators -> target "administrators" [] []
     | Storage -> target "storage" [] []
 
@@ -233,6 +238,7 @@ let ofMatch (m: Match) : Result<AdminRoute, string> =
     | "report" -> path "group" |> Option.map (fun g -> Report(g, defaultArg (query "family") defaultFamily, defaultArg (query "locale") defaultLocale)) |> need
     | "compare" -> Ok(Compare(set "groups", query "section"))
     | "draft" -> path "survey" |> Option.map Draft |> need
+    | "reports" -> Ok Reports
     | "administrators" -> Ok Administrators
     | "storage" -> Ok Storage
     | other -> Error $"no view for {other}"

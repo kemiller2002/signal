@@ -327,4 +327,5 @@ let project (model: Model) : View =
       "capabilityList", text (can |> Set.toList |> List.map AdminState.capabilityName |> String.concat " ")
       yield! AdminRouteView.project model selected
       yield! AuthoringView.project model
+      yield! ReportBuilderView.project model
       yield! AdminReportView.project model selected ]

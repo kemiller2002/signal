@@ -84,11 +84,11 @@ let private areas (model: Model) =
     let current (route: AdminRoute) =
         match model.Place.View, route with
         | Ok(Groups _ | Group _ | Results _ | Scoring _ | Imports _ | Report _), Groups _ -> true
-        | Ok(Assessments | Assessment _ | Section _ | Question _), Assessments -> true
+        | Ok(Assessments | Assessment _ | Section _ | Question _ | Draft _), Assessments -> true
         | Ok r, _ -> r = route
         | _ -> false
 
-    [ Overview, "Overview"; Groups noFilter, "Groups"; Compare([], None), "Compare"; Assessments, "Assessments"; Administrators, "Administrators"; Storage, "Storage" ]
+    [ Overview, "Overview"; Groups noFilter, "Groups"; Compare([], None), "Compare"; Assessments, "Assessments"; Reports, "Reports"; Administrators, "Administrators"; Storage, "Storage" ]
     |> List.map (fun (route, label) -> [ "label", Text label; "href", Text(href route); "current", Text(if current route then "page" else "false") ])
 
 let private assessments (model: Model) : View =

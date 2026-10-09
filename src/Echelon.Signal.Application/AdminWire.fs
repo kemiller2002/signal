@@ -200,6 +200,9 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
         | None -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.REPORT.NO_SUCH_SNAPSHOT" "That snapshot is not in this dataset." false)) ])
 
         state, []
+    | AdminApp.SaveReportDefinition(definition, pins) ->
+        withDataset (fun actor opened -> ReportWork.saveDefinition actor opened definition pins now)
+        state, []
     | AdminApp.Download(name, mime, data) when negotiated files state ->
         let id, state = mint Downloading state
         state, [ Download(id, name, mime, data) ]
