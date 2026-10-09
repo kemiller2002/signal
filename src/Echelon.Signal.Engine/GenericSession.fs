@@ -53,6 +53,8 @@ type Refusal =
     /// The file is a template, but not the version the link names.
     | WrongTemplate
     | UnsupportedAnswer of questionId: string
+    /// The invitation's last day has passed (VER-003).
+    | InvitationExpired of expiresOn: DateOnly
 
 let describe =
     function
@@ -65,6 +67,8 @@ let describe =
         "The survey file on this site is damaged or not in its published form, so it was not used. Ask the person who sent you the link."
     | WrongTemplate ->
         "The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link."
+    | InvitationExpired day ->
+        $"""This invitation has expired. It could be answered until {day.ToString("d MMMM yyyy", Globalization.CultureInfo.InvariantCulture)}. Ask the person who sent it for a new link."""
     | UnsupportedAnswer questionId ->
         $"This survey has a question ({questionId}) of a kind this page cannot show yet. Ask the person who sent you the link."
 
@@ -84,6 +88,9 @@ type Response =
     { Published: Published
       Binding: Binding
       Answers: Answers
+      /// The invitation's locale and expiry (link format 2), kept as they
+      /// arrived and written back unchanged.
+      Terms: GenericEnvelope.Terms
       Phase: Phase
       /// Why the last request to submit was refused, if it was.
       Refusal: string option }
@@ -157,8 +164,9 @@ let verify (reference: byte[]) (bytes: byte[]) : Result<Published, Refusal> =
                       Version = decoded.Version
                       Form = form }
 
-/// The fetched catalog file arrives.
-let received (fetched: Fetched) (session: Session) : Session =
+/// The fetched catalog file arrives, on a day: an unsubmitted response to an
+/// expired invitation is refused, so it cannot be filled in.
+let received (today: DateOnly) (fetched: Fetched) (session: Session) : Session =
     match session with
     | Fetching(reference, payload) ->
         match fetched with
@@ -168,13 +176,16 @@ let received (fetched: Fetched) (session: Session) : Session =
             match verify reference bytes with
             | Error refusal -> Refused refusal
             | Ok published ->
-                match GenericEnvelope.decode published.Form.Content published.Form.Reference payload with
+                match GenericEnvelope.decodeWithTerms published.Form.Content published.Form.Reference payload with
                 | Error error -> Refused(UnreadableLink error)
-                | Ok envelope ->
+                | Ok(envelope, { ExpiresOn = Some day }) when today > day && not (Submission.isFinal { Binding = envelope.Binding; Answers = Map.empty }) ->
+                    Refused(InvitationExpired day)
+                | Ok(envelope, terms) ->
                     Responding
                         { Published = published
                           Binding = envelope.Binding
                           Answers = envelope.Answers
+                          Terms = terms
                           Phase = if Submission.isFinal { Binding = envelope.Binding; Answers = Map.empty } then Submitted else Answering
                           Refusal = None }
     | Refused _
@@ -271,7 +282,7 @@ let rec private finalOf (r: Response) (binding: Binding) (entropy: byte[]) : Res
         | Some fresh when fresh <> instance && fresh <> group ->
             let encoded =
                 Buffers.Text.Base64Url.DecodeFromChars(
-                    (GenericEnvelope.encode r.Published.Form.Content r.Published.Form.Reference { envelope r with Binding = Anonymous(fresh, group) })
+                    (GenericEnvelope.encodeWith r.Published.Form.Content r.Published.Form.Reference r.Terms { envelope r with Binding = Anonymous(fresh, group) })
                         .AsSpan()
                 )
 
@@ -339,4 +350,4 @@ let update (msg: Msg) (session: Session) : Session =
 
 /// The fragment, including `#`, that carries a response.
 let fragment (r: Response) =
-    $"#{LiveUrl.FragmentKey}={GenericEnvelope.encode r.Published.Form.Content r.Published.Form.Reference (envelope r)}"
+    $"#{LiveUrl.FragmentKey}={GenericEnvelope.encodeWith r.Published.Form.Content r.Published.Form.Reference r.Terms (envelope r)}"

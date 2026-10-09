@@ -23,7 +23,7 @@ let private testLink mode answers =
     "#r=" + GenericEnvelope.testLink DemoSurvey DemoVersion demo mode instance group answers
 
 let private opened link =
-    match start link |> received (Found bytes) with
+    match start link |> received (DateOnly(2026, 1, 1)) (Found bytes) with
     | Responding r -> r
     | other -> failwith $"%A{other}"
 

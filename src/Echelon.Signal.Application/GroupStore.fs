@@ -277,7 +277,7 @@ let importBatch
     let artifacts = texts |> List.map Intake.artifact |> List.distinctBy _.Hash |> List.map (fun a -> a.Hash, a) |> Map.ofList
 
     let commitChunk (current: OpenedGroup) (batch: Intake.Batch) (revision: Revision option) (chunk: Intake.Artifact list) =
-        let quarantined = Intake.quarantine current.Definition (Incremental.acceptedFor current.Accumulator) chunk
+        let quarantined = Intake.quarantine (System.DateOnly.FromDateTime now.UtcDateTime) current.Definition (Incremental.acceptedFor current.Accumulator) chunk
         let outcomes = quarantined |> List.map (fun q -> q.Artifact.Hash, Intake.outcomeOf q)
         let contributions = quarantined |> List.choose (Intake.promote current.Config.Group current.Config.Retention origin batch.BatchId)
         let next = Intake.record outcomes { batch with Revision = (match revision with Some _ -> batch.Revision + 1 | None -> batch.Revision) }

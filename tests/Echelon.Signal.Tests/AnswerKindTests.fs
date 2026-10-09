@@ -70,7 +70,7 @@ let private instance = (OpaqueId.ofBytes (Array.init 16 (fun i -> byte (90 + i))
 let private step msg session = GenericSession.update msg session
 
 let private opened () =
-    match GenericSession.start ("#r=" + GenericEnvelope.invitation "MIXED" "1" content Import.IdentifiedGroup instance group) |> received (Found bytes) with
+    match GenericSession.start ("#r=" + GenericEnvelope.invitation "MIXED" "1" content Import.IdentifiedGroup instance group) |> received (DateOnly(2026, 1, 1)) (Found bytes) with
     | Responding r -> r
     | other -> failwith $"%A{other}"
 

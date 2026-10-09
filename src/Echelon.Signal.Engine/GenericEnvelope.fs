@@ -26,6 +26,95 @@ open Echelon.Signal.Engine.UrlState
 [<NoComparison>]
 type Envelope = { Binding: Binding; Answers: Answers }
 
+// ---- Invitation terms (link format 2, DF-SIGNAL-2026-0006, VER-003) -------------------------
+
+/// The link format that carries invitation terms. A link without terms is
+/// written in format 1 exactly as before, so every existing link, golden
+/// vector and submission hash is unchanged.
+[<Literal>]
+let TermsFormatVersion = 2
+
+[<Literal>]
+let MaximumLocaleLength = 24
+
+/// The most bytes terms add: flags, the locale's length and text, and the
+/// expiry day.
+[<Literal>]
+let TermsMaximumBytes = 1 + 1 + MaximumLocaleLength + 2
+
+/// What an invitation says beyond its binding. Locale changes presentation
+/// only; it never changes scoring or identity. Expiry is the last UTC day
+/// the invitation may be answered and imported; both are inside the
+/// envelope's integrity check, so editing either invalidates the link.
+type Terms =
+    { Locale: string option
+      ExpiresOn: DateOnly option }
+
+let noTerms = { Locale = None; ExpiresOn = None }
+
+let private epoch = DateOnly(1970, 1, 1)
+let private localePattern = Text.RegularExpressions.Regex("^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8}){0,3}$")
+
+/// Why terms cannot be written, if they cannot.
+let termsProblem (terms: Terms) : string option =
+    match terms.Locale, terms.ExpiresOn with
+    | Some locale, _ when locale.Length > MaximumLocaleLength || not (localePattern.IsMatch locale) ->
+        Some $"'{locale}' is not a language tag of at most {MaximumLocaleLength} characters (for example en-GB)."
+    | _, Some day when day < epoch || day.DayNumber - epoch.DayNumber > 0xFFFF -> Some $"{day} is outside the dates a link can carry."
+    | _ -> None
+
+let private termsBytes (terms: Terms) : byte[] =
+    if terms = noTerms then
+        [||]
+    else
+        [| yield (if terms.Locale.IsSome then 1uy else 0uy) ||| (if terms.ExpiresOn.IsSome then 2uy else 0uy)
+           match terms.Locale with
+           | Some locale ->
+               yield byte locale.Length
+               yield! Text.Encoding.ASCII.GetBytes locale
+           | None -> ()
+           match terms.ExpiresOn with
+           | Some day ->
+               let days = day.DayNumber - epoch.DayNumber
+               yield byte (days >>> 8)
+               yield byte (days &&& 0xFF)
+           | None -> () |]
+
+/// Reads terms at `at`; the terms and where the item count starts. Only the
+/// one canonical spelling is read: no empty flags, no unknown flag, a
+/// well-formed locale.
+let private readTerms (body: byte[]) (at: int) : Result<Terms * int, DecodeError> =
+    let within n = at + n <= body.Length
+
+    if not (within 1) then
+        Error InvalidTerms
+    else
+        let flags = body[at]
+
+        if flags = 0uy || flags &&& 0xFCuy <> 0uy then
+            Error InvalidTerms
+        else
+            let locale, next =
+                if flags &&& 1uy = 0uy then
+                    Ok None, at + 1
+                elif not (within 2) || not (within (2 + int body[at + 1])) then
+                    Error InvalidTerms, at
+                else
+                    let length = int body[at + 1]
+                    let text = Text.Encoding.ASCII.GetString(body, at + 2, length)
+
+                    (if body[at + 2 .. at + 1 + length] |> Array.forall (fun b -> b < 0x80uy) && termsProblem { noTerms with Locale = Some text } = None then
+                         Ok(Some text)
+                     else
+                         Error InvalidTerms),
+                    at + 2 + length
+
+            match locale with
+            | Error e -> Error e
+            | Ok locale when flags &&& 2uy = 0uy -> Ok({ Locale = locale; ExpiresOn = None }, next)
+            | Ok _ when next + 2 > body.Length -> Error InvalidTerms
+            | Ok locale -> Ok({ Locale = locale; ExpiresOn = Some(epoch.AddDays((int body[next] <<< 8) ||| int body[next + 1])) }, next + 2)
+
 /// The reference a URL carries for a published template version.
 let referenceOf (surveyId: string) (version: string) (content: Content) = TemplateCanonical.reference surveyId version content
 
@@ -64,7 +153,7 @@ let private packedLength (slots: Slot list) = ((slots |> List.sumBy _.Bits) + 7)
 /// Encodes an envelope. Answers the template cannot interpret (unknown
 /// questions, invalid values) are not state, and are not written; check
 /// answers before finalizing.
-let encode (content: Content) (reference: byte[]) (envelope: Envelope) : string =
+let encodeWith (content: Content) (reference: byte[]) (terms: Terms) (envelope: Envelope) : string =
     let slots = layout content
     let qs = questions content |> List.map snd
     let packed = Array.zeroCreate<byte> (packedLength slots)
@@ -84,27 +173,32 @@ let encode (content: Content) (reference: byte[]) (envelope: Envelope) : string 
     |> ignore
 
     let body =
-        [| yield byte ResponseEncodingVersion
+        [| yield byte (if terms = noTerms then ResponseEncodingVersion else TermsFormatVersion)
            yield kindOf envelope.Binding
            yield! reference
            for id in idsOf envelope.Binding do
                yield! OpaqueId.toBytes id
+           yield! termsBytes terms
            yield byte (qs.Length >>> 8)
            yield byte (qs.Length &&& 0xFF)
            yield! packed |]
 
     Base64Url.EncodeToString(ReadOnlySpan(Array.append body (checksum (ReadOnlySpan body))))
 
+/// Encodes an envelope with no invitation terms (link format 1).
+let encode (content: Content) (reference: byte[]) (envelope: Envelope) : string = encodeWith content reference noTerms envelope
+
 /// Reads an envelope against the template the caller resolved, in
 /// `UrlState`'s order: alphabet, length, version, integrity, binding,
 /// template, cardinality, length, states, padding.
-let decode (content: Content) (reference: byte[]) (text: string) : Result<Envelope, DecodeError> =
+let decodeWithTerms (content: Content) (reference: byte[]) (text: string) : Result<Envelope * Terms, DecodeError> =
     let referenceLength = TemplateCanonical.ReferenceLength
     let minimum = 2 + referenceLength + 2 + IntegrityLength
 
     match tryFromBase64Url text with
     | None -> Error NotBase64Url
-    | Some bytes when bytes.Length >= 1 && int bytes[0] <> ResponseEncodingVersion -> Error(UnsupportedVersion(int bytes[0]))
+    | Some bytes when bytes.Length >= 1 && int bytes[0] <> ResponseEncodingVersion && int bytes[0] <> TermsFormatVersion ->
+        Error(UnsupportedVersion(int bytes[0]))
     | Some bytes when bytes.Length < minimum -> Error(Truncated(minimum, bytes.Length))
     | Some bytes ->
         let body = bytes[.. bytes.Length - IntegrityLength - 1]
@@ -115,9 +209,20 @@ let decode (content: Content) (reference: byte[]) (text: string) : Result<Envelo
             match idCount (baseKind bytes[1]) with
             | None -> Error(UnknownBinding(int bytes[1]))
             | Some ids ->
-                let header = 2 + referenceLength + ids * IdLength + 2
+                let termsAt = 2 + referenceLength + ids * IdLength
 
-                if body.Length < header then
+                // Format 2 carries terms between the binding and the item count.
+                let termsRead =
+                    if int bytes[0] = TermsFormatVersion then readTerms body termsAt else Ok(noTerms, termsAt)
+
+                let terms, header =
+                    match termsRead with
+                    | Ok(terms, countAt) -> terms, countAt + 2
+                    | Error _ -> noTerms, termsAt + 2
+
+                if Result.isError termsRead then
+                    Error InvalidTerms
+                elif body.Length < header then
                     Error(Truncated(header + IntegrityLength, bytes.Length))
                 elif body[2 .. 1 + referenceLength] <> reference then
                     Error TemplateMismatch
@@ -173,7 +278,11 @@ let decode (content: Content) (reference: byte[]) (text: string) : Result<Envelo
                         match decoded with
                         | Error e -> Error e
                         | Ok _ when [ used .. packed.Length * 8 - 1 ] |> List.exists (fun p -> bit p = 1UL) -> Error NonCanonicalPadding
-                        | Ok pairs -> Ok { Binding = binding; Answers = Map.ofList pairs }
+                        | Ok pairs -> Ok({ Binding = binding; Answers = Map.ofList pairs }, terms)
+
+/// Reads an envelope, in either link format, without its terms.
+let decode (content: Content) (reference: byte[]) (text: string) : Result<Envelope, DecodeError> =
+    decodeWithTerms content reference text |> Result.map fst
 
 /// The template reference an envelope names, read before the template is
 /// known (DF-SIGNAL-2026-0005): the respondent page needs it to find the
@@ -186,7 +295,8 @@ let referenceIn (text: string) : Result<byte[], DecodeError> =
 
     match tryFromBase64Url text with
     | None -> Error NotBase64Url
-    | Some bytes when bytes.Length >= 1 && int bytes[0] <> ResponseEncodingVersion -> Error(UnsupportedVersion(int bytes[0]))
+    | Some bytes when bytes.Length >= 1 && int bytes[0] <> ResponseEncodingVersion && int bytes[0] <> TermsFormatVersion ->
+        Error(UnsupportedVersion(int bytes[0]))
     | Some bytes when bytes.Length < minimum -> Error(Truncated(minimum, bytes.Length))
     | Some bytes when checksum (ReadOnlySpan(bytes, 0, bytes.Length - IntegrityLength)) <> bytes[bytes.Length - IntegrityLength ..] ->
         Error IntegrityFailed
@@ -203,6 +313,10 @@ let invitationBinding (mode: Import.IdentityMode) (instance: OpaqueId) (group: O
 
 let invitation (surveyId: string) (version: string) (content: Content) (mode: Import.IdentityMode) (instance: OpaqueId) (group: OpaqueId) =
     encode content (referenceOf surveyId version content) { Binding = invitationBinding mode instance group; Answers = Map.empty }
+
+/// An invitation with terms: a locale and an expiry day (link format 2).
+let invitationWith (terms: Terms) (surveyId: string) (version: string) (content: Content) (mode: Import.IdentityMode) (instance: OpaqueId) (group: OpaqueId) =
+    encodeWith content (referenceOf surveyId version content) terms { Binding = invitationBinding mode instance group; Answers = Map.empty }
 
 /// A test link (AUT-006 §§60-61): an invitation marked as a test artifact,
 /// optionally carrying sample answers (a fixture's). The survey page says it

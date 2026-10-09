@@ -36,7 +36,9 @@ type Fields = { Key: string; Value: string }
 [<NoComparison; NoEquality>]
 type Edge =
     { /// Fresh cryptographically secure bytes for an anonymous submission id.
-      Entropy: unit -> byte[] }
+      Entropy: unit -> byte[]
+      /// Today's date (UTC), for an invitation's expiry (VER-003).
+      Today: unit -> System.DateOnly }
 
 /// Every event the page may send, so a test can hold index.html to it. An
 /// `answered` event always comes from a checked radio: the browser fires
@@ -84,7 +86,8 @@ type State =
 /// The secure default edge: .NET's CSPRNG, which in the browser is the Web
 /// Crypto `getRandomValues` source (ARX-004).
 let secureEdge =
-    { Entropy = fun () -> System.Security.Cryptography.RandomNumberGenerator.GetBytes UrlState.IdLength }
+    { Entropy = fun () -> System.Security.Cryptography.RandomNumberGenerator.GetBytes UrlState.IdLength
+      Today = fun () -> System.DateOnly.FromDateTime System.DateTime.UtcNow }
 
 let initialWith (edge: Edge) =
     { Session = start Pilot.assessment

@@ -109,6 +109,13 @@ let private links =
       // Every other kind, and a conditional question (MIXED, published beside the demo).
       "kinds", "web/survey/" + "#r=" + GenericEnvelope.invitation "MIXED" "1" mixedEditor.Draft.Content Import.IdentifiedGroup instance group
       "kindsFile", fst (publishedFile "MIXED" "1" mixedEditor.Draft.Content)
+      // Link format 2 (VER-003): an invitation that expired on 2020-01-31, and one in Canadian French.
+      "expired",
+      "web/survey/#r="
+      + GenericEnvelope.invitationWith { Locale = None; ExpiresOn = Some(DateOnly(2020, 1, 31)) } DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group
+      "localized",
+      "web/survey/#r="
+      + GenericEnvelope.invitationWith { Locale = Some "fr-CA"; ExpiresOn = Some(DateOnly(2100, 1, 1)) } DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group
       // A test link (AUT-006 §60): marked on the page and refused by production import.
       "test", "web/survey/#r=" + GenericEnvelope.testLink DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group Map.empty ]
 
@@ -151,7 +158,7 @@ let ``every file the site publishes is a canonical template named by its own ref
 // ---------------------------------------------------------------------------
 
 let private loaded mode =
-    match start (invitation mode DemoVersion) |> received (Found demoBytes) with
+    match start (invitation mode DemoVersion) |> received (DateOnly(2026, 1, 1)) (Found demoBytes) with
     | Responding r -> r
     | other -> failwith $"%A{other}"
 
@@ -179,7 +186,7 @@ let ``the published file is verified before it is used`` () =
     Assert.Equal(Answering, r.Phase)
 
 let private refusalFor fetched =
-    match start (invitation Import.IdentifiedGroup DemoVersion) |> received fetched with
+    match start (invitation Import.IdentifiedGroup DemoVersion) |> received (DateOnly(2026, 1, 1)) fetched with
     | Refused refusal -> refusal
     | other -> failwith $"not refused: %A{other}"
 
@@ -207,8 +214,8 @@ let ``a template with a question this page cannot show is refused`` () =
     let file, bytes = publishedFile DemoSurvey "3" content
     let session = start ("#r=" + GenericEnvelope.invitation DemoSurvey "3" content Import.IdentifiedGroup instance group)
     Assert.Equal(Some file, wanted session)
-    Assert.Equal(Refused(UnsupportedAnswer "CTX-003") |> phaseName, received (Found bytes) session |> phaseName)
-    Assert.True(match received (Found bytes) session with Refused(UnsupportedAnswer "CTX-003") -> true | _ -> false)
+    Assert.Equal(Refused(UnsupportedAnswer "CTX-003") |> phaseName, received (DateOnly(2026, 1, 1)) (Found bytes) session |> phaseName)
+    Assert.True(match received (DateOnly(2026, 1, 1)) (Found bytes) session with Refused(UnsupportedAnswer "CTX-003") -> true | _ -> false)
 
 let private answerAll (r: Response) =
     questions demo
@@ -276,7 +283,7 @@ let ``an anonymous submission carries a fresh id and not the instance`` () =
 let ``a submitted link opens sealed`` () =
     let submitted = loaded Import.IdentifiedGroup |> answerAll |> update (SubmitRequested(Array.zeroCreate 16)) |> response
 
-    match start (fragment submitted) |> received (Found demoBytes) with
+    match start (fragment submitted) |> received (DateOnly(2026, 1, 1)) (Found demoBytes) with
     | Responding r ->
         Assert.Equal(Submitted, r.Phase)
         Assert.Equal<Answers>(submitted.Answers, r.Answers)

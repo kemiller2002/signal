@@ -2,13 +2,14 @@
 id: SIG-LINK
 title: Signal deep linking - every navigable view has a URL that opens it
 status: accepted
-version: 1.0.0
+version: 1.1.0
 created: 2026-10-08
-updated: 2026-10-08
+updated: 2026-10-09
 owners:
   - signal
 related_documents:
   - research/decisions/DF-SIGNAL-2026-0003--deep-linking-through-limen-routing.md
+  - research/decisions/DF-SIGNAL-2026-0006--respondent-links-carry-locale-and-expiry-in-link-format-2.md
   - .echelon/routes.json
   - docs/requirements/implementation-gap-analysis.md
 tags: [requirements, routing, deep-linking, limen, privacy]
@@ -34,6 +35,16 @@ provenance:
         model: unknown
         runtime: claude-code
       reason: "SIG-LINK-008 names the accepted respondent-link exception (WI-0070)"
+    EXE-20261009T042446720Z-a28d9579:
+      operations: [modified]
+      at: 2026-10-09T04:38:25.498Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: unknown
+        runtime: claude-code
+      reason: "SIG-LINK 1.1.0: SIG-LINK-013 respondent link formats (DF-SIGNAL-2026-0006)"
 ---
 
 # SIG-LINK — deep linking
@@ -126,3 +137,14 @@ current routes.
 cold (a fresh page at the deep link), including against the assembled Pages
 site served under a sub-path, and prove sign-in return, not-found pages,
 Back and Forward, and Copy link.
+
+**SIG-LINK-013 Respondent link formats.** The respondent answer link
+(`#r=<envelope>`, SIG-LINK-008's exception) has two formats, told apart by
+its first byte. Format 1 carries the binding and answers; format 2 also
+carries the invitation's terms (locale and expiry day) inside the link's
+integrity check (DF-SIGNAL-2026-0006). A link without terms MUST be written
+as format 1, and format 1 links MUST decode and behave exactly as before.
+An edited expiry MUST invalidate the link; an expired invitation MUST NOT be
+fillable on the survey page, and intake MUST refuse its submission
+(`rejected:invitation-expired`). Locale MUST change presentation only.
+

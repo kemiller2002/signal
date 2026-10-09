@@ -76,12 +76,12 @@ let private evidenceFor =
 /// Quarantines artifacts against a group: each is evaluated against the
 /// accepted identities and nothing is written. Collisions inside the batch
 /// are settled by the lower submission hash, so the order is irrelevant.
-let quarantine (definition: GroupDefinition) (accepted: string -> string option) (artifacts: Artifact list) : Quarantined list =
+let quarantine (today: System.DateOnly) (definition: GroupDefinition) (accepted: string -> string option) (artifacts: Artifact list) : Quarantined list =
     let evaluated =
         artifacts
         |> List.distinctBy _.Hash
         |> List.sortBy _.Hash
-        |> List.map (fun item -> item, GenericImport.evaluate definition accepted item.Text)
+        |> List.map (fun item -> item, GenericImport.evaluateOn today definition accepted item.Text)
 
     let winners =
         evaluated

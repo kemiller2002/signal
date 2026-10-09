@@ -119,3 +119,17 @@ test("other answer kinds and a conditional question work on the page", async ({ 
   await page.locator("#submit-answers").click();
   await expect(page.locator("#submitted-title")).toHaveText("Submitted");
 });
+
+test("an expired invitation says so and cannot be filled in", async ({ page }) => {
+  await open(page, links.expired);
+  await expect(page.locator("#survey-refused-message")).toContainText("This invitation has expired.");
+  await expect(page.locator("#questions")).toHaveCount(0);
+});
+
+test("an invitation's locale sets the page's language, and stays in the link", async ({ page }) => {
+  await open(page, links.localized);
+  await expect(page.locator("main")).toHaveAttribute("lang", "fr-CA");
+  await pick(page, "3-1").check();
+  // Still link format 2 (first byte 2) after the address follows the answer.
+  await expect.poll(() => Buffer.from(new URL(page.url()).hash.split("#r=")[1].replaceAll("-", "+").replaceAll("_", "/"), "base64")[0]).toBe(2);
+});

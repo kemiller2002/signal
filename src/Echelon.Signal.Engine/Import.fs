@@ -95,6 +95,8 @@ type ImportError =
     /// A test or preview artifact (AUT-006 §§21, 60): never a production
     /// submission. Only an import opened as a test environment reads it.
     | TestSubmission
+    /// The invitation's expiry day (link format 2, VER-003) has passed.
+    | InvitationExpired of expiresOn: System.DateOnly
 
 [<NoComparison>]
 type ImportOutcome =
@@ -213,6 +215,7 @@ let outcomeCode =
     | Rejected(IncompleteSubmission n) -> $"rejected:incomplete:{n}"
     | Rejected(DuplicateInstance _) -> "rejected:duplicate-instance"
     | Rejected TestSubmission -> "rejected:test-submission"
+    | Rejected(InvitationExpired _) -> "rejected:invitation-expired"
 
 /// Imports one submission: the new group state and what happened.
 let importOne (state: GroupState) (text: string) : GroupState * ImportOutcome =

@@ -55,13 +55,17 @@ type Environment =
 /// Reads and validates one generic submission against a group, without
 /// changing anything, in an environment; `accepted` gives the SubmissionHash
 /// already accepted for an identity key, if any.
-let evaluateIn (environment: Environment) (definition: GroupDefinition) (form: GenericForm) (accepted: string -> string option) (text: string) : ImportOutcome =
+/// `today`, when given, is the intake day: a submission whose invitation
+/// expired before it is refused (VER-003). Re-reading an accepted
+/// submission (`Intake.reconstruct`) passes None.
+let evaluateFor (environment: Environment) (today: System.DateOnly option) (definition: GroupDefinition) (form: GenericForm) (accepted: string -> string option) (text: string) : ImportOutcome =
     match payloadOf text with
     | None -> Rejected NoSubmissionFound
     | Some payload ->
-        match GenericEnvelope.decode form.Content form.Reference payload with
+        match GenericEnvelope.decodeWithTerms form.Content form.Reference payload with
         | Error error -> Rejected(Unreadable error)
-        | Ok envelope ->
+        | Ok(_, { ExpiresOn = Some expires }) when today |> Option.exists (fun day -> day > expires) -> Rejected(InvitationExpired expires)
+        | Ok(envelope, _) ->
             let binding =
                 match environment with
                 | ProductionImport -> envelope.Binding
@@ -95,6 +99,9 @@ let evaluateIn (environment: Environment) (definition: GroupDefinition) (form: G
                     | Some existing -> Rejected(DuplicateInstance existing)
                     | None -> Accepted accepted'
 
+let evaluateIn (environment: Environment) (definition: GroupDefinition) (form: GenericForm) (accepted: string -> string option) (text: string) : ImportOutcome =
+    evaluateFor environment None definition form accepted text
+
 /// Reads one generic submission in production: test artifacts are refused.
 let evaluateAgainst (definition: GroupDefinition) (form: GenericForm) (accepted: string -> string option) (text: string) : ImportOutcome =
     evaluateIn ProductionImport definition form accepted text
@@ -103,6 +110,12 @@ let evaluateAgainst (definition: GroupDefinition) (form: GenericForm) (accepted:
 /// page produces): the template's page with `#r=` and the envelope.
 let link (form: GenericForm) (pagePath: string) (envelope: GenericEnvelope.Envelope) =
     $"{pagePath}#{LiveUrl.FragmentKey}={GenericEnvelope.encode form.Content form.Reference envelope}"
+
+/// Intake on a day: as `evaluate`, and an expired invitation is refused.
+let evaluateOn (today: System.DateOnly) (definition: GroupDefinition) (accepted: string -> string option) (text: string) : ImportOutcome =
+    match definition.Generic with
+    | Some form -> evaluateFor ProductionImport (Some today) definition form accepted text
+    | None -> Import.evaluateAgainst definition accepted text
 
 /// Reads a submission against any group: the pilot's pipeline or the generic one.
 let evaluate (definition: GroupDefinition) (accepted: string -> string option) (text: string) : ImportOutcome =
