@@ -119,3 +119,27 @@ let answerState (answer: Answer) : Responses.AnswerState =
     | Withheld NotApplicable -> Responses.Special Responses.NotApplicable
 
 let answers (answers: Answers) : Responses.Answers = answers |> Map.map (fun _ a -> answerState a)
+
+/// The assessment a generic template is, when it has the shape the group
+/// pipeline reads (`contentOf`'s image): one scored section per dimension of
+/// five-point frequency questions with the three special states, each
+/// section scored by the catalog scorer, no rules or results. Metadata
+/// beyond the title is the template's own. Anything else is refused with the
+/// reason, never approximated (WI-0073).
+let assessmentOf (surveyId: string) (version: string) (content: Template.Content) : Result<Assessment, string> =
+    let minimum =
+        content.Sections
+        |> List.tryPick (fun s -> s.Scoring |> Option.map _.Scorer.Missing.MinimumObservations)
+        |> Option.defaultValue 1
+
+    let candidate =
+        { Id = surveyId
+          Title = content.Metadata.Title
+          Version = version
+          Dimensions = content.Sections |> List.map (fun s -> { Id = s.Id; Label = s.Title })
+          Items = content.Sections |> List.collect (fun s -> s.Questions |> List.map (fun q -> { Id = q.Id; DimensionId = s.Id; Prompt = q.Prompt }))
+          MinimumNumericAnswers = minimum }
+
+    if content.Sections.IsEmpty then Error "it has no sections"
+    elif { contentOf candidate with Metadata = content.Metadata } = content then Ok candidate
+    else Error "the group pipeline reads five-point frequency sections scored by the catalog scorer, without rules or results; other templates cannot start groups yet"

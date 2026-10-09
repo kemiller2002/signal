@@ -36,6 +36,8 @@ type State =
       Fault: FaultView option
       Client: FidesClient option
       Opened: Store.Opened option
+      /// The open dataset's template catalog (built-in templates when none is open).
+      Catalog: TemplateCatalog.Loaded
       Groups: Map<string, GroupStore.OpenedGroup> }
 
 let initial =
@@ -50,6 +52,7 @@ let initial =
       Fault = None
       Client = None
       Opened = None
+      Catalog = TemplateCatalog.builtIn []
       Groups = Map.empty }
 
 let private negotiated (offer: CapabilityOffer) (state: State) = List.contains offer state.Capabilities
@@ -153,90 +156,27 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
                 }
             ))
 
-        { state with Opened = None; Groups = Map.empty }, []
+        { state with Opened = None; Catalog = TemplateCatalog.builtIn env.Catalog; Groups = Map.empty }, []
     | AdminApp.OpenDataset datasetId ->
         match model.Deployment, actorOf env model, state.Client with
         | Some config, Some actor, Some client ->
             let backend = env.Backend (fun () -> Some(Identity.tokens client)) (fun () -> client.ReportUnauthorized())
             let pinned = state.Opened |> Option.filter (fun o -> o.DatasetId = datasetId) |> Option.map _.RepositoryId
-
-            start (
-                async {
-                    match! Store.openDataset backend config actor pinned env.ApplicationVersion datasetId now with
-                    | Error failure -> return [ ToEngine(openFailure failure) ]
-                    | Ok opened ->
-                        match! loadGroups env opened with
-                        | Ok groups -> return [ DatasetReady(opened, groups) ]
-                        | Error failure -> return [ DatasetReady(opened, []); ToEngine(groupFailure failure) ]
-                }
-            )
+            start (AdminGroupWork.openDataset env backend config actor pinned datasetId now)
         | _ -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NOT_SIGNED_IN" "Sign in first." false)) ])
 
         state, []
     | AdminApp.CreateGroup(templateHash, mode, expected, minimum) ->
-        withDataset (fun actor opened ->
-            async {
-                match env.Catalog |> List.tryFind (fun e -> e.Hash = templateHash), Echelon.Signal.Engine.UrlState.OpaqueId.ofBytes (env.RandomBytes Echelon.Signal.Engine.UrlState.IdLength) with
-                | Some entry, Some group ->
-                    let config: GroupRecord.GroupConfig =
-                        { Group = group
-                          Mode = mode
-                          ExpectedCount = expected
-                          SurveyIdentifier = entry.SurveyIdentifier
-                          TemplateVersion = entry.Version
-                          TemplateHash = entry.Hash
-                          MinimumReportableCount = minimum
-                          Retention = GroupRecord.NoneAfterImport
-                          Revision = 1 }
-
-                    match! GroupStore.create actor config now opened with
-                    | Error failure -> return [ ToEngine(groupFailure failure) ]
-                    | Ok() ->
-                        match! GroupStore.openGroup env.Resolve group now opened with
-                        | Ok created -> return [ GroupReady(created, None, 0) ]
-                        | Error failure -> return [ ToEngine(groupFailure failure) ]
-                | _ -> return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.TEMPLATE_UNAVAILABLE" "Choose a template from the catalog." false)) ]
-            })
-
+        withDataset (fun actor opened -> AdminGroupWork.create env state.Catalog actor opened templateHash mode expected minimum now)
         state, []
     | AdminApp.OpenGroup key ->
-        withGroup key (fun _ group ->
-            async {
-                match! GroupStore.openGroup env.Resolve group.Config.Group now group.Dataset with
-                | Ok fresh -> return [ GroupReady(fresh, None, 0) ]
-                | Error failure -> return [ ToEngine(groupFailure failure) ]
-            })
-
+        withGroup key (fun _ group -> AdminGroupWork.reopen state.Catalog group now)
         state, []
     | AdminApp.ImportArtifacts(key, texts, origin) ->
-        withGroup key (fun actor group ->
-            async {
-                match! GroupStore.importBatch actor env.Resolve origin texts now group with
-                | Error failure -> return [ ToEngine(groupFailure failure) ]
-                | Ok imported ->
-                    let unreconciled = if imported.Summary.Status = Intake.NeedsReconciliation then 1 else 0
-                    let stopped = imported.StoppedBecause |> Option.map (groupFailure >> ToEngine) |> Option.toList
-
-                    // Record a release if the new state may be shown (ARX-009), then
-                    // reread the group so what the page shows comes from storage.
-                    let! released = Releases.record actor now imported.Group
-                    let! fresh = GroupStore.openGroup env.Resolve group.Config.Group now group.Dataset
-                    let failures = [ released |> Result.map ignore; fresh |> Result.map ignore ] |> List.choose (function Error f -> Some(ToEngine(groupFailure f)) | Ok() -> None)
-                    let current = fresh |> Result.defaultValue imported.Group
-                    return GroupReady(current, Some imported, unreconciled) :: stopped @ failures
-            })
-
+        withGroup key (fun actor group -> AdminGroupWork.import state.Catalog actor group origin texts now)
         state, []
     | AdminApp.TransitionGroup(key, name) ->
-        withGroup key (fun actor group ->
-            async {
-                match! GroupAdmin.transition actor name now group with
-                | Ok next ->
-                    let! _ = env.Bridge.Call(Bridge.Announce(Credential.announcement group.Dataset.DatasetId Credential.StorageChangedElsewhere))
-                    return [ GroupReady(next, None, 0) ]
-                | Error failure -> return [ ToEngine(groupFailure failure) ]
-            })
-
+        withGroup key (fun actor group -> AdminGroupWork.transition env actor group name now)
         state, []
     | AdminApp.ChangeRoster command ->
         withDataset (fun actor opened ->
@@ -307,14 +247,15 @@ let private localConfig: Deployment.DeploymentConfig =
 let private absorb (env: Env) (state: State) (outcome: Outcome) : State * AdminApp.Msg list =
     match outcome, state.Model with
     | ToEngine msg, _ -> state, [ msg ]
-    | DatasetReady(opened, groups), Some model ->
+    | DatasetReady(opened, groups, catalog), Some model ->
         let config = model.Deployment |> Option.defaultValue localConfig
         let summaries = groups |> List.map (GroupAdmin.summary 0 None)
 
         { state with
             Opened = Some opened
+            Catalog = catalog
             Groups = groups |> List.map (fun g -> GroupRecord.groupKey g.Config.Group, g) |> Map.ofList },
-        [ AdminApp.DatasetOpened(GroupAdmin.datasetSummary config opened summaries, env.Now()) ]
+        [ AdminApp.CatalogLoaded(catalog.Offered, catalog.Listing); AdminApp.DatasetOpened(GroupAdmin.datasetSummary config opened summaries, env.Now()) ]
     | GroupReady(group, imported, unreconciled), _ ->
         { state with Groups = state.Groups.Add(GroupRecord.groupKey group.Config.Group, group) }, [ AdminApp.GroupUpdated(GroupAdmin.summary unreconciled imported group) ]
     | RosterChanged opened, Some model ->

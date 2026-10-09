@@ -156,7 +156,6 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
           Bridge = bridge
           Backend = fun _ _ -> backend
           Identity = Identity.create
-          Resolve = fun hash -> if hash = Canonical.templateHash Pilot.assessment then Some Pilot.assessment else None
           Catalog =
             [ { Hash = Canonical.templateHash Pilot.assessment
                 SurveyIdentifier = Pilot.assessment.Id

@@ -22,17 +22,14 @@ let dispatch (messageJson: string) =
 
 // ---- The administrator page (web/admin/) ---------------------------------------------------
 
-/// The templates the administrator page can start groups from, until the
-/// stored catalog (WI-0057) is wired into the page (WI-0073): the pilot.
+/// The built-in templates the administrator page can start groups from: the
+/// pilot. A dataset's stored catalog joins them when it opens (WI-0073).
 let private catalog: Echelon.Signal.Admin.AdminApp.CatalogEntry list =
     [ { Hash = Canonical.templateHash Pilot.assessment
         SurveyIdentifier = Pilot.assessment.Id
         Version = Pilot.assessment.Version
         Title = Pilot.assessment.Title
         Content = Pilot.assessment } ]
-
-let private resolve (hash: string) =
-    if hash = Canonical.templateHash Pilot.assessment then Some Pilot.assessment else None
 
 let private bridge = Bridge.Bridge<AdminWork.Outcome>()
 let private now () = System.DateTimeOffset.UtcNow
@@ -46,7 +43,6 @@ let private adminEnv: AdminWork.Env =
       // Arca's GitHub adapter, its requests through the kernel, its tokens from Fides.
       Backend = fun tokens unauthorized -> Store.gitHub (AdminPorts.arcaHost bridge tokens unauthorized)
       Identity = Identity.create
-      Resolve = resolve
       Catalog = catalog
       ApplicationVersion = "signal-admin/1" }
 

@@ -52,6 +52,7 @@
     <Compile Include="GovernanceStoreTests.fs" />
     <Compile Include="DisclosurePageTests.fs" />
     <Compile Include="PiiInjectionTests.fs" />
+    <Compile Include="CatalogPageTests.fs" />
     <Compile Include="AnalyticsTests.fs" />
     <Compile Include="VisualizationTests.fs" />
     <Compile Include="LimenRoutingVectors.fs" />

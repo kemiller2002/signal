@@ -84,6 +84,8 @@ type Model =
     { Deployment: Deployment.DeploymentConfig option
       ConfigurationProblem: string option
       Catalog: CatalogEntry list
+      /// The dataset's stored template catalog as the console lists it (WI-0073).
+      Templates: TemplateListing.Listing
       SignIn: Credential.SignIn
       Principal: Principal option
       Retention: Credential.Retention
@@ -108,6 +110,7 @@ let initial (catalog: CatalogEntry list) =
     { Deployment = None
       ConfigurationProblem = None
       Catalog = catalog
+      Templates = TemplateListing.empty
       SignIn = Credential.SignedOut
       Principal = None
       Retention = Credential.defaultRetention
@@ -155,6 +158,8 @@ type Msg =
     | IdentityChanged of Credential.SignIn * Principal option
     | TabNoticed of Credential.TabNotice
     | DatasetOpened of DatasetSummary * at: DateTimeOffset
+    /// The templates new groups can start from (built in and stored), and the stored listing.
+    | CatalogLoaded of CatalogEntry list * TemplateListing.Listing
     | GroupUpdated of GroupSummary
     | Failed of Notice
     /// Something worth telling the person that is not a failure.
@@ -421,6 +426,9 @@ let update (msg: Msg) (model: Model) : Model * Effect list =
             LastVerified = Some at
             Busy = false },
         []
+    | CatalogLoaded(catalog, listing) ->
+        let template = if catalog |> List.exists (fun e -> e.Hash = model.NewGroup.Template) then model.NewGroup.Template else catalog |> List.tryHead |> Option.map _.Hash |> Option.defaultValue ""
+        { model with Catalog = catalog; Templates = listing; NewGroup = {| model.NewGroup with Template = template |} }, []
     | GroupUpdated group ->
         match model.Dataset with
         | Some dataset ->
