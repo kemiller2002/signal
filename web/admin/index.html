@@ -509,6 +509,23 @@
         <p id="report-withheld" role="status">This report is not available for this group. <span data-text="reportWithheldReason"></span></p>
       </template>
       <p class="ef-field__description">To keep a copy, print this page or save it as PDF: only the report is printed.</p>
+      <section id="report-snapshots" class="ef-stack" aria-labelledby="report-snapshots-title">
+        <h2 id="report-snapshots-title">Formal snapshots</h2>
+        <p class="ef-field__description">A snapshot keeps this report exactly as it is now, with what produced it. Opening it later never shows newer data.</p>
+        <template data-if="canTakeSnapshot"><button type="button" class="ef-button" id="take-snapshot" data-event="takeSnapshot" data-bind-disabled="busy">Take a snapshot</button></template>
+        <ul id="snapshots">
+          <template data-each="reportSnapshots" data-key="key">
+            <li>
+              <span data-text="label"></span> · <span data-text="intact"></span>
+              <template data-if="canExport">
+                <button type="button" class="ef-button" data-event="exportSnapshot" value="report.json">Report (JSON)</button>
+                <button type="button" class="ef-button" data-event="exportSnapshot" value="sections.csv">Sections (CSV)</button>
+                <button type="button" class="ef-button" data-event="exportSnapshot" value="lineage.json">Lineage</button>
+              </template>
+            </li>
+          </template>
+        </ul>
+      </section>
     </section>
   </template>
   <template data-if="hasReport">

@@ -27,6 +27,14 @@
       "$comment": "Every administrator kernel message is parsed and dispatched inside Aegis.capture (AdminWire.handle), including the continuations of Fides' sign-in and Arca's storage work that the kernel's answers resume. A message that is not the Limen shape the engine relies on is MESSAGE_INVALID; a kernel that lacks the Http, Storage or signal.host support the page needs, or answers a request the engine never made, is CAPABILITY_UNAVAILABLE. Expected storage outcomes (conflicts, unknown outcomes, refusals, offline) are typed results shown as notices, not faults (AdminWire, ProviderContract.meaning)."
     },
     {
+      "name": "Report export downloads through Limen's files capability",
+      "kind": "ui-interop",
+      "owner": "Echelon.Signal.Application",
+      "codes": [],
+      "guarded": true,
+      "$comment": "An export (a formal snapshot's report JSON, sections CSV or lineage, ADM-023) is handed to the browser with limen.files' download operation from inside AdminWire.handle, so the dispatch boundary above guards it. Its outcomes are typed: Downloaded is a notice; NeedsGesture, Refused, Unsupported or a kernel without the files pack are notices that nothing was saved (SIGNAL.REPORT.NOT_SAVED, SIGNAL.REPORT.NO_DOWNLOADS), never faults. The export is verified against the stored snapshot first (ReportLibrary.intact) and carries no storage location or credential (ADM-025, ADM-077)."
+    },
+    {
       "name": "GitHub through Arca's GitHub adapter",
       "kind": "external-integration",
       "owner": "Echelon.Signal.Application",

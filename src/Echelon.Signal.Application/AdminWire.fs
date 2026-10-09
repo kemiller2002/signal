@@ -20,6 +20,7 @@ type Purpose =
     | Navigation
     | Copying
     | ReturnTarget
+    | Downloading
     | Configuration
     | BridgeCall
 
@@ -38,6 +39,8 @@ type State =
       Opened: Store.Opened option
       /// The open dataset's template catalog (built-in templates when none is open).
       Catalog: TemplateCatalog.Loaded
+      /// The open dataset's formal report snapshots (WI-0075).
+      Snapshots: ReportLibrary.Snapshot list
       Groups: Map<string, GroupStore.OpenedGroup> }
 
 let initial =
@@ -53,6 +56,7 @@ let initial =
       Client = None
       Opened = None
       Catalog = TemplateCatalog.builtIn []
+      Snapshots = []
       Groups = Map.empty }
 
 let private negotiated (offer: CapabilityOffer) (state: State) = List.contains offer state.Capabilities
@@ -156,7 +160,7 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
                 }
             ))
 
-        { state with Opened = None; Catalog = TemplateCatalog.builtIn env.Catalog; Groups = Map.empty }, []
+        { state with Opened = None; Catalog = TemplateCatalog.builtIn env.Catalog; Snapshots = []; Groups = Map.empty }, []
     | AdminApp.OpenDataset datasetId ->
         match model.Deployment, actorOf env model, state.Client with
         | Some config, Some actor, Some client ->
@@ -186,6 +190,21 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
         state, []
     | AdminApp.HideTemplate(survey, version) ->
         withDataset (fun actor opened -> AuthoringWork.hide env actor opened survey version now)
+        state, []
+    | AdminApp.TakeSnapshot(key, family, locale) ->
+        withGroup key (fun actor group -> ReportWork.take state.Catalog actor model group family locale now)
+        state, []
+    | AdminApp.ExportSnapshot(id, file) ->
+        match state.Snapshots |> List.tryFind (fun s -> s.SnapshotId = id) with
+        | Some snapshot -> withDataset (fun actor opened -> ReportWork.export actor opened snapshot file now)
+        | None -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.REPORT.NO_SUCH_SNAPSHOT" "That snapshot is not in this dataset." false)) ])
+
+        state, []
+    | AdminApp.Download(name, mime, data) when negotiated files state ->
+        let id, state = mint Downloading state
+        state, [ Download(id, name, mime, data) ]
+    | AdminApp.Download _ ->
+        start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.REPORT.NO_DOWNLOADS" "This browser page cannot save files; the export was not saved." false)) ])
         state, []
     | AdminApp.ChangeRoster command ->
         withDataset (fun actor opened ->
@@ -271,6 +290,7 @@ let private absorb (env: Env) (state: State) (outcome: Outcome) : State * AdminA
         let config = model.Deployment |> Option.defaultValue localConfig
         let summaries = state.Groups |> Map.toList |> List.map (snd >> GroupAdmin.summary 0 None)
         { state with Opened = Some opened }, [ AdminApp.DatasetOpened(GroupAdmin.datasetSummary config opened summaries, env.Now()) ]
+    | SnapshotsReady snapshots, _ -> { state with Snapshots = snapshots }, []
     | CatalogReady catalog, _ -> { state with Catalog = catalog }, [ AdminApp.CatalogLoaded(catalog.Offered, catalog.Listing) ]
     | _, None -> state, []
 
@@ -379,6 +399,9 @@ let step (env: Env) (state: State) (inbound: Inbound) =
                     | Some "Value" -> state, Some(AdminApp.ReturnRecalled(tryField "value" result |> Option.map (asString "$.result.value")))
                     | _ -> state, None
                 | (ReturnTarget, state), NotExecuted _ -> state, Some(AdminApp.ReturnRecalled None)
+                | (Downloading, state), Completed result when (tryField "kind" result |> Option.map (asString "$.result.kind")) = Some "Downloaded" ->
+                    state, Some(AdminApp.Noted(notice "SIGNAL.REPORT.EXPORTED" "The export was handed to the browser to save." false))
+                | (Downloading, state), _ -> state, Some(AdminApp.Failed(notice "SIGNAL.REPORT.NOT_SAVED" "The browser did not save the export; try again with the button." false))
                 | (_, state), _ -> state, None
             | HttpResponse(id, result) ->
                 match take id state, result with

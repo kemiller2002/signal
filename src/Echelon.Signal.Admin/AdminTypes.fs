@@ -68,3 +68,17 @@ type Notice =
       /// Domain refusal (the person can act) or infrastructure (the system).
       Infrastructure: bool }
 
+
+/// A formal report snapshot as the page lists it (WI-0075).
+type SnapshotSummary =
+    { SnapshotId: string
+      /// The group's key, as its routes name it.
+      GroupKey: string
+      DefinitionId: string
+      DefinitionVersion: int
+      Accepted: int
+      Locale: string
+      /// Clock evidence, if recorded.
+      TakenAt: string
+      /// Its data and id still match (a stored snapshot is verified on read).
+      Intact: bool }

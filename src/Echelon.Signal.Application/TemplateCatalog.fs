@@ -54,6 +54,24 @@ let load (builtIns: AdminApp.CatalogEntry list) (now: DateTimeOffset) (opened: S
         return combine builtIns stored
     }
 
+/// The templates groups pin, as a publication catalog keyed by the hash each
+/// group's configuration records: what a report snapshot resolves its
+/// template pin against (WI-0075).
+let pinned (loaded: Loaded) : Publication.Catalog =
+    { Templates =
+        loaded.Resolvable
+        |> List.map (fun e ->
+            { SurveyId = e.SurveyIdentifier
+              Version = e.Version
+              Hash = e.Hash
+              Content = Pilot.contentOf e.Content
+              Parent = None
+              PublishedAt = DateTimeOffset.UnixEpoch
+              PublishedBy = "catalog"
+              Manifest = []
+              Fixtures = [] })
+      Hidden = Set.empty }
+
 /// A group's template by the hash its configuration records.
 let resolver (loaded: Loaded) : GroupRecord.TemplateResolver =
     fun hash -> loaded.Resolvable |> List.tryFind (fun e -> e.Hash = hash) |> Option.map _.Content

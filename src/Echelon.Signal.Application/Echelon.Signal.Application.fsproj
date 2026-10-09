@@ -25,6 +25,7 @@
     <Compile Include="AdminPorts.fs" />
     <Compile Include="TemplateCatalog.fs" />
     <Compile Include="AdminWork.fs" />
+    <Compile Include="ReportWork.fs" />
     <Compile Include="AdminGroupWork.fs" />
     <Compile Include="AuthoringWork.fs" />
     <Compile Include="AdminWire.fs" />

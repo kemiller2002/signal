@@ -34,7 +34,13 @@ let host =
       Version = 1
       Fingerprint = "signal.host/1: tab storage, leave, replace address, broadcast" }
 
-let wanted = [ schedule; host ]
+/// `limen.files` v1 (from the installed package's generated contract): downloads (WI-0075).
+let files =
+    { Id = "limen.files"
+      Version = 1
+      Fingerprint = "sha256:2cf28b1016994b11955c412282ec6038a6c8c205a056b14c6039ef6fd5bfabdf" }
+
+let wanted = [ schedule; host; files ]
 
 type StorageResult =
     | StorageValue of value: string option
@@ -224,6 +230,8 @@ type Request =
     | StorageRemove of correlationId: string * key: string
     /// A `signal.host` request: its operation and string arguments.
     | Host of correlationId: string * operation: string * arguments: (string * string) list
+    /// A `limen.files` download: the file name, its media type and its text.
+    | Download of correlationId: string * fileName: string * mimeType: string * data: string
 
 let private writeScalar (writer: Utf8JsonWriter) =
     function
@@ -321,6 +329,13 @@ let private writeRequest (writer: Utf8JsonWriter) (request: Request) =
         writeCapability writer correlationId host (fun w ->
             w.WriteString("operation", operation)
             arguments |> List.iter (fun (name, value) -> w.WriteString(name, value)))
+    | Download(correlationId, fileName, mimeType, data) ->
+        writeCapability writer correlationId files (fun w ->
+            w.WriteString("operation", "download")
+            w.WriteString("fileName", fileName)
+            w.WriteString("mimeType", mimeType)
+            w.WriteString("format", "text")
+            w.WriteString("data", data))
 
     writer.WriteEndObject()
 

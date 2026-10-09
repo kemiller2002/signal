@@ -17,6 +17,8 @@ type Outcome =
     | RosterChanged of Store.Opened
     /// The template catalog was reread after an authoring change (WI-0073).
     | CatalogReady of TemplateCatalog.Loaded
+    /// The dataset's formal report snapshots were (re)read (WI-0075).
+    | SnapshotsReady of ReportLibrary.Snapshot list
 
 [<NoComparison; NoEquality>]
 type Env =

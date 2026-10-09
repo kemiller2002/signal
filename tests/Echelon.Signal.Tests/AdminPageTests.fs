@@ -31,7 +31,7 @@ let configured =
 let local = """{"environment":"local","environmentName":"local"}"""
 
 let offer =
-    $"""{{"protocol":{{"major":1,"minor":4}},"contract":{{"unit":"limen.core","version":1,"fingerprint":"{Limen.core.Fingerprint}"}},"capabilities":[{{"id":"{AdminProtocol.schedule.Id}","version":1,"fingerprint":"{AdminProtocol.schedule.Fingerprint}"}},{{"id":"{AdminProtocol.host.Id}","version":1,"fingerprint":"{AdminProtocol.host.Fingerprint}"}}]}}"""
+    $"""{{"protocol":{{"major":1,"minor":4}},"contract":{{"unit":"limen.core","version":1,"fingerprint":"{Limen.core.Fingerprint}"}},"capabilities":[{{"id":"{AdminProtocol.schedule.Id}","version":1,"fingerprint":"{AdminProtocol.schedule.Fingerprint}"}},{{"id":"{AdminProtocol.host.Id}","version":1,"fingerprint":"{AdminProtocol.host.Fingerprint}"}},{{"id":"{AdminProtocol.files.Id}","version":1,"fingerprint":"{AdminProtocol.files.Fingerprint}"}}]}}"""
 
 let initialize (query: string) (hash: string) =
     $"""{{"kind":"Initialize","protocolVersion":1,"capabilities":["Http","Storage","Clipboard","Navigation"],"location":{{"origin":"http://127.0.0.1:4321","path":"/web/admin/index.html","query":"{query}","hash":"{hash}"}},"handshake":{offer}}}"""
@@ -49,6 +49,8 @@ type Browser(configuration: string option) =
     member val Hash = "" with get, set
     member val Copied = List<string>()
     member val Navigations = List<string>()
+    /// Files handed over to save: name, media type and text.
+    member val Downloads = List<string * string * string>()
 
     member this.Exchange (url: string) (body: string) =
         let at (offset: TimeSpan) = start.UtcDateTime.Add(offset).ToString("yyyy-MM-ddTHH:mm:ssZ")
@@ -101,6 +103,7 @@ type Browser(configuration: string option) =
                 | _, "tabRemove" -> this.Tab.Remove(arg "key") |> ignore; """{"kind":"Done"}"""
                 | _, "leave" -> this.Left.Add(arg "url"); """{"kind":"Done"}"""
                 | _, "broadcast" -> this.Broadcasts.Add(arg "message"); """{"kind":"Done"}"""
+                | "limen.files", "download" -> this.Downloads.Add((arg "fileName", arg "mimeType", arg "data")); """{"kind":"Downloaded"}"""
                 | _, _ -> """{"kind":"Done"}"""
 
             Some $"""{{"kind":"EffectResult","result":{{"kind":"CapabilityResult","correlationId":"{id}","capability":"{field "capability"}","version":1,"outcome":{{"kind":"Completed","result":{result}}}}}}}"""
