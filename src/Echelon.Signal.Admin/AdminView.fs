@@ -282,6 +282,19 @@ let project (model: Model) : View =
       )
       "lineage", text (selected |> Option.map _.Lineage |> Option.defaultValue "")
       yield! charts model selected
+      // Invitations (VER-003): links issued for the group in view; nothing is stored.
+      "canInvite", enabled AdminState.CanCreateGroup
+      "inviteCount", text model.Invite.Count
+      "inviteLocale", text model.Invite.Locale
+      "inviteExpires", text model.Invite.Expires
+      yield!
+          (let issued = model.Issued |> Option.filter (fun i -> Some i.Group = (selected |> Option.map _.Key))
+
+           [ "hasInvitations", flag issued.IsSome
+             "invitationSummary",
+             text (issued |> Option.map (fun i -> $"{i.Links.Length} link(s) issued. Signal keeps no copy: save them now.") |> Option.defaultValue "")
+             "invitationLinks",
+             Items(issued |> Option.map (fun i -> i.Links |> List.mapi (fun n link -> [ "key", Text(string (n + 1)); "link", Text link ])) |> Option.defaultValue []) ])
       "canImport", enabled AdminState.CanImportBatch
       "importText", text model.ImportText
       "importFile", flag (model.ImportOrigin = ResultRecord.ImportedTextFile)

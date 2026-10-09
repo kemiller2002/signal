@@ -88,3 +88,22 @@ let transition (env: Env) (actor: Store.Actor) (group: GroupStore.OpenedGroup) (
             return [ GroupReady(next, None, 0) ]
         | Error failure -> return [ engine (groupFailure failure) ]
     }
+
+/// Issues respondent links for an open group (VER-003): fresh random
+/// instance ids, the group's template and terms, made absolute against the
+/// console's own address. Nothing is stored.
+let invite (env: Env) (group: GroupStore.OpenedGroup) (count: int) (terms: GenericEnvelope.Terms) (consoleUrl: string) (now: DateTimeOffset) =
+    async {
+        let key = GroupRecord.groupKey group.Config.Group
+
+        if not (GroupLifecycle.acceptsContributions group.Lifecycle.Status) then
+            return [ engine (AdminApp.Failed(notice "SIGNAL.INVITE.GROUP_CLOSED" "This group no longer accepts responses, so it cannot invite anyone." false)) ]
+        else
+            let instances = List.init count (fun _ -> (UrlState.OpaqueId.ofBytes (env.RandomBytes UrlState.IdLength)).Value)
+
+            match Invitations.links group.Definition terms (DateOnly.FromDateTime now.UtcDateTime) instances with
+            | Error problem -> return [ engine (AdminApp.Failed(notice "SIGNAL.INVITE.INVALID" problem false)) ]
+            | Ok links ->
+                let absolute (link: string) = Uri(Uri(consoleUrl), link).AbsoluteUri
+                return [ engine (AdminApp.InvitationsIssued(key, links |> List.map absolute)) ]
+    }

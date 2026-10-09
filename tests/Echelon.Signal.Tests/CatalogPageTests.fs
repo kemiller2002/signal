@@ -90,6 +90,27 @@ let ``every stored template starts groups through the generic pipeline, and its 
         let answers = team.Items |> List.map (fun i -> i.Id, Responses.Value(Responses.Flag true)) |> Map.ofList
         "https://signal.example" + GenericImport.link form "/web/" { Binding = Anonymous((OpaqueId.ofBytes (Array.init 16 (fun i -> byte (seed + i)))).Value, group); Answers = answers }
 
+    // Invitations (VER-003): links for this group with a language and a last day, nothing stored.
+    page.Event("inviteCount", value = "0")
+    page.Event("issueInvitations")
+    Assert.Equal("SIGNAL.INVITE.INVALID", page.Text "noticeCode")
+    page.Event("inviteCount", value = "3")
+    page.Event("inviteLocale", value = "fr-CA")
+    page.Event("inviteExpires", value = "2100-01-01")
+    page.Event("issueInvitations")
+    let issued = page.Items "invitationLinks" |> List.map (fun i -> i["link"].GetValue<string>())
+    Assert.Equal(3, issued.Length)
+    // (Each link's instance id is fresh entropy; this fixture's entropy is fixed.)
+
+    for link in issued do
+        Assert.Contains("/web/survey/#r=", link)
+
+        match GenericEnvelope.decodeWithTerms form.Content form.Reference (link.Split("#r=")[1]) with
+        | Ok(envelope, terms) ->
+            Assert.Equal({ GenericEnvelope.Terms.Locale = Some "fr-CA"; GenericEnvelope.Terms.ExpiresOn = Some(DateOnly(2100, 1, 1)) }, terms)
+            Assert.True(match envelope.Binding with AnonymousInvitation(_, g) -> g = group | _ -> false)
+        | Error e -> failwith $"%A{e}"
+
     page.Event("importText", value = String.concat "\n" [ submission 1; submission 40; "https://signal.example/web/#r=AAAA" ])
     page.Event("import")
     Assert.Equal("2 of 10 accepted", page.Text "groupProgress")

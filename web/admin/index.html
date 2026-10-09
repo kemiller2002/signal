@@ -456,6 +456,23 @@
               </template>
               <template data-if="viewImports">
               <section id="imports" class="ef-stack" aria-label="Imported surveys">
+              <template data-if="canInvite">
+                <section id="invitations" class="ef-stack" aria-labelledby="invitations-title">
+                  <h3 id="invitations-title">Invite respondents</h3>
+                  <p class="ef-field__description">Each link is one invitation to this group. The links carry no name or e-mail address; for an identified group, keep your own record of which link went to whom. Signal does not store the links.</p>
+                  <label>How many links <input id="invite-count" type="number" min="1" max="500" data-event="inviteCount" data-bind-value="inviteCount" /></label>
+                  <label>Language (optional, e.g. fr-CA) <input id="invite-locale" type="text" data-event="inviteLocale" data-bind-value="inviteLocale" /></label>
+                  <label>Last day to answer (optional) <input id="invite-expires" type="date" data-event="inviteExpires" data-bind-value="inviteExpires" /></label>
+                  <button type="button" class="ef-button" id="issue-invitations" data-event="issueInvitations" data-bind-disabled="busy">Create links</button>
+                  <template data-if="hasInvitations">
+                    <div class="ef-stack">
+                      <p id="invitation-summary" role="status" data-text="invitationSummary"></p>
+                      <ol id="invitation-links"><template data-each="invitationLinks" data-key="key"><li><code data-text="link"></code></li></template></ol>
+                      <button type="button" class="ef-button" id="save-invitations" data-event="saveInvitations">Save the links</button>
+                    </div>
+                  </template>
+                </section>
+              </template>
               <template data-if="canImport">
                 <form id="import" class="ef-stack" data-event="import">
                   <label>Completed survey links, one per line

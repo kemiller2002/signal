@@ -133,6 +133,18 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
             { model with ImportText = "" }, effects
         | Some _ when texts.IsEmpty -> model, []
         | _ -> { model with Notice = refuse "SIGNAL.ADMIN.NOT_PERMITTED" "Importing is not available here now." }, []
+    | "inviteCount" -> { model with Invite = { model.Invite with Count = value } }, []
+    | "inviteLocale" -> { model with Invite = { model.Invite with Locale = value } }, []
+    | "inviteExpires" -> { model with Invite = { model.Invite with Expires = value } }, []
+    | "issueInvitations" ->
+        match routeKey, Invitations.parse model.Invite with
+        | Some groupKey, Ok(count, terms) when can model AdminState.CanCreateGroup -> busy [ IssueInvitations(groupKey, count, terms) ]
+        | Some _, Error problem -> { model with Notice = refuse "SIGNAL.INVITE.INVALID" problem }, []
+        | _ -> { model with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "Issuing invitations needs ManageGroups and a writable store." }, []
+    | "saveInvitations" ->
+        match model.Issued with
+        | Some issued -> model, [ Download($"invitations-{issued.Links.Length}.csv", "text/csv", Invitations.csv issued.Links) ]
+        | None -> model, []
     | "newGroupTemplate" -> { model with NewGroup = {| model.NewGroup with Template = value |} }, []
     | "newGroupMode" -> { model with NewGroup = {| model.NewGroup with Mode = (if value = "identified" then IdentifiedGroup else AnonymousGroup) |} }, []
     | "newGroupExpected" -> { model with NewGroup = {| model.NewGroup with Expected = positive value model.NewGroup.Expected |} }, []
@@ -299,6 +311,7 @@ let update (msg: Msg) (model: Model) : Model * Effect list =
             // A new group opens; an update to the group in view stays where it is.
             if groupKey model = Some group.Key then model, [] else go (navigate model.Place (Group group.Key)) model
         | None -> { model with Busy = false }, []
+    | InvitationsIssued(group, links) -> { model with Busy = false; Issued = Some {| Group = group; Links = links |} }, []
     | Failed notice
     | Noted notice -> { model with Notice = Some notice; Busy = false }, []
     | WentOffline reason ->
