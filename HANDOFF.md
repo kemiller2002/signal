@@ -210,7 +210,14 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   retention per class, provider-honest claims (GitHub deletion is never
   "permanently erased"), retired datasets read-only, and ADM-064
   reconstructability with recorded limitations.
-- Not yet applied in the store or page: WI-0076.
+- WI-0076 applies them: every store operation writes its audit record in the
+  same commit (`GovernanceRecord`, `GovernanceStore.audit`); the dataset
+  lifecycle is stored and only an active dataset grants changes
+  (`GovernanceStore.transition`); a finalized group's accepted results can
+  be retired (`retireSources`) with the limitation recorded. Arca never
+  deletes an immutable record, so retirement removes results from Signal's
+  state only (a `signal.group-retirement` marker); removing them from the
+  repository tree needs an Arca erasure path.
 
 ## Validation
 

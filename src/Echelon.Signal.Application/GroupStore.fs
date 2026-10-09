@@ -40,6 +40,9 @@ type OpenedGroup =
       /// The group's lifecycle and the revision it was read at (None: never stored).
       Lifecycle: GroupLifecycle.Lifecycle
       LifecycleRevision: Revision option
+      /// Set when the group's accepted results were retired (ADM-045): the
+      /// reconstruction that remains. A retired group loads no contributions.
+      SourcesRetired: GovernanceRecord.StoredRetirement option
       Problems: Problem list }
 
 /// Why a group operation did not happen.
@@ -148,6 +151,16 @@ let openGroup (resolve: GroupRecord.TemplateResolver) (group: UrlState.OpaqueId)
             |> lift
 
         let! definition = GroupRecord.definition resolve config |> Result.mapError TemplateUnavailable |> lift
+        let! retirementPath = GovernanceRecord.retirementPath (string group) |> Result.mapError (List.singleton >> Unusable) |> lift
+        let! storedRetirement = call now (opened.Provider.Read opened.Namespace retirementPath)
+
+        let retirement =
+            match storedRetirement with
+            | ReadOutcome.Found found ->
+                Loading.load opened.Verified GovernanceRecord.retirementReader (GovernanceRecord.folderOf GovernanceRecord.retirementType) { Entries = []; Complete = true } [ found ]
+            | ReadOutcome.Absent -> Loading.load opened.Verified GovernanceRecord.retirementReader (GovernanceRecord.folderOf GovernanceRecord.retirementType) { Entries = []; Complete = true } []
+
+        let retired = retirement.Records |> Map.tryPick (fun _ stored -> if stored.Value.Group = string group then Some stored.Value else None)
         let folder = ResultRecord.groupFolder group
         let! listing, objects = readTree now opened.Provider opened.Namespace folder
         let loaded = Loading.load opened.Verified (ResultRecord.reader definition.Template) folder listing objects
@@ -157,7 +170,8 @@ let openGroup (resolve: GroupRecord.TemplateResolver) (group: UrlState.OpaqueId)
             loaded.Records |> Map.partition (fun _ stored -> stored.Value.Contribution.Group = group)
 
         let contributions =
-            own |> Map.toList |> List.map (fun (_, stored) -> stored.Value.Contribution.Result.Identity.Key, stored) |> Map.ofList
+            if retired.IsSome then Map.empty
+            else own |> Map.toList |> List.map (fun (_, stored) -> stored.Value.Contribution.Result.Identity.Key, stored) |> Map.ofList
 
         let! accumulator =
             contributions
@@ -176,8 +190,10 @@ let openGroup (resolve: GroupRecord.TemplateResolver) (group: UrlState.OpaqueId)
               Accumulator = accumulator
               Lifecycle = lifecycle
               LifecycleRevision = lifecycleRevision
+              SourcesRetired = retired
               Problems =
-                loaded.Problems
+                retirement.Problems
+                @ loaded.Problems
                 @ (foreign |> Map.toList |> List.map (fun (_, stored) -> MisplacedRecord(RelativePath.render stored.Path))) }
     }
 

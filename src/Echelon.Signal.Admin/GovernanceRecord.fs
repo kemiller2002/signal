@@ -263,3 +263,44 @@ let auditOnly (ns: Namespace) (context: Storage.OperationContext) (summary: stri
         | _, Error p -> Error p)
     |> Result.mapError List.singleton
     |> Result.bind (fun change -> Storage.operation ns context summary [ change ])
+
+// ---- A group whose sources are retired ----------------------------------------------------------
+
+/// Arca never changes or deletes a record declared immutable, and accepted
+/// results are immutable, so retiring them removes them from Signal's
+/// current state, not from the repository tree. This record (immutable, one
+/// per group) is that removal: a group that has one loads no contributions.
+let retirementType = typeOf "signal.group-retirement"
+
+[<NoComparison>]
+type StoredRetirement =
+    { DatasetId: string
+      Group: string
+      /// The reconstruction that remains (`Retention.reconstructionId`).
+      Remaining: string
+      Removed: int }
+
+let retirementId (group: string) = idFor ("retired:" + group)
+let retirementPath group = pathOf retirementType (retirementId group)
+
+let encodeRetirement (r: StoredRetirement) : Result<string, Problem> =
+    Json.objectOf
+        [ "datasetId", Json.String r.DatasetId
+          "group", Json.String r.Group
+          "remaining", Json.String r.Remaining
+          "removed", Json.Number(decimal r.Removed) ]
+    |> encodeWith retirementType Mutability.Immutable (retirementId r.Group)
+
+let retirementOfBody (value: Json) : Decoded<StoredRetirement> =
+    closed [ "datasetId"; "group"; "remaining"; "removed" ] value
+    |> Result.bind (fun () -> both (both (text "datasetId" value) (text "group" value)) (both (text "remaining" value) (integer "removed" value)))
+    |> Result.map (fun ((datasetId, group), (remaining, removed)) -> { DatasetId = datasetId; Group = group; Remaining = remaining; Removed = removed })
+
+let retirementReader: Loading.RecordReader<StoredRetirement> =
+    { Type = retirementType
+      Schema = schemaOf retirementType
+      MaxBytes = Record.DefaultMaxBytes
+      Decode = retirementOfBody
+      IdOf = fun stored -> retirementId stored.Group
+      DatasetOf = fun stored -> Some stored.DatasetId
+      References = fun _ -> [] }

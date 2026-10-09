@@ -391,3 +391,46 @@ let ``an import writes its audit records in the same commit, naming artifacts by
     for text in stored do
         for forbidden in [ "https://"; "signal.example"; "octocat"; "583231"; "#" ] do
             Assert.DoesNotContain(forbidden, text)
+
+// ---- ADM-045 / ADM-064: retiring a finalized group's sources ------------------------------------
+
+[<Fact>]
+let ``retiring a finalized group's results removes them from Signal's state, claims no more, and records the limit`` () =
+    let github = InMemoryStore()
+    let group = setUp github (fun () -> true) AnonymousGroup GroupRecord.NoneAfterImport
+    let imported = import [ anonymous 1uy Often; anonymous 2uy Never; anonymous 3uy Sometimes ] group
+
+    match GovernanceStore.retireSources actor at GovernanceStore.DeletionRequest imported.Group |> run with
+    | Error(GovernanceStore.GroupNotFinalized "Collecting") -> ()
+    | other -> failwith $"%A{other}"
+
+    GroupStore.rebuildIndex actor at group.Dataset |> run |> ok |> ignore
+    let closed = GroupAdmin.transition actor "close" at imported.Group |> run |> ok
+    let finalized = GroupAdmin.transition actor "finalize" at closed |> run |> ok
+
+    let thirtyDays = Map [ Retention.AcceptedResult, Retention.KeepForDays 30 ]
+
+    match GovernanceStore.retireSources actor at (GovernanceStore.RetentionExpired thirtyDays) finalized |> run with
+    | Error GovernanceStore.RetentionNotDue -> ()
+    | other -> failwith $"%A{other}"
+
+    let retired = GovernanceStore.retireSources actor (at.AddDays 31.0) (GovernanceStore.RetentionExpired thirtyDays) finalized |> run |> ok
+    Assert.Equal(3, retired.Removed)
+    // Arca never deletes an immutable record: the results leave Signal's state, not the tree.
+    Assert.Equal(Retention.RemovedFromApplicationState, retired.Claim)
+    let limitation = Option.get retired.Limitation
+    Assert.Equal((Retention.FullReconstruction, Retention.NotReproducible), (limitation.Before, limitation.After))
+    Assert.Contains(Retention.GroupAggregateRebuild, limitation.Breaks)
+    Assert.True(limitation.LineageClosed)
+    Assert.Contains("TREE-REMOVAL-UNAVAILABLE", limitation.Evidence.Reasons)
+    Assert.Contains("RETENTION-EXPIRED", limitation.Evidence.Reasons)
+
+    let reopened = GroupStore.openGroup resolve groupId at group.Dataset |> run |> ok
+    Assert.Empty(reopened.Contributions)
+    Assert.Equal(Some "state-not-reproducible", reopened.SourcesRetired |> Option.map _.Remaining)
+    Assert.Equal(0, reopened.Accumulator.Accepted.Count)
+    Assert.Equal(3, github.State.Objects |> Map.filter (fun path _ -> path.Contains "signal.result") |> Map.count)
+
+    let records, _ = GovernanceStore.audit at group.Dataset |> run |> ok
+    Assert.Equal("state-not-reproducible", GovernanceStore.reconstructionOf records (string groupId))
+    Assert.Equal("state-full-reconstruction", GovernanceStore.reconstructionOf records "AAECAwQFBgcICQoLDA0ODw")
