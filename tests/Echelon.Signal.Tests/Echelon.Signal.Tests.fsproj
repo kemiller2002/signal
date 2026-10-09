@@ -50,6 +50,7 @@
     <Compile Include="ReportLibraryTests.fs" />
     <Compile Include="PrivacyTests.fs" />
     <Compile Include="GovernanceStoreTests.fs" />
+    <Compile Include="DisclosurePageTests.fs" />
     <Compile Include="AnalyticsTests.fs" />
     <Compile Include="VisualizationTests.fs" />
     <Compile Include="LimenRoutingVectors.fs" />

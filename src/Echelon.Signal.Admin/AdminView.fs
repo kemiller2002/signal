@@ -262,6 +262,15 @@ let project (model: Model) : View =
       "groupKey", text (selected |> Option.map _.Key |> Option.defaultValue "")
       "groupPhase", text (selected |> Option.map (_.Phase >> AdminState.phaseName) |> Option.defaultValue "")
       "groupProgress", text (selected |> Option.map (fun g -> $"{g.Accepted} of {g.Expected} accepted") |> Option.defaultValue "")
+      // ARX-009: newer responses are shown only once they cannot be singled out by difference.
+      "hasWithheld", flag (selected |> Option.exists (fun g -> g.Withheld > 0))
+      "withheldNotice",
+      text (
+          selected
+          |> Option.map (fun g ->
+              $"Results show {g.Accepted - g.Withheld} responses. {g.Withheld} newer response(s) are held back until at least {g.MinimumReportable} have arrived since the last update, so no single response can be worked out by comparison.")
+          |> Option.defaultValue ""
+      )
       "sections", Items(selected |> Option.map (fun g -> g.Sections |> List.map (fun (id, s) -> [ "id", Text id; "score", Text(score s) ])) |> Option.defaultValue [])
       "reportFragment", text (selected |> Option.map _.ReportFragment |> Option.defaultValue "")
       // Analysis (ADM-012, ADM-013) and lineage (ADM-020): calculated, never canonical.

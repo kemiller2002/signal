@@ -215,9 +215,15 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
                 | Error failure -> return [ ToEngine(groupFailure failure) ]
                 | Ok imported ->
                     let unreconciled = if imported.Summary.Status = Intake.NeedsReconciliation then 1 else 0
-
                     let stopped = imported.StoppedBecause |> Option.map (groupFailure >> ToEngine) |> Option.toList
-                    return GroupReady(imported.Group, Some imported, unreconciled) :: stopped
+
+                    // Record a release if the new state may be shown (ARX-009), then
+                    // reread the group so what the page shows comes from storage.
+                    let! released = Releases.record actor now imported.Group
+                    let! fresh = GroupStore.openGroup env.Resolve group.Config.Group now group.Dataset
+                    let failures = [ released |> Result.map ignore; fresh |> Result.map ignore ] |> List.choose (function Error f -> Some(ToEngine(groupFailure f)) | Ok() -> None)
+                    let current = fresh |> Result.defaultValue imported.Group
+                    return GroupReady(current, Some imported, unreconciled) :: stopped @ failures
             })
 
         state, []

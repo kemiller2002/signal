@@ -304,3 +304,37 @@ let retirementReader: Loading.RecordReader<StoredRetirement> =
       IdOf = fun stored -> retirementId stored.Group
       DatasetOf = fun stored -> Some stored.DatasetId
       References = fun _ -> [] }
+
+// ---- What a group has released (ARX-009) --------------------------------------------------------
+
+/// The contributions whose aggregate an anonymous group last released (by
+/// identity key, which is opaque): the page shows that state until enough new
+/// responses arrive for the next one to reveal no individual difference.
+let releaseType = typeOf "signal.group-release"
+
+[<NoComparison>]
+type StoredRelease =
+    { DatasetId: string
+      Group: string
+      Keys: string list }
+
+let releaseId (group: string) = idFor ("released:" + group)
+let releasePath group = pathOf releaseType (releaseId group)
+
+let encodeRelease (r: StoredRelease) : Result<string, Problem> =
+    Json.objectOf [ "datasetId", Json.String r.DatasetId; "group", Json.String r.Group; "keys", textArray (List.sort r.Keys) ]
+    |> encodeWith releaseType Mutability.Mutable (releaseId r.Group)
+
+let releaseOfBody (value: Json) : Decoded<StoredRelease> =
+    closed [ "datasetId"; "group"; "keys" ] value
+    |> Result.bind (fun () -> both (both (text "datasetId" value) (text "group" value)) (texts "keys" value))
+    |> Result.map (fun ((datasetId, group), keys) -> { DatasetId = datasetId; Group = group; Keys = keys })
+
+let releaseReader: Loading.RecordReader<StoredRelease> =
+    { Type = releaseType
+      Schema = schemaOf releaseType
+      MaxBytes = Record.DefaultMaxBytes
+      Decode = releaseOfBody
+      IdOf = fun stored -> releaseId stored.Group
+      DatasetOf = fun stored -> Some stored.DatasetId
+      References = fun _ -> [] }
