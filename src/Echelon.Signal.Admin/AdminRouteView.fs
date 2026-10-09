@@ -119,6 +119,14 @@ let private assessments (model: Model) : View =
                 "status", Text(if r.Hidden then "Hidden from new groups" elif r.Superseded then "Superseded" else "Listed")
                 "groups", Text(r.NotForGroups |> Option.map (fun reason -> $"Cannot start groups: {reason}.") |> Option.defaultValue "Can start groups.") ])
       )
+      "hasTestLinks", flag model.TestLinks.IsSome
+      "testLinksTitle", text (model.TestLinks |> Option.map _.Title |> Option.defaultValue "")
+      "testLinks",
+      Items(
+          model.TestLinks
+          |> Option.map (fun shown -> shown.Links |> List.mapi (fun i (label, href) -> [ "key", Text(string i); "label", Text label; "href", Text href ]))
+          |> Option.defaultValue []
+      )
       "templateDrafts", Items(model.Templates.Drafts |> List.map (fun (surveyId, title) -> [ "key", Text surveyId; "label", Text $"{title} ({surveyId}, draft)" ]))
       "hasAssessment", flag content.IsSome
       "assessmentTitle", text (content |> Option.map (fun c -> $"{c.Title} {c.Version}") |> Option.defaultValue "")

@@ -190,7 +190,8 @@ let private invited =
     | AnonymousInvitation _ -> true
     | Unbound
     | Identified _
-    | Anonymous _ -> false
+    | Anonymous _
+    | Test _ -> false
 
 let view (session: Session) : View =
     let assessment = session.Assessment

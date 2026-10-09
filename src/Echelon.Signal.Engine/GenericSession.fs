@@ -230,8 +230,11 @@ let private contains (haystack: byte[]) (needle: byte[]) =
 
 /// The submission binding (LURL-002): an identified invitation keeps its
 /// ids; an anonymous one gets a fresh unlinkable id and loses its instance.
-let private finalBinding (r: Response) (entropy: byte[]) : Result<Binding, string> =
-    match r.Binding with
+/// A test artifact finalizes as the binding it stands in for, and stays a
+/// test artifact (AUT-006 §60).
+let rec private finalOf (r: Response) (binding: Binding) (entropy: byte[]) : Result<Binding, string> =
+    match binding with
+    | Test inner -> finalOf r inner entropy |> Result.map asTest
     | IdentifiedInvitation(instance, group) -> Ok(Identified(instance, group))
     | AnonymousInvitation(instance, group) ->
         match OpaqueId.ofBytes entropy with
@@ -260,7 +263,7 @@ let private submit (r: Response) (entropy: byte[]) =
     match (result r).Evaluation.Completion with
     | Rules.ReadyToSubmit
     | Rules.Terminated _ ->
-        match finalBinding r entropy with
+        match finalOf r r.Binding entropy with
         | Ok binding ->
             { r with
                 Binding = binding
@@ -380,4 +383,14 @@ let view (session: Session) : View.View =
         "rows", View.Items items
         "progress", value (text progress)
         "hasRefusal", value (flag submitRefusal.IsSome)
-        "submitRefusal", value (text (defaultArg submitRefusal "")) ]
+        "submitRefusal", value (text (defaultArg submitRefusal ""))
+        // A test link (AUT-006 §§21, 60) says so on every screen.
+        "isTest",
+        value (
+            flag (
+                match session with
+                | Responding r -> isTest r.Binding
+                | Fetching _
+                | Refused _ -> false
+            )
+        ) ]

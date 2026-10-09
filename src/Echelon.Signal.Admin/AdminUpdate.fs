@@ -192,6 +192,10 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
     | "exportSnapshot" -> { model with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "Exporting needs ExportData." }, []
     // The respondent site's copy of a published version (DF-SIGNAL-2026-0005):
     // its canonical bytes, named by its reference, to commit to published-templates/.
+    | "testLinks" ->
+        match key |> Option.bind (Echelon.Signal.Engine.Publication.resolveHash model.Templates.Catalog) with
+        | Some t -> { model with TestLinks = Some(TestLinks.forVersion t) }, []
+        | None -> { model with Notice = refuse "SIGNAL.TEMPLATE.NOT_FOUND" "That version is not in the catalog." }, []
     | "downloadSiteFile" ->
         match key |> Option.bind (Echelon.Signal.Engine.Publication.resolveHash model.Templates.Catalog) with
         | Some t ->

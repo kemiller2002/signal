@@ -34,12 +34,10 @@ type Refusal =
 
 /// Whether an envelope is a finalized submission (not editable).
 let isFinal (envelope: Envelope) =
-    match envelope.Binding with
+    match production envelope.Binding with
     | Identified _
     | Anonymous _ -> true
-    | Unbound
-    | IdentifiedInvitation _
-    | AnonymousInvitation _ -> false
+    | _ -> false
 
 let private contains (haystack: byte[]) (needle: byte[]) =
     needle.Length > 0
@@ -64,6 +62,8 @@ let finalize (assessment: Assessment) (entropy: byte[]) (live: Envelope) : Resul
         | Unbound -> Error NoInvitation
         | Identified _
         | Anonymous _ -> Error AlreadyFinal
+        // The pilot codec carries no test artifacts.
+        | Test _ -> Error NoInvitation
         | IdentifiedInvitation(instance, group) ->
             Ok
                 { live with

@@ -55,6 +55,10 @@ let private answerOf (q: Question) (state: uint64) : Result<AnswerState option, 
     else
         Error()
 
+/// The binding kind without the test marker: generic envelopes carry test
+/// and preview artifacts in the kind byte's high bit (AUT-006 §60).
+let private baseKind (kind: byte) = kind &&& ~~~TestKindFlag
+
 let private packedLength (slots: Slot list) = ((slots |> List.sumBy _.Bits) + 7) / 8
 
 /// Encodes an envelope. Answers the template cannot interpret (unknown
@@ -108,7 +112,7 @@ let decode (content: Content) (reference: byte[]) (text: string) : Result<Envelo
         if checksum (ReadOnlySpan body) <> bytes[bytes.Length - IntegrityLength ..] then
             Error IntegrityFailed
         else
-            match idCount bytes[1] with
+            match idCount (baseKind bytes[1]) with
             | None -> Error(UnknownBinding(int bytes[1]))
             | Some ids ->
                 let header = 2 + referenceLength + ids * IdLength + 2
@@ -123,12 +127,15 @@ let decode (content: Content) (reference: byte[]) (text: string) : Result<Envelo
                         (OpaqueId.ofBytes body[start .. start + IdLength - 1]).Value
 
                     let binding =
-                        match bytes[1] with
+                        let marked binding = if bytes[1] &&& TestKindFlag = TestKindFlag then asTest binding else binding
+
+                        match baseKind bytes[1] with
                         | 1uy -> IdentifiedInvitation(idAt 0, idAt 1)
                         | 4uy -> AnonymousInvitation(idAt 0, idAt 1)
                         | 2uy -> Identified(idAt 0, idAt 1)
                         | 3uy -> Anonymous(idAt 0, idAt 1)
                         | _ -> Unbound
+                        |> marked
 
                     let slots = layout content
                     let qs = questions content |> List.map snd
@@ -183,16 +190,22 @@ let referenceIn (text: string) : Result<byte[], DecodeError> =
     | Some bytes when bytes.Length < minimum -> Error(Truncated(minimum, bytes.Length))
     | Some bytes when checksum (ReadOnlySpan(bytes, 0, bytes.Length - IntegrityLength)) <> bytes[bytes.Length - IntegrityLength ..] ->
         Error IntegrityFailed
-    | Some bytes when (idCount bytes[1]).IsNone -> Error(UnknownBinding(int bytes[1]))
+    | Some bytes when (idCount (baseKind bytes[1])).IsNone -> Error(UnknownBinding(int bytes[1]))
     | Some bytes -> Ok bytes[2 .. 1 + referenceLength]
 
 /// An invitation bound to one exact published template version (ID-001):
 /// the envelope carries the instance and group ids and that version's
 /// reference, and nothing about a person.
-let invitation (surveyId: string) (version: string) (content: Content) (mode: Import.IdentityMode) (instance: OpaqueId) (group: OpaqueId) =
-    let binding =
-        match mode with
-        | Import.IdentifiedGroup -> IdentifiedInvitation(instance, group)
-        | Import.AnonymousGroup -> AnonymousInvitation(instance, group)
+let invitationBinding (mode: Import.IdentityMode) (instance: OpaqueId) (group: OpaqueId) =
+    match mode with
+    | Import.IdentifiedGroup -> IdentifiedInvitation(instance, group)
+    | Import.AnonymousGroup -> AnonymousInvitation(instance, group)
 
-    encode content (referenceOf surveyId version content) { Binding = binding; Answers = Map.empty }
+let invitation (surveyId: string) (version: string) (content: Content) (mode: Import.IdentityMode) (instance: OpaqueId) (group: OpaqueId) =
+    encode content (referenceOf surveyId version content) { Binding = invitationBinding mode instance group; Answers = Map.empty }
+
+/// A test link (AUT-006 §§60-61): an invitation marked as a test artifact,
+/// optionally carrying sample answers (a fixture's). The survey page says it
+/// is a test, and production import refuses what it submits.
+let testLink (surveyId: string) (version: string) (content: Content) (mode: Import.IdentityMode) (instance: OpaqueId) (group: OpaqueId) (answers: Answers) =
+    encode content (referenceOf surveyId version content) { Binding = asTest (invitationBinding mode instance group); Answers = answers }

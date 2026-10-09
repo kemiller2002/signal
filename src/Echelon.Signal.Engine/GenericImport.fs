@@ -45,17 +45,29 @@ let private dimensionResults (shape: Assessment) (content: Content) (result: Sur
 
         d, outcome)
 
+/// Where an import runs (AUT-006 §60). Production refuses test and preview
+/// artifacts; only an import explicitly opened as a test environment reads
+/// them, as the submissions they stand in for.
+type Environment =
+    | ProductionImport
+    | TestEnvironment
+
 /// Reads and validates one generic submission against a group, without
-/// changing anything; `accepted` gives the SubmissionHash already accepted
-/// for an identity key, if any.
-let evaluateAgainst (definition: GroupDefinition) (form: GenericForm) (accepted: string -> string option) (text: string) : ImportOutcome =
+/// changing anything, in an environment; `accepted` gives the SubmissionHash
+/// already accepted for an identity key, if any.
+let evaluateIn (environment: Environment) (definition: GroupDefinition) (form: GenericForm) (accepted: string -> string option) (text: string) : ImportOutcome =
     match payloadOf text with
     | None -> Rejected NoSubmissionFound
     | Some payload ->
         match GenericEnvelope.decode form.Content form.Reference payload with
         | Error error -> Rejected(Unreadable error)
         | Ok envelope ->
-            match identify definition envelope.Binding with
+            let binding =
+                match environment with
+                | ProductionImport -> envelope.Binding
+                | TestEnvironment -> production envelope.Binding
+
+            match identify definition binding with
             | Error error -> Rejected error
             | Ok identity ->
                 let result = SurveyResult.compute form.Hash form.Content envelope.Answers true
@@ -82,6 +94,10 @@ let evaluateAgainst (definition: GroupDefinition) (form: GenericForm) (accepted:
                     | Some existing when existing = accepted'.SubmissionHash -> AlreadyImported identity
                     | Some existing -> Rejected(DuplicateInstance existing)
                     | None -> Accepted accepted'
+
+/// Reads one generic submission in production: test artifacts are refused.
+let evaluateAgainst (definition: GroupDefinition) (form: GenericForm) (accepted: string -> string option) (text: string) : ImportOutcome =
+    evaluateIn ProductionImport definition form accepted text
 
 /// One finalized submission link for a generic template (what the respondent
 /// page produces): the template's page with `#r=` and the envelope.

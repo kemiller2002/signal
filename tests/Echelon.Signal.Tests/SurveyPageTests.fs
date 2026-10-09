@@ -81,7 +81,9 @@ let private links =
       "identified", "web/survey/" + invitation Import.IdentifiedGroup DemoVersion
       "anonymous", "web/survey/" + invitation Import.AnonymousGroup DemoVersion
       // A version this site does not publish: its file is missing.
-      "unpublished", "web/survey/" + invitation Import.IdentifiedGroup "2" ]
+      "unpublished", "web/survey/" + invitation Import.IdentifiedGroup "2"
+      // A test link (AUT-006 §60): marked on the page and refused by production import.
+      "test", "web/survey/#r=" + GenericEnvelope.testLink DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group Map.empty ]
 
 let private linksJson () =
     let o = JsonObject()
