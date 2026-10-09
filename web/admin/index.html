@@ -162,9 +162,11 @@
           <h3 id="stored-templates-title">Published in this dataset</h3>
           <ul id="template-versions">
             <template data-each="templateVersions" data-key="key">
-              <li><span data-text="label"></span> · <span data-text="status"></span> · <span data-text="groups"></span></li>
+              <li><span data-text="label"></span> · <span data-text="status"></span> · <span data-text="groups"></span>
+                <button type="button" class="ef-button" data-event="downloadSiteFile" data-bind-disabled="busy">For the respondent site</button></li>
             </template>
           </ul>
+          <p id="site-file-help" class="ef-field__description">Respondents' links open the survey from the respondent site, which reads each published version from its own copy. "For the respondent site" saves that copy, named for the version; commit it unchanged to the site repository's published-templates/ folder. The survey page refuses a copy that has been changed.</p>
           <ul id="template-actions">
             <template data-each="templateActions" data-key="key">
               <li>

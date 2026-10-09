@@ -203,6 +203,8 @@ let private step (state: State) (inbound: Inbound) =
                 CopyNotice = Some notice },
             [],
             None
+        // The assessment page requests no Http: no result can be pending.
+        | HttpResult(id, _) -> raise (MalformedInput("$.result.correlationId", $"a pending effect, not the Http result '{id}'"))
         | NavigationResult(id, _) when not (state.Pending.Contains id) ->
             // A result for a navigation this engine did not request, or one it
             // already heard: stale or forged, never applied (ARX-007).

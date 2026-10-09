@@ -168,6 +168,24 @@ let decode (content: Content) (reference: byte[]) (text: string) : Result<Envelo
                         | Ok _ when [ used .. packed.Length * 8 - 1 ] |> List.exists (fun p -> bit p = 1UL) -> Error NonCanonicalPadding
                         | Ok pairs -> Ok { Binding = binding; Answers = Map.ofList pairs }
 
+/// The template reference an envelope names, read before the template is
+/// known (DF-SIGNAL-2026-0005): the respondent page needs it to find the
+/// published template. The envelope's alphabet, version, length, integrity
+/// and binding are checked first; its answers can only be read with the
+/// template (`decode`).
+let referenceIn (text: string) : Result<byte[], DecodeError> =
+    let referenceLength = TemplateCanonical.ReferenceLength
+    let minimum = 2 + referenceLength + 2 + IntegrityLength
+
+    match tryFromBase64Url text with
+    | None -> Error NotBase64Url
+    | Some bytes when bytes.Length >= 1 && int bytes[0] <> ResponseEncodingVersion -> Error(UnsupportedVersion(int bytes[0]))
+    | Some bytes when bytes.Length < minimum -> Error(Truncated(minimum, bytes.Length))
+    | Some bytes when checksum (ReadOnlySpan(bytes, 0, bytes.Length - IntegrityLength)) <> bytes[bytes.Length - IntegrityLength ..] ->
+        Error IntegrityFailed
+    | Some bytes when (idCount bytes[1]).IsNone -> Error(UnknownBinding(int bytes[1]))
+    | Some bytes -> Ok bytes[2 .. 1 + referenceLength]
+
 /// An invitation bound to one exact published template version (ID-001):
 /// the envelope carries the instance and group ids and that version's
 /// reference, and nothing about a person.

@@ -54,3 +54,13 @@ let dispatchAdmin (messageJson: string) =
     let next, reply = AdminWire.handle aegis.Value adminEnv adminState messageJson
     adminState <- next
     reply
+
+// ---- The survey page (web/survey/) -----------------------------------------------------------
+
+let mutable private surveyState = SurveyWire.initial
+
+/// One kernel message for the survey page (web/survey/index.html).
+let dispatchSurvey (messageJson: string) =
+    let next, reply = SurveyWire.handle aegis.Value surveyState messageJson
+    surveyState <- next
+    reply
