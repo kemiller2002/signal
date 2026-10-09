@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-08T23:57:45.000Z",
+  "updatedAt": "2026-10-09T00:41:40.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -2474,33 +2474,59 @@
     {
       "id": "WI-0076",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-08T23:57:45.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/GovernanceStore.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/Releases.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/GovernanceRecord.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/PiiInjectionTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/GovernanceStoreTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/DisclosurePageTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-09T00:41:40.000Z",
       "telemetryExecutionIds": [
         "EXE-20261008T235745840Z-4b2d64a9"
       ],
       "latestCheckpoint": {
-        "id": "9fe2bb768821bf3531ce5003",
-        "recordedAt": "2026-10-09T00:31:05.000Z",
+        "id": "b6fddc6c4a64afe4421f6ba7",
+        "recordedAt": "2026-10-09T00:41:39.000Z",
         "executionId": "EXE-20261008T235745840Z-4b2d64a9",
         "repository": "echelon-signal",
-        "branch": "feature/disclosure-in-page",
-        "commit": "63e7a7f37781d5c1fbc35da96127c6a4c6b53dec",
+        "branch": "feature/pii-injection",
+        "commit": "fd94966a45b2108b4c9d6e46ebb7b06182636f76",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/disclosure-in-page",
-        "remoteCommit": "63e7a7f37781d5c1fbc35da96127c6a4c6b53dec",
-        "summary": "Part 3: release ledger applied to the page's live state and to snapshots; distributions withheld when they could single out respondents",
-        "nextAction": "Part 4: PII-injection fixtures across every surface, then complete",
+        "remoteBranch": "feature/pii-injection",
+        "remoteCommit": "fd94966a45b2108b4c9d6e46ebb7b06182636f76",
+        "summary": "Part 4: PII-injection fixtures, canonical-only template reads, privacy validation on every text surface; 385 .NET and 22 browser tests",
+        "nextAction": "Complete with the base ref and merge; then WI-0073",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
         }
-      }
+      },
+      "completedAt": "2026-10-09T00:41:40.000Z"
     }
   ]
 }
