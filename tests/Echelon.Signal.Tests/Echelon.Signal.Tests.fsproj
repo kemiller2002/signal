@@ -55,6 +55,7 @@
     <Compile Include="CatalogPageTests.fs" />
     <Compile Include="AuthoringScreenTests.fs" />
     <Compile Include="SnapshotPageTests.fs" />
+    <Compile Include="ReportBuilderTests.fs" />
     <Compile Include="AnalyticsTests.fs" />
     <Compile Include="VisualizationTests.fs" />
     <Compile Include="LimenRoutingVectors.fs" />

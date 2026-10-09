@@ -2592,20 +2592,20 @@
         "EXE-20261009T012545825Z-1cb190cc"
       ],
       "latestCheckpoint": {
-        "id": "d7843b92a287a78f9aef9235",
-        "recordedAt": "2026-10-09T01:39:31.000Z",
+        "id": "59b6433030c26267b2646359",
+        "recordedAt": "2026-10-09T01:56:25.000Z",
         "executionId": "EXE-20261009T012545825Z-1cb190cc",
         "repository": "echelon-signal",
-        "branch": "feature/report-screens",
-        "commit": "7bbce33d105d1a676007cfa4d0920f09259e9b28",
+        "branch": "feature/report-builder",
+        "commit": "7e9203da8d2ccefe651cc397a2d988754d417bea",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/report-screens",
-        "remoteCommit": "7bbce33d105d1a676007cfa4d0920f09259e9b28",
-        "summary": "Part 1: snapshots and exports in the report view with downloads through limen.files",
-        "nextAction": "Part 2: report builder (saved definitions); part 3: configuration and policy packs",
+        "remoteBranch": "feature/report-builder",
+        "remoteCommit": "7e9203da8d2ccefe651cc397a2d988754d417bea",
+        "summary": "Part 2: report builder with saved definitions, preview and snapshots",
+        "nextAction": "Part 3: configuration packages and policy packs; then complete with remainder",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"

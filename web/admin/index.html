@@ -47,6 +47,54 @@
   </template>
 
   <!-- Assessments: public, no sign-in or dataset needed (DF-SIGNAL-2026-0003 §8). -->
+  <template data-if="viewReports">
+    <section id="reports" class="ef-stack" aria-labelledby="reports-title">
+      <h2 id="reports-title">Report definitions</h2>
+      <p class="ef-field__description">A report definition chooses what a report shows and how; it never changes how results are scored. A version used for a formal snapshot never changes: editing it saves the next version.</p>
+      <template data-if="hasBuilderProblem"><p class="ef-alert" role="alert" data-tone="attention" data-text="builderProblem"></p></template>
+      <ul id="saved-definitions">
+        <template data-each="savedDefinitions" data-key="key"><li><span data-text="label"></span> <button type="button" class="ef-button" data-event="editReportDefinition">Open</button></li></template>
+      </ul>
+      <template data-if="canBuildReports">
+        <form id="new-definition" class="ef-stack" data-event="newReportDefinition">
+          <label>New definition id (lowercase letters, digits, hyphens) <input type="text" data-event="newReportId" data-bind-value="newReportId" /></label>
+          <button type="submit" class="ef-button" data-bind-disabled="busy">Start a definition</button>
+        </form>
+      </template>
+      <template data-if="hasBuilder">
+        <section id="builder" class="ef-stack" aria-labelledby="builder-heading">
+          <h3 id="builder-heading" data-text="builderHeading"></h3>
+          <template data-if="builderUnsaved"><p><strong>Unsaved changes</strong></p></template>
+          <label>Audience
+            <select data-event="reportAudience"><template data-each="builderAudiences" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select>
+          </label>
+          <label>Detail
+            <select data-event="reportDetail"><template data-each="builderDetails" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select>
+          </label>
+          <label>Template
+            <select data-event="reportPin"><template data-each="builderPins" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select>
+          </label>
+          <fieldset class="ef-choice-group">
+            <legend>Blocks, in reading order</legend>
+            <ol id="builder-blocks">
+              <template data-each="builderBlocks" data-key="key">
+                <li><label><input type="checkbox" data-event="reportBlock" data-bind-value="key" data-bind-checked="checked" /> <span data-text="label"></span></label> <button type="button" class="ef-button" data-event="reportBlockUp">Move up</button></li>
+              </template>
+            </ol>
+          </fieldset>
+          <label>Minimum group size <input type="number" min="1" data-event="reportMinimum" data-bind-value="builderMinimum" /></label>
+          <label>Decimal places <input type="number" min="0" max="6" data-event="reportDecimals" data-bind-value="builderDecimals" /></label>
+          <label>Highlights <input type="number" min="0" max="20" data-event="reportHighlights" data-bind-value="builderHighlights" /></label>
+          <label>Check and preview with
+            <select data-event="reportPreviewGroup"><template data-each="builderGroups" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select>
+          </label>
+          <ul id="builder-checks"><template data-each="builderChecks" data-key="key"><li data-text="text"></li></template></ul>
+          <ul id="builder-preview"><template data-each="builderPreview" data-key="key"><li data-text="text"></li></template></ul>
+          <template data-if="canBuildReports"><button type="button" class="ef-button" data-event="saveReportDefinition" data-bind-disabled="busy">Save definition</button></template>
+        </section>
+      </template>
+    </section>
+  </template>
   <template data-if="viewDraft">
     <section id="draft" class="ef-stack" aria-labelledby="draft-heading">
       <template data-if="hasAuthoringProblem"><p class="ef-alert" role="alert" data-tone="attention" data-text="authoringProblem"></p></template>

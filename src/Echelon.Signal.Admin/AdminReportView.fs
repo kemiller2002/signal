@@ -43,21 +43,30 @@ let private problemText =
     | Report.MinimumBelowGroupPolicy(report, group) -> $"Its minimum group size ({report}) is below this group's ({group})."
     | Report.InvalidDecimals -> "Its rounding is invalid."
 
+/// A report family, or a saved definition's latest version (WI-0075).
+let definitionOf (model: Model) (family: string) =
+    ReportExport.families
+    |> List.tryFind (fun d -> d.Id = family)
+    |> Option.orElse (ReportLibrary.latest model.Library family |> Option.map _.Definition)
+
+/// A definition's report for a group, or why it is withheld.
+let buildWith (model: Model) (group: GroupSummary) (definition: Definition) : Result<ReportData, string list> =
+    let subject: Report.Subject =
+        { SurveyId = group.SurveyIdentifier
+          TemplateVersion = group.TemplateVersion
+          Content = Pilot.contentOf group.Template }
+
+    // The time the data was last verified, not a clock read: the same data renders the same report.
+    let at = model.LastVerified |> Option.defaultValue DateTimeOffset.UnixEpoch
+
+    Report.build definition subject group.MinimumReportable group.Report [] at
+    |> Result.mapError (List.map problemText)
+
 /// The report the route names for a group, or why it is withheld.
 let build (model: Model) (group: GroupSummary) (family: string) : Result<ReportData, string list> =
-    match ReportExport.families |> List.tryFind (fun d -> d.Id = family) with
-    | None -> Error [ $"There is no report family {family}." ]
-    | Some definition ->
-        let subject: Report.Subject =
-            { SurveyId = group.SurveyIdentifier
-              TemplateVersion = group.TemplateVersion
-              Content = Pilot.contentOf group.Template }
-
-        // The time the data was last verified, not a clock read: the same data renders the same report.
-        let at = model.LastVerified |> Option.defaultValue DateTimeOffset.UnixEpoch
-
-        Report.build definition subject group.MinimumReportable group.Report [] at
-        |> Result.mapError (List.map problemText)
+    match definitionOf model family with
+    | None -> Error [ $"There is no report family or saved definition {family}." ]
+    | Some definition -> buildWith model group definition
 
 /// A reported value as text in a locale; never zero by implication.
 let valueText (tag: string) (decimals: int) (value: Value) =
@@ -105,10 +114,10 @@ let project (model: Model) (group: GroupSummary option) : View =
 
     [ "reportFamilies",
       items (
-          familyValues
+          (familyValues @ (model.Library |> Map.keys |> List.ofSeq))
           |> List.map (fun f ->
               [ "id", Text f
-                "label", Text(familyLabels.TryFind f |> Option.defaultValue f)
+                "label", Text(familyLabels.TryFind f |> Option.defaultValue $"Saved: {f}")
                 "href", Text(href (Report(key, f, tag)))
                 "current", Text(if f = family then "page" else "false")
                 "available", Flag(List.contains f available) ])
