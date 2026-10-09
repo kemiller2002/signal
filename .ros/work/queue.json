@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 79,
+  "nextSeq": 80,
   "items": [
     {
       "id": "WI-0001",
@@ -1842,6 +1842,29 @@
       "attachments": [],
       "createdAt": "2026-10-09T01:18:28.136Z",
       "updatedAt": "2026-10-09T01:18:28.136Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0079",
+      "title": "Signal 13c: the console's remaining report, dashboard and configuration surfaces after WI-0075 (ADM-001, ADM-002, ADM-007, ADM-008, ADM-018, ADM-021, ADM-022, ADM-023, ADM-031, ADM-047, ADM-048, ADM-049, ADM-050, ADM-051, ADM-061, ADM-062, ADM-063, ADM-066, ADM-077)",
+      "description": "WI-0075 built formal snapshots and exports in the report view (downloads through limen.files), the report builder with saved definitions, policy packs with deterministic resolution and configuration packages with quarantine, dry run and explicit activation. Remaining: the builder's visualization, metric, filter and comparison rules, localization, print and export choices and accessibility checks (ADM-021); showing a snapshot's unresolved dependencies in the page (ADM-022); the offline snapshot package (ADM-023); pins on dashboards, policy packs, localization and comparisons (ADM-063); group configuration templates, dashboards and the other policies in packages, and the import screen reading a package through limen.files (ADM-047, ADM-061); choosing a group's policy pack and enforcing it in the store and page (ADM-048); the page's Reports, Dashboards, Snapshots and Audit areas and the Reporting and Snapshotting states (ADM-001, ADM-031, ADM-002); group configuration editing, successors and storage profile (ADM-007); the conflict workspace's resolution flow (ADM-062); finalization with a formal snapshot and FinalizationOutcomeUnknown reconciliation (ADM-066); importing a text file through limen.files (ADM-008); template-upgrade impacts on reports and dashboards (ADM-049); semantic diffs of definitions, policies and packages (ADM-051); saving dashboard definitions and the remaining blocks (ADM-018); report-definition regression fixtures and browser-level assertions (ADM-050); Aegis boundaries for backup, restore and migration (ADM-077).",
+      "tags": [
+        "signal,order:13c,reporting"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-09T02:05:15.981Z",
+      "updatedAt": "2026-10-09T02:05:15.981Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

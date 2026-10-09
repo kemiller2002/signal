@@ -77,7 +77,8 @@ let private events =
       Audit.MigrationVerified
       Audit.DestinationActivated
       Audit.LifecycleChanged
-      Audit.ReproducibilityLimited ]
+      Audit.ReproducibilityLimited
+      Audit.ConfigurationActivated ]
 
 [<NoComparison>]
 type StoredAudit =
@@ -336,5 +337,34 @@ let releaseReader: Loading.RecordReader<StoredRelease> =
       MaxBytes = Record.DefaultMaxBytes
       Decode = releaseOfBody
       IdOf = fun stored -> releaseId stored.Group
+      DatasetOf = fun stored -> Some stored.DatasetId
+      References = fun _ -> [] }
+
+// ---- Policy packs (ADM-048) ---------------------------------------------------------------------
+
+/// A stored policy pack (`signal.policy-pack`, immutable): a version never changes.
+let policyType = typeOf "signal.policy-pack"
+
+[<NoComparison>]
+type StoredPolicy = { DatasetId: string; Pack: PolicyPack.Pack }
+
+let policyId (pack: PolicyPack.Pack) = idFor ($"policy:{pack.PolicyPackId}:{pack.Version}")
+let policyPath pack = pathOf policyType (policyId pack)
+
+let encodePolicy (datasetId: string) (pack: PolicyPack.Pack) : Result<string, Problem> =
+    Json.objectOf [ "datasetId", Json.String datasetId; "pack", ConfigPackage.packJson pack ]
+    |> encodeWith policyType Mutability.Immutable (policyId pack)
+
+let policyOfBody (value: Json) : Decoded<StoredPolicy> =
+    closed [ "datasetId"; "pack" ] value
+    |> Result.bind (fun () -> both (text "datasetId" value) (field "pack" value |> Result.bind ConfigPackage.packOf))
+    |> Result.map (fun (datasetId, pack) -> { DatasetId = datasetId; Pack = pack })
+
+let policyReader: Loading.RecordReader<StoredPolicy> =
+    { Type = policyType
+      Schema = schemaOf policyType
+      MaxBytes = Record.DefaultMaxBytes
+      Decode = policyOfBody
+      IdOf = fun stored -> policyId stored.Pack
       DatasetOf = fun stored -> Some stored.DatasetId
       References = fun _ -> [] }

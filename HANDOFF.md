@@ -240,6 +240,20 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
 - Generic templates end to end (group pipeline, respondent page) and the
   rest of the authoring surface: WI-0078.
 
+## Reports, snapshots and configuration (WI-0075, 2026-10-09)
+
+- Report view: take a formal snapshot (BuildReports) of what the page shows;
+  list a group's snapshots; download a snapshot's report JSON, sections CSV or
+  lineage through `limen.files` (ExportData). The report prints through Folio.
+- Report builder (`#/reports`): saved definitions by closed choices, checked
+  and previewed against a group, saved as the next version once used; saved
+  definitions render reports and are snapshotted (`ReportBuilder`).
+- Policy packs (`PolicyPack`, built-ins StrictAnonymous and
+  ExecutiveReporting) and configuration packages (`ConfigPackage`,
+  `ConfigStore`): canonical, hash-identified, quarantined, activated
+  explicitly with provenance.
+- Remaining screens and enforcement: WI-0079.
+
 ## Validation
 
 ```bash

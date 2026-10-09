@@ -144,7 +144,8 @@ let private pinsOf (value: Json) : Decoded<Pins> =
     |> Result.bind (fun () -> both template (both (integer "visualizationSpec" value) (both (integer "resultSchema" value) (both (integer "aggregateSchema" value) (integer "exportSchema" value)))))
     |> Result.map (fun (t, (v, (r, (a, e)))) -> { Template = t; VisualizationSpec = v; ResultSchema = r; AggregateSchema = a; ExportSchema = e })
 
-let private entryJson (e: Entry) =
+/// One definition version as JSON (also a configuration package item, WI-0075).
+let entryJson (e: Entry) =
     let d = e.Definition
 
     Json.objectOf
@@ -158,7 +159,7 @@ let private entryJson (e: Entry) =
           "pins", pinsJson e.Pins
           "used", Json.Bool e.Used ]
 
-let private entryOf (id: string) (value: Json) : Decoded<Entry> =
+let entryOf (id: string) (value: Json) : Decoded<Entry> =
     let audience = text "audience" value |> Result.bind (named audiences "audience")
     let blockList = texts "blocks" value |> Result.bind (traverse (named blocks "block"))
     let detail = text "detail" value |> Result.bind (named details "detail level")
