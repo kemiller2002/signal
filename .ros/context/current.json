@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-09T02:13:10.000Z",
+  "updatedAt": "2026-10-09T04:12:48Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -2633,10 +2633,19 @@
     {
       "id": "WI-0078",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-09T02:13:10.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/GenericSession.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/SurveyPageTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-09T04:12:48Z",
       "telemetryExecutionIds": [
         "EXE-20261009T021311168Z-03fdc8e6"
       ],
@@ -2659,7 +2668,9 @@
           "status": "verified",
           "mechanism": "git-remote-observation"
         }
-      }
+      },
+      "completedAt": "2026-10-09T04:12:48Z",
+      "conclusion": "Generic templates run end to end: groups and import on generic templates, the review workflow, the static template catalog and survey page (DF-SIGNAL-2026-0005), test-mode isolation and sample test links, and authoring of the main answer kinds with conditional questions. The remainder is WI-0081; the Pages auto-pull of template files is WI-0080."
     }
   ]
 }
