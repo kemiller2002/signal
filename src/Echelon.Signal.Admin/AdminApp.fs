@@ -22,6 +22,7 @@ type CatalogEntry = AdminTypes.CatalogEntry
 type GroupSummary = AdminTypes.GroupSummary
 type DatasetSummary = AdminTypes.DatasetSummary
 type Notice = AdminTypes.Notice
+type SnapshotSummary = AdminTypes.SnapshotSummary
 
 [<NoComparison>]
 type Model =
@@ -31,6 +32,8 @@ type Model =
       /// The dataset's stored template catalog as the console lists it (WI-0073).
       Templates: TemplateListing.Listing
       Authoring: Authoring.Screen
+      /// The dataset's formal report snapshots (WI-0075).
+      Snapshots: SnapshotSummary list
       SignIn: Credential.SignIn
       Principal: Principal option
       Retention: Credential.Retention
@@ -57,6 +60,7 @@ let initial (catalog: CatalogEntry list) =
       Catalog = catalog
       Templates = TemplateListing.empty
       Authoring = Authoring.emptyScreen
+      Snapshots = []
       SignIn = Credential.SignedOut
       Principal = None
       Retention = Credential.defaultRetention
@@ -91,6 +95,11 @@ type Effect =
     | SaveDraft of Echelon.Signal.Engine.Drafts.Draft
     | PublishDraft of Echelon.Signal.Engine.Drafts.Draft * acknowledged: Set<string>
     | HideTemplate of survey: string * version: string
+    /// Reports (WI-0075): take a formal snapshot of the report in view; download one of a snapshot's export files.
+    | TakeSnapshot of group: string * family: string * locale: string
+    | ExportSnapshot of snapshotId: string * file: string
+    /// Hand the person a file to save (Limen's files capability).
+    | Download of fileName: string * mimeType: string * data: string
     /// A Navigation effect: push or replace a relative `#/…` URL.
     | Go of Move
     /// Write a view's link to the clipboard (SIG-LINK-005).
@@ -112,6 +121,9 @@ type Msg =
     | CatalogLoaded of CatalogEntry list * TemplateListing.Listing
     /// A draft was stored, or published as a version.
     | DraftSaved of survey: string
+    | SnapshotsLoaded of SnapshotSummary list
+    /// An export file is ready to hand over.
+    | ExportReady of fileName: string * mimeType: string * data: string
     | DraftPublished of survey: string * version: string
     | GroupUpdated of GroupSummary
     | Failed of Notice
@@ -331,6 +343,16 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
         | Some dataset -> busy [ OpenDataset dataset.DatasetId ]
         | None -> model, []
     | "dismissNotice" -> { model with Notice = None; Conflict = None }, []
+    | "takeSnapshot" when can model AdminState.CanCreateSnapshot ->
+        match place.View with
+        | Ok(Report(g, family, locale)) -> busy [ TakeSnapshot(g, family, locale) ]
+        | _ -> { model with Notice = refuse "SIGNAL.REPORT.NO_REPORT" "Open a group's report first." }, []
+    | "takeSnapshot" -> { model with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "Taking a snapshot needs BuildReports and a writable store." }, []
+    | "exportSnapshot" when can model AdminState.CanExport ->
+        match key with
+        | Some id when [ "report.json"; "sections.csv"; "lineage.json" ] |> List.contains value -> busy [ ExportSnapshot(id, value) ]
+        | _ -> model, []
+    | "exportSnapshot" -> { model with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "Exporting needs ExportData." }, []
     | authoring when Authoring.events.Contains authoring ->
         let survey = match place.View with Ok(Draft s) -> Some s | _ -> None
         let screen, commands = Authoring.update model.Templates survey name key value model.Authoring
@@ -398,6 +420,8 @@ let update (msg: Msg) (model: Model) : Model * Effect list =
     | CatalogLoaded(catalog, listing) ->
         let template = if catalog |> List.exists (fun e -> e.Hash = model.NewGroup.Template) then model.NewGroup.Template else catalog |> List.tryHead |> Option.map _.Hash |> Option.defaultValue ""
         { model with Catalog = catalog; Templates = listing; NewGroup = {| model.NewGroup with Template = template |} }, []
+    | SnapshotsLoaded snapshots -> { model with Snapshots = snapshots; Busy = false }, []
+    | ExportReady(name, mime, data) -> { model with Busy = false }, [ Download(name, mime, data) ]
     | DraftSaved survey -> { model with Authoring = Authoring.saved survey model.Authoring; Busy = false }, []
     | DraftPublished(survey, _) -> { model with Authoring = Authoring.published survey model.Authoring; Busy = false }, []
     | GroupUpdated group ->

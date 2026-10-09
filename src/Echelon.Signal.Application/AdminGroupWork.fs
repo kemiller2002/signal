@@ -21,9 +21,11 @@ let openDataset (env: Env) (backend: Store.Backend) (config: Deployment.Deployme
             let catalog = loaded |> Result.defaultValue (TemplateCatalog.builtIn env.Catalog)
             let catalogFailure = match loaded with Error failure -> [ engine (groupFailure failure) ] | Ok _ -> []
 
+            let! snapshots = ReportWork.load now opened
+
             match! loadGroups env (TemplateCatalog.resolver catalog) opened with
-            | Ok groups -> return DatasetReady(opened, groups, catalog) :: catalogFailure
-            | Error failure -> return [ DatasetReady(opened, [], catalog); engine (groupFailure failure) ] @ catalogFailure
+            | Ok groups -> return DatasetReady(opened, groups, catalog) :: catalogFailure @ snapshots
+            | Error failure -> return [ DatasetReady(opened, [], catalog); engine (groupFailure failure) ] @ catalogFailure @ snapshots
     }
 
 /// Creates a group from a template the catalog offers.

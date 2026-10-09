@@ -118,14 +118,19 @@ let saveDefinition (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Ope
                 | Error failure -> return Error(NotStored failure)
     }
 
-/// Takes a formal snapshot and marks its definition version used, in one commit.
-let takeSnapshot (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Opened) (source: Source) : Async<Result<Snapshot, ReportFailure>> =
+/// Takes a formal snapshot and marks its definition version used, in one
+/// commit. `catalog` holds the templates the console's groups pin (the
+/// stored catalog with the built-in templates, WI-0075).
+let takeSnapshot (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Opened) (catalog: Echelon.Signal.Engine.Publication.Catalog) (source: Source) : Async<Result<Snapshot, ReportFailure>> =
     async {
         match! stored now opened actor Access.BuildReports with
         | Error failure -> return Error failure
         | Ok reports ->
-            match ReportLibrary.take reports.Library reports.Catalog reports.Snapshots source with
+            match ReportLibrary.take reports.Library catalog reports.Snapshots source with
             | Error problem -> return Error(SnapshotRefused problem)
+            // The same state, definition and dependencies make the same snapshot: it is already stored.
+            | Ok(snapshot, _) when reports.Snapshots |> List.exists (fun s -> s.SnapshotId = snapshot.SnapshotId) ->
+                return Ok(reports.Snapshots |> List.find (fun s -> s.SnapshotId = snapshot.SnapshotId))
             | Ok(snapshot, library) ->
                 let changes =
                     match ReportRecord.snapshotPath snapshot, ReportRecord.encodeSnapshot opened.DatasetId snapshot, definitionChange opened reports library snapshot.DefinitionId with
@@ -151,12 +156,12 @@ let takeSnapshot (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Opene
 
 /// The export files for a snapshot (ADM-023), for an administrator who may
 /// export. Exporting writes only its audit record (ADM-030).
-let export (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Opened) (snapshot: Snapshot) (report: ReportData) : Async<Result<(string * string) list, ReportFailure>> =
+let export (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Opened) (snapshot: Snapshot) : Async<Result<(string * string) list, ReportFailure>> =
     async {
         match permitted opened actor Access.ExportData with
         | Error failure -> return Error(NotStored failure)
         | Ok _ ->
-            match ReportLibrary.export snapshot report with
+            match (if ReportLibrary.intact snapshot then Ok(ReportLibrary.files snapshot) else Error ReportIsNotTheSnapshot) with
             | Error problem -> return Error(ExportRefused problem)
             | Ok files ->
                 let operation =

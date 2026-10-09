@@ -139,6 +139,9 @@ type Snapshot =
       CanonicalReportDataHash: string
       /// The canonical report data (the structured export).
       ReportData: string
+      /// The sections CSV, a tabular projection of the same data, made when
+      /// the snapshot was taken so an export never rebuilds it.
+      SectionsCsv: string
       /// Clock evidence, outside every hash.
       GeneratedAtEvidence: DateTimeOffset option
       SnapshotSchemaVersion: int }
@@ -211,7 +214,8 @@ let private identityText (s: Snapshot) =
           String.concat "," s.ComparisonReferences
           s.Locale
           string s.Accepted
-          s.CanonicalReportDataHash ]
+          s.CanonicalReportDataHash
+          sha256 s.SectionsCsv ]
 
 let snapshotIdOf (s: Snapshot) = "snap-" + (sha256 (identityText s)).Substring(7, 32)
 
@@ -264,6 +268,7 @@ let take (library: Library) (catalog: Publication.Catalog) (earlier: Snapshot li
                       Accepted = source.Report.Counts.Accepted
                       CanonicalReportDataHash = sha256 data
                       ReportData = data
+                      SectionsCsv = ReportExport.sectionsCsv source.Report
                       GeneratedAtEvidence = source.Clock
                       SnapshotSchemaVersion = SnapshotSchemaVersion }
 
@@ -321,15 +326,14 @@ type ExportProblem = ReportIsNotTheSnapshot
 /// The export files for a snapshot, from the ReportData it was taken from:
 /// the structured JSON (canonical), the sections CSV (a legal tabular
 /// projection, never the canonical form) and the lineage on its own.
+let files (s: Snapshot) =
+    let line = lineage s
+
+    [ "report.json", "{\"lineage\":" + line + ",\"report\":" + s.ReportData + "}"
+      "sections.csv", s.SectionsCsv
+      "lineage.json", line ]
+
+/// The export files, refused unless `report` is the data the snapshot holds.
 let export (s: Snapshot) (report: ReportData) : Result<(string * string) list, ExportProblem> =
-    let data = ReportExport.json report
-
-    if sha256 data <> s.CanonicalReportDataHash then
-        Error ReportIsNotTheSnapshot
-    else
-        let line = lineage s
-
-        Ok
-            [ "report.json", "{\"lineage\":" + line + ",\"report\":" + data + "}"
-              "sections.csv", ReportExport.sectionsCsv report
-              "lineage.json", line ]
+    if sha256 (ReportExport.json report) <> s.CanonicalReportDataHash || ReportExport.sectionsCsv report <> s.SectionsCsv then Error ReportIsNotTheSnapshot
+    else Ok(files s)

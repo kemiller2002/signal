@@ -164,7 +164,8 @@ let ``a snapshot and its used definition are stored in one commit and read back 
     let before = github.State.History.Length
 
     let snapshot =
-        ReportStore.takeSnapshot (actor octocat) at admin { source report (Some at) with GroupTemplate = pinned; GroupResultHash = pinnedGroup.Hash } |> run |> ok
+        let catalog = (TemplateStore.load at admin |> run |> ok).Catalog
+        ReportStore.takeSnapshot (actor octocat) at admin catalog { source report (Some at) with GroupTemplate = pinned; GroupResultHash = pinnedGroup.Hash } |> run |> ok
 
     Assert.Equal(before + 1, github.State.History.Length)
 
@@ -191,11 +192,11 @@ let ``building reports and exporting need their own capabilities`` () =
     let report = reportWith entry.Definition at
     let snapshot, _ = ReportLibrary.take library catalog [] (source report None) |> ok
 
-    match ReportStore.export (actor hubot) at editor snapshot report |> run with
+    match ReportStore.export (actor hubot) at editor snapshot |> run with
     | Error(ReportStore.NotStored(GroupStore.NotPermitted _)) -> ()
     | failed -> failwith $"%A{failed}"
 
-    Assert.True(ReportStore.export (actor octocat) at admin snapshot report |> run |> Result.isOk)
+    Assert.True(ReportStore.export (actor octocat) at admin snapshot |> run |> Result.isOk)
 
 [<Fact>]
 let ``an anonymous group's snapshots must differ by at least the minimum (ARX-009)`` () =

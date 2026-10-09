@@ -240,9 +240,10 @@ let ``the administrator page binds only what its engine projects, and sends only
     // The authoring lists (WI-0073) are empty without a stored template or
     // draft: published versions (canDerive, canHide), a draft's sections
     // (questionCount), fixtures (name) and findings (severity, message);
-    // AuthoringView projects each and AuthoringScreenTests fill them.
+    // AuthoringView projects each and AuthoringScreenTests fill them. A
+    // group's snapshots (intact, canExport) need one taken (SnapshotPageTests).
     let emptyListFields =
-        set [ "code"; "text"; "title"; "priority"; "frequency"; "label"; "baseline"; "delta"; "role"; "count"; "canDerive"; "canHide"; "questionCount"; "name"; "severity"; "message" ]
+        set [ "code"; "text"; "title"; "priority"; "frequency"; "label"; "baseline"; "delta"; "role"; "count"; "canDerive"; "canHide"; "questionCount"; "name"; "severity"; "message"; "intact"; "canExport" ]
     Assert.Empty(Set.difference bound (Set.union seen emptyListFields))
 
     // Every event the page sends is one the engine handles (an unknown one fails loudly).

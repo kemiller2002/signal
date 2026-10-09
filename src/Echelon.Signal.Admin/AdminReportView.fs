@@ -116,6 +116,18 @@ let project (model: Model) (group: GroupSummary option) : View =
       "reportLocales",
       items (localeValues |> List.map (fun t -> [ "id", Text t; "label", Text(localeLabels.TryFind t |> Option.defaultValue t); "href", Text(href (Report(key, family, t))); "current", Text(if t = tag then "page" else "false") ]))
       "hasReport", flag data.IsSome
+      // Formal snapshots of this group (WI-0075, ADM-022, ADM-023).
+      "canTakeSnapshot", flag (data.IsSome && (capabilities model).Contains AdminState.CanCreateSnapshot)
+      "reportSnapshots",
+      Items(
+          model.Snapshots
+          |> List.filter (fun s -> s.GroupKey = key)
+          |> List.map (fun s ->
+              [ "key", Text s.SnapshotId
+                "label", Text $"{s.SnapshotId} · {s.DefinitionId} v{s.DefinitionVersion} · {s.Accepted} responses · {s.Locale} · {s.TakenAt}"
+                "intact", Text(if s.Intact then "Verified" else "Altered: not exportable")
+                "canExport", Flag(s.Intact && (capabilities model).Contains AdminState.CanExport) ])
+      )
       "reportWithheld", flag (match report with Some(Error _) -> true | _ -> false)
       "reportWithheldReason", text (match report with Some(Error reasons) -> String.concat " " reasons | _ -> "")
       "reportLang", text tag
