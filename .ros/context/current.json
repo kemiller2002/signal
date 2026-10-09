@@ -2590,7 +2590,27 @@
       "updatedAt": "2026-10-09T01:25:45.000Z",
       "telemetryExecutionIds": [
         "EXE-20261009T012545825Z-1cb190cc"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "d7843b92a287a78f9aef9235",
+        "recordedAt": "2026-10-09T01:39:31.000Z",
+        "executionId": "EXE-20261009T012545825Z-1cb190cc",
+        "repository": "echelon-signal",
+        "branch": "feature/report-screens",
+        "commit": "7bbce33d105d1a676007cfa4d0920f09259e9b28",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feature/report-screens",
+        "remoteCommit": "7bbce33d105d1a676007cfa4d0920f09259e9b28",
+        "summary": "Part 1: snapshots and exports in the report view with downloads through limen.files",
+        "nextAction": "Part 2: report builder (saved definitions); part 3: configuration and policy packs",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
