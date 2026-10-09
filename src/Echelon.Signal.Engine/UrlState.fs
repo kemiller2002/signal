@@ -193,6 +193,9 @@ type DecodeError =
     | LengthMismatch of expected: int * actual: int
     | InvalidAnswerState of itemIndex: int * state: int
     | NonCanonicalPadding
+    /// A generic link's invitation terms (locale, expiry; link format 2)
+    /// are malformed or not in their one canonical spelling.
+    | InvalidTerms
 
 /// Bits per item: enough for "not answered" plus every answer.
 let bitsPerItem =
@@ -322,3 +325,4 @@ let describe =
     | LengthMismatch _ -> "The saved answers in this link do not match this assessment's questions."
     | InvalidAnswerState _ -> "The saved answers in this link contain an answer this assessment does not offer."
     | NonCanonicalPadding -> "The saved answers in this link are not in canonical form."
+    | InvalidTerms -> "This link's invitation details (language or expiry) are damaged."

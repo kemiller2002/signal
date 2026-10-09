@@ -107,7 +107,7 @@ let private text (name: string) (reply: string) = (view reply).[name].GetValue<s
 let private flag (name: string) (reply: string) = (view reply).[name].GetValue<bool>()
 let private effects (reply: string) = (JsonNode.Parse reply).["effects"].AsArray() |> Seq.toList
 
-let private fixedEdge = { Wire.Entropy = fun () -> entropy 9uy }
+let private fixedEdge = { Wire.Entropy = (fun () -> entropy 9uy); Wire.Today = fun () -> System.DateOnly(2026, 1, 1) }
 
 let private submitAnonymously aegis =
     let invitation = LiveUrl.fragment pilot { Binding = AnonymousInvitation(instance, group); Answers = Map.empty }

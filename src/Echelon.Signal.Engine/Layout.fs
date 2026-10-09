@@ -78,11 +78,18 @@ let layout (content: Content) : Slot list =
         let states = 1UL + valueCount q.Answer + uint64 q.SpecialStates.Length
         { QuestionId = q.Id; States = states; Bits = bitsFor states })
 
-/// Bytes of a ResponseEncodingVersion 1 envelope around the answers: version
-/// and binding kind, the 8-byte template reference, the largest binding (two
-/// 16-byte ids), the 2-byte item count and the 4-byte integrity check.
+/// The most bytes invitation terms add to a generic link (format 2): flags,
+/// a locale of up to 24 characters with its length, and a 2-byte expiry day
+/// (`GenericEnvelope.TermsMaximumBytes`, which a test holds equal).
 [<Literal>]
-let EnvelopeOverheadBytes = 2 + 8 + 32 + 2 + 4
+let TermsOverheadBytes = 1 + 1 + 24 + 2
+
+/// Bytes of the largest envelope around the answers: version and binding
+/// kind, the 8-byte template reference, the largest binding (two 16-byte
+/// ids), the largest invitation terms, the 2-byte item count and the 4-byte
+/// integrity check.
+[<Literal>]
+let EnvelopeOverheadBytes = 2 + 8 + 32 + TermsOverheadBytes + 2 + 4
 
 type Capacity =
     { Questions: int

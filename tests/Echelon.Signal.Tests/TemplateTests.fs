@@ -120,7 +120,15 @@ let ``capacity equals the length of the largest real envelope`` () =
     let group = (UrlState.OpaqueId.ofBytes (Array.init 16 (fun i -> byte (i + 100)))).Value
     let all = Pilot.assessment.Items |> List.map (fun i -> i.Id, Assessment.Rated Assessment.Often) |> Map.ofList
     let envelope: UrlState.Envelope = { Binding = UrlState.Anonymous(id, group); Answers = all }
-    Assert.Equal((UrlState.encode Pilot.assessment envelope).Length, size.EncodedCharacters)
+    // The largest is a generic link with the longest invitation terms
+    // (VER-003); the pilot's format-1 link is that less the terms.
+    let terms: GenericEnvelope.Terms = { Locale = Some "sgn-Latn-ABCDEFGH-123456"; ExpiresOn = Some(System.DateOnly(2026, 12, 31)) }
+    let generic: GenericEnvelope.Envelope = { Binding = UrlState.Anonymous(id, group); Answers = Pilot.answers all }
+    let longest = GenericEnvelope.encodeWith sdra (GenericEnvelope.referenceOf "SDRA" "1" sdra) terms generic
+    Assert.Equal(longest.Length, size.EncodedCharacters)
+    Assert.Equal(GenericEnvelope.TermsMaximumBytes, Layout.TermsOverheadBytes)
+    let bytesOf (text: string) = System.Buffers.Text.Base64Url.DecodeFromChars(text.AsSpan()).Length
+    Assert.Equal(bytesOf (UrlState.encode Pilot.assessment envelope) + Layout.TermsOverheadBytes, bytesOf longest)
 
 [<Fact>]
 let ``answers are checked against their question`` () =

@@ -304,7 +304,7 @@ let ``rejected and blocked artifacts never reach results, and leave only codes``
     let reopened = GroupStore.openGroup resolve groupId at group.Dataset |> run |> ok
     Assert.Equal(1, reopened.Accumulator.Accepted.Count)
 
-    let quarantined = Intake.quarantine reopened.Definition (Incremental.acceptedFor reopened.Accumulator) [ Intake.artifact wrongGroup ]
+    let quarantined = Intake.quarantine (System.DateOnly(2026, 6, 1)) reopened.Definition (Incremental.acceptedFor reopened.Accumulator) [ Intake.artifact wrongGroup ]
     Assert.Empty(quarantined.Head.Evidence)
     Assert.Equal(None, Intake.promote groupId GroupRecord.NoneAfterImport ResultRecord.PastedUrl "b" quarantined.Head)
 

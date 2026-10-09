@@ -1926,10 +1926,10 @@
         "signal,order:05e,authoring"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-10-09T04:11:04Z",
-      "updatedAt": "2026-10-09T04:11:22Z",
+      "updatedAt": "2026-10-09T04:24:45Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

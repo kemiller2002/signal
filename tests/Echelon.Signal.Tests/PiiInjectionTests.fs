@@ -82,7 +82,7 @@ let private link =
 [<Fact>]
 let ``a submission link carrying identity is never stored with it; only its hash and outcome are`` () =
     let injected = link.Replace("#", $"?email={Uri.EscapeDataString email}&name=Jane#")
-    let quarantined = Intake.quarantine definition (fun _ -> None) [ Intake.artifact injected ]
+    let quarantined = Intake.quarantine (System.DateOnly(2026, 6, 1)) definition (fun _ -> None) [ Intake.artifact injected ]
 
     for q in quarantined do
         let outcome = Intake.itemCode (Intake.outcomeOf q)
@@ -113,7 +113,7 @@ let ``every stored record refuses a field for identity`` () =
           MinimumReportableCount = 5; Retention = GroupRecord.NoneAfterImport; Revision = 1 }
 
     let contribution =
-        Intake.quarantine definition (fun _ -> None) [ Intake.artifact link ]
+        Intake.quarantine (System.DateOnly(2026, 6, 1)) definition (fun _ -> None) [ Intake.artifact link ]
         |> List.pick (Intake.promote group GroupRecord.NoneAfterImport ResultRecord.MultiPaste "batch-1")
 
     let pins = currentPins (LatestTemplate "SDRA")

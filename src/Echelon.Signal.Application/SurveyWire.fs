@@ -144,7 +144,7 @@ let private step (state: State) (inbound: Inbound) =
                 state, effects, None
         | HttpResult(id, outcome) when state.Fetch = Some id ->
             { state with
-                Session = received (fetched outcome) state.Session
+                Session = received (state.Edge.Today()) (fetched outcome) state.Session
                 Fetch = None },
             [],
             None

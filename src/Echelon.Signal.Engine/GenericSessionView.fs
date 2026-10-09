@@ -109,6 +109,16 @@ let view (session: Session) : View.View =
         "progress", value (text progress)
         "hasRefusal", value (flag submitRefusal.IsSome)
         "submitRefusal", value (text (defaultArg submitRefusal ""))
+        // The invitation's locale is presentation only (VER-003): the page's language.
+        "lang",
+        value (
+            text (
+                match session with
+                | Responding r -> r.Terms.Locale |> Option.defaultValue "en"
+                | Fetching _
+                | Refused _ -> "en"
+            )
+        )
         // A test link (AUT-006 §§21, 60) says so on every screen.
         "isTest",
         value (
