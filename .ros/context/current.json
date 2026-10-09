@@ -2641,20 +2641,20 @@
         "EXE-20261009T021311168Z-03fdc8e6"
       ],
       "latestCheckpoint": {
-        "id": "1a9656efdca79a3546bcae68",
-        "recordedAt": "2026-10-09T03:44:23Z",
+        "id": "3a0e7c8b2e2facac7b287998",
+        "recordedAt": "2026-10-09T04:07:09Z",
         "executionId": "EXE-20261009T021311168Z-03fdc8e6",
         "repository": "echelon-signal",
-        "branch": "feature/preview-isolation",
-        "commit": "2a490fb1c1a518f0279b65ee78ba22717a89708d",
+        "branch": "feature/answer-kinds",
+        "commit": "474fe46ef55c20694969db9a88aa57bd59f88254",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/preview-isolation",
-        "remoteCommit": "2a490fb1c1a518f0279b65ee78ba22717a89708d",
-        "summary": "Test mode: Binding.Test marker, survey test notice, production import refuses TestSubmission, test-environment import, console test links; WI-0080 captured.",
-        "nextAction": "Merge the test-mode PR on a green gate, then the other answer kinds and rules.",
+        "remoteBranch": "feature/answer-kinds",
+        "remoteCommit": "474fe46ef55c20694969db9a88aa57bd59f88254",
+        "summary": "Other answer kinds (agreement, yes/no, choice, multi, number) and conditional questions authored in the console and answered on the survey page; scoring keeps to five-point questions; MIXED demo published for browser tests.",
+        "nextAction": "Merge the answer-kinds PR on a green gate, then the remainder of WI-0078 (locale and expiry, cross-device checks, remaining kinds) or capture a remainder item.",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
