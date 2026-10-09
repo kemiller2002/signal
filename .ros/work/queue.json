@@ -1723,10 +1723,10 @@
         "signal,order:05c,authoring"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-10-08T22:34:36.113Z",
-      "updatedAt": "2026-10-08T22:34:36.113Z",
+      "updatedAt": "2026-10-09T00:47:21.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1810,7 +1810,7 @@
     {
       "id": "WI-0077",
       "title": "Signal 14c: dataset lifecycle and retention screens, and removal from the repository tree once Arca offers an erasure path (ADM-045)",
-      "description": "WI-0076 stored the dataset lifecycle, gated writes on it, and retires a finalized group's accepted results from Signal's state with recorded evidence. Remaining: the page's lifecycle and retention screens (transition, retire, the remaining-reconstruction state per group), and removing retired results from the repository tree, which needs an Arca erasure path for immutable records (Arca never changes or deletes them today); even then GitHub history keeps prior versions, so the claim stays below permanent erasure unless the provider proves it.",
+      "description": "WI-0076 stored the dataset lifecycle, gated writes on it, and retires a finalized group's accepted results from Signal's state with recorded evidence. Remaining: (1) the page's lifecycle and retention screens (transition, retire, the remaining-reconstruction state per group); (2) removal from the current repository through Arca's explicit erasure operation once it ships (coordinator decision 2026-10-09: the Arca agent adds an erasure operation gated by its own capability, leaving a hash-only tombstone; reads then return Erased). With it, Signal's claim becomes 'removed from the current repository; earlier versions remain in Git history until the repository owner rewrites it'. Signal never claims 'permanently erased'. Until it ships the claim stays 'removed from application state'.",
       "tags": [
         "signal,order:14c,privacy,depends:arca"
       ],
@@ -1818,7 +1818,7 @@
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-09T00:39:14.982Z",
-      "updatedAt": "2026-10-09T00:39:14.982Z",
+      "updatedAt": "2026-10-09T00:47:23.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

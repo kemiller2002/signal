@@ -44,6 +44,7 @@
     <Compile Include="Audit.fs" />
     <Compile Include="Retention.fs" />
     <Compile Include="GovernanceRecord.fs" />
+    <Compile Include="TemplateListing.fs" />
     <Compile Include="Routes.fs" />
     <Compile Include="AdminNavigation.fs" />
     <Compile Include="AdminApp.fs" />

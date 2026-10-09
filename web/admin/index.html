@@ -53,6 +53,19 @@
       <ul id="catalog-assessments">
         <template data-each="catalogAssessments" data-key="href"><li><a data-bind-href="href" data-text="label"></a></li></template>
       </ul>
+      <template data-if="hasStoredTemplates">
+        <section id="stored-templates" class="ef-stack" aria-labelledby="stored-templates-title">
+          <h3 id="stored-templates-title">Published in this dataset</h3>
+          <ul id="template-versions">
+            <template data-each="templateVersions" data-key="key">
+              <li><span data-text="label"></span> · <span data-text="status"></span> · <span data-text="groups"></span></li>
+            </template>
+          </ul>
+          <ul id="template-drafts">
+            <template data-each="templateDrafts" data-key="key"><li data-text="label"></li></template>
+          </ul>
+        </section>
+      </template>
       <template data-if="hasAssessment">
         <section id="assessment" class="ef-stack">
           <h3><a id="assessment-title" data-bind-href="assessmentHref" data-text="assessmentTitle"></a></h3>

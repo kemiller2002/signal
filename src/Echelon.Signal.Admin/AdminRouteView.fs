@@ -108,6 +108,18 @@ let private assessments (model: Model) : View =
     let chosen = content |> Option.bind (fun c -> c.Items |> List.tryFind (fun i -> Some i.Id = question))
 
     [ "catalogAssessments", Items(model.Catalog |> List.map (fun e -> [ "label", Text $"{e.Title} ({e.SurveyIdentifier} {e.Version})"; "href", Text(href (Assessment(e.Content.Id, e.Content.Version))) ]))
+      // The dataset's stored catalog (WI-0073): every published version and draft.
+      "hasStoredTemplates", flag (not model.Templates.Published.IsEmpty || not model.Templates.Drafts.IsEmpty)
+      "templateVersions",
+      Items(
+          model.Templates.Published
+          |> List.map (fun r ->
+              [ "key", Text r.Hash
+                "label", Text $"{r.Title} ({r.SurveyId} {r.Version})"
+                "status", Text(if r.Hidden then "Hidden from new groups" elif r.Superseded then "Superseded" else "Listed")
+                "groups", Text(r.NotForGroups |> Option.map (fun reason -> $"Cannot start groups: {reason}.") |> Option.defaultValue "Can start groups.") ])
+      )
+      "templateDrafts", Items(model.Templates.Drafts |> List.map (fun (surveyId, title) -> [ "key", Text surveyId; "label", Text $"{title} ({surveyId}, draft)" ]))
       "hasAssessment", flag content.IsSome
       "assessmentTitle", text (content |> Option.map (fun c -> $"{c.Title} {c.Version}") |> Option.defaultValue "")
       "assessmentHref", text (if content.IsSome then href (Assessment(a, v)) else "")

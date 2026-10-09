@@ -23,7 +23,9 @@
     <Compile Include="Bridge.fs" />
     <Compile Include="AdminProtocol.fs" />
     <Compile Include="AdminPorts.fs" />
+    <Compile Include="TemplateCatalog.fs" />
     <Compile Include="AdminWork.fs" />
+    <Compile Include="AdminGroupWork.fs" />
     <Compile Include="AdminWire.fs" />
     <Compile Include="Runtime.fs" />
   </ItemGroup>

@@ -12,7 +12,7 @@ open Echelon.Signal.Admin
 [<NoComparison; NoEquality>]
 type Outcome =
     | ToEngine of AdminApp.Msg
-    | DatasetReady of Store.Opened * GroupStore.OpenedGroup list
+    | DatasetReady of Store.Opened * GroupStore.OpenedGroup list * TemplateCatalog.Loaded
     | GroupReady of GroupStore.OpenedGroup * GroupStore.Imported option * unreconciled: int
     | RosterChanged of Store.Opened
 
@@ -27,7 +27,7 @@ type Env =
       Backend: (unit -> Arca.TokenProvider option) -> (unit -> Async<unit>) -> Store.Backend
       /// The identity client for a deployment's identity settings over ports.
       Identity: Deployment.IdentityConfig -> ClientPorts -> FidesClient
-      Resolve: GroupRecord.TemplateResolver
+      /// The built-in templates; a dataset's stored catalog joins them when it opens.
       Catalog: AdminApp.CatalogEntry list
       ApplicationVersion: string }
 
@@ -84,7 +84,7 @@ let actorOf (env: Env) (model: AdminApp.Model) : Store.Actor option =
                   IdempotencyKey = Arca.IdempotencyKey.create (env.NewKey "op") |> ok
                   At = env.Now() } })
 
-let loadGroups (env: Env) (opened: Store.Opened) =
+let loadGroups (env: Env) (resolve: GroupRecord.TemplateResolver) (opened: Store.Opened) =
     async {
         match! GroupAdmin.listGroups (env.Now()) opened with
         | Error failure -> return Error failure
@@ -98,7 +98,7 @@ let loadGroups (env: Env) (opened: Store.Opened) =
                     match ids with
                     | [] -> return List.rev acc
                     | id :: rest ->
-                        let! group = GroupStore.openGroup env.Resolve id (env.Now()) opened'
+                        let! group = GroupStore.openGroup resolve id (env.Now()) opened'
                         return! openEach opened' (group :: acc) rest
                 }
 
