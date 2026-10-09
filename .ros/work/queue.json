@@ -1921,7 +1921,7 @@
     {
       "id": "WI-0081",
       "title": "Signal 05e: the rest of generic templates after WI-0078 - survey page components, pagination, banks, timers and back/forward; ranking, allocation, best-worst and hierarchical answers; locale and invitation expiry carriage; cross-device sample URL checks; fact, recommendation, completion and custom-expression authoring; group results carrying facts and recommendations",
-      "description": "Remainder of WI-0078 (complete). Done there: static template catalog and survey page (DF-SIGNAL-2026-0005), test-mode isolation (AUT-006 §60), sample test links (§61), review workflow (§§64-65), authoring of five-point, agreement, yes/no, choice, multi-choice and number questions with conditional questions. Remaining: SCS-018 component families and their interaction rules on the survey page, pagination, section transitions, banks, timers and back/forward (SCS-010..SCS-014, SCS-018, VER-004, AUT-003 §20, ARX-013); ranking, allocation, best-worst and hierarchical answers on the page and in authoring; locale and invitation expiry carriage in the link (VER-003; a link-format change needs a decision and a contract bump); cross-device checks of published sample URLs (AUT-006 §§61-62); fact, recommendation, completion, preset, trace and custom-expression authoring (AST-005, ALG-004, SCS-017, AUT-002); the import pipeline and group results on generic templates carrying facts and recommendations (ARP-001, ADM-055). Also carried from WI-0078, still partial in the gap analysis: CAN-001, CAN-003, CAN-005, CAN-008 (canonical template features the generic pipeline and page do not yet exercise), URLC-004, VER-001, VER-007, ACR-003, ACR-008, ACR-009, ARX-002, AUT-001, AUT-004, AUT-005, AUT-007.",
+      "description": "Remainder of WI-0078 (complete). Done there: static template catalog and survey page (DF-SIGNAL-2026-0005), test-mode isolation (AUT-006 §60), sample test links (§61), review workflow (§§64-65), authoring of five-point, agreement, yes/no, choice, multi-choice and number questions with conditional questions. Remaining: SCS-018 component families and their interaction rules on the survey page, pagination, section transitions, banks, timers and back/forward (SCS-010..SCS-014, SCS-018, VER-004, AUT-003 §20, ARX-013); ranking, allocation, best-worst and hierarchical answers on the page and in authoring; locale and invitation expiry carriage in the link (VER-003; a link-format change needs a decision and a contract bump); cross-device checks of published sample URLs (AUT-006 §§61-62); fact, recommendation, completion, preset, trace and custom-expression authoring (AST-005, ALG-004, SCS-017, AUT-002); the import pipeline and group results on generic templates carrying facts and recommendations (ARP-001, ADM-055). Also carried from WI-0078, still partial in the gap analysis: CAN-001, CAN-003, CAN-005, CAN-008 (canonical template features the generic pipeline and page do not yet exercise), URLC-004, VER-001, VER-007, ACR-003, ACR-008, ACR-009, ARX-002, AUT-001, AUT-004, AUT-005, AUT-007. Also: the admin console issues respondent invitation links per group, with an optional locale and last day (VER-003 link format 2, DF-SIGNAL-2026-0006).",
       "tags": [
         "signal,order:05e,authoring"
       ],
@@ -1929,7 +1929,7 @@
       "status": "ready",
       "attachments": [],
       "createdAt": "2026-10-09T04:11:04Z",
-      "updatedAt": "2026-10-09T04:24:45Z",
+      "updatedAt": "2026-10-09T04:46:52Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

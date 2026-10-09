@@ -50,6 +50,7 @@
     <Compile Include="QuestionKinds.fs" />
     <Compile Include="Authoring.fs" />
     <Compile Include="TestLinks.fs" />
+    <Compile Include="Invitations.fs" />
     <Compile Include="ReportBuilder.fs" />
     <Compile Include="Routes.fs" />
     <Compile Include="AdminNavigation.fs" />

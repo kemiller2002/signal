@@ -42,6 +42,7 @@
     <Compile Include="TestModeTests.fs" />
     <Compile Include="AnswerKindTests.fs" />
     <Compile Include="LinkTermsTests.fs" />
+    <Compile Include="InvitationTests.fs" />
     <Compile Include="ReportStateTests.fs" />
     <Compile Include="AdminStateTests.fs" />
     <Compile Include="AdminPageTests.fs" />

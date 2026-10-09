@@ -34,6 +34,9 @@ type Model =
       Authoring: Authoring.Screen
       /// Sample test links for one published version, when asked for (AUT-006 §61).
       TestLinks: TestLinks.Shown option
+      /// What the invitation form holds, and the links last issued for a group (VER-003).
+      Invite: Invitations.Request
+      Issued: {| Group: string; Links: string list |} option
       /// The dataset's formal report snapshots (WI-0075).
       Snapshots: SnapshotSummary list
       /// The saved report definitions and the builder (WI-0075).
@@ -66,6 +69,8 @@ let initial (catalog: CatalogEntry list) =
       Templates = TemplateListing.empty
       Authoring = Authoring.emptyScreen
       TestLinks = None
+      Invite = Invitations.emptyRequest
+      Issued = None
       Snapshots = []
       Library = ReportLibrary.empty
       Builder = ReportBuilder.emptyScreen
@@ -97,6 +102,8 @@ type Effect =
     | OpenGroup of key: string
     | ImportArtifacts of key: string * texts: string list * origin: ResultRecord.ImportOrigin
     | TransitionGroup of key: string * transition: string
+    /// Issue respondent links for a group: how many, and their terms.
+    | IssueInvitations of key: string * count: int * terms: Echelon.Signal.Engine.GenericEnvelope.Terms
     | ChangeRoster of RosterCommand
     | RebuildIndex
     /// Authoring (WI-0073): store a draft, publish one, hide a version.
@@ -139,6 +146,8 @@ type Msg =
     | ExportReady of fileName: string * mimeType: string * data: string
     | DraftPublished of survey: string * version: string
     | GroupUpdated of GroupSummary
+    /// A group's new respondent links, absolute.
+    | InvitationsIssued of group: string * links: string list
     | Failed of Notice
     /// Something worth telling the person that is not a failure.
     | Noted of Notice

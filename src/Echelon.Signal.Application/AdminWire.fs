@@ -179,6 +179,9 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
     | AdminApp.ImportArtifacts(key, texts, origin) ->
         withGroup key (fun actor group -> AdminGroupWork.import state.Catalog actor group origin texts now)
         state, []
+    | AdminApp.IssueInvitations(key, count, terms) ->
+        withGroup key (fun _ group -> AdminGroupWork.invite env group count terms (state.Origin + state.Path) now)
+        state, []
     | AdminApp.TransitionGroup(key, name) ->
         withGroup key (fun actor group -> AdminGroupWork.transition env actor group name now)
         state, []
