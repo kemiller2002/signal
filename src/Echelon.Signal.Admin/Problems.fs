@@ -52,6 +52,8 @@ type Problem =
     | CapabilityUnavailable of capability: string * reason: string
     /// Direct writes are not possible at the configured branch (ADM-073).
     | WritesUnavailable of mode: string
+    /// The dataset is not active (archived, retired, ...): read-only (ADM-045).
+    | DatasetNotActive of state: string
 
 /// The problem's stable code.
 let code =
@@ -78,6 +80,7 @@ let code =
     | IncompleteRead _ -> "SIGNAL.STORAGE.INCOMPLETE_READ"
     | CapabilityUnavailable _ -> "SIGNAL.STORAGE.CAPABILITY_UNAVAILABLE"
     | WritesUnavailable _ -> "SIGNAL.STORAGE.WRITES_UNAVAILABLE"
+    | DatasetNotActive _ -> "SIGNAL.STORAGE.DATASET_NOT_ACTIVE"
 
 /// The problem as one sentence for the person. It never holds a credential.
 let describe =
@@ -104,3 +107,4 @@ let describe =
     | IncompleteRead folder -> $"The provider listed only part of '{folder}'; the rest was not checked."
     | CapabilityUnavailable(capability, reason) -> $"The store cannot offer {capability}: {reason}."
     | WritesUnavailable mode -> $"Changes cannot be saved ({mode})."
+    | DatasetNotActive state -> $"The dataset is read-only: its lifecycle state is {state}."

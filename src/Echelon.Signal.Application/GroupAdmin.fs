@@ -122,6 +122,18 @@ let transition (actor: Store.Actor) (name: string) (now: DateTimeOffset) (group:
                     | None -> Change.Create(path, content)
 
                 Storage.operation opened.Namespace (actor.NewContext()) $"{name} group {GroupRecord.groupKey group.Config.Group}" [ change ]
+                |> Result.bind (
+                    GovernanceRecord.auditedWith
+                        opened.DatasetId
+                        [ GovernanceRecord.record
+                              Audit.GroupConfigurationVersioned
+                              [ "group", string group.Config.Group ]
+                              []
+                              [ GovernanceRecord.codeOf ("lifecycle-" + name) ]
+                              (Some("state-" + GovernanceRecord.codeOf(GroupLifecycle.statusName group.Lifecycle.Status).ToLowerInvariant()))
+                              (Some("state-" + GovernanceRecord.codeOf(GroupLifecycle.statusName status).ToLowerInvariant()))
+                              (Some now) ]
+                )
             | Error problem, _
             | _, Error problem -> Error [ problem ]
             |> Result.mapError Unusable

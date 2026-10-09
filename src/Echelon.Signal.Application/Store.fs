@@ -71,6 +71,13 @@ type Opened =
       Credential: Credential.CredentialState
       /// Present only when changes are allowed.
       Grant: Loading.WriteGrant option
+      /// The dataset's lifecycle state (ADM-045); only an active dataset
+      /// grants changes.
+      Lifecycle: Retention.State
+      LifecycleRevision: Revision option
+      /// The grant a lifecycle transition uses: everything but the lifecycle
+      /// state, so an archived dataset can be made active again.
+      LifecycleGrant: Loading.WriteGrant option
       /// Why changes are not allowed, when they are not.
       ReadOnlyReasons: Problem list }
 
@@ -191,7 +198,12 @@ let openDataset
                     now
                     provider
                     (RosterStore.bootstrapRecords datasetId actor.Principal
-                     |> Result.bind (Storage.initializeDataset config binding snapshot.Visibility None (actor.NewContext()) applicationVersion datasetId))
+                     |> Result.bind (Storage.initializeDataset config binding snapshot.Visibility None (actor.NewContext()) applicationVersion datasetId)
+                     |> Result.bind (
+                         GovernanceRecord.auditedWith
+                             datasetId
+                             [ GovernanceRecord.record Audit.StorageConfigured [] [] [ "DATASET-INITIALIZED" ] None (Some(Retention.stateId Retention.Active)) (Some now) ]
+                     ))
             | ReadOutcome.Absent -> async.Return(Error(NeedsBootstrapAdministrator datasetId))
             | _ -> async.Return(Ok())
 
@@ -199,6 +211,9 @@ let openDataset
         let! storageManifest = call now (provider.Read ns manifestPath)
         let! verified = Loading.verify DatasetManifest.current ns datasetId arcaManifest storageManifest |> Result.mapError Refused |> lift
         let! roster = loadRoster now provider ns verified
+        let! lifecycle = loadFolder now provider ns verified GovernanceRecord.lifecycleReader (GovernanceRecord.folderOf GovernanceRecord.lifecycleType)
+        let stored = lifecycle.Records |> Map.tryFind GovernanceRecord.LifecycleId
+        let state = stored |> Option.map _.Value.State |> Option.defaultValue Retention.Active
         let! token = call now (provider.ChangeToken ns)
 
         let verification = ProviderContract.verify provider.Capabilities (Ok snapshot)
@@ -219,11 +234,16 @@ let openDataset
               RepositoryId = snapshot.RepositoryId
               Verification = verification
               Credential = credential
-              Grant = grant |> Result.toOption
+              Grant = if Retention.writable state && lifecycle.Problems.IsEmpty then grant |> Result.toOption else None
+              Lifecycle = state
+              LifecycleRevision = stored |> Option.map _.Revision
+              LifecycleGrant = grant |> Result.toOption
               ReadOnlyReasons =
-                match grant with
-                | Ok _ -> []
-                | Error reasons -> reasons }
+                [ if not (Retention.writable state) then DatasetNotActive(Retention.stateId state)
+                  match grant with
+                  | Ok _ -> ()
+                  | Error reasons -> yield! reasons ]
+                @ (lifecycle.Problems) }
     }
 
 // ---- Changing the roster -------------------------------------------------------------

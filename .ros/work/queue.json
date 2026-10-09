@@ -1792,10 +1792,10 @@
         "signal,order:14b,privacy"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-10-08T23:30:28.278Z",
-      "updatedAt": "2026-10-08T23:36:35.000Z",
+      "updatedAt": "2026-10-08T23:57:43.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

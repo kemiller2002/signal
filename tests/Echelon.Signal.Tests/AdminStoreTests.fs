@@ -113,7 +113,8 @@ let ``a configured administrator sets the dataset up in two commits and administ
 
     // One commit for Signal's namespace, one for the dataset with its first administrator.
     Assert.Equal(2, commits github)
-    Assert.Equal(3, github.State.History.Head.Touched.Count)
+    // The dataset's manifests, its first administrator and the StorageConfigured audit record.
+    Assert.Equal(4, github.State.History.Head.Touched.Count)
     Assert.Equal<string list>([ octocat.PrincipalId ], opened.Roster.Roster.Members |> Map.keys |> List.ofSeq)
     Assert.True(opened.Grant.IsSome)
     Assert.Equal(Credential.CredentialValidReadWrite, opened.Credential)
