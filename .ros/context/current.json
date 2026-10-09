@@ -2641,20 +2641,20 @@
         "EXE-20261009T021311168Z-03fdc8e6"
       ],
       "latestCheckpoint": {
-        "id": "9c73503e418f48625e52f95a",
-        "recordedAt": "2026-10-09T03:29:12Z",
+        "id": "1a9656efdca79a3546bcae68",
+        "recordedAt": "2026-10-09T03:44:23Z",
         "executionId": "EXE-20261009T021311168Z-03fdc8e6",
         "repository": "echelon-signal",
-        "branch": "feature/static-template-catalog",
-        "commit": "66660da32700a61d2689888a7e5b59cc2fc5bee6",
+        "branch": "feature/preview-isolation",
+        "commit": "2a490fb1c1a518f0279b65ee78ba22717a89708d",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/static-template-catalog",
-        "remoteCommit": "66660da32700a61d2689888a7e5b59cc2fc5bee6",
-        "summary": "Static template catalog: survey page fetches published-templates/<ref>.json same-origin, verifies canonical hash against the link reference, refuses missing/altered/different files; console download; Pages copy; DF-SIGNAL-2026-0005; F# and browser tests (good, altered, damaged, missing).",
-        "nextAction": "Merge the static catalog PR on a green gate, then preview/test submission isolation and production import refusal (AUT-006 §60).",
+        "remoteBranch": "feature/preview-isolation",
+        "remoteCommit": "2a490fb1c1a518f0279b65ee78ba22717a89708d",
+        "summary": "Test mode: Binding.Test marker, survey test notice, production import refuses TestSubmission, test-environment import, console test links; WI-0080 captured.",
+        "nextAction": "Merge the test-mode PR on a green gate, then the other answer kinds and rules.",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
