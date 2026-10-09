@@ -153,13 +153,16 @@ type Command =
     | SaveDraft of Draft
     | PublishDraft of Draft * acknowledged: Set<string>
     | HideVersion of survey: string * version: string
+    /// Review before publication (AUT-006 §§64-65).
+    | RequestReview of survey: string
+    | ApproveReview of Draft
 
 /// The page events the authoring screens own.
 let events =
     set
         [ "newDraftSurvey"; "newDraftTitle"; "startDraft"; "deriveDraft"; "editDraft"; "draftTitle"; "draftDescription"
           "newSectionTitle"; "addSection"; "removeSection"; "newQuestionPrompt"; "addQuestion"; "removeQuestion"
-          "addFixture"; "acknowledgeWarnings"; "saveDraft"; "publishDraft"; "hideVersion" ]
+          "addFixture"; "acknowledgeWarnings"; "saveDraft"; "publishDraft"; "hideVersion"; "requestReview"; "approveReview" ]
 
 /// The editor for a survey: the one in hand, or its stored draft.
 let current (listing: TemplateListing.Listing) (survey: string) (screen: Screen) =
@@ -223,6 +226,16 @@ let update (listing: TemplateListing.Listing) (survey: string option) (name: str
         match editor with
         | Some e when (report e).Passes -> screen, [ PublishDraft(e.Draft, acknowledged e) ]
         | Some _ -> fail "Publication is blocked: resolve the blockers listed under validation."
+        | None -> fail "Open a draft first."
+    | "requestReview", _ ->
+        match editor with
+        | Some e when e.Unsaved -> fail "Save the draft first: review covers the stored draft."
+        | Some e -> screen, [ RequestReview e.Draft.SurveyId ]
+        | None -> fail "Open a draft first."
+    | "approveReview", _ ->
+        match editor with
+        | Some e when e.Unsaved -> fail "This draft has unsaved changes; review the stored draft."
+        | Some e -> screen, [ ApproveReview e.Draft ]
         | None -> fail "Open a draft first."
     | "hideVersion", Some hash ->
         match listing.Published |> List.tryFind (fun r -> r.Hash = hash) with

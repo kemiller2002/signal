@@ -196,3 +196,29 @@ let ``a stored template whose expression exceeds the limits is a problem, never 
     Assert.Equal<string list>([ "1"; "7" ], stored.Catalog.Templates |> List.map _.Version |> List.sort)
     Assert.Equal(Some shallow, Publication.resolve stored.Catalog "team-health" "7")
     Assert.Single(stored.Problems) |> ignore
+
+[<Fact>]
+let ``publication after review covers exactly the reviewed draft, and each step needs its own capability`` () =
+    let _, admin, editor = dataset Grants.draftEditor
+    TemplateStore.saveDraft (actor octocat) at admin None draft |> run |> ok
+
+    let publishReviewed d = TemplateStore.publishReviewed (actor octocat) Validation.defaultPolicy (warnings d) at admin d |> run
+    Assert.True(publishReviewed draft |> Result.isError)
+
+    // The editor submits; an editor cannot approve.
+    TemplateStore.requestReview (actor hubot) at editor "team-health" |> run |> ok |> ignore
+
+    match TemplateStore.approveReview (actor hubot) at editor "team-health" draft |> run with
+    | Error(TemplateStore.ReviewNotStored(GroupStore.NotPermitted _)) -> ()
+    | other -> failwith $"%A{other}"
+
+    // A reviewer approves what they saw; a different draft is not what is stored.
+    let changed = draft |> editContent (fun c -> { c with Metadata = { c.Metadata with Title = "Changed" } })
+
+    match TemplateStore.approveReview (actor octocat) at admin "team-health" changed |> run with
+    | Error(TemplateStore.DraftChanged "team-health") -> ()
+    | other -> failwith $"%A{other}"
+
+    TemplateStore.approveReview (actor octocat) at admin "team-health" draft |> run |> ok |> ignore
+    Assert.True(publishReviewed changed |> Result.isError)
+    Assert.Equal("1", (publishReviewed draft |> ok).Version)

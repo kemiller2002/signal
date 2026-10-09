@@ -53,6 +53,7 @@
     <Compile Include="AdminNavigation.fs" />
     <Compile Include="AdminTypes.fs" />
     <Compile Include="AdminApp.fs" />
+    <Compile Include="AdminUpdate.fs" />
     <Compile Include="AdminRouteView.fs" />
     <Compile Include="AuthoringView.fs" />
     <Compile Include="AdminReportView.fs" />

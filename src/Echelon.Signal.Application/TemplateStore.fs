@@ -31,6 +31,8 @@ type StoredCatalog =
     { Catalog: Catalog
       CatalogRevision: Revision option
       Drafts: Map<string, Draft * Revision>
+      /// Each draft's review and the revision it was read at (AUT-006 §65).
+      Reviews: Map<string, TemplateRecord.StoredReview * Revision>
       Problems: Problem list }
 
 let private loadAll now (opened: Store.Opened) (reader: Loading.RecordReader<'a>) (recordType: RecordType) =
@@ -45,6 +47,7 @@ let load (now: DateTimeOffset) (opened: Store.Opened) : AsyncResult<StoredCatalo
     asyncResult {
         let! published = loadAll now opened TemplateRecord.publishedReader TemplateRecord.publishedType
         let! drafts = loadAll now opened TemplateRecord.draftReader TemplateRecord.draftType
+        let! reviews = loadAll now opened TemplateRecord.reviewReader TemplateRecord.reviewType
         let! visibility = loadAll now opened TemplateRecord.catalogReader TemplateRecord.catalogType
         let hidden = visibility.Records |> Map.tryFind TemplateRecord.CatalogId
 
@@ -52,7 +55,8 @@ let load (now: DateTimeOffset) (opened: Store.Opened) : AsyncResult<StoredCatalo
             { Catalog = TemplateRecord.catalogOf (published.Records |> Map.toList |> List.map (snd >> _.Value)) (hidden |> Option.map _.Value.Hidden |> Option.defaultValue Set.empty)
               CatalogRevision = hidden |> Option.map _.Revision
               Drafts = drafts.Records |> Map.toList |> List.map (fun (_, d) -> d.Value.Draft.SurveyId, (d.Value.Draft, d.Revision)) |> Map.ofList
-              Problems = published.Problems @ drafts.Problems @ visibility.Problems }
+              Reviews = reviews.Records |> Map.toList |> List.map (fun (_, r) -> r.Value.SurveyId, (r.Value, r.Revision)) |> Map.ofList
+              Problems = published.Problems @ drafts.Problems @ reviews.Problems @ visibility.Problems }
     }
 
 let private commit now (opened: Store.Opened) (actor: Store.Actor) (summary: string) (changes: Result<Change list, Problem>) =
@@ -129,4 +133,89 @@ let hide (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Opened) (surv
                 | _, Error p -> Error p
 
         return! commit now opened actor $"hide {surveyId} {version}" changes
+    }
+
+// ---- Review before publication (AUT-006 §§64-65) --------------------------------------------------
+
+/// Why a review step did not happen.
+type ReviewFailure =
+    | NoStoredDraft of surveyId: string
+    /// The stored draft is not the content the review would be about.
+    | DraftChanged of surveyId: string
+    | NotReadyForReview of surveyId: string
+    | ReviewNotStored of GroupFailure
+
+let private storedDraft now opened surveyId =
+    async {
+        match! load now opened with
+        | Error failure -> return Error(ReviewNotStored failure)
+        | Ok stored ->
+            match stored.Drafts |> Map.tryFind surveyId with
+            | None -> return Error(NoStoredDraft surveyId)
+            | Some(draft, _) -> return Ok(stored, draft)
+    }
+
+let private writeReview now (opened: Store.Opened) (actor: Store.Actor) (stored: StoredCatalog) (review: TemplateRecord.StoredReview) =
+    async {
+        let change =
+            match TemplateRecord.reviewPath review.SurveyId, TemplateRecord.encodeReview review with
+            | Ok path, Ok content ->
+                Ok [ (match stored.Reviews |> Map.tryFind review.SurveyId with
+                      | Some(_, revision) -> Change.Update(path, content, revision)
+                      | None -> Change.Create(path, content)) ]
+            | Error p, _
+            | _, Error p -> Error p
+
+        match! commit now opened actor $"review {review.SurveyId}" change with
+        | Ok() -> return Ok review
+        | Error failure -> return Error(ReviewNotStored failure)
+    }
+
+/// The author asks for review of the stored draft (EditDrafts).
+let requestReview (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Opened) (surveyId: string) =
+    async {
+        match permitted opened actor Access.EditDrafts with
+        | Error failure -> return Error(ReviewNotStored failure)
+        | Ok _ ->
+            match! storedDraft now opened surveyId with
+            | Error e -> return Error e
+            | Ok(stored, draft) ->
+                return!
+                    writeReview now opened actor stored
+                        { DatasetId = opened.DatasetId
+                          SurveyId = surveyId
+                          ContentHash = TemplateRecord.draftContentHash draft
+                          State = TemplateRecord.ReadyForReview }
+    }
+
+/// A reviewer approves the stored draft exactly as they see it (ReviewTemplates).
+let approveReview (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Opened) (surveyId: string) (seen: Draft) =
+    async {
+        match permitted opened actor Access.ReviewTemplates with
+        | Error failure -> return Error(ReviewNotStored failure)
+        | Ok _ ->
+            match! storedDraft now opened surveyId with
+            | Error e -> return Error e
+            | Ok(_, draft) when TemplateRecord.draftContentHash draft <> TemplateRecord.draftContentHash seen -> return Error(DraftChanged surveyId)
+            | Ok(stored, draft) ->
+                match stored.Reviews |> Map.tryFind surveyId with
+                | Some(review, _) when review.ContentHash = TemplateRecord.draftContentHash draft ->
+                    return! writeReview now opened actor stored { review with State = TemplateRecord.Reviewed actor.Principal.PrincipalId }
+                | _ -> return Error(NotReadyForReview surveyId)
+    }
+
+/// Whether the stored review covers this draft's content exactly.
+let reviewed (stored: StoredCatalog) (draft: Draft) =
+    match stored.Reviews |> Map.tryFind draft.SurveyId with
+    | Some({ State = TemplateRecord.Reviewed _; ContentHash = hash }, _) -> hash = TemplateRecord.draftContentHash draft
+    | _ -> false
+
+/// Publication after review: the stored draft, approved as it is, published.
+let publishReviewed (actor: Store.Actor) (policy: Validation.Policy) (acknowledged: Set<string>) (now: DateTimeOffset) (opened: Store.Opened) (draft: Draft) =
+    async {
+        match! load now opened with
+        | Error failure -> return Error(NotStored failure)
+        | Ok stored when not (reviewed stored draft) ->
+            return Error(NotStored(Unusable [ InvalidStoredRecord(draft.SurveyId, "the draft has not been reviewed as it is now") ]))
+        | Ok _ -> return! publish actor policy acknowledged now opened draft
     }
