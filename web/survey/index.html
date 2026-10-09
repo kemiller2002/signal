@@ -43,6 +43,16 @@
     </ef-fault-inline>
   </template>
 
+  <!-- A test or preview link (AUT-006 §§21, 60): marked, and never a production submission. -->
+  <template data-if="isTest">
+    <ef-alert class="ef-component-tag">
+      <aside id="test-notice" class="ef-alert" role="note" data-tone="attention">
+        <div class="ef-alert__icon" aria-hidden="true">!</div>
+        <p id="test-notice-message"><strong>Test link.</strong> This is a test of the survey, not a real response. What you submit here is marked as a test, and a production import refuses it.</p>
+      </aside>
+    </ef-alert>
+  </template>
+
   <template data-if="loading">
     <p id="loading" role="status">Loading the survey…</p>
   </template>

@@ -119,22 +119,50 @@ type Binding =
     /// A finalized anonymous submission: a fresh unlinkable id and the group,
     /// and no instance (LURL-002 §15, ID-002).
     | Anonymous of submission: OpaqueId * group: OpaqueId
+    /// A test or preview artifact (AUT-006 §§21, 60): the binding it stands
+    /// in for, marked so it is never taken for a production response. Only
+    /// generic envelopes carry it (the kind byte's high bit,
+    /// `GenericEnvelope`); the pilot codec never writes or reads it.
+    | Test of Binding
 
-let kindOf =
+/// The kind byte's test marker (generic envelopes only).
+[<Literal>]
+let TestKindFlag = 0x80uy
+
+/// Marks a binding as a test artifact; marking twice changes nothing.
+let asTest =
+    function
+    | Test _ as marked -> marked
+    | binding -> Test binding
+
+/// The binding a test artifact stands in for; a production binding as it is.
+let rec production =
+    function
+    | Test binding -> production binding
+    | binding -> binding
+
+let isTest =
+    function
+    | Test _ -> true
+    | _ -> false
+
+let rec kindOf =
     function
     | Unbound -> 0uy
     | IdentifiedInvitation _ -> 1uy
     | Identified _ -> 2uy
     | Anonymous _ -> 3uy
     | AnonymousInvitation _ -> 4uy
+    | Test binding -> TestKindFlag ||| kindOf (production binding)
 
-let idsOf =
+let rec idsOf =
     function
     | Unbound -> []
     | IdentifiedInvitation(a, b)
     | AnonymousInvitation(a, b)
     | Identified(a, b)
     | Anonymous(a, b) -> [ a; b ]
+    | Test binding -> idsOf binding
 
 /// Identifiers that follow the kind byte, by kind.
 let idCount =

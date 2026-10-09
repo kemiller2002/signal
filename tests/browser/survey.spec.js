@@ -81,3 +81,17 @@ test("a page opened without a link asks for one and fetches nothing", async ({ p
   await expect(page.locator("#survey-refused-message")).toContainText("This page needs a survey link");
   expect(seen.filter((url) => url.includes("published-templates"))).toEqual([]);
 });
+
+test("a test link says it is a test, and what it submits stays marked", async ({ page }) => {
+  await open(page, links.test);
+  await expect(page.locator("#test-notice")).toContainText("Test link.");
+  for (const row of ["0-0", "1-0", "2-0", "3-0", "4-0"]) await pick(page, row).check();
+  await page.locator("#submit-answers").click();
+  await expect(page.locator("#submitted-title")).toHaveText("Submitted");
+  await expect(page.locator("#test-notice")).toBeVisible();
+  // The kind byte's test marker survives submission: 0x82 (identified, test) after the version byte.
+  const link = await page.locator("#submission-link").inputValue();
+  const payload = link.split("#r=")[1].replaceAll("-", "+").replaceAll("_", "/");
+  const bytes = Buffer.from(payload, "base64");
+  expect(bytes[1]).toBe(0x82);
+});

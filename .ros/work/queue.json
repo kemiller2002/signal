@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 80,
+  "nextSeq": 81,
   "items": [
     {
       "id": "WI-0001",
@@ -1874,6 +1874,29 @@
         "runtime": "claude-code"
       },
       "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0080",
+      "title": "Signal: the Pages build pulls published template files from the data repository",
+      "description": "DF-SIGNAL-2026-0005 known follow-up. Today the operator saves a published version with the console's 'For the respondent site' button and commits it unchanged to published-templates/, and the Pages build copies that folder. Once a deployment can read the private data repository at build time, the site build should pull each listed published version's canonical file itself (verified the same way the survey page verifies it), and the manual step goes away. Not built yet by coordinator decision.",
+      "tags": [
+        "signal,deployment,follow-up"
+      ],
+      "priority": "low",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-09T03:43:24Z",
+      "updatedAt": "2026-10-09T03:43:24Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "coordinator",
       "sourceReference": null
     }
   ]

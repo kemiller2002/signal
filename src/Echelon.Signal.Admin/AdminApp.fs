@@ -32,6 +32,8 @@ type Model =
       /// The dataset's stored template catalog as the console lists it (WI-0073).
       Templates: TemplateListing.Listing
       Authoring: Authoring.Screen
+      /// Sample test links for one published version, when asked for (AUT-006 §61).
+      TestLinks: TestLinks.Shown option
       /// The dataset's formal report snapshots (WI-0075).
       Snapshots: SnapshotSummary list
       /// The saved report definitions and the builder (WI-0075).
@@ -63,6 +65,7 @@ let initial (catalog: CatalogEntry list) =
       Catalog = catalog
       Templates = TemplateListing.empty
       Authoring = Authoring.emptyScreen
+      TestLinks = None
       Snapshots = []
       Library = ReportLibrary.empty
       Builder = ReportBuilder.emptyScreen

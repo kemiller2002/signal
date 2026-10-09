@@ -92,6 +92,9 @@ type ImportError =
     | IncompleteSubmission of unanswered: int
     /// An identified instance already contributed a different submission.
     | DuplicateInstance of existingHash: string
+    /// A test or preview artifact (AUT-006 §§21, 60): never a production
+    /// submission. Only an import opened as a test environment reads it.
+    | TestSubmission
 
 [<NoComparison>]
 type ImportOutcome =
@@ -154,9 +157,11 @@ let identify (definition: GroupDefinition) (binding: Binding) : Result<Submissio
         | Anonymous(submission, group) -> Some(AnonymousSubmission submission, AnonymousGroup), Some group
         | Unbound
         | IdentifiedInvitation _
-        | AnonymousInvitation _ -> None, None
+        | AnonymousInvitation _
+        | Test _ -> None, None
 
     match identity, group with
+    | _ when isTest binding -> Error TestSubmission
     | None, _
     | _, None -> Error NotFinalized
     | Some _, Some group when group <> definition.Group -> Error WrongGroup
@@ -207,6 +212,7 @@ let outcomeCode =
     | Rejected IdentityModeMismatch -> "rejected:identity-mode"
     | Rejected(IncompleteSubmission n) -> $"rejected:incomplete:{n}"
     | Rejected(DuplicateInstance _) -> "rejected:duplicate-instance"
+    | Rejected TestSubmission -> "rejected:test-submission"
 
 /// Imports one submission: the new group state and what happened.
 let importOne (state: GroupState) (text: string) : GroupState * ImportOutcome =

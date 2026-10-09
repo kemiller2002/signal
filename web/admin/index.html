@@ -163,9 +163,21 @@
           <ul id="template-versions">
             <template data-each="templateVersions" data-key="key">
               <li><span data-text="label"></span> · <span data-text="status"></span> · <span data-text="groups"></span>
-                <button type="button" class="ef-button" data-event="downloadSiteFile" data-bind-disabled="busy">For the respondent site</button></li>
+                <button type="button" class="ef-button" data-event="downloadSiteFile" data-bind-disabled="busy">For the respondent site</button>
+                <button type="button" class="ef-button" data-event="testLinks">Test links</button></li>
             </template>
           </ul>
+          <template data-if="hasTestLinks">
+            <section id="test-links" class="ef-stack" aria-labelledby="test-links-title">
+              <h4 id="test-links-title" data-text="testLinksTitle"></h4>
+              <p class="ef-field__description">Each link opens the survey page marked as a test, so you can try this version on a phone, in another browser or by email. What it submits is marked as a test, and a production import refuses it. The version's file must be on the respondent site first.</p>
+              <ul>
+                <template data-each="testLinks" data-key="key">
+                  <li><a data-bind-href="href" data-text="label" target="_blank" rel="noopener noreferrer"></a></li>
+                </template>
+              </ul>
+            </section>
+          </template>
           <p id="site-file-help" class="ef-field__description">Respondents' links open the survey from the respondent site, which reads each published version from its own copy. "For the respondent site" saves that copy, named for the version; commit it unchanged to the site repository's published-templates/ folder. The survey page refuses a copy that has been changed.</p>
           <ul id="template-actions">
             <template data-each="templateActions" data-key="key">
