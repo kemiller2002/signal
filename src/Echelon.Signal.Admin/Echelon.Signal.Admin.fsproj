@@ -47,6 +47,7 @@
     <Compile Include="Retention.fs" />
     <Compile Include="GovernanceRecord.fs" />
     <Compile Include="TemplateListing.fs" />
+    <Compile Include="QuestionKinds.fs" />
     <Compile Include="Authoring.fs" />
     <Compile Include="TestLinks.fs" />
     <Compile Include="ReportBuilder.fs" />

@@ -18,6 +18,15 @@ let private severity (f: Findings.Finding) =
     | Findings.Blocker -> "Blocker"
     | Findings.Warning -> "Warning"
 
+let private kindLabel (q: Template.Question) =
+    match q.Answer with
+    | Primitives.Ordinal 5 -> "five-point, scored"
+    | Primitives.Boolean -> "yes or no"
+    | Primitives.SingleChoice os -> $"one of {os.Length}"
+    | Primitives.MultiChoice m -> $"any of {m.Options.Length}"
+    | Primitives.BoundedNumber b -> $"a number {b.Minimum}-{b.Maximum}"
+    | other -> (sprintf "%A" other).Split(' ')[0]
+
 let project (model: Model) : (string * ViewValue) list =
     let can = capabilities model
     let survey = match model.Place.View with Ok(Draft s) -> Some s | _ -> None
@@ -60,6 +69,28 @@ let project (model: Model) : (string * ViewValue) list =
       "draftParent", text (editor |> Option.bind (fun e -> e.Draft.Parent) |> Option.map (fun p -> $"Derived from version {p.Version}") |> Option.defaultValue "New survey")
       "newSectionTitle", text model.Authoring.NewSection
       "newQuestionPrompt", text model.Authoring.NewQuestion
+      "questionKinds",
+      Items(
+          QuestionKinds.kinds
+          |> List.map (fun (key, _, label, _) -> [ "value", Text key; "label", Text label; "selected", Flag(key = model.Authoring.NewQuestionKind) ])
+      )
+      "newQuestionDetails", text model.Authoring.NewQuestionDetails
+      "questionDetailsHint",
+      text (
+          QuestionKinds.kinds
+          |> List.tryFind (fun (key, _, _, _) -> key = model.Authoring.NewQuestionKind)
+          |> Option.map (fun (_, _, _, hint) -> if hint = "" then "No details needed." else $"Details: {hint}.")
+          |> Option.defaultValue ""
+      )
+      "ruleQuestion", text model.Authoring.RuleQuestion
+      "ruleWhen", text model.Authoring.RuleWhen
+      "ruleAnswer", text model.Authoring.RuleAnswer
+      "draftRules",
+      Items(
+          editor
+          |> Option.map (fun e -> e.Draft.Content.Rules.Flow |> List.map (fun r -> [ "id", Text r.Id; "label", Text(QuestionKinds.describeRule e.Draft.Content r) ]))
+          |> Option.defaultValue []
+      )
       "draftSections",
       Items(
           sections
@@ -71,7 +102,7 @@ let project (model: Model) : (string * ViewValue) list =
       "draftQuestions",
       Items(
           sections
-          |> List.collect (fun s -> s.Questions |> List.map (fun q -> [ "id", Text q.Id; "section", Text s.Id; "prompt", Text q.Prompt ]))
+          |> List.collect (fun s -> s.Questions |> List.map (fun q -> [ "id", Text q.Id; "section", Text s.Id; "prompt", Text q.Prompt; "kind", Text(kindLabel q) ]))
       )
       "draftFixtures", Items(editor |> Option.map (fun e -> e.Draft.Fixtures |> List.map (fun f -> [ "id", Text f.Id; "name", Text f.Name ])) |> Option.defaultValue [])
       "draftFindings",

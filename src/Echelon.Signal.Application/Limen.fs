@@ -97,11 +97,14 @@ let decode (messageJson: string) =
     | "Event" ->
         let event = required "event" "$" asObject message
 
-        Event(
-            required "name" "$.event" asString event,
-            optional "key" "$.event" asString event,
-            optional "value" "$.event" asString event
-        )
+        // A checkbox reports its value attribute either way, and whether it
+        // is checked (protocol 1.2): an unchecked box means "not this value".
+        let value =
+            match optional "checked" "$.event" asBool event with
+            | Some false -> Some ""
+            | _ -> optional "value" "$.event" asString event
+
+        Event(required "name" "$.event" asString event, optional "key" "$.event" asString event, value)
     | "LocationChanged" -> LocationChanged(required "location" "$" location message)
     | "EffectResult" ->
         let result = required "result" "$" asObject message

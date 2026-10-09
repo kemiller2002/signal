@@ -1,9 +1,9 @@
 /// The authoring screens' editing (WI-0073, AUT-001..AUT-005): a draft is
 /// started new or derived from a published version, edited through a closed
 /// set of edits, validated and previewed exactly as publication will judge
-/// it. The questions it adds have the group pipeline's shape (five-point
-/// frequency, three special states, sections scored by the catalog scorer),
-/// so a template authored here can start groups (`Pilot.assessmentOf`).
+/// it. Questions are of the kinds `QuestionKinds` offers; a section's score
+/// keeps to its five-point questions, read by the catalog scorer. A question
+/// may be shown only when an earlier one has a given answer.
 ///
 /// Pure.
 module Echelon.Signal.Admin.Authoring
@@ -27,8 +27,11 @@ type Edit =
     | SetDescription of string
     | AddSection of title: string
     | RemoveSection of sectionId: string
-    | AddQuestion of sectionId: string * prompt: string
+    | AddQuestion of sectionId: string * prompt: string * kind: QuestionKinds.Kind * details: string
     | RemoveQuestion of questionId: string
+    /// Show a question only when an earlier question has an answer (named by its label).
+    | AddShowRule of questionId: string * whenQuestion: string * answerLabel: string
+    | RemoveRule of ruleId: string
     /// A fixture where every question is answered at the midpoint.
     | AddMidpointFixture
 
@@ -56,18 +59,6 @@ let private scorer = Assessment.dimensionScorer { Pilot.assessment with MinimumN
 let private nextId (prefix: string) (taken: string list) =
     Seq.initInfinite (fun i -> $"{prefix}{i + 1}") |> Seq.find (fun id -> not (List.contains id taken))
 
-let private question (id: string) (prompt: string) : Question =
-    { Id = id
-      Prompt = prompt
-      HelpText = None
-      Answer = Primitives.Ordinal 5
-      Selector =
-        { Preset = Selectors.Frequency5
-          Labels = [ Assessment.Never; Assessment.Rarely; Assessment.Sometimes; Assessment.Often; Assessment.AlmostAlways ] |> List.map Assessment.frequencyLabel }
-      SpecialStates = [ Responses.DontKnow; Responses.NotObserved; Responses.NotApplicable ]
-      Required = true
-      Tags = [] }
-
 let private describe (error: EditError) =
     match error with
     | UnknownSection id -> $"There is no section '{id}'."
@@ -77,6 +68,13 @@ let private describe (error: EditError) =
 
 let private nonEmpty (what: string) (text: string) =
     if System.String.IsNullOrWhiteSpace text then Error $"The {what} cannot be empty." else Ok(text.Trim())
+
+/// A question's middle answer: the middle value, or a multi-choice's first option.
+let private midpoint (q: Question) =
+    match GenericSession.toggles q, GenericSession.choices q |> List.filter (fun (s, _) -> match s with Responses.Value _ -> true | _ -> false) with
+    | (first, _) :: _, _ -> Some(Responses.Value(Responses.Choices(Set.singleton first)))
+    | [], [] -> None
+    | [], values -> Some(fst values[values.Length / 2])
 
 /// Applies one edit; the draft is unchanged when it is refused.
 let apply (edit: Edit) (editor: Editor) : Result<Editor, string> =
@@ -102,21 +100,56 @@ let apply (edit: Edit) (editor: Editor) : Result<Editor, string> =
                     draft
                 |> Result.mapError describe)
         | RemoveSection id -> removeSection id draft |> Result.mapError describe
-        | AddQuestion(sectionId, prompt) ->
-            nonEmpty "question" prompt |> Result.bind (fun p -> addQuestion sectionId (question (nextId "Q" (questionIds content)) p) draft |> Result.mapError describe)
-        | RemoveQuestion id -> removeQuestion id draft |> Result.mapError describe
+        | AddQuestion(sectionId, prompt, kind, details) ->
+            nonEmpty "question" prompt
+            |> Result.bind (fun p -> QuestionKinds.build (nextId "Q" (questionIds content)) p kind details)
+            |> Result.bind (fun q ->
+                match content.Sections |> List.tryFind (fun s -> s.Id = sectionId) with
+                | None -> Error(describe (UnknownSection sectionId))
+                | Some before ->
+                    addQuestion sectionId q draft
+                    |> Result.bind (editSection sectionId (QuestionKinds.afterAdding scorer q before))
+                    |> Result.mapError describe)
+        | RemoveQuestion id ->
+            let mentions (rule: RuleModel.FlowRule) =
+                match rule.When, rule.Then with
+                | _, RuleModel.ShowQuestion q when q = id -> true
+                | (RuleModel.AnswerIs(q, _) | RuleModel.IsSpecial(q, _)), _ -> q = id
+                | _ -> false
+
+            match content.Sections |> List.tryFind (fun s -> s.Questions |> List.exists (fun q -> q.Id = id)) with
+            | None -> Error(describe (UnknownQuestionId id))
+            | Some section ->
+                removeQuestion id draft
+                |> Result.bind (editSection section.Id (QuestionKinds.afterRemoving id))
+                |> Result.map (editContent (fun c -> { c with Rules = { c.Rules with Flow = c.Rules.Flow |> List.filter (mentions >> not) } }))
+                |> Result.mapError describe
+        | AddShowRule(questionId, whenQuestion, answerLabel) ->
+            QuestionKinds.showRule (nextId "show-" (content.Rules.Flow |> List.map _.Id)) content questionId whenQuestion answerLabel
+            |> Result.map (fun rule -> editContent (fun c -> { c with Rules = { c.Rules with Flow = c.Rules.Flow @ [ rule ] } }) draft)
+        | RemoveRule ruleId when content.Rules.Flow |> List.exists (fun r -> r.Id = ruleId) ->
+            Ok(editContent (fun c -> { c with Rules = { c.Rules with Flow = c.Rules.Flow |> List.filter (fun r -> r.Id <> ruleId) } }) draft)
+        | RemoveRule ruleId -> Error $"There is no rule '{ruleId}'."
         | AddMidpointFixture ->
             let id = nextId "midpoint-" (draft.Fixtures |> List.map _.Id)
 
             addFixture
                 { Id = id
                   Name = "Every answer at the midpoint"
-                  Answers = questionIds content |> List.map (fun q -> q, Responses.Value(Responses.Point 2)) |> Map.ofList
+                  Answers = questions content |> List.choose (fun (_, q) -> midpoint q |> Option.map (fun a -> q.Id, a)) |> Map.ofList
                   Expect = [ ExpectComplete true ] }
                 draft
             |> Result.mapError describe
 
-    edited |> Result.map (fun d -> { editor with Draft = d; Unsaved = true })
+    // The template declares what its rules use (a condition needs branching).
+    let declared (d: Draft) =
+        let required = RuleChecks.requiredCapabilities d.Content
+        let missing = required |> Set.filter (fun c -> not (List.contains c d.Content.Compatibility.Capabilities))
+
+        if missing.IsEmpty then d
+        else editContent (fun c -> { c with Compatibility = { c.Compatibility with Capabilities = c.Compatibility.Capabilities @ Set.toList missing } }) d
+
+    edited |> Result.map (fun d -> { editor with Draft = declared d; Unsaved = true })
 
 /// What publication would say about the draft now.
 let report (editor: Editor) = Validation.validate Validation.defaultPolicy editor.Draft
@@ -137,6 +170,11 @@ type Screen =
       NewTitle: string
       NewSection: string
       NewQuestion: string
+      NewQuestionKind: string
+      NewQuestionDetails: string
+      RuleQuestion: string
+      RuleWhen: string
+      RuleAnswer: string
       Problem: string option }
 
 let emptyScreen =
@@ -145,6 +183,11 @@ let emptyScreen =
       NewTitle = ""
       NewSection = ""
       NewQuestion = ""
+      NewQuestionKind = "frequency5"
+      NewQuestionDetails = ""
+      RuleQuestion = ""
+      RuleWhen = ""
+      RuleAnswer = ""
       Problem = None }
 
 /// What the screens ask the application to do.
@@ -162,6 +205,7 @@ let events =
     set
         [ "newDraftSurvey"; "newDraftTitle"; "startDraft"; "deriveDraft"; "editDraft"; "draftTitle"; "draftDescription"
           "newSectionTitle"; "addSection"; "removeSection"; "newQuestionPrompt"; "addQuestion"; "removeQuestion"
+          "newQuestionKind"; "newQuestionDetails"; "ruleQuestion"; "ruleWhen"; "ruleAnswer"; "addShowRule"; "removeRule"
           "addFixture"; "acknowledgeWarnings"; "saveDraft"; "publishDraft"; "hideVersion"; "requestReview"; "approveReview" ]
 
 /// The editor for a survey: the one in hand, or its stored draft.
@@ -209,9 +253,21 @@ let update (listing: TemplateListing.Listing) (survey: string option) (name: str
         (if next.Problem.IsNone then { next with NewSection = "" } else next), commands
     | "removeSection", Some id -> edit (RemoveSection id)
     | "newQuestionPrompt", _ -> { screen with NewQuestion = value }, []
+    | "newQuestionKind", _ when (QuestionKinds.parse value).IsSome -> { screen with NewQuestionKind = value }, []
+    | "newQuestionDetails", _ -> { screen with NewQuestionDetails = value }, []
     | "addQuestion", Some section ->
-        let next, commands = edit (AddQuestion(section, screen.NewQuestion))
-        (if next.Problem.IsNone then { next with NewQuestion = "" } else next), commands
+        match QuestionKinds.parse screen.NewQuestionKind with
+        | None -> fail "Choose what kind of question to add."
+        | Some kind ->
+            let next, commands = edit (AddQuestion(section, screen.NewQuestion, kind, screen.NewQuestionDetails))
+            (if next.Problem.IsNone then { next with NewQuestion = ""; NewQuestionDetails = "" } else next), commands
+    | "ruleQuestion", _ -> { screen with RuleQuestion = value.Trim().ToUpperInvariant() }, []
+    | "ruleWhen", _ -> { screen with RuleWhen = value.Trim().ToUpperInvariant() }, []
+    | "ruleAnswer", _ -> { screen with RuleAnswer = value }, []
+    | "addShowRule", _ ->
+        let next, commands = edit (AddShowRule(screen.RuleQuestion, screen.RuleWhen, screen.RuleAnswer))
+        (if next.Problem.IsNone then { next with RuleQuestion = ""; RuleWhen = ""; RuleAnswer = "" } else next), commands
+    | "removeRule", Some id -> edit (RemoveRule id)
     | "removeQuestion", Some id -> edit (RemoveQuestion id)
     | "addFixture", _ -> edit AddMidpointFixture
     | "acknowledgeWarnings", _ ->

@@ -16,12 +16,19 @@ open Echelon.Signal.Engine.Primitives
 open Echelon.Signal.Engine.Template
 open Echelon.Signal.Engine.UrlState
 open Echelon.Signal.Engine.GenericSession
+open Echelon.Signal.Engine.GenericSessionView
 open Echelon.Signal.Application
+open Echelon.Signal.Admin
 open Echelon.Signal.Tests.Support
 
 // ---------------------------------------------------------------------------
 // The demo survey the site publishes, and the browser tests' links to it.
 // ---------------------------------------------------------------------------
+
+let private okOrFail =
+    function
+    | Ok value -> value
+    | Error error -> failwith $"%A{error}"
 
 let private option id label : ChoiceOption = { Id = id; Label = label; Score = None }
 
@@ -63,6 +70,23 @@ let demo: Content =
                 Presentation = defaultSectionPresentation
                 Scoring = None } ] }
 
+let private add section prompt kind details = Result.bind (Authoring.apply (Authoring.AddQuestion(section, prompt, kind, details)))
+
+/// Q1 five-point, Q2 yes/no, Q3 shown only when Q2 is "Yes" (a choice), Q4
+/// any of a list, Q5 a number from 1 to 5, Q6 five-point agreement.
+let mixedEditor =
+    Authoring.start "MIXED" "Mixed kinds" |> okOrFail
+    |> Authoring.apply (Authoring.AddSection "Everything")
+    |> add "S1" "We finish what we start." QuestionKinds.Frequency5 ""
+    |> add "S1" "Did the team ship this month?" QuestionKinds.YesNo ""
+    |> add "S1" "How did it ship?" QuestionKinds.Choice "Continuously, Weekly, At the end"
+    |> add "S1" "Which practices does the team use?" QuestionKinds.Multi "Pairing, Code review, Trunk-based development"
+    |> add "S1" "How confident is the team in the plan, from 1 to 5?" QuestionKinds.Number "1-5"
+    |> add "S1" "The plan is realistic." QuestionKinds.Agreement5 ""
+    |> Result.bind (Authoring.apply (Authoring.AddShowRule("Q3", "Q2", "yes")))
+    |> Result.bind (Authoring.apply Authoring.AddMidpointFixture)
+    |> okOrFail
+
 let DemoSurvey = "signal-demo"
 let DemoVersion = "1"
 
@@ -82,6 +106,9 @@ let private links =
       "anonymous", "web/survey/" + invitation Import.AnonymousGroup DemoVersion
       // A version this site does not publish: its file is missing.
       "unpublished", "web/survey/" + invitation Import.IdentifiedGroup "2"
+      // Every other kind, and a conditional question (MIXED, published beside the demo).
+      "kinds", "web/survey/" + "#r=" + GenericEnvelope.invitation "MIXED" "1" mixedEditor.Draft.Content Import.IdentifiedGroup instance group
+      "kindsFile", fst (publishedFile "MIXED" "1" mixedEditor.Draft.Content)
       // A test link (AUT-006 §60): marked on the page and refused by production import.
       "test", "web/survey/#r=" + GenericEnvelope.testLink DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group Map.empty ]
 
@@ -96,9 +123,13 @@ let private linksJson () =
 let ``the demo survey file and the browser links are what the code produces`` () =
     if Environment.GetEnvironmentVariable "SIGNAL_WRITE_FIXTURES" = "1" then
         File.WriteAllBytes(repoFile demoFile, demoBytes)
+        let kindsFile, kindsBytes = publishedFile "MIXED" "1" mixedEditor.Draft.Content
+        File.WriteAllBytes(repoFile kindsFile, kindsBytes)
         File.WriteAllText(repoFile "tests/browser/fixtures/survey-links.json", linksJson ())
 
     Assert.Equal<byte[]>(demoBytes, File.ReadAllBytes(repoFile demoFile))
+    let kindsFile, kindsBytes = publishedFile "MIXED" "1" mixedEditor.Draft.Content
+    Assert.Equal<byte[]>(kindsBytes, File.ReadAllBytes(repoFile kindsFile))
     Assert.Equal(linksJson (), readRepoFile "tests/browser/fixtures/survey-links.json")
 
 [<Fact>]
