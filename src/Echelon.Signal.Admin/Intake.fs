@@ -135,6 +135,32 @@ let promote (group: OpaqueId) (retention: GroupRecord.SubmissionRetention) (orig
     | AlreadyImported _
     | Rejected _ -> None
 
+/// What a retained submission says when it is read again (URLC-005).
+type Reconstruction =
+    /// The URL artifact and the exact template reproduce the stored result.
+    | Reproduced
+    /// Only the derived result was kept (NoneAfterImport).
+    | NotRetained
+    /// The artifact no longer reproduces the stored result: the record or
+    /// the template is not what it was.
+    | Differs of reason: string
+
+/// Re-reads a retained submission against the group's exact template and
+/// compares it with the stored result (URLC-005's core invariant: a valid
+/// submission plus its exact published template reconstruct, validate and
+/// score the complete response).
+let reconstruct (definition: GroupDefinition) (contribution: Contribution) : Reconstruction =
+    match contribution.Submission with
+    | None -> NotRetained
+    | Some payload ->
+        match GenericImport.evaluate definition (fun _ -> None) payload with
+        | Accepted result when result.SubmissionHash <> contribution.Result.SubmissionHash -> Differs "the submission hash differs"
+        | Accepted result when result.Identity.Key <> contribution.Result.Identity.Key -> Differs "the identity differs"
+        | Accepted result when result.Dimensions <> contribution.Result.Dimensions -> Differs "the scores differ"
+        | Accepted _ -> Reproduced
+        | AlreadyImported _ -> Differs "unexpected duplicate"
+        | Rejected error -> Differs $"the artifact is rejected: %A{error}"
+
 // ---- Batches -------------------------------------------------------------------------------
 
 /// A batch's status (ADM-060).

@@ -139,7 +139,7 @@ Everything else stays assigned to the work items the ledger already names
 | URLC-002 | missing | tested | No logical response/portable submission distinction. **WI-0033:** live response versus finalized portable submission, sealed after submission; completion derived. Import-side replay/revision remains. **WI-0041:** import-side replay is idempotent and durable; a revised artifact for an accepted instance is a duplicate, never a replacement. | WI-0033, WI-0041 |
 | URLC-003 | missing | tested | No portable envelope or explicit decode errors. **WI-0031:** self-contained versioned envelope with explicit errors for every URLC-003 §6 case (`DecodeError`, `UrlStateTests`). Optional admin persistence remains. **WI-0041:** optional administrator persistence of the canonical submission (`RetainCanonicalSubmission`). | WI-0031, WI-0033, WI-0041 |
 | URLC-004 | missing | partial | No revised canonical entities. **WI-0042:** the template owns meaning (`Template.Content`), the response owns state (`Template.Answers`), and the template-plus-answers result is a pure function. The revised instance/group entities on generic templates remain (WI-0045). | WI-0002, WI-0042 |
-| URLC-005 | missing | partial | No URL artifact. **WI-0031:** the URL artifact format exists. **WI-0045:** generic templates use the same artifact (`GenericEnvelope`). Administrator-side persistence of the artifact remains (WI-0078). | WI-0031, WI-0033, WI-0045 |
+| URLC-005 | missing | tested | No URL artifact. **WI-0031:** the URL artifact format exists. **WI-0045:** generic templates use the same artifact (`GenericEnvelope`). **WI-0078:** administrator import is the persistence boundary: a group may retain each canonical submission, and a retained artifact read again against the group's exact template reproduces the stored result (hash, identity, scores), or says why not; another template does not (`Intake.reconstruct`, `DurableImportTests`). | WI-0031, WI-0033, WI-0045, WI-0078 |
 | ID-001 | missing | tested | No instance identity. **WI-0033:** opaque 16-byte instance and group ids; identified submission keeps them for external mapping. Group metadata remains (WI-0005). **WI-0043:** group metadata (opaque group and subject ids, expected count, members, roles) with no person data. The invitation's binding to an exact template version for generic templates remains (WI-0045). **WI-0045:** an invitation is bound to one exact published template version by its reference and carries only opaque instance and group ids (`GenericEnvelope.invitation`, `EncodingTests`). | WI-0033, WI-0043, WI-0045 |
 | ID-002 | missing | tested | No anonymous submission. **WI-0033:** unlinkable anonymous submission from CSPRNG entropy at the edge; identified/anonymous shapes; no PII field exists (`SubmissionTests`). | WI-0033 |
 | ID-003 | missing | tested | No counts or import-side deduplication. **WI-0033:** anonymous conversion and entropy tests (distinct draws, no stuck bits). Counts and import deduplication remain (WI-0034). **WI-0034:** accepted/expected/missing counts, import-side deduplication by instance or anonymous id, anonymous small-group suppression under an explicit policy, and anonymous randomness tests (`ImportTests`, `SubmissionTests`). | WI-0034 |
@@ -337,8 +337,8 @@ Counts of the **Current** column, recomputed by each change that updates it
 
 | Corpus | Groups | Current tested | Current partial | Current missing | n/a |
 |---|---:|---:|---:|---:|---:|
-| Core survey engine | 72 | 25 | 47 | 0 | 0 |
+| Core survey engine | 72 | 26 | 46 | 0 | 0 |
 | Advanced stress trial | 15 | 3 | 10 | 2 | 0 |
 | Administrator console | 77 | 34 | 27 | 16 | 0 |
 | Scoring and selector completeness | 19 | 8 | 10 | 0 | 1 |
-| **Ledger total** | **183** | **70** | **94** | **18** | **1** |
+| **Ledger total** | **183** | **71** | **93** | **18** | **1** |
