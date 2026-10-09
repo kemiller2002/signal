@@ -25,6 +25,9 @@ const escapeHtml = (text) =>
 export const copies = [
   "web",
   "web-kernel",
+  // The published survey versions the survey page reads (DF-SIGNAL-2026-0005):
+  // committed by the operator from the console's "For the respondent site".
+  "published-templates",
   "build/wasm/wwwroot",
   "node_modules/@echelon-foundry/limen/dist",
   "node_modules/@echelon-foundry/design-system/dist",
@@ -35,7 +38,8 @@ export const copies = [
 // banner's stylesheet. Every one carries the policy and the banner (WI-0068).
 export const pages = [
   { path: "web/index.html", pagesCss: "./pages.css" },
-  { path: "web/admin/index.html", pagesCss: "../pages.css" }
+  { path: "web/admin/index.html", pagesCss: "../pages.css" },
+  { path: "web/survey/index.html", pagesCss: "../pages.css" }
 ];
 
 const cspMeta = (policy) => `<meta http-equiv="Content-Security-Policy" content="${escapeHtml(policy)}" />`;

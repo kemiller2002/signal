@@ -2,11 +2,13 @@
 /// and writes it: the kernel's messages in, the engine's view and handshake
 /// answer out. Mechanics only; no Signal decision is made here.
 ///
-/// Signal requests two Core effects, a Navigation `replace` that keeps the
-/// live URL equal to the respondent's state (LURL-001) and a Clipboard
-/// `writeText` that copies a finalized submission link, and negotiates no
-/// capability pack. The kernel can therefore send it the handshake, events,
-/// location changes, and navigation and clipboard results. Anything else is not a message
+/// The respondent pages request Core effects only, and negotiate no capability
+/// pack: a Navigation `replace` that keeps the live URL equal to the
+/// respondent's state (LURL-001), a Clipboard `writeText` that copies a
+/// finalized submission link, and (the survey page only) one same-origin Http
+/// GET of a published template from the site's catalog (DF-SIGNAL-2026-0005).
+/// The kernel can therefore send the handshake, events, location changes, and
+/// navigation, clipboard and Http results. Anything else is not a message
 /// this engine could have caused.
 ///
 /// See the `protocol` export of `@echelon-foundry/limen` (0.9.0; protocol unchanged since 0.7.1).
@@ -47,6 +49,12 @@ type NavigationOutcome =
     | NavigationDispatched
     | NavigationFailed of reason: string
 
+/// An Http effect's outcome: the status and the body (base64, as requested),
+/// or why there is no response.
+type HttpOutcome =
+    | HttpResponded of status: int * body: string
+    | HttpFailed of reason: string
+
 [<NoComparison; NoEquality>]
 type Inbound =
     | Initialize of handshake: JsonNode option * location: Location option
@@ -56,6 +64,7 @@ type Inbound =
     | NavigationResult of correlationId: string * outcome: NavigationOutcome
     /// A Clipboard writeText outcome: Ok, or the failure reason.
     | ClipboardResult of correlationId: string * outcome: Result<unit, string>
+    | HttpResult of correlationId: string * outcome: HttpOutcome
 
 /// An effect the engine asks the kernel to perform.
 type Effect =
@@ -63,6 +72,13 @@ type Effect =
     | ReplaceUrl of correlationId: string * url: string
     /// Write text to the clipboard (write-only by design in Limen).
     | CopyText of correlationId: string * text: string
+    /// GET a file's exact bytes (base64), without credentials. The address
+    /// is relative to the page, so the request stays on the page's origin.
+    | FetchBytes of correlationId: string * url: string
+
+/// How long the survey page waits for its template file.
+[<Literal>]
+let FetchTimeoutMs = 20000
 
 let private location (path: string) (node: JsonNode) =
     let o = asObject path node
@@ -112,9 +128,22 @@ let decode (messageJson: string) =
                 | other -> raise (MalformedInput("$.result.outcome.kind", $"a clipboard outcome, not '{other}'"))
 
             ClipboardResult(required "correlationId" "$.result" asString result, read)
-        // The engine requests only navigation and clipboard writes, so no
-        // other result can answer anything it asked.
-        | _ -> raise (MalformedInput("$.result.kind", "a result for an effect this engine requests (NavigationResult, ClipboardResult)"))
+        | "HttpResult" ->
+            let outcome = required "outcome" "$.result" asObject result
+
+            let read =
+                match required "kind" "$.result.outcome" asString outcome with
+                | "Success" ->
+                    HttpResponded(required "status" "$.result.outcome" asInt outcome, optional "body" "$.result.outcome" asString outcome |> Option.defaultValue "")
+                | "Failure"
+                | "OutcomeUnknown" -> HttpFailed(required "reason" "$.result.outcome" asString outcome)
+                | "Cancelled" -> HttpFailed "cancelled"
+                | other -> raise (MalformedInput("$.result.outcome.kind", $"an Http outcome, not '{other}'"))
+
+            HttpResult(required "correlationId" "$.result" asString result, read)
+        // The engine requests only navigation, clipboard writes and Http
+        // reads, so no other result can answer anything it asked.
+        | _ -> raise (MalformedInput("$.result.kind", "a result for an effect this engine requests (NavigationResult, ClipboardResult, HttpResult)"))
     | "CapabilityFact" -> raise (MalformedInput("$.kind", "a message this engine can receive, not a fact for a capability it never negotiated"))
     | other -> raise (MalformedInput("$.kind", $"a known message kind, not '{other}'"))
 
@@ -218,6 +247,16 @@ let encode (view: View) (effects: Effect list) (handshake: Handshake option) =
                 writer.WriteString("correlationId", correlationId)
                 writer.WriteString("operation", "writeText")
                 writer.WriteString("text", text)
+                writer.WriteEndObject()
+            | FetchBytes(correlationId, url) ->
+                writer.WriteStartObject()
+                writer.WriteString("kind", "Http")
+                writer.WriteString("correlationId", correlationId)
+                writer.WriteString("method", "GET")
+                writer.WriteString("url", url)
+                writer.WriteNumber("timeoutMs", FetchTimeoutMs)
+                writer.WriteString("response", "base64")
+                writer.WriteString("credentials", "omit")
                 writer.WriteEndObject()
 
         writer.WriteEndArray()

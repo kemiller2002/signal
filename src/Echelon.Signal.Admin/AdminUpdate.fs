@@ -190,6 +190,14 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
         | Some id when [ "report.json"; "sections.csv"; "lineage.json" ] |> List.contains value -> busy [ ExportSnapshot(id, value) ]
         | _ -> model, []
     | "exportSnapshot" -> { model with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "Exporting needs ExportData." }, []
+    // The respondent site's copy of a published version (DF-SIGNAL-2026-0005):
+    // its canonical bytes, named by its reference, to commit to published-templates/.
+    | "downloadSiteFile" ->
+        match key |> Option.bind (Echelon.Signal.Engine.Publication.resolveHash model.Templates.Catalog) with
+        | Some t ->
+            let path, bytes = Echelon.Signal.Engine.GenericSession.publishedFile t.SurveyId t.Version t.Content
+            model, [ Download(path.Substring(path.LastIndexOf '/' + 1), "application/json", System.Text.Encoding.UTF8.GetString bytes) ]
+        | None -> { model with Notice = refuse "SIGNAL.TEMPLATE.NOT_FOUND" "That version is not in the catalog." }, []
     | building when ReportBuilder.events.Contains building ->
         let surveys = model.Catalog |> List.map _.SurveyIdentifier |> List.distinct
         let screen, commands = ReportBuilder.update model.Library surveys name key value model.Builder

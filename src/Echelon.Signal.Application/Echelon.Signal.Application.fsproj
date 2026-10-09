@@ -10,6 +10,7 @@
     <Compile Include="Limen.fs" />
     <Compile Include="Boundary.fs" />
     <Compile Include="Wire.fs" />
+    <Compile Include="SurveyWire.fs" />
     <Compile Include="StorageFaults.fs" />
     <Compile Include="Flow.fs" />
     <Compile Include="Identity.fs" />

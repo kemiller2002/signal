@@ -38,6 +38,7 @@
     <Compile Include="SignInTests.fs" />
     <Compile Include="AdminStoreTests.fs" />
     <Compile Include="DurableImportTests.fs" />
+    <Compile Include="SurveyPageTests.fs" />
     <Compile Include="ReportStateTests.fs" />
     <Compile Include="AdminStateTests.fs" />
     <Compile Include="AdminPageTests.fs" />

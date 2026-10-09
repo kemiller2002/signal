@@ -37,7 +37,7 @@ export default defineConfig({
     { name: "chromium", use: { ...devices["Desktop Chrome"], launchOptions } },
     {
       name: "pages",
-      testMatch: /deep-links\.spec\.js/,
+      testMatch: /(deep-links|survey)\.spec\.js/,
       use: { ...devices["Desktop Chrome"], launchOptions, baseURL: `${pagesOrigin}/signal/` }
     }
   ],
