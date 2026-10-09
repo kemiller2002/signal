@@ -58,7 +58,7 @@ let ``a test link is marked in the envelope and only there`` () =
 [<Fact>]
 let ``the survey page says a test link is a test`` () =
     let isTestOf session =
-        View.Value(View.Flag true) = (GenericSession.view session |> List.find (fst >> (=) "isTest") |> snd)
+        View.Value(View.Flag true) = (GenericSessionView.view session |> List.find (fst >> (=) "isTest") |> snd)
 
     Assert.True(isTestOf (Responding(opened (testLink Import.AnonymousGroup Map.empty))))
     Assert.False(isTestOf (start "#r=x"))

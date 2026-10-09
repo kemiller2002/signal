@@ -17,8 +17,8 @@ let private ok =
 
 let private authored =
     Authoring.start "PULSE" "Team pulse" |> ok
-    |> apply (AddSection "Focus") |> Result.bind (apply (AddQuestion("S1", "We finish what we start before starting more.")))
-    |> Result.bind (apply (AddQuestion("S1", "Interruptions are rare during focused work.")))
+    |> apply (AddSection "Focus") |> Result.bind (apply (AddQuestion("S1", "We finish what we start before starting more.", QuestionKinds.Frequency5, "")))
+    |> Result.bind (apply (AddQuestion("S1", "Interruptions are rare during focused work.", QuestionKinds.Frequency5, "")))
     |> Result.bind (apply AddMidpointFixture)
     |> ok
 
@@ -31,8 +31,8 @@ let ``an authored draft validates as publication will, and has the group pipelin
 
     Assert.True(Authoring.start "pulse" "Team pulse" |> Result.isError)
     Assert.True(Authoring.start "PULSE" " " |> Result.isError)
-    Assert.True(apply (AddQuestion("S9", "Where?")) authored |> Result.isError)
-    Assert.True(apply (AddQuestion("S1", "  ")) authored |> Result.isError)
+    Assert.True(apply (AddQuestion("S9", "Where?", QuestionKinds.Frequency5, "")) authored |> Result.isError)
+    Assert.True(apply (AddQuestion("S1", "  ", QuestionKinds.Frequency5, "")) authored |> Result.isError)
     Assert.Equal<string list>([ "Q2" ], (apply (RemoveQuestion "Q1") authored |> ok).Draft.Content.Sections.Head.Questions |> List.map _.Id)
 
 [<Fact>]

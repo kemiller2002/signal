@@ -95,3 +95,27 @@ test("a test link says it is a test, and what it submits stays marked", async ({
   const bytes = Buffer.from(payload, "base64");
   expect(bytes[1]).toBe(0x82);
 });
+
+test("other answer kinds and a conditional question work on the page", async ({ page }) => {
+  await open(page, links.kinds);
+  await expect(page.locator("#survey-title")).toHaveText("Mixed kinds");
+  // Q3 is shown only when Q2 is "Yes".
+  await expect(page.locator('[data-row="2"]')).toHaveCount(0);
+  await expect(page.locator("#progress")).toHaveText("0 of 5 answered");
+  await pick(page, "1-1").check();
+  await expect(page.locator('[data-row="2"]')).toContainText("How did it ship?");
+  await expect(page.locator("#progress")).toHaveText("1 of 6 answered");
+
+  const toggle = (row) => page.locator(`[data-row="${row}"] input[type="checkbox"]`);
+  await toggle("3-t0").check();
+  await toggle("3-t2").check();
+  await toggle("3-t2").uncheck();
+  await expect(toggle("3-t0")).toBeChecked();
+  await expect(toggle("3-t2")).not.toBeChecked();
+
+  await expect(page.locator('[data-row="4-4"]')).toContainText("5");
+  for (const row of ["0-2", "2-1", "4-4", "5-3"]) await pick(page, row).check();
+  await expect(page.locator("#progress")).toHaveText("6 of 6 answered");
+  await page.locator("#submit-answers").click();
+  await expect(page.locator("#submitted-title")).toHaveText("Submitted");
+});

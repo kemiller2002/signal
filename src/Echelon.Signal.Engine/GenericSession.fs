@@ -124,12 +124,19 @@ let wanted =
     | Refused _
     | Responding _ -> None
 
-/// The answer kinds this page renders: one choice per question.
+/// The most ticks a bounded number may have to be shown as choices.
+[<Literal>]
+let MaximumTicks = 21
+
+/// The answer kinds this page renders: one choice per question, a
+/// multi-choice as toggles, and a short bounded number as its ticks.
 let supported (q: Question) =
     match q.Answer with
     | Boolean
     | Ordinal _
-    | SingleChoice _ -> true
+    | SingleChoice _
+    | MultiChoice _ -> true
+    | BoundedNumber b -> ticks b > 0 && ticks b <= MaximumTicks
     | _ -> false
 
 /// Verifies fetched bytes against the reference the link names.
@@ -194,11 +201,20 @@ let choices (q: Question) : (AnswerState * string) list =
         | Boolean -> [ Value(Flag false), labelAt 0 "No"; Value(Flag true), labelAt 1 "Yes" ]
         | Ordinal points -> [ for p in 0 .. points - 1 -> Value(Point p), labelAt p (string p) ]
         | SingleChoice options -> options |> List.map (fun o -> Value(Choice o.Id), o.Label)
+        | BoundedNumber b ->
+            [ for t in 0 .. ticks b - 1 -> Value(Tick t), (tickValue b t).ToString($"F{b.Decimals}", Globalization.CultureInfo.InvariantCulture) ]
+        // A multi-choice's options are toggles (`toggles`); only its special states are choices.
         | _ -> []
 
     values @ (q.SpecialStates |> List.map (fun s -> Special s, specialLabel s))
 
-let private indexedQuestions (r: Response) =
+/// A multi-choice question's options, toggled one at a time (SCS-011).
+let toggles (q: Question) : (string * string) list =
+    match q.Answer with
+    | MultiChoice m -> m.Options |> List.map (fun o -> o.Id, o.Label)
+    | _ -> []
+
+let indexedQuestions (r: Response) =
     questions r.Published.Form.Content |> List.map snd |> List.indexed
 
 /// The choice a row key names (`<question>-<choice>`), if it names one.
@@ -213,9 +229,23 @@ let choiceFor (r: Response) (key: string) : (string * AnswerState) option =
         | _ -> None
     | _ -> None
 
+/// The option a toggle row key (`<question>-t<option>`) names, if it names one.
+let toggleFor (r: Response) (key: string) : (string * string) option =
+    match key.Split '-' with
+    | [| q; t |] when t.StartsWith "t" ->
+        match Int32.TryParse q, Int32.TryParse(t.Substring 1) with
+        | (true, qi), (true, ti) ->
+            indexedQuestions r
+            |> List.tryItem qi
+            |> Option.bind (fun (_, question) -> toggles question |> List.tryItem ti |> Option.map (fun (optionId, _) -> question.Id, optionId))
+        | _ -> None
+    | _ -> None
+
 [<NoComparison>]
 type Msg =
     | Chose of questionId: string * state: AnswerState
+    /// A multi-choice option was selected or cleared.
+    | Toggled of questionId: string * optionId: string * selected: bool
     /// Finalize. The bytes are fresh secure entropy from the application
     /// edge; only an anonymous invitation uses them.
     | SubmitRequested of entropy: byte[]
@@ -285,6 +315,24 @@ let update (msg: Msg) (session: Session) : Session =
                     Answers = r.Answers.Add(questionId, state)
                     Refusal = None }
         | Chose _ -> session
+        | Toggled(questionId, optionId, selected) ->
+            match tryQuestion r.Published.Form.Content questionId |> Option.map _.Answer with
+            | Some(MultiChoice m) when m.Options |> List.exists (fun o -> o.Id = optionId) ->
+                let current =
+                    match r.Answers.TryFind questionId with
+                    | Some(Value(Choices ids)) -> ids
+                    | _ -> Set.empty
+
+                if current.Contains optionId = selected then
+                    session
+                else
+                    let next = select m current optionId
+
+                    Responding
+                        { r with
+                            Answers = (if next.IsEmpty then r.Answers.Remove questionId else r.Answers.Add(questionId, Value(Choices next)))
+                            Refusal = None }
+            | _ -> session
         | SubmitRequested entropy -> Responding(submit r entropy)
     | Fetching _
     | Refused _ -> session
@@ -292,105 +340,3 @@ let update (msg: Msg) (session: Session) : Session =
 /// The fragment, including `#`, that carries a response.
 let fragment (r: Response) =
     $"#{LiveUrl.FragmentKey}={GenericEnvelope.encode r.Published.Form.Content r.Published.Form.Reference (envelope r)}"
-
-// ---------------------------------------------------------------------------
-// Projection.
-// ---------------------------------------------------------------------------
-
-let private text = View.Text
-let private flag = View.Flag
-
-let private row (key: string) (kind: string) (fields: (string * View.Scalar) list) =
-    [ "id", text key
-      "hideSection", flag (kind <> "section")
-      "hideQuestion", flag (kind <> "question")
-      "hideOption", flag (kind <> "option") ]
-    @ fields
-
-let private rows (r: Response) =
-    let applicable = (Rules.applicability r.Published.Form.Content r.Answers).Questions
-    let sealedResponse = r.Phase = Submitted
-    let indexed = indexedQuestions r
-
-    r.Published.Form.Content.Sections
-    |> List.indexed
-    |> List.collect (fun (si, section) ->
-        let shown =
-            indexed |> List.filter (fun (_, q) -> applicable.Contains q.Id && section.Questions |> List.exists (fun s -> s.Id = q.Id))
-
-        if shown.IsEmpty then
-            []
-        else
-            row $"s{si}" "section" [ "title", text section.Title; "prompt", text ""; "label", text ""; "help", text ""; "group", text ""; "checked", flag false; "locked", flag true ]
-            :: (shown
-                |> List.collect (fun (qi, q) ->
-                    let answer = r.Answers.TryFind q.Id
-
-                    row
-                        $"{qi}"
-                        "question"
-                        [ "title", text ""
-                          "prompt", text q.Prompt
-                          "label", text ""
-                          "help", text (defaultArg q.HelpText "")
-                          "group", text $"q{qi}"
-                          "checked", flag false
-                          "locked", flag true ]
-                    :: (choices q
-                        |> List.mapi (fun ci (state, label) ->
-                            row
-                                $"{qi}-{ci}"
-                                "option"
-                                [ "title", text ""
-                                  "prompt", text ""
-                                  "label", text label
-                                  "help", text ""
-                                  "group", text $"q{qi}"
-                                  "checked", flag (answer = Some state)
-                                  "locked", flag sealedResponse ])))))
-
-/// Which part of the page shows: loading, refused, answering or submitted.
-let phaseName =
-    function
-    | Fetching _ -> "loading"
-    | Refused _ -> "refused"
-    | Responding r when r.Phase = Submitted -> "submitted"
-    | Responding _ -> "answering"
-
-let view (session: Session) : View.View =
-    let value = View.Value
-    let current = phaseName session
-
-    let title, version, refusal, items, progress, submitRefusal =
-        match session with
-        | Fetching _ -> "Loading the survey…", "", "", [], "", None
-        | Refused reason -> "Survey unavailable", "", describe reason, [], "", None
-        | Responding r ->
-            let applicable = (Rules.applicability r.Published.Form.Content r.Answers).Questions
-            let answered = r.Answers |> Map.filter (fun id _ -> applicable.Contains id) |> Map.count
-
-            r.Published.Form.Content.Metadata.Title,
-            $"Version {r.Published.Version}",
-            "",
-            rows r,
-            $"{answered} of {applicable.Count} answered",
-            r.Refusal
-
-    [ for name in [ "loading"; "refused"; "answering"; "submitted" ] -> name, value (flag (name = current)) ]
-    @ [ "surveyTitle", value (text title)
-        "surveyVersion", value (text version)
-        "refusal", value (text refusal)
-        "rows", View.Items items
-        "progress", value (text progress)
-        "hasRefusal", value (flag submitRefusal.IsSome)
-        "submitRefusal", value (text (defaultArg submitRefusal ""))
-        // A test link (AUT-006 §§21, 60) says so on every screen.
-        "isTest",
-        value (
-            flag (
-                match session with
-                | Responding r -> isTest r.Binding
-                | Fetching _
-                | Refused _ -> false
-            )
-        ) ]

@@ -115,13 +115,26 @@
         </ol>
         <label>New section title <input type="text" data-event="newSectionTitle" data-bind-value="newSectionTitle" /></label>
         <button type="button" class="ef-button" data-event="addSection">Add section</button>
-        <label>New question (five-point frequency) <input type="text" data-event="newQuestionPrompt" data-bind-value="newQuestionPrompt" /></label>
+        <label>New question <input type="text" data-event="newQuestionPrompt" data-bind-value="newQuestionPrompt" /></label>
+        <label>Kind <select id="question-kind" data-event="newQuestionKind"><template data-each="questionKinds" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+        <label>Details <input id="question-details" type="text" data-event="newQuestionDetails" data-bind-value="newQuestionDetails" /></label>
+        <p class="ef-field__description" data-text="questionDetailsHint"></p>
         <h3>Questions</h3>
         <ol id="draft-questions">
           <template data-each="draftQuestions" data-key="id">
-            <li><span data-text="section"></span> · <span data-text="id"></span>: <span data-text="prompt"></span> <button type="button" class="ef-button" data-event="removeQuestion">Remove</button></li>
+            <li><span data-text="section"></span> · <span data-text="id"></span>: <span data-text="prompt"></span> (<span data-text="kind"></span>) <button type="button" class="ef-button" data-event="removeQuestion">Remove</button></li>
           </template>
         </ol>
+        <h3>Conditions</h3>
+        <ul id="draft-rules">
+          <template data-each="draftRules" data-key="id">
+            <li><span data-text="label"></span> <button type="button" class="ef-button" data-event="removeRule">Remove</button></li>
+          </template>
+        </ul>
+        <label>Show question <input id="rule-question" type="text" data-event="ruleQuestion" data-bind-value="ruleQuestion" /></label>
+        <label>only when question <input id="rule-when" type="text" data-event="ruleWhen" data-bind-value="ruleWhen" /></label>
+        <label>has the answer <input id="rule-answer" type="text" data-event="ruleAnswer" data-bind-value="ruleAnswer" /></label>
+        <button type="button" class="ef-button" data-event="addShowRule">Add condition</button>
         <h3>Test fixtures</h3>
         <ul id="draft-fixtures"><template data-each="draftFixtures" data-key="id"><li data-text="name"></li></template></ul>
         <button type="button" class="ef-button" data-event="addFixture">Add a fixture: every answer at the midpoint</button>

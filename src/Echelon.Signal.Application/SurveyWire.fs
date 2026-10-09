@@ -46,7 +46,7 @@ let initialWith (edge: Wire.Edge) =
 let initial = initialWith Wire.secureEdge
 
 /// Every event the page may send, so a test can hold the page to it.
-let events = set [ "answered"; "submitRequested"; Wire.CopyRequested ]
+let events = set [ "answered"; "toggled"; "submitRequested"; Wire.CopyRequested ]
 
 let private responding (state: State) =
     match state.Session with
@@ -61,7 +61,7 @@ let submissionLink (state: State) =
     | _ -> ""
 
 let render (state: State) (effects: Effect list) (handshake: Handshake option) =
-    encode (view state.Session @ Wire.wireView state.UrlNotice state.CopyNotice (submissionLink state) @ faultView state.Fault) effects handshake
+    encode (GenericSessionView.view state.Session @ Wire.wireView state.UrlNotice state.CopyNotice (submissionLink state) @ faultView state.Fault) effects handshake
 
 let private correlation (prefix: string) (state: State) =
     $"{prefix}-{state.NextCorrelation}", { state with NextCorrelation = state.NextCorrelation + 1 }
@@ -99,8 +99,13 @@ let private fetched (outcome: HttpOutcome) =
     | HttpResponded(status, _) -> Unreachable $"the site answered {status}"
     | HttpFailed reason -> Unreachable reason
 
-let private message (state: State) (name: string) (key: string) =
+let private message (state: State) (name: string) (key: string) (value: string) =
     match name, responding state with
+    | "toggled", Some r ->
+        match toggleFor r key with
+        // An unchecked box reports "" (protocol 1.2 `checked`, Limen.decode).
+        | Some(questionId, optionId) -> Toggled(questionId, optionId, value <> "")
+        | None -> raise (MalformedInput("$.event.key", $"an option of this survey, not '{key}'"))
     | "answered", Some r ->
         match choiceFor r key with
         | Some(questionId, answer) -> Chose(questionId, answer)
@@ -126,8 +131,8 @@ let private step (state: State) (inbound: Inbound) =
             | link ->
                 let id, state = correlation "copy" state
                 { state with Pending = state.Pending.Add id; CopyNotice = None }, [ CopyText(id, link) ], None
-        | Event(name, key, _) ->
-            let state = { state with Session = update (message state name (defaultArg key "")) state.Session }
+        | Event(name, key, value) ->
+            let state = { state with Session = update (message state name (defaultArg key "") (defaultArg value "")) state.Session }
             let state, effects = synchronize state
             state, effects, None
         | LocationChanged location ->
