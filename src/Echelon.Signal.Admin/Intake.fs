@@ -81,7 +81,7 @@ let quarantine (definition: GroupDefinition) (accepted: string -> string option)
         artifacts
         |> List.distinctBy _.Hash
         |> List.sortBy _.Hash
-        |> List.map (fun item -> item, evaluateAgainst definition accepted item.Text)
+        |> List.map (fun item -> item, GenericImport.evaluate definition accepted item.Text)
 
     let winners =
         evaluated

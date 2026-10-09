@@ -1,6 +1,6 @@
 /// The templates the console can start groups from and resolve groups by
-/// (WI-0073): the built-in pilot and the dataset's stored, published
-/// templates that have the group pipeline's shape (`Pilot.assessmentOf`).
+/// (WI-0073, WI-0078): the built-in pilot and every stored, published
+/// template, which runs through the generic pipeline (`GenericImport`).
 /// Hidden versions still resolve the groups that use them (AUT-006 §58) but
 /// are not offered for new groups.
 module Echelon.Signal.Application.TemplateCatalog
@@ -21,12 +21,15 @@ type Loaded =
       /// Each stored draft's revision, to save it at.
       Revisions: Map<string, Arca.Revision> }
 
-let private entryOf (assessment: Assessment.Assessment) : AdminApp.CatalogEntry =
-    { Hash = Canonical.templateHash assessment
-      SurveyIdentifier = assessment.Id
-      Version = assessment.Version
-      Title = assessment.Title
-      Content = assessment }
+let private entryOf (t: Publication.Published) : AdminApp.CatalogEntry =
+    let form = GenericImport.formOf t.SurveyId t.Version t.Content
+
+    { Hash = form.Hash
+      SurveyIdentifier = t.SurveyId
+      Version = t.Version
+      Title = t.Content.Metadata.Title
+      Content = GenericImport.shapeOf t.SurveyId t.Version t.Content
+      Generic = Some form }
 
 /// The built-in templates alone (no dataset open).
 let builtIn (entries: AdminApp.CatalogEntry list) =
@@ -39,7 +42,7 @@ let builtIn (entries: AdminApp.CatalogEntry list) =
 let combine (builtIns: AdminApp.CatalogEntry list) (stored: TemplateStore.StoredCatalog) : Loaded =
     let usable =
         stored.Catalog.Templates
-        |> List.choose (fun t -> TemplateListing.assessmentOf t |> Result.toOption |> Option.map (fun a -> t, entryOf a))
+        |> List.map (fun t -> t, entryOf t)
         |> List.filter (fun (_, e) -> not (builtIns |> List.exists (fun b -> b.Hash = e.Hash)))
 
     { Offered = builtIns @ (usable |> List.filter (fun (t, _) -> Publication.visibility stored.Catalog t = Publication.Listed) |> List.map snd)
@@ -64,7 +67,7 @@ let pinned (loaded: Loaded) : Publication.Catalog =
             { SurveyId = e.SurveyIdentifier
               Version = e.Version
               Hash = e.Hash
-              Content = Pilot.contentOf e.Content
+              Content = e.Generic |> Option.map _.Content |> Option.defaultValue (Pilot.contentOf e.Content)
               Parent = None
               PublishedAt = DateTimeOffset.UnixEpoch
               PublishedBy = "catalog"
@@ -74,4 +77,4 @@ let pinned (loaded: Loaded) : Publication.Catalog =
 
 /// A group's template by the hash its configuration records.
 let resolver (loaded: Loaded) : GroupRecord.TemplateResolver =
-    fun hash -> loaded.Resolvable |> List.tryFind (fun e -> e.Hash = hash) |> Option.map _.Content
+    fun hash -> loaded.Resolvable |> List.tryFind (fun e -> e.Hash = hash) |> Option.map (fun e -> e.Content, e.Generic)

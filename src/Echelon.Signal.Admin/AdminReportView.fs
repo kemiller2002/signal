@@ -54,7 +54,7 @@ let buildWith (model: Model) (group: GroupSummary) (definition: Definition) : Re
     let subject: Report.Subject =
         { SurveyId = group.SurveyIdentifier
           TemplateVersion = group.TemplateVersion
-          Content = Pilot.contentOf group.Template }
+          Content = group.Content }
 
     // The time the data was last verified, not a clock read: the same data renders the same report.
     let at = model.LastVerified |> Option.defaultValue DateTimeOffset.UnixEpoch

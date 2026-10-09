@@ -51,6 +51,7 @@
     <Compile Include="Submission.fs" />
     <Compile Include="Import.fs" />
     <Compile Include="GenericEnvelope.fs" />
+    <Compile Include="GenericImport.fs" />
     <Compile Include="Aggregation.fs" />
     <Compile Include="Incremental.fs" />
     <Compile Include="Groups.fs" />

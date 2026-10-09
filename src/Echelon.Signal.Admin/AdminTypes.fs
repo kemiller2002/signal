@@ -7,13 +7,17 @@ open Echelon.Signal.Engine.Import
 open Echelon.Signal.Admin.Access
 
 /// A template the catalog offers for new groups.
+[<NoComparison>]
 type CatalogEntry =
     { Hash: string
       SurveyIdentifier: string
       Version: string
       Title: string
-      /// Its sections and questions, for the assessment views.
-      Content: Echelon.Signal.Engine.Assessment.Assessment }
+      /// Its sections and questions, for the assessment views (a generic
+      /// template's shape).
+      Content: Echelon.Signal.Engine.Assessment.Assessment
+      /// A generic template's form; None for the built-in pilot (WI-0078).
+      Generic: GenericForm option }
 
 /// What the page shows about one group.
 [<NoComparison>]
@@ -48,6 +52,8 @@ type GroupSummary =
       /// The group result reports render from, and the survey it reports on (WI-0062).
       Report: Echelon.Signal.Engine.GroupResult.Result
       Template: Echelon.Signal.Engine.Assessment.Assessment
+      /// The template content reports describe (a generic template's own, or the pilot's generic form).
+      Content: Echelon.Signal.Engine.Template.Content
       Problems: string list }
 
 /// What the page shows about the open dataset.

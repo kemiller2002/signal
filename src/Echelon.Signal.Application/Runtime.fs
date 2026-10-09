@@ -29,7 +29,8 @@ let private catalog: Echelon.Signal.Admin.AdminApp.CatalogEntry list =
         SurveyIdentifier = Pilot.assessment.Id
         Version = Pilot.assessment.Version
         Title = Pilot.assessment.Title
-        Content = Pilot.assessment } ]
+        Content = Pilot.assessment
+        Generic = None } ]
 
 let private bridge = Bridge.Bridge<AdminWork.Outcome>()
 let private now () = System.DateTimeOffset.UtcNow

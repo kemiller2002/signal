@@ -23,7 +23,7 @@ let private answersFor (seed: int) : Answers =
 let ``the group result from stored scores is the group result of the same answers`` () =
     let group = (OpaqueId.ofBytes (Array.init 16 byte)).Value
     let hash = Canonical.templateHash Pilot.assessment
-    let definition: GroupDefinition = { Group = group; Mode = AnonymousGroup; ExpectedCount = 8; Template = Pilot.assessment }
+    let definition: GroupDefinition = { Group = group; Mode = AnonymousGroup; ExpectedCount = 8; Template = Pilot.assessment; Generic = None }
 
     let accepted, stored, full =
         [ 1..6 ]
