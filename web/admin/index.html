@@ -47,12 +47,64 @@
   </template>
 
   <!-- Assessments: public, no sign-in or dataset needed (DF-SIGNAL-2026-0003 §8). -->
+  <template data-if="viewDraft">
+    <section id="draft" class="ef-stack" aria-labelledby="draft-heading">
+      <template data-if="hasAuthoringProblem"><p class="ef-alert" role="alert" data-tone="attention" data-text="authoringProblem"></p></template>
+      <template data-if="hasDraft">
+        <h2 id="draft-heading" data-text="draftHeading"></h2>
+        <p><span data-text="draftParent"></span><template data-if="draftUnsaved"> · <strong>Unsaved changes</strong></template></p>
+        <label>Title <input type="text" data-event="draftTitle" data-bind-value="draftTitle" /></label>
+        <label>Description <textarea rows="2" data-event="draftDescription" data-bind-value="draftDescription"></textarea></label>
+        <h3>Sections</h3>
+        <ol id="draft-sections">
+          <template data-each="draftSections" data-key="id">
+            <li>
+              <span data-text="id"></span> <span data-text="title"></span> (<span data-text="questionCount"></span> questions)
+              <button type="button" class="ef-button" data-event="addQuestion">Add the question below here</button>
+              <button type="button" class="ef-button" data-event="removeSection">Remove section</button>
+            </li>
+          </template>
+        </ol>
+        <label>New section title <input type="text" data-event="newSectionTitle" data-bind-value="newSectionTitle" /></label>
+        <button type="button" class="ef-button" data-event="addSection">Add section</button>
+        <label>New question (five-point frequency) <input type="text" data-event="newQuestionPrompt" data-bind-value="newQuestionPrompt" /></label>
+        <h3>Questions</h3>
+        <ol id="draft-questions">
+          <template data-each="draftQuestions" data-key="id">
+            <li><span data-text="section"></span> · <span data-text="id"></span>: <span data-text="prompt"></span> <button type="button" class="ef-button" data-event="removeQuestion">Remove</button></li>
+          </template>
+        </ol>
+        <h3>Test fixtures</h3>
+        <ul id="draft-fixtures"><template data-each="draftFixtures" data-key="id"><li data-text="name"></li></template></ul>
+        <button type="button" class="ef-button" data-event="addFixture">Add a fixture: every answer at the midpoint</button>
+        <h3>Validation</h3>
+        <table id="draft-findings">
+          <thead><tr><th scope="col">Severity</th><th scope="col">Code</th><th scope="col">Finding</th></tr></thead>
+          <tbody><template data-each="draftFindings" data-key="key"><tr><td data-text="severity"></td><td data-text="code"></td><td data-text="message"></td></tr></template></tbody>
+        </table>
+        <p id="draft-preview" data-text="draftPreview"></p>
+        <template data-if="draftHasWarnings"><label><input type="checkbox" data-event="acknowledgeWarnings" value="true" data-bind-checked="acknowledgeWarnings" /> I have read the warnings and accept them</label></template>
+        <template data-if="canEditDrafts"><button type="button" class="ef-button" data-event="saveDraft" data-bind-disabled="busy">Save draft</button></template>
+        <template data-if="canPublishTemplates"><button type="button" class="ef-button" data-event="publishDraft" data-bind-disabled="busy">Publish</button></template>
+      </template>
+      <template data-if="hasNoDraft"><p>There is no draft of <span data-text="draftSurvey"></span>. Start one or derive one from a published version under Assessments.</p></template>
+    </section>
+  </template>
   <template data-if="viewAssessments">
     <section id="assessments" class="ef-stack" aria-labelledby="assessments-title">
       <h2 id="assessments-title">Assessments</h2>
       <ul id="catalog-assessments">
         <template data-each="catalogAssessments" data-key="href"><li><a data-bind-href="href" data-text="label"></a></li></template>
       </ul>
+      <template data-if="canEditDrafts">
+        <form id="new-draft" class="ef-stack" data-event="startDraft">
+          <h3>Start a survey</h3>
+          <label>Survey identifier <input type="text" data-event="newDraftSurvey" data-bind-value="newDraftSurvey" /></label>
+          <label>Title <input type="text" data-event="newDraftTitle" data-bind-value="newDraftTitle" /></label>
+          <button type="submit" class="ef-button" data-bind-disabled="busy">Start draft</button>
+        </form>
+      </template>
+      <template data-if="hasAuthoringProblem"><p id="authoring-problem" class="ef-alert" role="alert" data-tone="attention" data-text="authoringProblem"></p></template>
       <template data-if="hasStoredTemplates">
         <section id="stored-templates" class="ef-stack" aria-labelledby="stored-templates-title">
           <h3 id="stored-templates-title">Published in this dataset</h3>
@@ -61,8 +113,17 @@
               <li><span data-text="label"></span> · <span data-text="status"></span> · <span data-text="groups"></span></li>
             </template>
           </ul>
+          <ul id="template-actions">
+            <template data-each="templateActions" data-key="key">
+              <li>
+                <span data-text="label"></span>
+                <template data-if="canDerive"><button type="button" class="ef-button" data-event="deriveDraft" data-bind-disabled="busy">Derive a draft</button></template>
+                <template data-if="canHide"><button type="button" class="ef-button" data-event="hideVersion" data-bind-disabled="busy">Hide from new groups</button></template>
+              </li>
+            </template>
+          </ul>
           <ul id="template-drafts">
-            <template data-each="templateDrafts" data-key="key"><li data-text="label"></li></template>
+            <template data-each="draftLinks" data-key="key"><li><a data-bind-href="href" data-text="label"></a></li></template>
           </ul>
         </section>
       </template>

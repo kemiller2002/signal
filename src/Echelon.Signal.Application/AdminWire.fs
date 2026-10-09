@@ -178,6 +178,15 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
     | AdminApp.TransitionGroup(key, name) ->
         withGroup key (fun actor group -> AdminGroupWork.transition env actor group name now)
         state, []
+    | AdminApp.SaveDraft draft ->
+        withDataset (fun actor opened -> AuthoringWork.save env state.Catalog actor opened draft now)
+        state, []
+    | AdminApp.PublishDraft(draft, acknowledged) ->
+        withDataset (fun actor opened -> AuthoringWork.publish env actor opened draft acknowledged now)
+        state, []
+    | AdminApp.HideTemplate(survey, version) ->
+        withDataset (fun actor opened -> AuthoringWork.hide env actor opened survey version now)
+        state, []
     | AdminApp.ChangeRoster command ->
         withDataset (fun actor opened ->
             async {
@@ -262,6 +271,7 @@ let private absorb (env: Env) (state: State) (outcome: Outcome) : State * AdminA
         let config = model.Deployment |> Option.defaultValue localConfig
         let summaries = state.Groups |> Map.toList |> List.map (snd >> GroupAdmin.summary 0 None)
         { state with Opened = Some opened }, [ AdminApp.DatasetOpened(GroupAdmin.datasetSummary config opened summaries, env.Now()) ]
+    | CatalogReady catalog, _ -> { state with Catalog = catalog }, [ AdminApp.CatalogLoaded(catalog.Offered, catalog.Listing) ]
     | _, None -> state, []
 
 let rec private advance (env: Env) (state: State) (msg: AdminApp.Msg) (sent: Request list) =

@@ -16,68 +16,12 @@ open Echelon.Signal.Admin.Access
 open Echelon.Signal.Admin.Routes
 open Limen.Routing
 open Echelon.Signal.Admin.AdminNavigation
+open Echelon.Signal.Admin.AdminTypes
 
-/// A template the catalog offers for new groups.
-type CatalogEntry =
-    { Hash: string
-      SurveyIdentifier: string
-      Version: string
-      Title: string
-      /// Its sections and questions, for the assessment views.
-      Content: Echelon.Signal.Engine.Assessment.Assessment }
-
-/// What the page shows about one group.
-[<NoComparison>]
-type GroupSummary =
-    { Key: string
-      SurveyIdentifier: string
-      TemplateVersion: string
-      Mode: IdentityMode
-      Expected: int
-      Accepted: int
-      /// Accepted responses not yet in what the page shows (ARX-009: released
-      /// only when they cannot be singled out by difference).
-      Withheld: int
-      /// The privacy minimum below which scores are suppressed.
-      MinimumReportable: int
-      Status: GroupLifecycle.Status
-      Phase: AdminState.GroupPhase
-      /// Section scores as the report state shows them (suppressed are None).
-      Sections: (string * float option) list
-      /// Where the report state lives: an embedded fragment or a reference.
-      ReportFragment: string
-      LastBatch: Intake.BatchSummary option
-      /// Each item of the last batch: artifact hash and outcome code.
-      Items: (string * string) list
-      UnreconciledBatches: int
-      /// Calculated measures per section (ADM-012): section, measure, value or reason.
-      Analysis: (string * string * string) list
-      /// Score distribution bins per section, or why there are none.
-      Distributions: Map<string, Result<(float * float * int) list, Analysis.Unavailable>>
-      /// The group result's derivation hash and contribution count (ADM-020).
-      Lineage: string
-      /// The group result reports render from, and the survey it reports on (WI-0062).
-      Report: Echelon.Signal.Engine.GroupResult.Result
-      Template: Echelon.Signal.Engine.Assessment.Assessment
-      Problems: string list }
-
-/// What the page shows about the open dataset.
-[<NoComparison>]
-type DatasetSummary =
-    { DatasetId: string
-      Label: string
-      Roster: Roster
-      Credential: Credential.CredentialState
-      ReadOnlyReasons: string list
-      Verification: string
-      Groups: GroupSummary list }
-
-/// A message for the person: a stable code and a sentence (ADM-031).
-type Notice =
-    { Code: string
-      Message: string
-      /// Domain refusal (the person can act) or infrastructure (the system).
-      Infrastructure: bool }
+type CatalogEntry = AdminTypes.CatalogEntry
+type GroupSummary = AdminTypes.GroupSummary
+type DatasetSummary = AdminTypes.DatasetSummary
+type Notice = AdminTypes.Notice
 
 [<NoComparison>]
 type Model =
@@ -86,6 +30,7 @@ type Model =
       Catalog: CatalogEntry list
       /// The dataset's stored template catalog as the console lists it (WI-0073).
       Templates: TemplateListing.Listing
+      Authoring: Authoring.Screen
       SignIn: Credential.SignIn
       Principal: Principal option
       Retention: Credential.Retention
@@ -111,6 +56,7 @@ let initial (catalog: CatalogEntry list) =
       ConfigurationProblem = None
       Catalog = catalog
       Templates = TemplateListing.empty
+      Authoring = Authoring.emptyScreen
       SignIn = Credential.SignedOut
       Principal = None
       Retention = Credential.defaultRetention
@@ -141,6 +87,10 @@ type Effect =
     | TransitionGroup of key: string * transition: string
     | ChangeRoster of RosterCommand
     | RebuildIndex
+    /// Authoring (WI-0073): store a draft, publish one, hide a version.
+    | SaveDraft of Echelon.Signal.Engine.Drafts.Draft
+    | PublishDraft of Echelon.Signal.Engine.Drafts.Draft * acknowledged: Set<string>
+    | HideTemplate of survey: string * version: string
     /// A Navigation effect: push or replace a relative `#/…` URL.
     | Go of Move
     /// Write a view's link to the clipboard (SIG-LINK-005).
@@ -160,6 +110,9 @@ type Msg =
     | DatasetOpened of DatasetSummary * at: DateTimeOffset
     /// The templates new groups can start from (built in and stored), and the stored listing.
     | CatalogLoaded of CatalogEntry list * TemplateListing.Listing
+    /// A draft was stored, or published as a version.
+    | DraftSaved of survey: string
+    | DraftPublished of survey: string * version: string
     | GroupUpdated of GroupSummary
     | Failed of Notice
     /// Something worth telling the person that is not a failure.
@@ -378,6 +331,22 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
         | Some dataset -> busy [ OpenDataset dataset.DatasetId ]
         | None -> model, []
     | "dismissNotice" -> { model with Notice = None; Conflict = None }, []
+    | authoring when Authoring.events.Contains authoring ->
+        let survey = match place.View with Ok(Draft s) -> Some s | _ -> None
+        let screen, commands = Authoring.update model.Templates survey name key value model.Authoring
+        let model = { model with Authoring = screen; Notice = None }
+        let permitted capability = can model capability
+
+        commands
+        |> List.fold
+            (fun (m: Model, effects) command ->
+                match command with
+                | Authoring.OpenDraft s -> let m, moves = go (navigate m.Place (Draft s)) m in m, effects @ moves
+                | Authoring.SaveDraft d when permitted AdminState.CanEditDrafts -> { m with Busy = true }, effects @ [ SaveDraft d ]
+                | Authoring.PublishDraft(d, a) when permitted AdminState.CanPublishTemplates -> { m with Busy = true }, effects @ [ PublishDraft(d, a) ]
+                | Authoring.HideVersion(s, v) when permitted AdminState.CanPublishTemplates -> { m with Busy = true }, effects @ [ HideTemplate(s, v) ]
+                | _ -> { m with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "This needs EditDrafts (saving) or PublishTemplates (publishing, hiding) and a writable store." }, effects)
+            (model, [])
     | other -> invalidOp $"The administrator page sent an event the engine does not know: '{other}'"
 
 /// The next model and the effects to perform.
@@ -429,6 +398,8 @@ let update (msg: Msg) (model: Model) : Model * Effect list =
     | CatalogLoaded(catalog, listing) ->
         let template = if catalog |> List.exists (fun e -> e.Hash = model.NewGroup.Template) then model.NewGroup.Template else catalog |> List.tryHead |> Option.map _.Hash |> Option.defaultValue ""
         { model with Catalog = catalog; Templates = listing; NewGroup = {| model.NewGroup with Template = template |} }, []
+    | DraftSaved survey -> { model with Authoring = Authoring.saved survey model.Authoring; Busy = false }, []
+    | DraftPublished(survey, _) -> { model with Authoring = Authoring.published survey model.Authoring; Busy = false }, []
     | GroupUpdated group ->
         match model.Dataset with
         | Some dataset ->

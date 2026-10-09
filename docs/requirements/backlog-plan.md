@@ -13,6 +13,7 @@ Captured 2026-10-08 (WI-0037) from the missing and partial groups of [`implement
 | 5 | WI-0042 | Signal 05: canonical domain contracts, template authoring, publication and versioning (CAN-001, CAN-005, CAN-008, URLC-004, ACR-003, ACR-008, VER-003, VER-004, VER-007, AUT-001..007, ARX-002) | - |
 | 5b | WI-0057 | Signal 05b: persist the template catalog through Arca and finish the authoring remainders WI-0042 left (preview isolation, generic pagination on the page, locale/expiry, roles, cross-device checks) | WI-0042 (complete) and WI-0039 |
 | 5c | WI-0073 | Signal 05c: the stored catalog wired into runtime resolution and the console, and the authoring and respondent UI remainders of WI-0057 | WI-0057 |
+| 5d | WI-0078 | Signal 05d: generic templates end to end (group pipeline, respondent page, preview isolation, remaining authoring surface) | WI-0073 |
 | 6 | WI-0043 | Signal 06: rules, flow, validation, completion and recommendations; group identity semantics (ACR-001, ACR-002, ACR-007, CAN-002, VER-006, ID-001, ID-004 remainders) | WI-0042 |
 | 7 | WI-0044 | Signal 07: scoring AST, advanced algorithms and explainability (AST-001..006, ALG-002..004, SCS-002/003 remainders, SCS-004, SCS-006, SCS-007, SCS-015, CAN-006, VER-005, ARX-014) | WI-0042 |
 | 7b | WI-0059 | Signal 07b: scoring remainders after WI-0044 (ipsative, confidence- and completeness-adjusted scoring, per-section direction, weakest/strongest and confidence outputs, single-response NPS guard, recommendations over the overall and group result, shared group metadata) | WI-0044 (complete) |

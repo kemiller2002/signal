@@ -260,8 +260,17 @@ let publishedOfBody (value: Json) : Decoded<StoredPublished> =
                 // The bytes decide the identity: a record whose content does not hash to its hash is refused.
                 let actual = TemplateCanonical.templateHash surveyId version content
 
+                // ADM-046: a stored expression is held to the same limits as at publication.
+                let tooComplex =
+                    match content.Results.Overall with
+                    | Some(ResultModel.Custom custom) ->
+                        Expression.check Validation.defaultPolicy.ExpressionLimits content "overall" custom |> List.exists (fun f -> f.Code = "EXPR-TOO-COMPLEX")
+                    | _ -> false
+
                 if actual <> hash then
                     Error $"the canonical template hashes to {actual}, not {hash}"
+                elif tooComplex then
+                    Error "its custom scoring expression exceeds the complexity limits"
                 else
                     Ok
                         { DatasetId = datasetId

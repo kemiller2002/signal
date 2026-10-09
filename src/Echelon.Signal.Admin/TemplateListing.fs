@@ -18,13 +18,19 @@ type Row =
       /// Why it cannot start groups, if it cannot.
       NotForGroups: string option }
 
-/// The catalog as the console lists it.
+/// The catalog as the console lists it, and what the authoring screens edit.
 type Listing =
     { Published: Row list
       /// Survey id and title of each draft.
-      Drafts: (string * string) list }
+      Drafts: (string * string) list
+      Catalog: Catalog
+      DraftsById: Map<string, Drafts.Draft> }
 
-let empty = { Published = []; Drafts = [] }
+let empty =
+    { Published = []
+      Drafts = []
+      Catalog = emptyCatalog
+      DraftsById = Map.empty }
 
 /// The assessment a published version starts groups with, if it can.
 let assessmentOf (template: Published) = Pilot.assessmentOf template.SurveyId template.Version template.Content
@@ -46,4 +52,6 @@ let ofCatalog (catalog: Catalog) (drafts: Drafts.Draft list) : Listing =
                 match assessmentOf t with
                 | Ok _ -> None
                 | Error reason -> Some reason })
-      Drafts = drafts |> List.map (fun d -> d.SurveyId, d.Content.Metadata.Title) |> List.sort }
+      Drafts = drafts |> List.map (fun d -> d.SurveyId, d.Content.Metadata.Title) |> List.sort
+      Catalog = catalog
+      DraftsById = drafts |> List.map (fun d -> d.SurveyId, d) |> Map.ofList }

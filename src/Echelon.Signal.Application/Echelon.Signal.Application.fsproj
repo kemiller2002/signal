@@ -26,6 +26,7 @@
     <Compile Include="TemplateCatalog.fs" />
     <Compile Include="AdminWork.fs" />
     <Compile Include="AdminGroupWork.fs" />
+    <Compile Include="AuthoringWork.fs" />
     <Compile Include="AdminWire.fs" />
     <Compile Include="Runtime.fs" />
   </ItemGroup>

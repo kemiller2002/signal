@@ -224,6 +224,22 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   responses are held back; distributions are withheld when they could single
   respondents out; snapshots go through the same ledger.
 
+## Catalog and authoring screens (WI-0073, 2026-10-09)
+
+- The console's catalog is the built-in pilot plus the dataset's published
+  templates (`TemplateCatalog`); groups resolve their template through it.
+  Only templates with the group pipeline's shape start groups
+  (`Pilot.assessmentOf`); the assessments area lists every version and
+  draft with its status and, otherwise, why not.
+- Authoring screens (`Authoring`, `AuthoringView`, `AuthoringWork`, route
+  `#/templates/{survey}/draft`): start or derive a draft, edit metadata,
+  sections, five-point questions and fixtures, see validation and the
+  publication summary, save (EditDrafts), publish and hide
+  (PublishTemplates).
+- Stored custom expressions are held to the publication limits on load.
+- Generic templates end to end (group pipeline, respondent page) and the
+  rest of the authoring surface: WI-0078.
+
 ## Validation
 
 ```bash

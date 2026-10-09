@@ -17,7 +17,9 @@ type Loaded =
       Offered: AdminApp.CatalogEntry list
       /// Every template a group may name.
       Resolvable: AdminApp.CatalogEntry list
-      Listing: TemplateListing.Listing }
+      Listing: TemplateListing.Listing
+      /// Each stored draft's revision, to save it at.
+      Revisions: Map<string, Arca.Revision> }
 
 let private entryOf (assessment: Assessment.Assessment) : AdminApp.CatalogEntry =
     { Hash = Canonical.templateHash assessment
@@ -30,7 +32,8 @@ let private entryOf (assessment: Assessment.Assessment) : AdminApp.CatalogEntry 
 let builtIn (entries: AdminApp.CatalogEntry list) =
     { Offered = entries
       Resolvable = entries
-      Listing = TemplateListing.empty }
+      Listing = TemplateListing.empty
+      Revisions = Map.empty }
 
 /// The built-in templates and the stored catalog.
 let combine (builtIns: AdminApp.CatalogEntry list) (stored: TemplateStore.StoredCatalog) : Loaded =
@@ -41,7 +44,8 @@ let combine (builtIns: AdminApp.CatalogEntry list) (stored: TemplateStore.Stored
 
     { Offered = builtIns @ (usable |> List.filter (fun (t, _) -> Publication.visibility stored.Catalog t = Publication.Listed) |> List.map snd)
       Resolvable = builtIns @ (usable |> List.map snd)
-      Listing = TemplateListing.ofCatalog stored.Catalog (stored.Drafts |> Map.toList |> List.map (snd >> fst)) }
+      Listing = TemplateListing.ofCatalog stored.Catalog (stored.Drafts |> Map.toList |> List.map (snd >> fst))
+      Revisions = stored.Drafts |> Map.map (fun _ (_, revision) -> revision) }
 
 /// Reads the dataset's catalog beside the built-in templates.
 let load (builtIns: AdminApp.CatalogEntry list) (now: DateTimeOffset) (opened: Store.Opened) : AsyncResult<Loaded, GroupStore.GroupFailure> =

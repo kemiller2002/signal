@@ -218,7 +218,7 @@ let ``the administrator page binds only what its engine projects, and sends only
 
     let seen =
         [ $"#/compare?groups={key},{other}"; $"#/groups/{key}"; $"#/groups/{key}/results?section=D01"; $"#/groups/{key}/scoring"; $"#/groups/{key}/imports"
-          $"#/compare?groups={key}"; $"#/groups/{key}/report?family=audit&locale=ar-EG"; $"#/groups/{key}/report"; "#/groups"; "#/assessments/SDRA/versions/0.1.0-draft/sections/D01/questions/CORE-001"; "#/nowhere" ]
+          $"#/compare?groups={key}"; $"#/groups/{key}/report?family=audit&locale=ar-EG"; $"#/groups/{key}/report"; "#/groups"; "#/assessments/SDRA/versions/0.1.0-draft/sections/D01/questions/CORE-001"; "#/templates/PULSE/draft"; "#/nowhere" ]
         |> List.map (fun hash ->
             changed back hash
             namesOf back.ViewText)
@@ -237,7 +237,12 @@ let ``the administrator page binds only what its engine projects, and sends only
     // comparisons (label, baseline, delta) and roles (role, count) need a
     // template or group that yields them. AdminView and AdminReportView
     // project each of them.
-    let emptyListFields = set [ "code"; "text"; "title"; "priority"; "frequency"; "label"; "baseline"; "delta"; "role"; "count" ]
+    // The authoring lists (WI-0073) are empty without a stored template or
+    // draft: published versions (canDerive, canHide), a draft's sections
+    // (questionCount), fixtures (name) and findings (severity, message);
+    // AuthoringView projects each and AuthoringScreenTests fill them.
+    let emptyListFields =
+        set [ "code"; "text"; "title"; "priority"; "frequency"; "label"; "baseline"; "delta"; "role"; "count"; "canDerive"; "canHide"; "questionCount"; "name"; "severity"; "message" ]
     Assert.Empty(Set.difference bound (Set.union seen emptyListFields))
 
     // Every event the page sends is one the engine handles (an unknown one fails loudly).

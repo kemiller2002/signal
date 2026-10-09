@@ -437,6 +437,27 @@
       "guards": [
         "signedIn"
       ],
+      "name": "draft",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "name": "survey",
+          "required": true,
+          "type": "string",
+          "values": null
+        }
+      ],
+      "pattern": "/templates/{survey:string}/draft",
+      "requires": [
+        "dataset"
+      ],
+      "returnTarget": true
+    },
+    {
+      "guards": [
+        "signedIn"
+      ],
       "name": "administrators",
       "params": [],
       "pattern": "/administrators",
