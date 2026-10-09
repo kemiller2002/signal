@@ -442,3 +442,21 @@ let ``an item blocked in a run is not retried in the same run, so an import alwa
     let imported = import [ anonymous 1uy Often; "https://signal.example/web/#r=AAAA" ] group
     Assert.Equal(1, imported.Summary.AcceptedCount)
     Assert.Equal(1, imported.Batch.Items |> List.filter (fun (_, o) -> match o with Some(Intake.BlockedUnsupportedEncoding _) -> true | _ -> false) |> List.length)
+
+[<Fact>]
+let ``a retained URL artifact and its exact template reconstruct the stored result (URLC-005)`` () =
+    let github = InMemoryStore()
+    let group = setUp github (fun () -> true) AnonymousGroup GroupRecord.RetainCanonicalSubmission
+    import [ anonymous 1uy Often; anonymous 2uy Never ] group |> ignore
+    let reopened = GroupStore.openGroup resolve groupId at group.Dataset |> run |> ok
+    let contributions = reopened.Contributions |> Map.toList |> List.map (fun (_, c) -> c.Value.Contribution)
+    Assert.All(contributions, fun c -> Assert.Equal(Intake.Reproduced, Intake.reconstruct reopened.Definition c))
+
+    // Another template is not the exact template: the artifact does not reproduce the result.
+    let other = { reopened.Definition with Template = { pilot with MinimumNumericAnswers = 5 } }
+    Assert.All(contributions, fun c -> Assert.NotEqual(Intake.Reproduced, Intake.reconstruct other c))
+
+    let plain = setUp (InMemoryStore()) (fun () -> true) AnonymousGroup GroupRecord.NoneAfterImport
+    import [ anonymous 1uy Often ] plain |> ignore
+    let reopenedPlain = GroupStore.openGroup resolve groupId at plain.Dataset |> run |> ok
+    Assert.All(reopenedPlain.Contributions |> Map.toList, fun (_, c) -> Assert.Equal(Intake.NotRetained, Intake.reconstruct reopenedPlain.Definition c.Value.Contribution))
