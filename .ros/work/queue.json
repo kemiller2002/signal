@@ -1769,10 +1769,10 @@
         "signal,order:13b,reporting"
       ],
       "priority": "medium",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T23:13:53.185Z",
-      "updatedAt": "2026-10-09T01:25:44.000Z",
+      "updatedAt": "2026-10-09T02:07:23.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
