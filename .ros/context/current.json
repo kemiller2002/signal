@@ -2641,20 +2641,20 @@
         "EXE-20261009T021311168Z-03fdc8e6"
       ],
       "latestCheckpoint": {
-        "id": "13c2f4c3c3419f8b1f6b2a22",
-        "recordedAt": "2026-10-09T02:54:33.000Z",
+        "id": "2f665d81b0dfc92f9604b71d",
+        "recordedAt": "2026-10-09T03:02:15.000Z",
         "executionId": "EXE-20261009T021311168Z-03fdc8e6",
         "repository": "echelon-signal",
-        "branch": "feature/generic-groups",
-        "commit": "10c1f161d9cde58164912e3e215292f4777494f7",
+        "branch": "feature/url-artifact",
+        "commit": "216df5a10e6795954126d06c462b795efdaca338",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/generic-groups",
-        "remoteCommit": "10c1f161d9cde58164912e3e215292f4777494f7",
-        "summary": "Part 2: generic templates through the group pipeline; import runs always end",
-        "nextAction": "Part 3: respondent page for generic templates; then preview isolation, answer kinds and rules, URLC-005",
+        "remoteBranch": "feature/url-artifact",
+        "remoteCommit": "216df5a10e6795954126d06c462b795efdaca338",
+        "summary": "Part 3: URLC-005 reconstruction of retained artifacts",
+        "nextAction": "Respondent page for generic templates needs a template-distribution decision; then preview isolation, answer kinds and rules",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
