@@ -19,6 +19,7 @@
     <Compile Include="TemplateStore.fs" />
     <Compile Include="ReportStore.fs" />
     <Compile Include="GovernanceStore.fs" />
+    <Compile Include="ConfigStore.fs" />
     <Compile Include="GroupAdmin.fs" />
     <Compile Include="Bridge.fs" />
     <Compile Include="AdminProtocol.fs" />

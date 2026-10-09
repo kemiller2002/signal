@@ -26,6 +26,7 @@ Captured 2026-10-08 (WI-0037) from the missing and partial groups of [`implement
 | 12 | WI-0049 | Signal 12: visualization grammar, dashboards and accessibility (ADM-015..018, ADM-050, ADM-069) | WI-0048 |
 | 13 | WI-0050 | Signal 13: report builder, snapshots, exports, configuration packages and policy packs (ADM-021..023, ADM-047, ADM-048, ADM-063) | WI-0046 and WI-0048 |
 | 13b | WI-0075 | Signal 13b: report builder, snapshot and export screens, configuration packages and policy packs after WI-0050's stored definitions, snapshots and exports | WI-0050 |
+| 13c | WI-0079 | Signal 13c: remaining report, dashboard and configuration surfaces after WI-0075 | WI-0075 |
 | 14 | WI-0051 | Signal 14: administrator privacy, audit without PII, retention and deletion (ADM-024, ADM-030, ADM-045, ADM-064; ARX-009; ID-003 remainder) | WI-0041 |
 | 14b | WI-0076 | Signal 14b: WI-0051's disclosure ledger, audit records and retention applied in the store and the page | WI-0051 |
 | 14c | WI-0077 | Signal 14c: lifecycle and retention screens; repository-tree removal once Arca offers erasure | WI-0076, Arca |

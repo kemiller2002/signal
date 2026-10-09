@@ -39,6 +39,8 @@ type Event =
     | DestinationActivated
     | LifecycleChanged
     | ReproducibilityLimited
+    /// A configuration package was activated (WI-0075, ADM-047).
+    | ConfigurationActivated
 
 let eventName (event: Event) = $"%A{event}"
 
