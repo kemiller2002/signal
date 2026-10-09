@@ -31,13 +31,14 @@
         "survey"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-08-31T19:10:58.921Z",
-      "updatedAt": "2026-08-31T19:10:58.921Z",
+      "updatedAt": "2026-10-09T04:18:57Z",
       "createdBy": "unknown",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-canonical-architecture.txt"
+      "sourceReference": "input-documents/survey-engine-canonical-architecture.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 25 requirement groups (survey-engine-requirements-migration.md), 6 are tested; the 19 still partial or missing are each named by an open item: WI-0053, WI-0059, WI-0069, WI-0081 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0003",
@@ -49,13 +50,14 @@
         "versioning"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-08-31T19:10:59.031Z",
-      "updatedAt": "2026-08-31T19:10:59.031Z",
+      "updatedAt": "2026-10-09T04:18:58Z",
       "createdBy": "unknown",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-template-authoring-publication-workflow.txt"
+      "sourceReference": "input-documents/survey-engine-template-authoring-publication-workflow.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 34 requirement groups (survey-engine-requirements-migration.md), 3 are tested; the 31 still partial or missing are each named by an open item: WI-0053, WI-0059, WI-0081 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0004",
@@ -67,13 +69,14 @@
         "url-state"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-08-31T19:10:59.138Z",
-      "updatedAt": "2026-08-31T19:10:59.138Z",
+      "updatedAt": "2026-10-09T04:18:59Z",
       "createdBy": "unknown",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-live-url-state-lifecycle.txt"
+      "sourceReference": "input-documents/survey-engine-live-url-state-lifecycle.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 38 requirement groups (survey-engine-requirements-migration.md), 15 are tested; the 23 still partial or missing are each named by an open item: WI-0053, WI-0060, WI-0081 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0005",
@@ -85,13 +88,14 @@
         "groups"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-08-31T19:10:59.243Z",
-      "updatedAt": "2026-08-31T19:10:59.243Z",
+      "updatedAt": "2026-10-09T04:18:59Z",
       "createdBy": "unknown",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-group-identity-anonymous-submissions.txt"
+      "sourceReference": "input-documents/survey-group-identity-anonymous-submissions.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 21 requirement groups (survey-engine-requirements-migration.md), 9 are tested; the 12 still partial or missing are each named by an open item: WI-0053, WI-0059, WI-0069, WI-0081 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0006",
@@ -103,13 +107,14 @@
         "flow"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-08-31T19:10:59.350Z",
-      "updatedAt": "2026-08-31T19:10:59.350Z",
+      "updatedAt": "2026-10-09T04:18:59Z",
       "createdBy": "unknown",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-additional-core-requirements.txt"
+      "sourceReference": "input-documents/survey-engine-additional-core-requirements.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 13 requirement groups (survey-engine-requirements-migration.md), 0 are tested; the 13 still partial or missing are each named by an open item: WI-0053, WI-0059, WI-0081 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0007",
@@ -121,13 +126,14 @@
         "expressions"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-08-31T19:10:59.456Z",
-      "updatedAt": "2026-08-31T19:10:59.456Z",
+      "updatedAt": "2026-10-09T04:19:00Z",
       "createdBy": "unknown",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-scoring-algorithms.txt"
+      "sourceReference": "input-documents/survey-engine-scoring-algorithms.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 42 requirement groups (survey-engine-requirements-migration.md), 14 are tested; the 27 still partial or missing are each named by an open item: WI-0053, WI-0059, WI-0081 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0008",
@@ -139,13 +145,14 @@
         "persistence"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-08-31T19:10:59.561Z",
-      "updatedAt": "2026-08-31T19:10:59.561Z",
+      "updatedAt": "2026-10-09T04:19:00Z",
       "createdBy": "unknown",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-admin-result-persistence-model.txt"
+      "sourceReference": "input-documents/survey-engine-admin-result-persistence-model.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 23 requirement groups (survey-engine-requirements-migration.md), 14 are tested; the 9 still partial or missing are each named by an open item: WI-0053, WI-0059, WI-0069, WI-0081 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0009",
@@ -157,13 +164,14 @@
         "exports"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-08-31T19:10:59.668Z",
-      "updatedAt": "2026-08-31T19:10:59.668Z",
+      "updatedAt": "2026-10-09T04:19:00Z",
       "createdBy": "unknown",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-reporting-requirements-data-contract.txt"
+      "sourceReference": "input-documents/survey-engine-reporting-requirements-data-contract.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 16 requirement groups (survey-engine-requirements-migration.md), 5 are tested; the 11 still partial or missing are each named by an open item: WI-0059, WI-0069, WI-0081 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0010",
@@ -175,13 +183,14 @@
         "security"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-08-31T19:10:59.772Z",
-      "updatedAt": "2026-08-31T19:10:59.772Z",
+      "updatedAt": "2026-10-09T04:19:00Z",
       "createdBy": "unknown",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/"
+      "sourceReference": "input-documents/",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 52 requirement groups (survey-engine-requirements-migration.md), 13 are tested; the 38 still partial or missing are each named by an open item: WI-0053, WI-0059, WI-0060, WI-0069, WI-0081 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "ECHELON-UPGRADE-2026-09-21",
@@ -226,13 +235,14 @@
         "ux"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-09-22T01:04:51.105Z",
-      "updatedAt": "2026-09-22T01:04:51.105Z",
+      "updatedAt": "2026-10-09T04:19:01Z",
       "createdBy": "agent:chatgpt",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt"
+      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 20 requirement groups (survey-engine-requirements-migration.md), 10 are tested; the 10 still partial or missing are each named by an open item: WI-0052, WI-0053, WI-0079 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0012",
@@ -245,13 +255,14 @@
         "provider"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-09-22T01:04:51.105Z",
-      "updatedAt": "2026-09-22T01:04:51.105Z",
+      "updatedAt": "2026-10-09T04:19:01Z",
       "createdBy": "agent:chatgpt",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt"
+      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 17 requirement groups (survey-engine-requirements-migration.md), 10 are tested; the 7 still partial or missing are each named by an open item: WI-0052, WI-0053, WI-0079, WI-0081 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0013",
@@ -264,13 +275,14 @@
         "concurrency"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-09-22T01:04:51.105Z",
-      "updatedAt": "2026-09-22T01:04:51.105Z",
+      "updatedAt": "2026-10-09T04:19:01Z",
       "createdBy": "agent:chatgpt",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt"
+      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 12 requirement groups (survey-engine-requirements-migration.md), 6 are tested; the 6 still partial or missing are each named by an open item: WI-0052, WI-0053, WI-0079 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0014",
@@ -283,13 +295,14 @@
         "dependencies"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-09-22T01:04:51.105Z",
-      "updatedAt": "2026-09-22T01:04:51.105Z",
+      "updatedAt": "2026-10-09T04:19:02Z",
       "createdBy": "agent:chatgpt",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt"
+      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 16 requirement groups (survey-engine-requirements-migration.md), 6 are tested; the 10 still partial or missing are each named by an open item: WI-0052, WI-0053, WI-0054, WI-0079, WI-0081 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0015",
@@ -302,13 +315,14 @@
         "dashboard"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-09-22T01:04:51.105Z",
-      "updatedAt": "2026-09-22T01:04:51.105Z",
+      "updatedAt": "2026-10-09T04:19:02Z",
       "createdBy": "agent:chatgpt",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt"
+      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 6 requirement groups (survey-engine-requirements-migration.md), 3 are tested; the 3 still partial or missing are each named by an open item: WI-0069, WI-0079 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0016",
@@ -321,13 +335,14 @@
         "configuration"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-09-22T01:04:51.105Z",
-      "updatedAt": "2026-09-22T01:04:51.105Z",
+      "updatedAt": "2026-10-09T04:19:02Z",
       "createdBy": "agent:chatgpt",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt"
+      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 12 requirement groups (survey-engine-requirements-migration.md), 2 are tested; the 10 still partial or missing are each named by an open item: WI-0052, WI-0053, WI-0069, WI-0079 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0017",
@@ -340,13 +355,14 @@
         "lifecycle"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-09-22T01:04:51.105Z",
-      "updatedAt": "2026-09-22T01:04:51.105Z",
+      "updatedAt": "2026-10-09T04:19:03Z",
       "createdBy": "agent:chatgpt",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt"
+      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 14 requirement groups (survey-engine-requirements-migration.md), 9 are tested; the 5 still partial or missing are each named by an open item: WI-0052, WI-0077, WI-0079 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0018",
@@ -359,13 +375,14 @@
         "recovery"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-09-22T01:04:51.105Z",
-      "updatedAt": "2026-09-22T01:04:51.105Z",
+      "updatedAt": "2026-10-09T04:19:03Z",
       "createdBy": "agent:chatgpt",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt"
+      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 14 requirement groups (survey-engine-requirements-migration.md), 4 are tested; the 10 still partial or missing are each named by an open item: WI-0052, WI-0077, WI-0079 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0019",
@@ -378,13 +395,14 @@
         "experiments"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-09-22T01:04:51.105Z",
-      "updatedAt": "2026-09-22T01:04:51.105Z",
+      "updatedAt": "2026-10-09T04:19:03Z",
       "createdBy": "agent:chatgpt",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt"
+      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 4 requirement groups (survey-engine-requirements-migration.md), 0 are tested; the 4 still partial or missing are each named by an open item: WI-0054 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "WI-0020",
@@ -397,13 +415,14 @@
         "acceptance"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "abandoned",
       "attachments": [],
       "createdAt": "2026-09-22T01:04:51.105Z",
-      "updatedAt": "2026-09-22T01:04:51.105Z",
+      "updatedAt": "2026-10-09T04:19:04Z",
       "createdBy": "agent:chatgpt",
       "source": "requirements-migration",
-      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt"
+      "sourceReference": "input-documents/survey-engine-administrator-console-storage-analytics-visualization-requirements.txt",
+      "abandonedReason": "Requirements-ledger umbrella, superseded by delivery items. Of its 18 requirement groups (survey-engine-requirements-migration.md), 5 are tested; the 13 still partial or missing are each named by an open item: WI-0052, WI-0053, WI-0069, WI-0079 (checked against implementation-gap-analysis.md). No scope is left only here."
     },
     {
       "id": "SIGNAL-FRAMEWORK-2026-09-22",

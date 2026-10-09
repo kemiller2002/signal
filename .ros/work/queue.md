@@ -14,25 +14,25 @@
 | SIGNAL-SCORING-SELECTORS-ATTRIBUTION-2026-09-22 | Attribute scoring and selector completeness branch diff | complete | requirements, scoring, selectors, governance | high |
 | SIGNAL-VERIFY-2026-09-21 | Align verification with current Echelon capability contracts | complete | ci,ordo,ros,sde | high |
 | WI-0001 | Migrate authoritative survey requirements from input-documents into traceable ROS work items | complete | requirements, migration, survey | high |
-| WI-0002 | Canonical survey domain contracts and F# module boundaries | captured | domain, architecture, survey | high |
-| WI-0003 | Template authoring, publication, versioning, and compatibility | captured | authoring, publication, versioning | high |
-| WI-0004 | Answer model, URL encoding, and live respondent lifecycle | captured | answers, encoding, url-state | high |
-| WI-0005 | Identity, anonymity, roles, and group semantics | captured | identity, privacy, groups | high |
-| WI-0006 | Deterministic rules, validation, flow, completion, and recommendations | captured | rules, validation, flow | high |
-| WI-0007 | Scoring engine, result semantics, and explainability | captured | scoring, results, expressions | high |
-| WI-0008 | Administrator import, aggregation, and report-state persistence | captured | admin, import, persistence | high |
-| WI-0009 | Reporting contract, privacy, comparisons, and renderers | captured | reporting, privacy, exports | medium |
-| WI-0010 | Cross-cutting test, performance, security, migration, and acceptance program | captured | testing, performance, security | high |
-| WI-0011 | Administrator application state, group management, and Limen UX | captured | admin, ordo, limen, ux | high |
-| WI-0012 | Storage provider contract and GitHub repository provider | captured | admin, storage, github, provider | high |
-| WI-0013 | Administrator import, concurrency, durable aggregation, and indexes | captured | admin, import, aggregation, concurrency | high |
-| WI-0014 | Administrator analytics, comparisons, lineage, and dependency invalidation | captured | admin, analytics, lineage, dependencies | high |
-| WI-0015 | Typed visualization grammar, dashboards, and accessibility | captured | admin, visualization, accessibility, dashboard | high |
-| WI-0016 | Report builder, snapshots, exports, configuration packages, and policy packs | captured | admin, reporting, snapshots, configuration | medium |
-| WI-0017 | Administrator privacy, security, audit, retention, and deletion lifecycle | captured | admin, privacy, security, lifecycle | high |
-| WI-0018 | Storage migration, backup, schema evolution, and operational recovery | captured | admin, migration, backup, recovery | high |
-| WI-0019 | Administrator sandbox, synthetic data, advanced analytics extensions, and phase boundary | captured | admin, sandbox, synthetic-data, experiments | medium |
-| WI-0020 | Administrator cross-cutting verification, performance, and acceptance program | captured | admin, testing, performance, acceptance | high |
+| WI-0002 | Canonical survey domain contracts and F# module boundaries | abandoned | domain, architecture, survey | high |
+| WI-0003 | Template authoring, publication, versioning, and compatibility | abandoned | authoring, publication, versioning | high |
+| WI-0004 | Answer model, URL encoding, and live respondent lifecycle | abandoned | answers, encoding, url-state | high |
+| WI-0005 | Identity, anonymity, roles, and group semantics | abandoned | identity, privacy, groups | high |
+| WI-0006 | Deterministic rules, validation, flow, completion, and recommendations | abandoned | rules, validation, flow | high |
+| WI-0007 | Scoring engine, result semantics, and explainability | abandoned | scoring, results, expressions | high |
+| WI-0008 | Administrator import, aggregation, and report-state persistence | abandoned | admin, import, persistence | high |
+| WI-0009 | Reporting contract, privacy, comparisons, and renderers | abandoned | reporting, privacy, exports | medium |
+| WI-0010 | Cross-cutting test, performance, security, migration, and acceptance program | abandoned | testing, performance, security | high |
+| WI-0011 | Administrator application state, group management, and Limen UX | abandoned | admin, ordo, limen, ux | high |
+| WI-0012 | Storage provider contract and GitHub repository provider | abandoned | admin, storage, github, provider | high |
+| WI-0013 | Administrator import, concurrency, durable aggregation, and indexes | abandoned | admin, import, aggregation, concurrency | high |
+| WI-0014 | Administrator analytics, comparisons, lineage, and dependency invalidation | abandoned | admin, analytics, lineage, dependencies | high |
+| WI-0015 | Typed visualization grammar, dashboards, and accessibility | abandoned | admin, visualization, accessibility, dashboard | high |
+| WI-0016 | Report builder, snapshots, exports, configuration packages, and policy packs | abandoned | admin, reporting, snapshots, configuration | medium |
+| WI-0017 | Administrator privacy, security, audit, retention, and deletion lifecycle | abandoned | admin, privacy, security, lifecycle | high |
+| WI-0018 | Storage migration, backup, schema evolution, and operational recovery | abandoned | admin, migration, backup, recovery | high |
+| WI-0019 | Administrator sandbox, synthetic data, advanced analytics extensions, and phase boundary | abandoned | admin, sandbox, synthetic-data, experiments | medium |
+| WI-0020 | Administrator cross-cutting verification, performance, and acceptance program | abandoned | admin, testing, performance, acceptance | high |
 | WI-0021 | Resolve Limen 0.7.0 LIMEN012: no engine source under src/Echelon.Signal.Engine, so strict verify is not-configured (exit 8) | complete | limen,boundary | high |
 | WI-0022 | Replace limen.config.json boundary.notApplicable with engine/kernel paths (src/Echelon.Signal.Engine, src/Echelon.Signal.Browser) when the first F# WASM engine source lands | complete | limen | medium |
 | WI-0023 | Restore Aegis to required: true in .echelon/foundations.json, with EchelonFoundry.Aegis.Core, real boundary usage and aegis-boundaries.json, in the change that adds the first .NET/F# host or operational boundary (DF-SIGNAL-FND-2026-0001) | complete | foundations | medium |
