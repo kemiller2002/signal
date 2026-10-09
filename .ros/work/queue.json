@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 78,
+  "nextSeq": 79,
   "items": [
     {
       "id": "WI-0001",
@@ -1723,10 +1723,10 @@
         "signal,order:05c,authoring"
       ],
       "priority": "medium",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-08T22:34:36.113Z",
-      "updatedAt": "2026-10-09T00:47:21.000Z",
+      "updatedAt": "2026-10-09T01:20:30.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -1819,6 +1819,29 @@
       "attachments": [],
       "createdAt": "2026-10-09T00:39:14.982Z",
       "updatedAt": "2026-10-09T00:47:23.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0078",
+      "title": "Signal 05d: generic templates end to end after WI-0073 - the group pipeline and respondent page on generic templates, preview isolation and the remaining authoring surface (CAN-001, CAN-003, CAN-005, CAN-008, URLC-004, URLC-005, ACR-003, ACR-008, ACR-009, VER-001, VER-003, VER-004, VER-007, AUT-001..007, ARX-002, ARX-013, ARP-001, AST-005, ALG-004, ADM-055, SCS-010..014, SCS-017, SCS-018)",
+      "description": "WI-0073 made the console's catalog the dataset's stored templates (groups resolve through it; templates with the group pipeline's shape start groups) and built the authoring screens (start or derive a draft; edit metadata, sections, five-point questions and fixtures; validation and publication summary; save, publish, hide). Remaining: the import pipeline and group results on generic templates carrying facts and recommendations, so any published template can start groups (ARP-001, ADM-055); the respondent page rendering generic templates with the SCS-018 component families and their interaction rules, pagination, preview mode, banks, timers and back/forward (SCS-010..SCS-014, SCS-018, VER-004, AUT-003 §20, ARX-013); test-mode/preview submission isolation and production import refusal (AUT-006 §60); locale and invitation expiry carriage (VER-003); a Reviewer step between DraftEditor and Publisher (AUT-006 §64); cross-device sample-URL checks (AUT-006 §§61-62); authoring other answer kinds, presets, rules, traces and the custom-expression boundary (AST-005, ALG-004, SCS-017); administrator-side persistence of the portable URL artifact (URLC-005).",
+      "tags": [
+        "signal,order:05d,authoring"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-09T01:18:28.136Z",
+      "updatedAt": "2026-10-09T01:18:28.136Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

@@ -167,3 +167,32 @@ let ``a stored template whose bytes do not hash to its recorded hash is a proble
     Assert.Equal<Published list>([ first ], stored.Catalog.Templates)
     Assert.Single(stored.Problems) |> ignore
     Assert.Equal(None, Publication.resolve stored.Catalog "team-health" "7")
+
+[<Fact>]
+let ``a stored template whose expression exceeds the limits is a problem, never a template (ADM-046)`` () =
+    let _, admin, _ = dataset Grants.draftEditor
+    let first = publish octocat admin draft |> ok
+    let nested depth = List.fold (fun e _ -> ResultModel.Add [ e; ResultModel.Num 1.0 ]) (ResultModel.Num 0.0) [ 1..depth ]
+
+    let forge version depth =
+        let content = { first.Content with Results = { first.Content.Results with Overall = Some(ResultModel.Custom { LanguageVersion = 1; Expression = nested depth; Decimals = 1 }) } }
+        let forged = { first with Version = version; Content = content; Hash = TemplateCanonical.templateHash first.SurveyId version content }
+
+        let operation =
+            Storage.operation
+                admin.Namespace
+                ((actor octocat).NewContext())
+                "forge"
+                [ Change.Create(TemplateRecord.publishedPath forged |> ok, TemplateRecord.encodePublished admin.DatasetId forged |> ok) ]
+            |> ok
+
+        admin.Provider.Commit operation |> run |> ok |> ignore
+        forged
+
+    let shallow = forge "7" 3
+    forge "8" 40 |> ignore
+
+    let stored = load admin
+    Assert.Equal<string list>([ "1"; "7" ], stored.Catalog.Templates |> List.map _.Version |> List.sort)
+    Assert.Equal(Some shallow, Publication.resolve stored.Catalog "team-health" "7")
+    Assert.Single(stored.Problems) |> ignore

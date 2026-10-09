@@ -15,6 +15,8 @@ type Outcome =
     | DatasetReady of Store.Opened * GroupStore.OpenedGroup list * TemplateCatalog.Loaded
     | GroupReady of GroupStore.OpenedGroup * GroupStore.Imported option * unreconciled: int
     | RosterChanged of Store.Opened
+    /// The template catalog was reread after an authoring change (WI-0073).
+    | CatalogReady of TemplateCatalog.Loaded
 
 [<NoComparison; NoEquality>]
 type Env =
