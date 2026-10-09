@@ -2641,20 +2641,20 @@
         "EXE-20261009T021311168Z-03fdc8e6"
       ],
       "latestCheckpoint": {
-        "id": "ff8f1f4c2dbf351e2fee5571",
-        "recordedAt": "2026-10-09T02:22:05.000Z",
+        "id": "13c2f4c3c3419f8b1f6b2a22",
+        "recordedAt": "2026-10-09T02:54:33.000Z",
         "executionId": "EXE-20261009T021311168Z-03fdc8e6",
         "repository": "echelon-signal",
-        "branch": "feature/reviewer-step",
-        "commit": "bd08c78d850d28347852ce4b69b7f4af0413a523",
+        "branch": "feature/generic-groups",
+        "commit": "10c1f161d9cde58164912e3e215292f4777494f7",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/reviewer-step",
-        "remoteCommit": "bd08c78d850d28347852ce4b69b7f4af0413a523",
-        "summary": "Part 1: AdminApp split; review workflow before publication",
-        "nextAction": "Part 2: generic templates through the group pipeline; then respondent page, preview isolation, answer kinds and rules, URLC-005",
+        "remoteBranch": "feature/generic-groups",
+        "remoteCommit": "10c1f161d9cde58164912e3e215292f4777494f7",
+        "summary": "Part 2: generic templates through the group pipeline; import runs always end",
+        "nextAction": "Part 3: respondent page for generic templates; then preview isolation, answer kinds and rules, URLC-005",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
