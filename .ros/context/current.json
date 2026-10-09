@@ -2482,20 +2482,20 @@
         "EXE-20261008T235745840Z-4b2d64a9"
       ],
       "latestCheckpoint": {
-        "id": "90ab96a9db199ac79aab6958",
-        "recordedAt": "2026-10-09T00:12:15.000Z",
+        "id": "9fe2bb768821bf3531ce5003",
+        "recordedAt": "2026-10-09T00:31:05.000Z",
         "executionId": "EXE-20261008T235745840Z-4b2d64a9",
         "repository": "echelon-signal",
-        "branch": "feature/retention-enforcement",
-        "commit": "4aecf26f2fd662ba90ab307e343b50308a76e8d5",
+        "branch": "feature/disclosure-in-page",
+        "commit": "63e7a7f37781d5c1fbc35da96127c6a4c6b53dec",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/retention-enforcement",
-        "remoteCommit": "4aecf26f2fd662ba90ab307e343b50308a76e8d5",
-        "summary": "Part 2: retention enforced for accepted results via retirement marker and recorded limitation; Arca cannot delete immutable records",
-        "nextAction": "Part 3: disclosure in the page and snapshots; part 4: PII-injection fixtures",
+        "remoteBranch": "feature/disclosure-in-page",
+        "remoteCommit": "63e7a7f37781d5c1fbc35da96127c6a4c6b53dec",
+        "summary": "Part 3: release ledger applied to the page's live state and to snapshots; distributions withheld when they could single out respondents",
+        "nextAction": "Part 4: PII-injection fixtures across every surface, then complete",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
