@@ -81,6 +81,15 @@ let ``through the page a survey is authored, saved, published, offered for group
     Assert.False(page.Flag "draftUnsaved", page.ViewText)
     Assert.Contains(page.Items "draftLinks", fun i -> i["key"].GetValue<string>() = "PULSE")
 
+    // Publication needs a review of the stored draft as it is (AUT-006 §§64-65).
+    page.Event("acknowledgeWarnings", value = "true")
+    page.Event("publishDraft")
+    Assert.Contains("has not been reviewed", page.Text "notice")
+    Assert.Equal("Not submitted for review", page.Text "draftReview")
+    page.Event("requestReview")
+    Assert.Equal("Ready for review", page.Text "draftReview")
+    page.Event("approveReview")
+    Assert.Equal("Reviewed", page.Text "draftReview")
     page.Event("acknowledgeWarnings", value = "true")
     page.Event("publishDraft")
     Assert.Contains("PULSE version 1 is published", page.Text "notice")

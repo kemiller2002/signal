@@ -44,7 +44,7 @@ let combine (builtIns: AdminApp.CatalogEntry list) (stored: TemplateStore.Stored
 
     { Offered = builtIns @ (usable |> List.filter (fun (t, _) -> Publication.visibility stored.Catalog t = Publication.Listed) |> List.map snd)
       Resolvable = builtIns @ (usable |> List.map snd)
-      Listing = TemplateListing.ofCatalog stored.Catalog (stored.Drafts |> Map.toList |> List.map (snd >> fst))
+      Listing = TemplateListing.ofCatalogReviewed stored.Catalog (stored.Drafts |> Map.toList |> List.map (snd >> fst)) (stored.Reviews |> Map.map (fun _ (r, _) -> r))
       Revisions = stored.Drafts |> Map.map (fun _ (_, revision) -> revision) }
 
 /// Reads the dataset's catalog beside the built-in templates.

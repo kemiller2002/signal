@@ -91,6 +91,8 @@ type AdminCapability =
     /// Author drafts (EditDrafts) and publish or hide versions (PublishTemplates), WI-0073.
     | CanEditDrafts
     | CanPublishTemplates
+    /// Review a draft before publication (ReviewTemplates, AUT-006 §64).
+    | CanReviewTemplates
 
 let capabilityName (capability: AdminCapability) = $"%A{capability}"
 
@@ -135,7 +137,8 @@ let capabilities (storage: StorageState) (usable: Set<Capability>) (group: Group
           if reading && holds ExportData then CanExport
           if writing && holds ManageAdministrators then CanManageAdministrators
           if writing && holds EditDrafts then CanEditDrafts
-          if writing && holds PublishTemplates then CanPublishTemplates ]
+          if writing && holds PublishTemplates then CanPublishTemplates
+          if writing && holds ReviewTemplates then CanReviewTemplates ]
 
 /// Unresolved work (ADM-002), named for the overview (ADM-031).
 type Obligation =

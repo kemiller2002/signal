@@ -41,12 +41,35 @@ let private refusal (refusal: Publication.Refusal) =
 /// Publishes a draft as the survey's next version.
 let publish (env: Env) (actor: Store.Actor) (opened: Store.Opened) (draft: Drafts.Draft) (acknowledged: Set<string>) (now: DateTimeOffset) =
     async {
-        match! TemplateStore.publish actor Validation.defaultPolicy acknowledged now opened draft with
+        match! TemplateStore.publishReviewed actor Validation.defaultPolicy acknowledged now opened draft with
         | Ok published ->
             return!
                 reloaded env now opened [ AdminApp.DraftPublished(published.SurveyId, published.Version); AdminApp.Noted(notice "SIGNAL.AUTHORING.PUBLISHED" $"{published.SurveyId} version {published.Version} is published ({published.Hash})." false) ]
         | Error(TemplateStore.Refused r) -> return [ ToEngine(AdminApp.Failed(notice "SIGNAL.AUTHORING.REFUSED" (refusal r) false)) ]
         | Error(TemplateStore.NotStored failure) -> return [ ToEngine(storeFailure failure) ]
+    }
+
+let private reviewFailure (failure: TemplateStore.ReviewFailure) =
+    match failure with
+    | TemplateStore.NoStoredDraft s -> AdminApp.Failed(notice "SIGNAL.AUTHORING.NO_DRAFT" $"There is no stored draft of {s}; save it first." false)
+    | TemplateStore.DraftChanged s -> AdminApp.Failed(notice "SIGNAL.AUTHORING.DRAFT_CHANGED" $"The stored draft of {s} changed since it was opened; reopen it and review again." false)
+    | TemplateStore.NotReadyForReview s -> AdminApp.Failed(notice "SIGNAL.AUTHORING.NOT_READY" $"The draft of {s} has not been submitted for review as it is now." false)
+    | TemplateStore.ReviewNotStored f -> storeFailure f
+
+/// The author submits the stored draft for review.
+let requestReview (env: Env) (actor: Store.Actor) (opened: Store.Opened) (survey: string) (now: DateTimeOffset) =
+    async {
+        match! TemplateStore.requestReview actor now opened survey with
+        | Ok _ -> return! reloaded env now opened [ AdminApp.Noted(notice "SIGNAL.AUTHORING.REVIEW_REQUESTED" $"The draft of {survey} is ready for review." false) ]
+        | Error failure -> return [ ToEngine(reviewFailure failure) ]
+    }
+
+/// A reviewer approves the stored draft as they see it.
+let approveReview (env: Env) (actor: Store.Actor) (opened: Store.Opened) (draft: Drafts.Draft) (now: DateTimeOffset) =
+    async {
+        match! TemplateStore.approveReview actor now opened draft.SurveyId draft with
+        | Ok _ -> return! reloaded env now opened [ AdminApp.Noted(notice "SIGNAL.AUTHORING.REVIEWED" $"The draft of {draft.SurveyId} is reviewed and can be published." false) ]
+        | Error failure -> return [ ToEngine(reviewFailure failure) ]
     }
 
 /// Hides a published version from new groups; it still resolves the groups that use it.

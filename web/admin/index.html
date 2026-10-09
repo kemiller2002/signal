@@ -133,6 +133,10 @@
         <p id="draft-preview" data-text="draftPreview"></p>
         <template data-if="draftHasWarnings"><label><input type="checkbox" data-event="acknowledgeWarnings" value="true" data-bind-checked="acknowledgeWarnings" /> I have read the warnings and accept them</label></template>
         <template data-if="canEditDrafts"><button type="button" class="ef-button" data-event="saveDraft" data-bind-disabled="busy">Save draft</button></template>
+        <h3>Review</h3>
+        <p id="draft-review" data-text="draftReview"></p>
+        <template data-if="canRequestReview"><button type="button" class="ef-button" data-event="requestReview" data-bind-disabled="busy">Submit for review</button></template>
+        <template data-if="canApproveReview"><button type="button" class="ef-button" data-event="approveReview" data-bind-disabled="busy">Approve as reviewed</button></template>
         <template data-if="canPublishTemplates"><button type="button" class="ef-button" data-event="publishDraft" data-bind-disabled="busy">Publish</button></template>
       </template>
       <template data-if="hasNoDraft"><p>There is no draft of <span data-text="draftSurvey"></span>. Start one or derive one from a published version under Assessments.</p></template>

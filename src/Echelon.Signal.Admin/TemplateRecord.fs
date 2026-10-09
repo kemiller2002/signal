@@ -369,3 +369,58 @@ let catalogReader: Loading.RecordReader<StoredCatalog> =
 let catalogOf (published: StoredPublished list) (hidden: Set<string * string>) : Catalog =
     { Templates = published |> List.map _.Template |> List.sortBy (fun t -> t.SurveyId, t.PublishedAt)
       Hidden = hidden }
+
+// ---- Review (AUT-006 §§64-65) ------------------------------------------------------------------
+
+/// A draft's review (`signal.template-review`, mutable, one per survey): the
+/// author asks for review; a reviewer approves the exact content in front
+/// of them. An edit after approval changes the content hash, so the approval
+/// no longer covers it.
+let reviewType = typeOf "signal.template-review"
+
+type ReviewState =
+    | ReadyForReview
+    | Reviewed of reviewer: string
+
+[<NoComparison>]
+type StoredReview =
+    { DatasetId: string
+      SurveyId: string
+      /// The draft content's hash the state is about.
+      ContentHash: string
+      State: ReviewState }
+
+/// The hash a review covers: the draft's content at the draft version.
+let draftContentHash (d: Draft) = TemplateCanonical.templateHash d.SurveyId DraftVersion d.Content
+
+let reviewId (surveyId: string) = idFor ("review:" + surveyId)
+let reviewPath surveyId = pathOf reviewType (reviewId surveyId)
+
+let encodeReview (r: StoredReview) : Result<string, Problem> =
+    Json.objectOf
+        [ "datasetId", Json.String r.DatasetId
+          "surveyId", Json.String r.SurveyId
+          "contentHash", Json.String r.ContentHash
+          "state", Json.String(match r.State with ReadyForReview -> "ready-for-review" | Reviewed _ -> "reviewed")
+          "reviewer", (match r.State with Reviewed who -> Json.String who | ReadyForReview -> Json.Null) ]
+    |> encodeWith reviewType Mutability.Mutable (reviewId r.SurveyId)
+
+let reviewOfBody (value: Json) : Decoded<StoredReview> =
+    closed [ "contentHash"; "datasetId"; "reviewer"; "state"; "surveyId" ] value
+    |> Result.bind (fun () -> both (both (text "datasetId" value) (text "surveyId" value)) (both (text "contentHash" value) (text "state" value)))
+    |> Result.bind (fun ((datasetId, surveyId), (hash, state)) ->
+        let review state = { DatasetId = datasetId; SurveyId = surveyId; ContentHash = hash; State = state }
+
+        match state, field "reviewer" value with
+        | "ready-for-review", Ok Json.Null -> Ok(review ReadyForReview)
+        | "reviewed", Ok(Json.String who) -> Ok(review (Reviewed who))
+        | _ -> Error "not a review state")
+
+let reviewReader: Loading.RecordReader<StoredReview> =
+    { Type = reviewType
+      Schema = schemaOf reviewType
+      MaxBytes = Record.DefaultMaxBytes
+      Decode = reviewOfBody
+      IdOf = fun stored -> reviewId stored.SurveyId
+      DatasetOf = fun stored -> Some stored.DatasetId
+      References = fun _ -> [] }

@@ -191,6 +191,12 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
     | AdminApp.HideTemplate(survey, version) ->
         withDataset (fun actor opened -> AuthoringWork.hide env actor opened survey version now)
         state, []
+    | AdminApp.RequestReview survey ->
+        withDataset (fun actor opened -> AuthoringWork.requestReview env actor opened survey now)
+        state, []
+    | AdminApp.ApproveReview draft ->
+        withDataset (fun actor opened -> AuthoringWork.approveReview env actor opened draft now)
+        state, []
     | AdminApp.TakeSnapshot(key, family, locale) ->
         withGroup key (fun actor group -> ReportWork.take state.Catalog actor model group family locale now)
         state, []
@@ -301,7 +307,7 @@ let rec private advance (env: Env) (state: State) (msg: AdminApp.Msg) (sent: Req
     match state.Model with
     | None -> state, sent
     | Some model ->
-        let model, effects = AdminApp.update msg model
+        let model, effects = AdminUpdate.update msg model
 
         let state, made =
             effects
