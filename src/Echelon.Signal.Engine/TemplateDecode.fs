@@ -363,6 +363,12 @@ let decode (bytes: byte[]) : Decoded<DecodedTemplate> =
         match text "form" root with
         | Ok form when form = TemplateCanonical.Form ->
             map3 (fun s v c -> { SurveyId = s; Version = v; Content = c }) (text "surveyId" root) (text "version" root) (content root)
+            // Only the canonical form is read: a member this version does not
+            // write (a "name" or "email" field among them, ARX-009) or any
+            // other spelling is refused rather than silently dropped.
+            |> Result.bind (fun decoded ->
+                if TemplateCanonical.bytes decoded.SurveyId decoded.Version decoded.Content = bytes then Ok decoded
+                else Error "not the canonical form of the template it decodes to (an unknown member or another spelling)")
         | Ok other -> Error $"'{other}' is not the template form {TemplateCanonical.Form}"
         | Error e -> Error e
     with :? JsonException as error ->

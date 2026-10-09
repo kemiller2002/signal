@@ -187,9 +187,25 @@ let isPiiLike (text: string) = piiPattern.IsMatch text
 let private privacy (policy: Policy) (draft: Draft) =
     let severity = if policy.PiiPromptsBlock then Blocker else Warning
 
-    [ for _, q in questions draft.Content do
+    let any (texts: string list) = texts |> List.exists isPiiLike
+    let m = draft.Content.Metadata
+
+    // ARX-009: every author-written text a respondent or a report shows, not
+    // only prompts: metadata, sections, selector and option labels, and
+    // recommendations.
+    [ if any (m.Title :: List.choose id [ m.ShortTitle; m.Description; m.Instructions ]) then
+          finding PrivacyCategory severity "PRIVACY-PII-LIKE-METADATA" "" "The survey's title, description or instructions appear to ask for identifying information."
+      for s in draft.Content.Sections do
+          if any (s.Title :: Option.toList s.Description) then
+              finding PrivacyCategory severity "PRIVACY-PII-LIKE-SECTION" s.Id $"Section '{s.Id}' appears to ask for identifying information."
+      for _, q in questions draft.Content do
           if isPiiLike q.Prompt || q.HelpText |> Option.exists isPiiLike then
-              finding PrivacyCategory severity "PRIVACY-PII-LIKE-PROMPT" q.Id $"Question '{q.Id}' appears to ask for identifying information." ]
+              finding PrivacyCategory severity "PRIVACY-PII-LIKE-PROMPT" q.Id $"Question '{q.Id}' appears to ask for identifying information."
+          if any (q.Selector.Labels @ (options q.Answer |> List.map _.Label)) then
+              finding PrivacyCategory severity "PRIVACY-PII-LIKE-LABEL" q.Id $"An answer label of question '{q.Id}' appears to ask for identifying information."
+      for r in draft.Content.Rules.Recommendations do
+          if any [ r.Title; r.Description ] then
+              finding PrivacyCategory severity "PRIVACY-PII-LIKE-RECOMMENDATION" r.Id $"Recommendation '{r.Id}' appears to ask for identifying information." ]
 
 // ---------------------------------------------------------------------------
 // Fixtures and the published test manifest (AUT-003 §§24-26, AUT-006 §§68-69).

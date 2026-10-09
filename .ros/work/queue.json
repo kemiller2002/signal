@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 77,
+  "nextSeq": 78,
   "items": [
     {
       "id": "WI-0001",
@@ -1796,6 +1796,29 @@
       "attachments": [],
       "createdAt": "2026-10-08T23:30:28.278Z",
       "updatedAt": "2026-10-08T23:57:43.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0077",
+      "title": "Signal 14c: dataset lifecycle and retention screens, and removal from the repository tree once Arca offers an erasure path (ADM-045)",
+      "description": "WI-0076 stored the dataset lifecycle, gated writes on it, and retires a finalized group's accepted results from Signal's state with recorded evidence. Remaining: the page's lifecycle and retention screens (transition, retire, the remaining-reconstruction state per group), and removing retired results from the repository tree, which needs an Arca erasure path for immutable records (Arca never changes or deletes them today); even then GitHub history keeps prior versions, so the claim stays below permanent erasure unless the provider proves it.",
+      "tags": [
+        "signal,order:14c,privacy,depends:arca"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-09T00:39:14.982Z",
+      "updatedAt": "2026-10-09T00:39:14.982Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
