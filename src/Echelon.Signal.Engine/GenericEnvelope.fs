@@ -237,32 +237,6 @@ let private readTerms (body: byte[]) (at: int) : Result<Terms * int, DecodeError
 /// The reference a URL carries for a published template version.
 let referenceOf (surveyId: string) (version: string) (content: Content) = TemplateCanonical.reference surveyId version content
 
-let private stateOf (q: Question) (state: AnswerState option) : uint64 =
-    match state with
-    | None -> 0UL
-    | Some(Value v) ->
-        match toIndex q.Answer v with
-        | Some i -> 1UL + i
-        | None -> 0UL
-    | Some(Special s) ->
-        match q.SpecialStates |> List.tryFindIndex ((=) s) with
-        | Some i -> 1UL + valueCount q.Answer + uint64 i
-        | None -> 0UL
-
-let private answerOf (q: Question) (state: uint64) : Result<AnswerState option, unit> =
-    let values = valueCount q.Answer
-
-    if state = 0UL then
-        Ok None
-    elif state <= values then
-        match ofIndex q.Answer (state - 1UL) with
-        | Some v when (Primitives.check q.Answer v).IsNone -> Ok(Some(Value v))
-        | _ -> Error()
-    elif state <= values + uint64 q.SpecialStates.Length then
-        Ok(Some(Special q.SpecialStates[int (state - values - 1UL)]))
-    else
-        Error()
-
 /// The binding kind without the test marker: generic envelopes carry test
 /// and preview artifacts in the kind byte's high bit (AUT-006 §60).
 let private baseKind (kind: byte) = kind &&& ~~~TestKindFlag
@@ -280,7 +254,7 @@ let encodeWith (content: Content) (reference: byte[]) (terms: Terms) (envelope: 
     List.zip qs slots
     |> List.fold
         (fun offset (q, slot) ->
-            let state = stateOf q (envelope.Answers.TryFind q.Id)
+            let state = slotState q (envelope.Answers.TryFind q.Id)
 
             for b in 0 .. slot.Bits - 1 do
                 if (state >>> (slot.Bits - 1 - b)) &&& 1UL = 1UL then
@@ -386,7 +360,7 @@ let decodeWithTerms (content: Content) (reference: byte[]) (text: string) : Resu
                                     let acc =
                                         acc
                                         |> Result.bind (fun pairs ->
-                                            match answerOf q state with
+                                            match slotAnswer q state with
                                             | Ok None -> Ok pairs
                                             | Ok(Some a) -> Ok((q.Id, a) :: pairs)
                                             | Error() -> Error(InvalidAnswerState(index, int (min state (uint64 Int32.MaxValue)))))
