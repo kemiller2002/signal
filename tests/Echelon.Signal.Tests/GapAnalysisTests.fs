@@ -120,10 +120,9 @@ let ``every group that is not yet tested is named by an open work item`` () =
     let unplanned = open' |> List.filter (plannedGroups.Contains >> not)
     Assert.Empty unplanned
 
-/// A row marked tested cites tests that exist (WI-0081): at least one test
-/// file in backticks (`ImportTests`), each cited file exists with at least
-/// one fact, and each cited test (`ImportTests: test name`) is a test in that
-/// file. A citation that names no real test fails, so a row cannot be marked
+/// A row marked tested cites tests that exist (WI-0081, WI-0093): at least
+/// one named test (`ImportTests: test name`) that is a test in that file,
+/// and every cited file (`ImportTests`) exists with at least one fact. A citation that names no real test fails, so a row cannot be marked
 /// tested on prose alone.
 let private testSource (file: string) =
     let path = repoFile $"tests/Echelon.Signal.Tests/{file}.fs"
@@ -140,13 +139,18 @@ let private testedRows =
     |> Seq.toList
 
 [<Fact>]
-let ``every tested row cites at least one test, and every cited test exists`` () =
+let ``every tested row names at least one test, and every cited test exists`` () =
     let problems =
         [ for group, row in testedRows do
               let cited = citations row
 
               if cited.IsEmpty then
                   $"{group}: cites no test file"
+              // A file alone cannot show the file holds the evidence (an
+              // existing but wrong file passed in #99): every tested row
+              // names at least one test (WI-0093).
+              elif cited |> List.forall (snd >> Option.isNone) then
+                  $"{group}: names no test (`FileTests: test name`)"
 
               for file, name in cited do
                   match testSource file, name with
