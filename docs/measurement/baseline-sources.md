@@ -15,9 +15,9 @@ marked **missing**, with the reason.
 
 | Source | Where | What it holds | Range (as of 2026-10-13) |
 |---|---|---|---|
-| Praxis work items | `.ros/context/current.json` (live state), `.ros/work/queue.json` and `queue.md`, `.ros/work/items/` (early items only) | Work-item identity, state, evidence paths, completion conclusions; `./praxis work show WI-NNNN` renders one | WI-0001 … WI-0083 |
+| Praxis work items | `.ros/context/current.json` (live state), `.ros/work/queue.json` and `.ros/work/queue.md`, `.ros/work/items/` (early items only) | Work-item identity, state, evidence paths, completion conclusions; `./praxis work show WI-NNNN` renders one | WI-0001 … WI-0083 |
 | Praxis events | `.ros/events/events.jsonl` | The append-only lifecycle event log (capture, start, checkpoint, complete) | 210 lines before WI-0083 |
-| Praxis execution telemetry | `.ros/telemetry/executions/EXE-*.json`, `.ros/telemetry/metrics.json` | Per-execution identity, steps, status and metrics, as Praxis records them | 64 execution files, first `EXE-20260921T154547323Z-6410d99c`, latest `EXE-20261013T092834455Z-350013c4` |
+| Praxis execution telemetry | `.ros/telemetry/executions/EXE-*.json`; metric definitions in `telemetry/metrics.json` | Per-execution identity, steps, status and metrics, as Praxis records them; the definitions of the normalized metrics | 65 execution files, first `EXE-20260921T154547323Z-6410d99c`, latest `EXE-20261013T092834455Z-350013c4` |
 | Praxis installation | `.ros/installation.json` | The repository operating system package and version installed | `@echelon-foundry/repository-operating-system` 1.2.1-main.16.1, installed 2026-08-31 |
 | Praxis instance identity | `.praxis/instance.json` | The repository's Praxis instance id (`pxi-5fdaa929…`), created by Praxis 3.11.0 | From `da4e6ea` (2026-10-13) |
 | Provenance | YAML front matter `provenance.contributions` in `docs/` and `research/` documents; `./praxis provenance show` and `audit` | Which execution created or modified a governed document, when, and why | Throughout `docs/requirements/` and `research/decisions/` |
