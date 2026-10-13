@@ -2142,10 +2142,10 @@
         "escaped-defect:#73"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-13T15:28:20Z",
-      "updatedAt": "2026-10-13T15:28:20Z",
+      "updatedAt": "2026-10-13T15:57:55Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

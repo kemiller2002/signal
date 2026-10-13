@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T15:09:37Z",
+  "updatedAt": "2026-10-13T15:57:55Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -2943,6 +2943,48 @@
       },
       "completedAt": "2026-10-13T15:09:37Z",
       "conclusion": "The midpoint fixture's allocation is complete and round-trips through the link."
+    },
+    {
+      "id": "WI-0090",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/Template.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/CompoundKindTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-13T15:57:55Z",
+      "telemetryExecutionIds": [
+        "EXE-20261013T154909914Z-2547f002"
+      ],
+      "latestCheckpoint": {
+        "id": "5eb59d37f80f539dc3c2dbd6",
+        "recordedAt": "2026-10-13T15:57:53Z",
+        "executionId": "EXE-20261013T154909914Z-2547f002",
+        "repository": "echelon-signal",
+        "branch": "fix/ranking-allocation-capabilities",
+        "commit": "9ea71e8b17d02c08e7a9ba7da53fe05ee2320c02",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "fix/ranking-allocation-capabilities",
+        "remoteCommit": "9ea71e8b17d02c08e7a9ba7da53fe05ee2320c02",
+        "summary": "UsesRanking and UsesAllocation added to supportedCapabilities; new CompoundKindTests test fails on old code; AuthoringTests assertion moved from the defect (UsesRanking) to UsesGroupScoring; ACR-003 tested. .NET 531 passing.",
+        "nextAction": "Complete, PR, gate, merge",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-13T15:57:55Z",
+      "conclusion": "Declared UsesRanking and UsesAllocation are accepted; unsupported capabilities are still refused."
     }
   ]
 }

@@ -155,7 +155,9 @@ let ``scoring, compatibility and encoding blockers`` () =
     Assert.Contains("SCORING-REFERENCE", blockersOf reference)
 
     let compat c = draft |> editContent (fun x -> { x with Compatibility = c })
-    Assert.Contains("COMPAT-CAPABILITY", blockersOf (compat { defaultCompatibility with Capabilities = [ UsesRanking ] }))
+    // WI-0090: this asserted the #73 defect with UsesRanking, which the
+    // engine supports; a capability it lacks is still refused.
+    Assert.Contains("COMPAT-CAPABILITY", blockersOf (compat { defaultCompatibility with Capabilities = [ UsesGroupScoring ] }))
     Assert.Contains("COMPAT-SCHEMA", blockersOf (compat { defaultCompatibility with SchemaVersion = 2 }))
     Assert.Contains("COMPAT-ENGINE", blockersOf (compat { defaultCompatibility with MinimumEngineVersion = 99 }))
     Assert.Contains("COMPAT-ENCODING", blockersOf (compat { defaultCompatibility with ResponseEncodingVersion = 2 }))
