@@ -132,10 +132,10 @@ type Capacity =
       /// Unpadded base64url characters of the largest envelope.
       EncodedCharacters: int }
 
-/// The bytes a template's section and page timer starts can add to a link:
-/// a count, then 7 bytes per timer (DF-SIGNAL-2026-0015).
+/// The bytes a template's section, page and question timer starts can add
+/// to a link: a count, then 7 bytes per timer (DF-SIGNAL-2026-0015).
 let scopedTimerBytes (content: Content) =
-    match content.Presentation.Timers |> List.filter (fun t -> match t.Scope with Timers.SectionScope _ | Timers.PageScope _ -> true | _ -> false) with
+    match content.Presentation.Timers |> List.filter (fun t -> t.Scope <> Timers.SurveyScope) with
     | [] -> 0
     | scoped -> 1 + 7 * scoped.Length
 

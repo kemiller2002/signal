@@ -6,7 +6,8 @@
 /// Each edit is checked here for shape (numbers, ids, a known locale key),
 /// and the whole draft is then judged by publication validation, exactly as
 /// the other authoring areas are. Custom scoring expressions and section or
-/// page timers stay in imported templates.
+/// page timers stay in imported templates; a question timer is authored here
+/// (WI-0081), with its whole-minute resolution said in the console's help.
 ///
 /// Pure.
 module Echelon.Signal.Admin.AreaAuthoring
@@ -30,6 +31,8 @@ type Edit =
     | SetAllowBack of bool
     | SetReviewBeforeSubmit of bool
     | AddSurveyTimer of minutes: string * warnAtMinutes: string
+    /// A time limit for one question, from when it is first shown (ARX-013).
+    | AddQuestionTimer of questionId: string * minutes: string * warnAtMinutes: string
     | RemoveTimer of timerId: string
     | AddBank of questionIds: string * select: string
     | RemoveBank of bankId: string
@@ -107,6 +110,26 @@ let private translate (locale: string) (key: TextKey) (text: string) (content: C
             |> List.sortWith (fun a b -> String.CompareOrdinal(a.Locale, b.Locale)) }
 
 /// Applies one edit to the content; it is unchanged when refused.
+/// A timer of whole minutes on one scope, at most one per scope.
+let private addTimer (content: Content) (scope: Timers.Scope) (minutes: string) (warn: string) =
+    whole "minutes" 1 minutes
+    |> Result.bind (fun m ->
+        (if String.IsNullOrWhiteSpace warn then Ok [] else whole "warning minutes" 1 warn |> Result.map (fun w -> [ w ]))
+        |> Result.bind (fun ws -> if ws |> List.exists (fun w -> w >= m) then Error "Warn before the time runs out." else Ok(m, ws)))
+    |> Result.bind (fun (m, ws) ->
+        if content.Presentation.Timers |> List.exists (fun t -> t.Scope = scope) then
+            Error(if scope = Timers.SurveyScope then "The survey already has a timer; remove it first." else "That question already has a timer; remove it first.")
+        else
+            let timer: Timers.Timer =
+                { Id = nextId "timer-" (content.Presentation.Timers |> List.map _.Id)
+                  Scope = scope
+                  Duration = TimeSpan.FromMinutes(float m)
+                  Warnings = ws |> List.map (fun w -> TimeSpan.FromMinutes(float w))
+                  Expiry = Timers.LockOnly
+                  Enforcement = Timers.Enforced }
+
+            Ok(content |> withPresentation (fun p -> { p with Timers = p.Timers @ [ timer ] })))
+
 let apply (defaultScorer: Scoring.Scorer) (edit: Edit) (content: Content) : Result<Content, string> =
     match edit with
     | AddRangeCheck(id, low, high, message) ->
@@ -137,24 +160,8 @@ let apply (defaultScorer: Scoring.Scorer) (edit: Edit) (content: Content) : Resu
         | None -> Error "Choose how progress is shown."
     | SetAllowBack on -> Ok(content |> withPresentation (fun p -> { p with AllowBackNavigation = on }))
     | SetReviewBeforeSubmit on -> Ok(content |> withPresentation (fun p -> { p with ReviewBeforeSubmit = on }))
-    | AddSurveyTimer(minutes, warn) ->
-        whole "minutes" 1 minutes
-        |> Result.bind (fun m ->
-            (if String.IsNullOrWhiteSpace warn then Ok [] else whole "warning minutes" 1 warn |> Result.map (fun w -> [ w ]))
-            |> Result.bind (fun ws -> if ws |> List.exists (fun w -> w >= m) then Error "Warn before the time runs out." else Ok(m, ws)))
-        |> Result.bind (fun (m, ws) ->
-            if content.Presentation.Timers |> List.exists (fun t -> t.Scope = Timers.SurveyScope) then
-                Error "The survey already has a timer; remove it first."
-            else
-                let timer: Timers.Timer =
-                    { Id = nextId "timer-" (content.Presentation.Timers |> List.map _.Id)
-                      Scope = Timers.SurveyScope
-                      Duration = TimeSpan.FromMinutes(float m)
-                      Warnings = ws |> List.map (fun w -> TimeSpan.FromMinutes(float w))
-                      Expiry = Timers.LockOnly
-                      Enforcement = Timers.Enforced }
-
-                Ok(content |> withPresentation (fun p -> { p with Timers = p.Timers @ [ timer ] })))
+    | AddSurveyTimer(minutes, warn) -> addTimer content Timers.SurveyScope minutes warn
+    | AddQuestionTimer(questionId, minutes, warn) -> question content questionId |> Result.bind (fun id -> addTimer content (Timers.QuestionScope id) minutes warn)
     | RemoveTimer id when content.Presentation.Timers |> List.exists (fun t -> t.Id = id) ->
         Ok(content |> withPresentation (fun p -> { p with Timers = p.Timers |> List.filter (fun t -> t.Id <> id) }))
     | RemoveTimer id -> Error $"There is no timer '{id}'."
@@ -218,7 +225,24 @@ let describeValidation (content: Content) (v: ValidationRule) =
 
 let describeTimer (t: Timers.Timer) =
     let warn = t.Warnings |> List.map (fun w -> $", warning at {int w.TotalMinutes} min left") |> String.concat ""
-    $"{t.Id}: {int t.Duration.TotalMinutes} minutes for the whole survey{warn}"
+
+    let scope =
+        match t.Scope with
+        | Timers.SurveyScope -> "the whole survey"
+        | Timers.SectionScope id -> $"section {id}"
+        | Timers.PageScope n -> $"page {n}"
+        | Timers.QuestionScope id -> $"question {id}, from when it is first shown"
+
+    $"{t.Id}: {int t.Duration.TotalMinutes} minutes for {scope}{warn}"
+
+/// What the console tells an author about timers (ARX-013,
+/// DF-SIGNAL-2026-0015 §9): the link records when a timer starts to the
+/// whole minute, so the time a person gets can be up to a minute shorter
+/// than the limit, which matters most for a short question timer.
+let timerHelp =
+    "Leave the question blank for a time limit on the whole survey, or name a question to time it from when it is first shown. "
+    + "Start times are recorded to the whole minute, so a person may get up to a minute less than the limit: "
+    + "give a question at least a few minutes."
 
 let describeBank (b: Banking.Bank) =
     $"""{b.Id}: each respondent answers {b.Select} of {String.Join(", ", b.Pool)}"""
@@ -246,6 +270,8 @@ type Form =
       ValidationMessage: string
       TimerMinutes: string
       TimerWarning: string
+      /// Blank for the whole survey, or the question a timer is for.
+      TimerQuestion: string
       BankQuestions: string
       BankSelect: string
       TranslationLocale: string
@@ -266,6 +292,7 @@ let emptyForm =
       ValidationMessage = ""
       TimerMinutes = ""
       TimerWarning = ""
+      TimerQuestion = ""
       BankQuestions = ""
       BankSelect = ""
       TranslationLocale = ""
@@ -287,7 +314,7 @@ let events =
         [ "validationKind"; "validationQuestion"; "validationQuestions"; "validationMinimum"; "validationMaximum"; "validationWhen"; "validationAnswer"
           "validationMessage"; "addValidation"; "removeValidation"
           "itemsPerPage"; "showNumbers"; "progressMode"; "allowBack"; "reviewBeforeSubmit"
-          "timerMinutes"; "timerWarning"; "addTimer"; "removeTimer"; "bankQuestions"; "bankSelect"; "addBank"; "removeBank"
+          "timerMinutes"; "timerWarning"; "timerQuestion"; "addTimer"; "removeTimer"; "bankQuestions"; "bankSelect"; "addBank"; "removeBank"
           "sectionScoring"
           "translationLocale"; "translationKey"; "translationText"; "setTranslation"; "removeTranslation"
           "accessibilityQuestion"; "accessibilityName"; "accessibilityDescription"; "setAccessibility" ]
@@ -321,7 +348,9 @@ let update (name: string) (key: string option) (value: string) (form: Form) : Fo
     | "reviewBeforeSubmit", _ -> form, Some(SetReviewBeforeSubmit(checkedValue value))
     | "timerMinutes", _ -> { form with TimerMinutes = value }, None
     | "timerWarning", _ -> { form with TimerWarning = value }, None
-    | "addTimer", _ -> form, Some(AddSurveyTimer(form.TimerMinutes, form.TimerWarning))
+    | "timerQuestion", _ -> { form with TimerQuestion = value }, None
+    | "addTimer", _ when String.IsNullOrWhiteSpace form.TimerQuestion -> form, Some(AddSurveyTimer(form.TimerMinutes, form.TimerWarning))
+    | "addTimer", _ -> form, Some(AddQuestionTimer(form.TimerQuestion, form.TimerMinutes, form.TimerWarning))
     | "removeTimer", Some id -> form, Some(RemoveTimer id)
     | "bankQuestions", _ -> { form with BankQuestions = value }, None
     | "bankSelect", _ -> { form with BankSelect = value }, None
@@ -357,7 +386,8 @@ let cleared (edit: Edit) (form: Form) =
             ValidationWhen = ""
             ValidationAnswer = ""
             ValidationMessage = "" }
-    | AddSurveyTimer _ -> { form with TimerMinutes = ""; TimerWarning = "" }
+    | AddSurveyTimer _
+    | AddQuestionTimer _ -> { form with TimerMinutes = ""; TimerWarning = ""; TimerQuestion = "" }
     | AddBank _ -> { form with BankQuestions = ""; BankSelect = "" }
     | SetTranslation(_, _, text) when text <> "" -> { form with TranslationKey = ""; TranslationText = "" }
     | SetAccessibility _ -> { form with AccessibilityQuestion = ""; AccessibilityName = ""; AccessibilityDescription = "" }

@@ -718,8 +718,10 @@
             "runtime": "claude-code"
           },
           "at": "2026-10-13T12:01:39.943Z",
+          "last": "2026-10-13T22:09:35.063Z",
           "operations": [
-            "created"
+            "created",
+            "modified"
           ],
           "reason": "Section and page timers and the submission minute (ARX-013, WI-0081)"
         }
@@ -746,7 +748,7 @@
     ],
     "title": "Section and page timer starts and a timed response's submission minute travel in the respondent link's integrity-checked terms; intake flags late submissions and never refuses them",
     "updated": "2026-10-13",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   {
     "created": "2026-10-13",

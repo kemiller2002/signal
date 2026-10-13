@@ -93,15 +93,19 @@ let ``publication checks every timer and bank`` () =
         Assert.Contains(code, found)
 
 [<Fact>]
-let ``the survey page refuses timers it cannot run yet: question timers and two on one part`` () =
+// WI-0081 (DF-SIGNAL-2026-0015 §9): question timers now run; the page still
+// refuses two timers on one part. Before, this test also asserted question
+// timers were refused, the behaviour the coordinator chose to change.
+let ``the survey page runs a question timer, and refuses two timers on one part`` () =
     let opened (content: Content) =
         let file = publishedFile "DEMO" "1" content |> snd
         let instance = (UrlState.OpaqueId.ofBytes (Array.init 16 byte)).Value
         let group = (UrlState.OpaqueId.ofBytes (Array.init 16 (fun i -> byte (40 + i)))).Value
         start ("#r=" + GenericEnvelope.invitation "DEMO" "1" content Import.IdentifiedGroup instance group) |> received (DateOnly(2026, 1, 1)) (Found file)
 
-    let what = "question timers, or two timers on the same part"
-    Assert.Equal(Refused(UnsupportedPresentation what), opened (withTimersAndBanks [ timer "first" (Timers.QuestionScope ids[0]) ] []))
+    let what = "two timers on the same part"
+    Assert.True(match opened (withTimersAndBanks [ timer "first" (Timers.QuestionScope ids[0]) ] []) with Responding _ -> true | _ -> false)
+    Assert.Equal(Refused(UnsupportedPresentation what), opened (withTimersAndBanks [ timer "a" (Timers.QuestionScope ids[0]); timer "b" (Timers.QuestionScope ids[0]) ] []))
     Assert.Equal(Refused(UnsupportedPresentation what), opened (withTimersAndBanks [ timer "a" Timers.SurveyScope; timer "b" Timers.SurveyScope ] []))
     Assert.Contains("cannot run yet", describe (UnsupportedPresentation what))
 

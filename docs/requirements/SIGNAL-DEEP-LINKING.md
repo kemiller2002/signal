@@ -2,7 +2,7 @@
 id: SIG-LINK
 title: Signal deep linking - every navigable view has a URL that opens it
 status: accepted
-version: 1.4.0
+version: 1.5.0
 created: 2026-10-08
 updated: 2026-10-13
 owners:
@@ -41,7 +41,7 @@ provenance:
     EXE-20261009T042446720Z-a28d9579:
       operations: [modified]
       at: 2026-10-09T04:38:25.498Z
-      last: 2026-10-13T12:01:40.765Z
+      last: 2026-10-13T22:09:37.834Z
       actor:
         kind: agent
         id: anthropic/claude-code
@@ -170,12 +170,17 @@ timed response. An edited start MUST be refused. The start MUST be a whole
 UTC minute, and an anonymous link MUST NOT gain anything else that could
 identify the respondent.
 
-**SIG-LINK-016 Section and page timer starts, and the submission minute.**
+**SIG-LINK-016 Section, page and question timer starts, and the submission minute.**
 A timed survey's link MAY carry, as optional format-2 terms inside its
-integrity check, the minute each section or page timer started and, once
-submitted, the minute of submission (DF-SIGNAL-2026-0015). Links without them
-MUST stay valid. Each start MUST be stamped when its section or page is first
-reached and MUST NOT move afterwards. An edited start or submission minute
+integrity check, the minute each section, page or question timer started
+and, once submitted, the minute of submission (DF-SIGNAL-2026-0015). Each
+start is an entry of kind 1 (section, by its position in the template), 2
+(layout page, by its 1-based number) or 3 (question, by its position in the
+template; SIG-LINK 1.5.0, DF-SIGNAL-2026-0015 §9). Links without them MUST
+stay valid, and every link valid before 1.5.0 MUST decode to the same bytes.
+A link with an entry kind the reader does not know MUST be refused whole,
+never read in part. Each start MUST be stamped when its section, page or
+question is first reached or shown and MUST NOT move afterwards. An edited start or submission minute
 MUST be refused. An untimed survey's links MUST NOT gain either. An
 anonymous link MUST gain nothing beyond these whole UTC minutes. Intake MUST
 flag, and MUST NOT refuse, a submission made after an enforced timer ran

@@ -49,15 +49,18 @@ let TermsMaximumBytes = 1 + 1 + MaximumLocaleLength + 2 + 4 + 4
 /// the invitation may be answered and imported; both are inside the
 /// envelope's integrity check, so editing either invalidates the link.
 /// The scope a timer start belongs to: a section by its position in the
-/// template, or a layout page by its 1-based number.
+/// template, a layout page by its 1-based number, or a question by its
+/// position in the template (entry kind 3, WI-0081, DF-SIGNAL-2026-0015 §9).
 type ScopeStart =
     | SectionStart of index: int
     | PageStart of number: int
+    | QuestionStart of index: int
 
 let private scopeKey =
     function
     | SectionStart i -> 1, i
     | PageStart n -> 2, n
+    | QuestionStart i -> 3, i
 
 type Terms =
     { Locale: string option
@@ -67,8 +70,8 @@ type Terms =
       /// respondent than roughly when they started. Inside the integrity
       /// check like the rest of the terms.
       StartedAt: DateTimeOffset option
-      /// When each section or page timer started (DF-SIGNAL-2026-0015), in
-      /// scope order, each a whole UTC minute.
+      /// When each section, page or question timer started
+      /// (DF-SIGNAL-2026-0015), in scope order, each a whole UTC minute.
       ScopeStarts: (ScopeStart * DateTimeOffset) list
       /// The minute a timed response was submitted, for intake's timer flags
       /// (DF-SIGNAL-2026-0015). Only timed surveys carry it.
@@ -109,9 +112,9 @@ let termsProblem (terms: Terms) : string option =
             let keys = terms.ScopeStarts |> List.map (fst >> scopeKey)
 
             if keys <> List.sort (List.distinct keys) || keys.Length > 255 then
-                Some "Timer starts must name each section or page once, in order."
+                Some "Timer starts must name each section, page or question once, in order."
             elif keys |> List.exists (fun (kind, i) -> i < (if kind = 2 then 1 else 0) || i > 0xFFFF) then
-                Some "A timer start names a section or page outside what a link can carry."
+                Some "A timer start names a section, page or question outside what a link can carry."
             elif terms.ScopeStarts |> List.exists (snd >> carriable >> not) then
                 Some "A timer start is not a whole UTC minute a link can carry."
             else
@@ -199,7 +202,9 @@ let private readTerms (body: byte[]) (at: int) : Result<Terms * int, DecodeError
                 | Ok _ when next + 4 > body.Length -> Error InvalidTerms
                 | Ok(terms, next) -> Ok({ terms with StartedAt = Some(minuteAt body next) }, next + 4)
 
-            // Section and page timer starts: a count, then kind, index and minute each.
+            // Section, page and question timer starts: a count, then kind,
+            // index and minute each. An unknown kind refuses the whole link
+            // (fail closed): it is never read in part.
             let scoped =
                 match started with
                 | Error e -> Error e
@@ -219,6 +224,7 @@ let private readTerms (body: byte[]) (at: int) : Result<Terms * int, DecodeError
                                   match body[at] with
                                   | 1uy -> Some(SectionStart index, minuteAt body (at + 3))
                                   | 2uy -> Some(PageStart index, minuteAt body (at + 3))
+                                  | 3uy -> Some(QuestionStart index, minuteAt body (at + 3))
                                   | _ -> None ]
 
                         if starts |> List.exists Option.isNone then

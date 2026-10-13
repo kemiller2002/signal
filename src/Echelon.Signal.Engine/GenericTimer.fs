@@ -1,9 +1,9 @@
 /// Timers on the survey page (ARX-013; DF-SIGNAL-2026-0010, DF-SIGNAL-2026-0015).
 ///
 /// - A survey timer runs from the start minute the link carries.
-/// - A section or page timer runs from the minute the respondent first
-///   reached a page holding its section or layout page. That minute is
-///   stamped into the link's terms then.
+/// - A section, page or question timer runs from the minute the respondent
+///   first reached a page holding its section, layout page or question. That
+///   minute is stamped into the link's terms then.
 /// - When an enforced timer runs out, the answers it covers can no longer
 ///   change.
 ///
@@ -11,8 +11,11 @@
 /// shown, as a UTC time, so it needs no ticking clock: the time is read
 /// again on every event and when the page opens.
 ///
-/// Question timers would need a start per question and stay refused, as
-/// does more than one timer for the same scope.
+/// Starts are whole UTC minutes, so a timer's deadline can fall up to a
+/// minute before its stated duration from the moment of first display; for
+/// a short question timer that matters, and the console says so
+/// (DF-SIGNAL-2026-0015 §9). More than one timer for the same scope stays
+/// refused.
 ///
 /// Pure.
 module Echelon.Signal.Engine.GenericTimer
@@ -26,23 +29,25 @@ type TimerModel = Echelon.Signal.Engine.Timers.Timer
 let supported (content: Content) =
     let scopes = content.Presentation.Timers |> List.map _.Scope
 
-    scopes |> List.forall (function Timers.QuestionScope _ -> false | _ -> true)
-    && (List.distinct scopes).Length = scopes.Length
+    (List.distinct scopes).Length = scopes.Length
 
 let private sectionIndex (content: Content) (id: string) = content.Sections |> List.tryFindIndex (fun s -> s.Id = id)
+
+let private questionIndex (content: Content) (id: string) = questions content |> List.tryFindIndex (fun (_, q) -> q.Id = id)
 
 let private keyOf =
     function
     | SectionStart i -> 1, i
     | PageStart n -> 2, n
+    | QuestionStart i -> 3, i
 
 /// The scope start a scoped timer records, if it is scoped.
 let private scopeOf (content: Content) (timer: TimerModel) =
     match timer.Scope with
     | Timers.SectionScope id -> sectionIndex content id |> Option.map SectionStart
     | Timers.PageScope n -> Some(PageStart n)
-    | Timers.SurveyScope
-    | Timers.QuestionScope _ -> None
+    | Timers.QuestionScope id -> questionIndex content id |> Option.map QuestionStart
+    | Timers.SurveyScope -> None
 
 /// When a timer started, as the terms record it.
 let startOf (content: Content) (terms: Terms) (timer: TimerModel) =
@@ -60,8 +65,8 @@ let covers (content: Content) (timer: TimerModel) : Set<string> =
     | Timers.QuestionScope id -> Set.singleton id
 
 /// The terms with a start stamped for every timer the page shown opens:
-/// the survey timer at first open, a section or page timer when one of its
-/// questions is first shown. A start already recorded never moves.
+/// the survey timer at first open, a section, page or question timer when
+/// one of its questions is first shown. A start already recorded never moves.
 let stamp (content: Content) (shown: string list) (now: System.DateTimeOffset) (terms: Terms) : Terms =
     let minute = startMinute now
 
@@ -133,8 +138,8 @@ let notice (content: Content) (terms: Terms) (now: System.DateTimeOffset) (shown
     match candidates with
     | [] -> ""
     | (timer, deadline, state) :: _ ->
-        // The survey timer keeps its wording (DF-SIGNAL-2026-0010); a section
-        // or page timer names its scope.
+        // The survey timer keeps its wording (DF-SIGNAL-2026-0010); a section,
+        // page or question timer names its scope.
         let survey = timer.Scope = Timers.SurveyScope
         let held = if survey then "Your answers" else "Its answers"
 
