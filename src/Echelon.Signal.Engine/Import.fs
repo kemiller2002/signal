@@ -76,7 +76,13 @@ type SurveyResult =
       Dimensions: (Dimension * DimensionResult) list
       /// Answer counts only; decoded answers are not retained (ARP §11).
       AnsweredCount: int
-      NonNumericCount: int }
+      NonNumericCount: int
+      /// The recommendations the submission triggered, by id, most urgent
+      /// first (ARP §15); their text stays in the immutable template.
+      Recommendations: string list
+      /// The yes/no facts that held (ARP §14), by id: only what group
+      /// counts and reports need, never other intermediate values.
+      FactsTrue: string list }
 
 /// Why a submission was not accepted. Stable codes, never guesses (ARP §58).
 type ImportError =
@@ -148,7 +154,9 @@ let private interpret (assessment: Assessment) (identity: SubmissionIdentity) (e
       SubmissionHash = sha256Hex canonical
       Dimensions = score assessment envelope.Answers
       AnsweredCount = envelope.Answers.Count
-      NonNumericCount = envelope.Answers |> Map.filter (fun _ a -> (numericValue a).IsNone) |> Map.count }
+      NonNumericCount = envelope.Answers |> Map.filter (fun _ a -> (numericValue a).IsNone) |> Map.count
+      Recommendations = []
+      FactsTrue = [] }
 
 /// The identity a finalized submission contributes under, or why it cannot
 /// contribute to this group.

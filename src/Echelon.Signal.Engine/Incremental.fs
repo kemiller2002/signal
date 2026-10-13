@@ -36,7 +36,10 @@ type Accumulator =
       Accepted: Map<string, string>
       Evidence: Map<string, DimensionEvidence>
       Answered: int
-      NonNumeric: int }
+      NonNumeric: int
+      /// How many accepted results triggered each recommendation, and held each yes/no fact.
+      Recommendations: Map<string, int>
+      Facts: Map<string, int> }
 
 let empty (definition: GroupDefinition) =
     { Definition = definition
@@ -46,7 +49,9 @@ let empty (definition: GroupDefinition) =
         |> List.map (fun d -> d.Id, { Scores = []; Unscored = 0 })
         |> Map.ofList
       Answered = 0
-      NonNumeric = 0 }
+      NonNumeric = 0
+      Recommendations = Map.empty
+      Facts = Map.empty }
 
 /// Inserts into an ascending list, without recursion (a group may be large).
 let private insert (value: float) (sorted: float list) =
@@ -59,6 +64,10 @@ type AddRefusal =
     | DifferentSubmission of identityKey: string * accepted: string
 
 /// Adds one accepted contribution, updating only the evidence it touches.
+/// Counts each distinct id once more.
+let private counted (counts: Map<string, int>) (ids: string list) =
+    ids |> List.distinct |> List.fold (fun (m: Map<string, int>) id -> m.Add(id, 1 + (m.TryFind id |> Option.defaultValue 0))) counts
+
 let add (result: SurveyResult) (accumulator: Accumulator) : Result<Accumulator, AddRefusal> =
     match accumulator.Accepted.TryFind result.Identity.Key with
     | Some hash when hash = result.SubmissionHash -> Ok accumulator
@@ -83,7 +92,9 @@ let add (result: SurveyResult) (accumulator: Accumulator) : Result<Accumulator, 
                 Accepted = accumulator.Accepted.Add(result.Identity.Key, result.SubmissionHash)
                 Evidence = evidence
                 Answered = accumulator.Answered + result.AnsweredCount
-                NonNumeric = accumulator.NonNumeric + result.NonNumericCount }
+                NonNumeric = accumulator.NonNumeric + result.NonNumericCount
+                Recommendations = counted accumulator.Recommendations result.Recommendations
+                Facts = counted accumulator.Facts result.FactsTrue }
 
 /// The accumulator for a set of accepted results, added one by one.
 let ofResults (definition: GroupDefinition) (results: SurveyResult list) =

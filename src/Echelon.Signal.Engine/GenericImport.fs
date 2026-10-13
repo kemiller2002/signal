@@ -94,7 +94,13 @@ let evaluateFor (environment: Environment) (today: System.DateOnly option) (defi
                           SubmissionHash = sha256Of canonical
                           Dimensions = dimensionResults definition.Template content result
                           AnsweredCount = envelope.Answers.Count
-                          NonNumericCount = envelope.Answers |> Map.filter (fun _ a -> match a with Special _ -> true | _ -> false) |> Map.count }
+                          NonNumericCount = envelope.Answers |> Map.filter (fun _ a -> match a with Special _ -> true | _ -> false) |> Map.count
+                          Recommendations = result.Evaluation.Recommendations |> List.map _.Id
+                          FactsTrue =
+                            result.Evaluation.Facts
+                            |> List.choose (function
+                                | id, Some(RuleModel.BoolValue true) -> Some id
+                                | _ -> None) }
 
                     match accepted identity.Key with
                     | Some existing when existing = accepted'.SubmissionHash -> AlreadyImported identity
