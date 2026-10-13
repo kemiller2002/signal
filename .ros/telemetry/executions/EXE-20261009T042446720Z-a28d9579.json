@@ -1666,6 +1666,69 @@
         "name": "ros",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "bs-git-ci",
+      "occurredAt": "2026-10-13T10:13:46Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "ts-implementation",
+      "name": "custom implementation + decision: timer start in link (DF-SIGNAL-2026-0010, SIG-LINK-015), GenericTimer; 0 failed builds; 4 failing tests from the format change (capacity x2, flag-spelling test, timer refusal test) updated",
+      "occurredAt": "2026-10-13T10:14:39Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "ts-implementation",
+      "occurredAt": "2026-10-13T10:21:25Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "ts-testing",
+      "name": "testing: dotnet 478/478, browser 52/52",
+      "occurredAt": "2026-10-13T10:21:25Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "ts-testing",
+      "occurredAt": "2026-10-13T10:25:44Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "ts-git-ci",
+      "name": "git/CI integration: timer start PR and gate",
+      "occurredAt": "2026-10-13T10:26:50Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {

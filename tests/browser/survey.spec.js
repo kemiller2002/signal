@@ -254,3 +254,35 @@ test("a bank shows each identified respondent their own selection, and only that
   await page.locator("#submit-answers").click();
   await expect(page.locator("#submitted-title")).toHaveText("Submitted");
 });
+
+test("a timed survey's link gains its start minute on first open, and keeps it on reload", async ({ page }) => {
+  const formatOf = () => Buffer.from(new URL(page.url()).hash.split("#r=")[1].split("&")[0].replaceAll("-", "+").replaceAll("_", "/"), "base64")[0];
+  await open(page, links.timed);
+  await expect(page.locator("#timer-notice")).toContainText("Answer by");
+  await expect(page.locator("#timer-notice")).toContainText("10 minutes from when you first opened this survey");
+  // Format 2: the start is in the link, inside its integrity check.
+  await expect.poll(formatOf).toBe(2);
+  const stamped = new URL(page.url()).hash;
+  await pick(page, "0-3").check();
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-kernel", "running");
+  await expect(pick(page, "0-3")).toBeChecked();
+  // The same start: only the answers moved.
+  const startOf = (hash) => Buffer.from(hash.split("#r=")[1].split("&")[0].replaceAll("-", "+").replaceAll("_", "/"), "base64").subarray(43, 47).toString("hex");
+  expect(startOf(new URL(page.url()).hash)).toBe(startOf(stamped));
+});
+
+test("an enforced timer that ran out holds the answers, and an edited start is refused", async ({ page }) => {
+  await open(page, links.timedExpired);
+  await expect(page.locator("#timer-notice")).toContainText("Time is up");
+  await expect(pick(page, "0-3")).toBeDisabled();
+
+  // Moving the start later by hand breaks the link's integrity check.
+  const [path, payload] = links.timedExpired.split("#r=");
+  const bytes = Buffer.from(payload.replaceAll("-", "+").replaceAll("_", "/"), "base64");
+  bytes[46] = bytes[46] + 1;
+  const edited = bytes.toString("base64").replaceAll("+", "-").replaceAll("/", "_").replaceAll("=", "");
+  await page.goto(`${path}#r=${edited}`);
+  await expect(page.locator("#survey-refused-message")).toBeVisible();
+  await expect(page.locator("#timer-notice")).toHaveCount(0);
+});

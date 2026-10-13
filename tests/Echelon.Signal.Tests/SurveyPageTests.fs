@@ -142,6 +142,11 @@ let paged: Content =
 let banked: Content =
     { demo with Presentation = { demo.Presentation with Banks = [ { Id = "core"; Pool = demo.Sections.Head.Questions |> List.map _.Id; Select = 2 } ] } }
 
+/// The demo with an enforced 10-minute survey timer (DF-SIGNAL-2026-0010).
+let timed: Content =
+    let timer: Timers.Timer = { Id = "whole"; Scope = Timers.SurveyScope; Duration = TimeSpan.FromMinutes 10.0; Warnings = [ TimeSpan.FromMinutes 2.0 ]; Expiry = Timers.LockOnly; Enforcement = Timers.Enforced }
+    { demo with Presentation = { demo.Presentation with Timers = [ timer ] } }
+
 let DemoSurvey = "signal-demo"
 let DemoVersion = "1"
 
@@ -167,10 +172,10 @@ let private links =
       // Link format 2 (VER-003): an invitation that expired on 2020-01-31, and one in Canadian French.
       "expired",
       "web/survey/#r="
-      + GenericEnvelope.invitationWith { Locale = None; ExpiresOn = Some(DateOnly(2020, 1, 31)) } DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group
+      + GenericEnvelope.invitationWith { Locale = None; StartedAt = None; ExpiresOn = Some(DateOnly(2020, 1, 31)) } DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group
       "localized",
       "web/survey/#r="
-      + GenericEnvelope.invitationWith { Locale = Some "fr-CA"; ExpiresOn = Some(DateOnly(2100, 1, 1)) } DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group
+      + GenericEnvelope.invitationWith { Locale = Some "fr-CA"; StartedAt = None; ExpiresOn = Some(DateOnly(2100, 1, 1)) } DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group
       // Ranking, allocation, best-worst, a range and option trees.
       "compound", "web/survey/#r=" + GenericEnvelope.invitation "COMPOUND" "1" compoundEditor.Draft.Content Import.IdentifiedGroup instance group
       "compoundFile", fst (publishedFile "COMPOUND" "1" compoundEditor.Draft.Content)
@@ -179,6 +184,8 @@ let private links =
       "pagedFile", fst (publishedFile "PAGED" "1" paged)
       "banked", "web/survey/#r=" + GenericEnvelope.invitation "BANKED" "1" banked Import.IdentifiedGroup instance group
       "bankedFile", fst (publishedFile "BANKED" "1" banked)
+      "timed", "web/survey/#r=" + GenericEnvelope.invitation "TIMED" "1" timed Import.IdentifiedGroup instance group
+      "timedExpired", "web/survey/#r=" + GenericEnvelope.invitationWith { GenericEnvelope.noTerms with StartedAt = Some(DateTimeOffset(2020, 1, 1, 9, 0, 0, TimeSpan.Zero)) } "TIMED" "1" timed Import.IdentifiedGroup instance group
       // A test link (AUT-006 §60): marked on the page and refused by production import.
       "test", "web/survey/#r=" + GenericEnvelope.testLink DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group Map.empty ]
 
@@ -197,7 +204,7 @@ let ``the demo survey file and the browser links are what the code produces`` ()
         File.WriteAllBytes(repoFile kindsFile, kindsBytes)
         let compoundFile, compoundBytes = publishedFile "COMPOUND" "1" compoundEditor.Draft.Content
         File.WriteAllBytes(repoFile compoundFile, compoundBytes)
-        for surveyId, content in [ "PAGED", paged; "BANKED", banked ] do
+        for surveyId, content in [ "PAGED", paged; "BANKED", banked; "TIMED", timed ] do
             let file, bytes = publishedFile surveyId "1" content
             File.WriteAllBytes(repoFile file, bytes)
         File.WriteAllText(repoFile "tests/browser/fixtures/survey-links.json", linksJson ())
@@ -207,7 +214,7 @@ let ``the demo survey file and the browser links are what the code produces`` ()
     Assert.Equal<byte[]>(kindsBytes, File.ReadAllBytes(repoFile kindsFile))
     let compoundFile, compoundBytes = publishedFile "COMPOUND" "1" compoundEditor.Draft.Content
     Assert.Equal<byte[]>(compoundBytes, File.ReadAllBytes(repoFile compoundFile))
-    for surveyId, content in [ "PAGED", paged; "BANKED", banked ] do
+    for surveyId, content in [ "PAGED", paged; "BANKED", banked; "TIMED", timed ] do
         let file, bytes = publishedFile surveyId "1" content
         Assert.Equal<byte[]>(bytes, File.ReadAllBytes(repoFile file))
     Assert.Equal(linksJson (), readRepoFile "tests/browser/fixtures/survey-links.json")

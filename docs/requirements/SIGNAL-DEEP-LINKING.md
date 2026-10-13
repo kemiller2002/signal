@@ -2,7 +2,7 @@
 id: SIG-LINK
 title: Signal deep linking - every navigable view has a URL that opens it
 status: accepted
-version: 1.2.0
+version: 1.3.0
 created: 2026-10-08
 updated: 2026-10-13
 owners:
@@ -11,6 +11,7 @@ related_documents:
   - research/decisions/DF-SIGNAL-2026-0003--deep-linking-through-limen-routing.md
   - research/decisions/DF-SIGNAL-2026-0006--respondent-links-carry-locale-and-expiry-in-link-format-2.md
   - research/decisions/DF-SIGNAL-2026-0007--the-survey-page-names-its-page-in-the-respondent-link.md
+  - research/decisions/DF-SIGNAL-2026-0010--a-survey-timer-starts-from-a-minute-in-the-integrity-checked-link.md
   - .echelon/routes.json
   - docs/requirements/implementation-gap-analysis.md
 tags: [requirements, routing, deep-linking, limen, privacy]
@@ -39,7 +40,7 @@ provenance:
     EXE-20261009T042446720Z-a28d9579:
       operations: [modified]
       at: 2026-10-09T04:38:25.498Z
-      last: 2026-10-13T08:56:34.638Z
+      last: 2026-10-13T10:26:08.384Z
       actor:
         kind: agent
         id: anthropic/claude-code
@@ -159,4 +160,12 @@ NOT grant a page: the page is reached under the template's navigation rules,
 and a page the rules refuse MUST open as the nearest allowed page with the
 address rewritten. Page turns MUST add a history entry; answers MUST replace
 the current one. A submission link MUST NOT carry `p`.
+
+**SIG-LINK-015 A survey timer's start.** A timed survey's link MAY carry the
+minute its response was first opened, as an optional format-2 term inside
+the link's integrity check (DF-SIGNAL-2026-0010). A link without it MUST stay
+valid. The survey page MUST stamp it at the first open of an unsubmitted
+timed response. An edited start MUST be refused. The start MUST be a whole
+UTC minute, and an anonymous link MUST NOT gain anything else that could
+identify the respondent.
 

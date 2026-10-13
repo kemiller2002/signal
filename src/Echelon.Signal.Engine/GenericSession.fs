@@ -53,8 +53,9 @@ type Refusal =
     /// The file is a template, but not the version the link names.
     | WrongTemplate
     | UnsupportedAnswer of questionId: string
-    /// Timers (DF-SIGNAL-2026-0008), which this page does not run yet: shown
-    /// without them, the survey would not be the one published.
+    /// Timers this page does not run yet (section, page or question timers;
+    /// DF-SIGNAL-2026-0010): shown without them, the survey would not be the
+    /// one published.
     | UnsupportedPresentation of what: string
     /// The invitation's last day has passed (VER-003).
     | InvitationExpired of expiresOn: DateOnly
@@ -97,6 +98,9 @@ type Response =
       /// arrived and written back unchanged.
       Terms: GenericEnvelope.Terms
       Phase: Phase
+      /// The time when the page last heard from the person (`Ticked`), for
+      /// the survey timer (`GenericTimer`).
+      Now: DateTimeOffset
       /// The page shown and the furthest reached (`GenericPaging`).
       Position: GenericPaging.Position
       /// Why the last request to submit or move was refused, if it was.
@@ -163,16 +167,19 @@ let verify (reference: byte[]) (bytes: byte[]) : Result<Published, Refusal> =
         else
             match questions decoded.Content |> List.map snd |> List.tryFind (supported >> not) with
             | Some q -> Error(UnsupportedAnswer q.Id)
-            | None when not decoded.Content.Presentation.Timers.IsEmpty -> Error(UnsupportedPresentation "timers")
+            | None when not (GenericTimer.supported decoded.Content) -> Error(UnsupportedPresentation "timers on sections, pages or questions")
             | None ->
                 Ok
                     { SurveyId = decoded.SurveyId
                       Version = decoded.Version
                       Form = form }
 
-/// The fetched catalog file arrives, on a day: an unsubmitted response to an
-/// expired invitation is refused, so it cannot be filled in.
-let received (today: DateOnly) (fetched: Fetched) (session: Session) : Session =
+/// The fetched catalog file arrives, at an instant: an unsubmitted response
+/// to an expired invitation is refused, so it cannot be filled in. A timed
+/// survey opened for the first time gets its start minute (DF-SIGNAL-2026-0010).
+let receivedAt (now: DateTimeOffset) (fetched: Fetched) (session: Session) : Session =
+    let today = DateOnly.FromDateTime now.UtcDateTime
+
     match session with
     | Fetching(reference, payload, page) ->
         match fetched with
@@ -193,16 +200,28 @@ let received (today: DateOnly) (fetched: Fetched) (session: Session) : Session =
                     let published =
                         { published with Form = { published.Form with Content = BankSelection.forBinding envelope.Binding published.Form.Content } }
 
+                    let final = Submission.isFinal { Binding = envelope.Binding; Answers = Map.empty }
+
+                    let terms =
+                        match GenericTimer.surveyTimer published.Form.Content, terms.StartedAt with
+                        | Some _, None when not final -> { terms with StartedAt = Some(GenericEnvelope.startMinute now) }
+                        | _ -> terms
+
                     Responding
                         { Published = published
                           Binding = envelope.Binding
                           Answers = envelope.Answers
                           Terms = terms
                           Phase = if Submission.isFinal { Binding = envelope.Binding; Answers = Map.empty } then Submitted else Answering
+                          Now = now
                           Position = GenericPaging.reach published.Form.Content envelope.Answers (GenericPaging.resume published.Form.Content envelope.Answers) page
                           Refusal = None }
     | Refused _
     | Responding _ -> session
+
+/// As `receivedAt`, at the start of a UTC day.
+let received (today: DateOnly) (fetched: Fetched) (session: Session) : Session =
+    receivedAt (DateTimeOffset(today.ToDateTime TimeOnly.MinValue, TimeSpan.Zero)) fetched session
 
 // ---------------------------------------------------------------------------
 // Answering and finalizing.
@@ -290,6 +309,8 @@ type Msg =
     /// A number typed into a compound input (a ranking position, an allocation, a range end).
     | Numbered of questionId: string * inputId: string * text: string
     | Picked of questionId: string * side: GenericInputs.Side * optionId: string
+    /// The time now, sent by the application edge before each event.
+    | Ticked of now: DateTimeOffset
     /// Back or Next a page.
     | Turned of GenericPaging.Move
     /// The link now names a page (browser Back or Forward, or an edited link).
@@ -371,6 +392,7 @@ let private target =
     | Picked(questionId, _, _) -> Some questionId
     | Turned _
     | Reached _
+    | Ticked _
     | SubmitRequested _ -> None
 
 let update (msg: Msg) (session: Session) : Session =
@@ -378,6 +400,8 @@ let update (msg: Msg) (session: Session) : Session =
     | Responding r when r.Phase = Submitted -> session
     // A locked answer (ARX-013) cannot change, whatever the page sends.
     | Responding r when target msg |> Option.exists (GenericPaging.locked r.Published.Form.Content r.Answers r.Position).Contains -> session
+    // An enforced survey timer that ran out holds every answer (ARX-013).
+    | Responding r when (target msg).IsSome && GenericTimer.locksAnswers r.Published.Form.Content r.Terms.StartedAt r.Now -> session
     | Responding r ->
         match msg with
         | Chose(questionId, state) when (tryQuestion r.Published.Form.Content questionId |> Option.exists (fun q -> choices q |> List.exists (fst >> (=) state))) ->
@@ -418,6 +442,7 @@ let update (msg: Msg) (session: Session) : Session =
             match GenericPaging.move r.Published.Form.Content r.Answers r.Position direction with
             | Ok position -> Responding { r with Position = position; Refusal = None }
             | Error text -> Responding { r with Refusal = Some text }
+        | Ticked now -> Responding { r with Now = now }
         | Reached page -> Responding { r with Position = GenericPaging.reach r.Published.Form.Content r.Answers r.Position page; Refusal = None }
         | SubmitRequested entropy -> Responding(submit r entropy)
     | Fetching _

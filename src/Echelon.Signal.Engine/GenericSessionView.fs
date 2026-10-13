@@ -75,7 +75,7 @@ let private rows (r: Response) =
     let _, _, onPage = GenericPaging.current content r.Answers r.Position
     let applicable = Set.ofList onPage
     let locked = GenericPaging.locked content r.Answers r.Position
-    let sealedResponse = r.Phase = Submitted
+    let sealedResponse = r.Phase = Submitted || GenericTimer.locksAnswers content r.Terms.StartedAt r.Now
     let indexed = indexedQuestions r
 
     r.Published.Form.Content.Sections
@@ -104,6 +104,11 @@ let phaseName =
 let view (session: Session) : View.View =
     let value = View.Value
     let current = phaseName session
+
+    let timerNotice =
+        match session with
+        | Responding r when r.Phase = Answering -> GenericTimer.notice r.Published.Form.Content r.Terms.StartedAt r.Now
+        | _ -> ""
 
     // Page n of total, and whether Back is offered.
     let page, pageCount, canBack =
@@ -135,6 +140,8 @@ let view (session: Session) : View.View =
         "refusal", value (text refusal)
         "rows", View.Items items
         "progress", value (text progress)
+        "hasTimer", value (flag (timerNotice <> ""))
+        "timerNotice", value (text timerNotice)
         "hasPages", value (flag (pageCount > 1))
         "pageLabel", value (text $"Page {page + 1} of {pageCount}")
         "canBack", value (flag canBack)

@@ -47,6 +47,7 @@
     <Compile Include="PagingTests.fs" />
     <Compile Include="BaselineSourcesTests.fs" />
     <Compile Include="TimerBankTests.fs" />
+    <Compile Include="TimerStartTests.fs" />
     <Compile Include="ReportStateTests.fs" />
     <Compile Include="AdminStateTests.fs" />
     <Compile Include="AdminPageTests.fs" />

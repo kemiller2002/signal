@@ -49,7 +49,7 @@ let parse (request: Request) : Result<int * GenericEnvelope.Terms, string> =
 
         day
         |> Result.bind (fun day ->
-            let terms: GenericEnvelope.Terms = { Locale = (if locale = "" then None else Some locale); ExpiresOn = day }
+            let terms: GenericEnvelope.Terms = { Locale = (if locale = "" then None else Some locale); StartedAt = None; ExpiresOn = day }
 
             match GenericEnvelope.termsProblem terms with
             | Some problem -> Error problem
