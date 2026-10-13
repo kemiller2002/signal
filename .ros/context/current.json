@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T09:28:33Z",
+  "updatedAt": "2026-10-13T09:33:16Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -2729,13 +2729,24 @@
     {
       "id": "WI-0083",
       "type": "documentation",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-13T09:28:33Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "docs/measurement/baseline-sources.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/BaselineSourcesTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-13T09:33:16Z",
       "telemetryExecutionIds": [
         "EXE-20261013T092834455Z-350013c4"
-      ]
+      ],
+      "completedAt": "2026-10-13T09:33:16Z",
+      "conclusion": "Baseline evidence-source index written and held to its paths by a test"
     }
   ]
 }
