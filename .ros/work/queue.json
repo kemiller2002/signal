@@ -1949,10 +1949,10 @@
         "signal,platform,conditor"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-13T09:07:34Z",
-      "updatedAt": "2026-10-13T09:07:44Z",
+      "updatedAt": "2026-10-13T09:22:01Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
