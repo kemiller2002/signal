@@ -1834,10 +1834,10 @@
         "signal,order:14c,privacy,depends:arca"
       ],
       "priority": "medium",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-09T00:39:14.982Z",
-      "updatedAt": "2026-10-13T19:23:32Z",
+      "updatedAt": "2026-10-13T19:47:06Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
