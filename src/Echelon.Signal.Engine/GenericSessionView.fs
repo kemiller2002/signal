@@ -69,8 +69,12 @@ let private choiceRows (qi: int) (q: Question) (answer: AnswerState option) (loc
            row $"{qi}-p{pi}" "pair" (common label @ [ "groupBest", text $"q{qi}-best"; "groupWorst", text $"q{qi}-worst"; "bestChecked", flag isBest; "worstChecked", flag isWorst ])))
     @ (choices q |> List.mapi (fun ci (state, label) -> row $"{qi}-{ci}" "option" (common label @ [ "checked", flag (answer = Some state) ])))
 
+/// The rows of the page shown: its section headings and questions.
 let private rows (r: Response) =
-    let applicable = (Rules.applicability r.Published.Form.Content r.Answers).Questions
+    let content = r.Published.Form.Content
+    let _, _, onPage = GenericPaging.current content r.Answers r.Position
+    let applicable = Set.ofList onPage
+    let locked = GenericPaging.locked content r.Answers r.Position
     let sealedResponse = r.Phase = Submitted
     let indexed = indexedQuestions r
 
@@ -87,7 +91,7 @@ let private rows (r: Response) =
             :: (shown
                 |> List.collect (fun (qi, q) ->
                     let help = [ defaultArg q.HelpText ""; GenericInputs.hint q ] |> List.filter ((<>) "") |> String.concat " "
-                    row $"{qi}" "question" [ "prompt", text q.Prompt; "help", text help; "group", text $"q{qi}" ] :: choiceRows qi q (r.Answers.TryFind q.Id) sealedResponse)))
+                    row $"{qi}" "question" [ "prompt", text q.Prompt; "help", text help; "group", text $"q{qi}" ] :: choiceRows qi q (r.Answers.TryFind q.Id) (sealedResponse || locked.Contains q.Id))))
 
 /// Which part of the page shows: loading, refused, answering or submitted.
 let phaseName =
@@ -100,6 +104,15 @@ let phaseName =
 let view (session: Session) : View.View =
     let value = View.Value
     let current = phaseName session
+
+    // Page n of total, and whether Back is offered.
+    let page, pageCount, canBack =
+        match session with
+        | Responding r ->
+            let page, count, _ = GenericPaging.current r.Published.Form.Content r.Answers r.Position
+            page, count, GenericPaging.canGoBack r.Published.Form.Content r.Answers r.Position
+        | Fetching _
+        | Refused _ -> 0, 1, false
 
     let title, version, refusal, items, progress, submitRefusal =
         match session with
@@ -122,6 +135,11 @@ let view (session: Session) : View.View =
         "refusal", value (text refusal)
         "rows", View.Items items
         "progress", value (text progress)
+        "hasPages", value (flag (pageCount > 1))
+        "pageLabel", value (text $"Page {page + 1} of {pageCount}")
+        "canBack", value (flag canBack)
+        "hasNext", value (flag (page + 1 < pageCount))
+        "isLastPage", value (flag (page + 1 >= pageCount))
         "hasRefusal", value (flag submitRefusal.IsSome)
         "submitRefusal", value (text (defaultArg submitRefusal ""))
         // The invitation's locale is presentation only (VER-003): the page's language.

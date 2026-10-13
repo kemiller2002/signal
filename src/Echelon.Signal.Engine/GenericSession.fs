@@ -92,7 +92,9 @@ type Response =
       /// arrived and written back unchanged.
       Terms: GenericEnvelope.Terms
       Phase: Phase
-      /// Why the last request to submit was refused, if it was.
+      /// The page shown and the furthest reached (`GenericPaging`).
+      Position: GenericPaging.Position
+      /// Why the last request to submit or move was refused, if it was.
       Refusal: string option }
 
 [<NoComparison>]
@@ -184,6 +186,7 @@ let received (today: DateOnly) (fetched: Fetched) (session: Session) : Session =
                           Answers = envelope.Answers
                           Terms = terms
                           Phase = if Submission.isFinal { Binding = envelope.Binding; Answers = Map.empty } then Submitted else Answering
+                          Position = GenericPaging.resume published.Form.Content envelope.Answers
                           Refusal = None }
     | Refused _
     | Responding _ -> session
@@ -274,6 +277,8 @@ type Msg =
     /// A number typed into a compound input (a ranking position, an allocation, a range end).
     | Numbered of questionId: string * inputId: string * text: string
     | Picked of questionId: string * side: GenericInputs.Side * optionId: string
+    /// Back or Next a page.
+    | Turned of GenericPaging.Move
     /// Finalize. The bytes are fresh secure entropy from the application
     /// edge; only an anonymous invitation uses them.
     | SubmitRequested of entropy: byte[]
@@ -342,9 +347,21 @@ let private compound (r: Response) (questionId: string) (change: Question -> Ans
         | None -> session
     | None -> session
 
+/// The question an answer message changes, if it changes one.
+let private target =
+    function
+    | Chose(questionId, _)
+    | Toggled(questionId, _, _)
+    | Numbered(questionId, _, _)
+    | Picked(questionId, _, _) -> Some questionId
+    | Turned _
+    | SubmitRequested _ -> None
+
 let update (msg: Msg) (session: Session) : Session =
     match session with
     | Responding r when r.Phase = Submitted -> session
+    // A locked answer (ARX-013) cannot change, whatever the page sends.
+    | Responding r when target msg |> Option.exists (GenericPaging.locked r.Published.Form.Content r.Answers r.Position).Contains -> session
     | Responding r ->
         match msg with
         | Chose(questionId, state) when (tryQuestion r.Published.Form.Content questionId |> Option.exists (fun q -> choices q |> List.exists (fst >> (=) state))) ->
@@ -381,6 +398,10 @@ let update (msg: Msg) (session: Session) : Session =
             | _ -> session
         | Numbered(questionId, inputId, text) -> compound r questionId (fun q answer -> GenericInputs.numbered q answer inputId text) session
         | Picked(questionId, side, optionId) -> compound r questionId (fun q answer -> GenericInputs.picked q answer side optionId) session
+        | Turned direction ->
+            match GenericPaging.move r.Published.Form.Content r.Answers r.Position direction with
+            | Ok position -> Responding { r with Position = position; Refusal = None }
+            | Error text -> Responding { r with Refusal = Some text }
         | SubmitRequested entropy -> Responding(submit r entropy)
     | Fetching _
     | Refused _ -> session

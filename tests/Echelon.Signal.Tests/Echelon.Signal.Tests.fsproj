@@ -44,6 +44,7 @@
     <Compile Include="LinkTermsTests.fs" />
     <Compile Include="InvitationTests.fs" />
     <Compile Include="CompoundKindTests.fs" />
+    <Compile Include="PagingTests.fs" />
     <Compile Include="ReportStateTests.fs" />
     <Compile Include="AdminStateTests.fs" />
     <Compile Include="AdminPageTests.fs" />
