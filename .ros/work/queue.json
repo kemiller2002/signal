@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 83,
+  "nextSeq": 84,
   "items": [
     {
       "id": "WI-0001",
@@ -1953,6 +1953,29 @@
       "attachments": [],
       "createdAt": "2026-10-13T09:07:34Z",
       "updatedAt": "2026-10-13T09:22:01Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0083",
+      "title": "Measurement baseline: index of Signal's historical evidence sources and Echelon capability adoption commits",
+      "description": "Echelon measurement amendment (2026-10-13) item 4: docs/measurement/baseline-sources.md indexes where historical evidence lives (Praxis .ros records, telemetry, PR and CI history) and the commit each Echelon capability was adopted at, with what is missing. Index only; no telemetry copied.",
+      "tags": [
+        "signal,measurement"
+      ],
+      "priority": "medium",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-10-13T09:28:33Z",
+      "updatedAt": "2026-10-13T09:28:33Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T09:22:01Z",
+  "updatedAt": "2026-10-13T09:28:33Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -2725,6 +2725,17 @@
       ],
       "completedAt": "2026-10-13T09:22:01Z",
       "conclusion": "echelon-current 1.18.0 adopted through Conditor (Praxis 3.11.0, Arca 0.4.1) with the Arca 0.4 migration"
+    },
+    {
+      "id": "WI-0083",
+      "type": "documentation",
+      "state": "active",
+      "semanticState": "active",
+      "evidence": [],
+      "updatedAt": "2026-10-13T09:28:33Z",
+      "telemetryExecutionIds": [
+        "EXE-20261013T092834455Z-350013c4"
+      ]
     }
   ]
 }
