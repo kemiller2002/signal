@@ -2054,6 +2054,48 @@
         "name": "ros",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.started",
+      "stepId": "ml-implementation",
+      "name": "custom implementation + testing: longest-link fixture and spec; found 2 escaped defects from #73 (partial ranking not kept in the link; out-of-order positions collapse)",
+      "occurredAt": "2026-10-13T12:56:25Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "ml-implementation",
+      "occurredAt": "2026-10-13T13:09:29Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "ml-cross-browser",
+      "name": "testing: cross-browser run 38402731660 on the branch, 45/45 (WebKit iPhone, Firefox)",
+      "occurredAt": "2026-10-13T13:09:29Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "ml-cross-browser",
+      "occurredAt": "2026-10-13T13:13:25Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {
