@@ -27,32 +27,35 @@ import { AREAS, FIRST_PROMPT, INVITATION, KERNEL_START_MS, actionNames, answerAl
 
 test("ULI-A01/A09: every surface shows exactly its declared actions", async ({ page }) => {
   await open(page, "/web/index.html");
-  expect(await actionNames(page)).toEqual(["See results"]);
+  await expect.poll(() => actionNames(page)).toEqual(["See results"]);
   await answerAll(page, "Sometimes");
   await page.getByRole("button", { name: "See results" }).click();
   await expect(page.getByRole("heading", { name: "Results" })).toBeVisible();
   // Submission needs an invitation; a page opened without one offers none.
-  expect(await actionNames(page)).toEqual(["Edit answers", "Start over"]);
+  await expect.poll(() => actionNames(page)).toEqual(["Edit answers", "Start over"]);
 
   await open(page, INVITATION);
   await answerAll(page, "Sometimes");
   await page.getByRole("button", { name: "See results" }).click();
-  expect(await actionNames(page)).toEqual(["Edit answers", "Start over", "Submit answers"]);
+  await expect.poll(() => actionNames(page)).toEqual(["Edit answers", "Start over", "Submit answers"]);
   await page.getByRole("button", { name: "Submit answers" }).click();
   await expect(page.getByRole("heading", { name: "Submitted" })).toBeVisible();
-  expect(await actionNames(page)).toEqual(["Copy link"]);
+  await expect.poll(() => actionNames(page)).toEqual(["Copy link"]);
 
   await open(page, links.identified);
-  expect(await actionNames(page)).toEqual(["Submit answers"]);
+  await expect.poll(() => actionNames(page)).toEqual(["Submit answers"]);
   await open(page, links.paged);
-  expect(await actionNames(page)).toEqual(["Next"]);
+  await expect.poll(() => actionNames(page)).toEqual(["Next"]);
   await open(page, "/web/survey/");
-  expect(await actionNames(page)).toEqual([]);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Survey unavailable");
+  await expect.poll(() => actionNames(page)).toEqual([]);
 
   const areas = AREAS.map(([name]) => name);
   await open(page, "/web/admin/");
-  expect(await actionNames(page)).toEqual(["Copy link", ...areas]);
+  await expect.poll(() => actionNames(page)).toEqual(["Copy link", ...areas]);
   await open(page, "/web/admin/#/assessments/SDRA/versions/0.1.0-draft/sections/D02/questions/CORE-007");
+  // The catalogue loads after the kernel starts: wait for the question's links.
+  await expect.poll(async () => (await actionNames(page)).length).toBe(18);
   const names = await actionNames(page);
   expect(names.slice(0, 8)).toEqual(["Copy link", ...areas]);
   expect(names.slice(8, 13)).toEqual([
@@ -62,7 +65,7 @@ test("ULI-A01/A09: every surface shows exactly its declared actions", async ({ p
   expect(names.slice(13)).toHaveLength(5);
   for (const name of names.slice(13)) expect(name).toMatch(/^CORE-0(0[6-9]|10): /);
   await open(page, "/web/admin/#/reports/2026");
-  expect(await actionNames(page)).toEqual(["Copy link", ...areas, "Go to the overview"]);
+  await expect.poll(() => actionNames(page)).toEqual(["Copy link", ...areas, "Go to the overview"]);
 });
 
 // --- Critical workflows: outcomes before and after (ULI-A02, A05, A07, A10)
