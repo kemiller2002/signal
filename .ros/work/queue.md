@@ -107,4 +107,4 @@
 | WI-0092 | Signal ARX-002: obligations with discharge evidence and explicit unknown and searched-not-found knowledge across the seven state systems (authoring, respondent, anonymous finalization, import, group aggregation, report-state persistence, report snapshots) | captured | signal, ordo, quality | medium |
 | WI-0093 | Every gap-analysis row marked tested names at least one test (FileTests: test name), resolved by GapAnalysisTests; upgrade the file-only citations row by row | captured | signal, quality, gap-analysis | medium |
 | WI-0094 | Adopt echelon-current 1.19.0 through Conditor 0.10.0: declare forma and folio in conditor.json and move Forma 0.4.1 to 0.5.0 (registry opt-in step 0) | complete | signal, platform, conditor | high |
-| WI-0095 | Adopt echelon-current 1.20.0 through Conditor 0.10.0: Forma 0.5.0 to 0.6.1 and Folio 0.3.0 to 0.4.0 (registry step 1) | ready | signal, platform, conditor | high |
+| WI-0095 | Adopt echelon-current 1.20.0 through Conditor 0.10.0: Forma 0.5.0 to 0.6.1 and Folio 0.3.0 to 0.4.0 (registry step 1) | complete | signal, platform, conditor | high |

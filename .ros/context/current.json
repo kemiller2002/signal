@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T16:33:23Z",
+  "updatedAt": "2026-10-13T16:36:31Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3031,13 +3031,44 @@
     {
       "id": "WI-0095",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-13T16:33:23Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "package.json"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/FoundationsConformanceTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-13T16:36:31Z",
       "telemetryExecutionIds": [
         "EXE-20261013T163324103Z-5bec3f4e"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "33af9afd812ff56a7e364b5d",
+        "recordedAt": "2026-10-13T16:36:29Z",
+        "executionId": "EXE-20261013T163324103Z-5bec3f4e",
+        "repository": "echelon-signal",
+        "branch": "platform/echelon-current-1.20.0-forma-folio",
+        "commit": "86eb0d5a190ff2b2edee31dba7e70ce45d225689",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "platform/echelon-current-1.20.0-forma-folio",
+        "remoteCommit": "86eb0d5a190ff2b2edee31dba7e70ce45d225689",
+        "summary": "1.20.0 applied via Conditor 0.10.0 (plan sha256:8c9d6633, unchanged at authorize, clean tree): Forma 0.6.1, Folio 0.4.0; real home unchanged; conditor verify passes; .NET 533 and site assembly tests pass.",
+        "nextAction": "Complete, PR, CI browser suite and cross-browser dispatch, gate, merge",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-13T16:36:31Z",
+      "conclusion": "echelon-current 1.20.0 adopted through Conditor 0.10.0: Forma 0.6.1, Folio 0.4.0."
     }
   ]
 }
