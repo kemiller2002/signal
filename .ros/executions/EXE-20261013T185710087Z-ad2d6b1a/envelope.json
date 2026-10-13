@@ -50,8 +50,8 @@
   "humanOnlyTransitions": [],
   "parentExecution": null,
   "startedAt": "2026-10-13T18:57:10.726Z",
-  "state": "active",
-  "stateReason": null,
+  "state": "blocked",
+  "stateReason": "Integration with main is blocked: merging origin/main (fab6454) conflicts only in .ros/context/current.json, .ros/events/events.jsonl and .ros/work/queue.md, Praxis has no state-merge command, and the coordinator forbids hand-editing .ros. Until resolved PR #113 is not mergeable, so its pull_request checks (including Ordo strict verification) do not run. A scratch trial merge (not pushed) passes Ordo strict, praxis validate, 578 .NET tests and the 53-test ui-conformance project.",
   "origin": {
     "kind": "work-transition",
     "reference": "work.begin"

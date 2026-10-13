@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T18:57:09.000Z",
+  "updatedAt": "2026-10-13T20:24:49.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3330,13 +3330,34 @@
     {
       "id": "GH-113",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
+      "state": "blocked",
+      "semanticState": "blocked",
       "evidence": [],
-      "updatedAt": "2026-10-13T18:57:09.000Z",
+      "updatedAt": "2026-10-13T20:24:49.000Z",
       "telemetryExecutionIds": [
         "EXE-20261013T185710087Z-ad2d6b1a"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "a1d509b14a5b950b1b4f3290",
+        "recordedAt": "2026-10-13T20:00:27.000Z",
+        "executionId": "EXE-20261013T185710087Z-ad2d6b1a",
+        "repository": "echelon-signal",
+        "branch": "feat/ui-conformance-2026-10",
+        "commit": "36cf32211caf736488239da97033dcc7d46f0550",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feat/ui-conformance-2026-10",
+        "remoteCommit": "36cf32211caf736488239da97033dcc7d46f0550",
+        "summary": "CI Ordo failure fixed (spec split); signed-in administration exercised against a test-only fake GitHub store (11 new browser tests + 6 markup guards); five inert or stale-state admin defects fixed with F# tests; WI-0099 captured for survey fieldsets",
+        "nextAction": "Watch PR #113 CI on this head, complete GH-113, validate; main integration blocked on .ros conflicts awaiting direction",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "blockReason": "Integration with main is blocked: merging origin/main (fab6454) conflicts only in .ros/context/current.json, .ros/events/events.jsonl and .ros/work/queue.md, Praxis has no state-merge command, and the coordinator forbids hand-editing .ros. Until resolved PR #113 is not mergeable, so its pull_request checks (including Ordo strict verification) do not run. A scratch trial merge (not pushed) passes Ordo strict, praxis validate, 578 .NET tests and the 53-test ui-conformance project."
     }
   ]
 }

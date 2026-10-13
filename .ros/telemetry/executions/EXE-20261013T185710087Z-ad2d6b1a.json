@@ -506,14 +506,30 @@
     },
     {
       "metricId": "agent.interruptions",
-      "status": "unknown",
-      "reason": "runtime capability not reported or mapped",
-      "discoveredAt": "2026-10-13T18:57:10.087Z",
+      "status": "derived",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-10-13T20:24:49.000Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "calculated",
+        "name": "ros-work-protocol",
+        "mechanism": "blocked-transition"
+      },
+      "lastAssessedAt": "2026-10-13T20:24:49.000Z",
+      "recordedAt": "2026-10-13T20:24:49.000Z",
+      "history": [
+        {
+          "status": "unknown",
+          "reason": "runtime capability not reported or mapped",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-10-13T18:57:10.087Z",
+          "lastAssessedAt": "2026-10-13T18:57:10.087Z",
+          "recordedAt": "2026-10-13T18:57:10.087Z"
+        }
+      ]
     },
     {
       "metricId": "agent.resumes",
@@ -1355,6 +1371,26 @@
       },
       "collectedAt": "2026-10-13T18:57:10.087Z",
       "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-f2ecbe6cf3ec8d5be77be3a4",
+      "id": "agent.interruptions",
+      "value": 1,
+      "unit": "count",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "calculated",
+        "name": "ros-work-protocol",
+        "mechanism": "blocked-transition"
+      },
+      "collectedAt": "2026-10-13T20:24:49.000Z",
+      "schemaVersion": "1.0.0"
     }
   ],
   "rawTelemetry": [],
@@ -1367,6 +1403,17 @@
         "name": "ros",
         "mechanism": "work-lifecycle"
       }
+    },
+    {
+      "type": "work.blocked",
+      "occurredAt": "2026-10-13T20:24:49.000Z",
+      "reason": "Integration with main is blocked: merging origin/main (fab6454) conflicts only in .ros/context/current.json, .ros/events/events.jsonl and .ros/work/queue.md, Praxis has no state-merge command, and the coordinator forbids hand-editing .ros. Until resolved PR #113 is not mergeable, so its pull_request checks (including Ordo strict verification) do not run. A scratch trial merge (not pushed) passes Ordo strict, praxis validate, 578 .NET tests and the 53-test ui-conformance project.",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "work-lifecycle"
+      },
+      "eventId": "TEVT-2ec12cd64687171259ddd4a4"
     }
   ],
   "repository": {
