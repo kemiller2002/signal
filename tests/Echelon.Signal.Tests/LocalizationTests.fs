@@ -125,13 +125,52 @@ let ``validation reports translation problems in their own category and holds tr
     let asking = report (localized [ french [ QuestionPrompt q, "What is your email address?" ] ])
     Assert.Contains("PRIVACY-PII-LIKE-TRANSLATION", asking.Findings |> List.map _.Code)
 
-[<Fact>]
-let ``translations are a comparable presentation change; accessibility text is a selector change`` () =
-    let changes = diff sdra (localized [ valid ])
-    Assert.Equal<Change list>([ LocalizationChanged ], changes)
-    Assert.Equal({ Scoring = false; Encoding = false }, impact LocalizationChanged)
-    Assert.Equal(Comparable, comparability changes)
+/// The same edit made to the source text and to a translation.
+let private reworded (c: Content) =
+    { c with
+        Sections =
+            c.Sections
+            |> List.map (fun s -> { s with Questions = s.Questions |> List.map (fun x -> if x.Id = q then { x with Prompt = x.Prompt + " (reworded)" } else x) }) }
 
+[<Fact>]
+let ``a translated text is classified as the source-text change for its key, in its locale`` () =
+    let before = localized [ valid ]
+
+    // A translated prompt: the same comparability as a source prompt edit.
+    let source = comparability (diff sdra (reworded sdra))
+    let translated = localized [ { valid with Texts = valid.Texts.Add(QuestionPrompt q, "Combien de fois ?") } ]
+    let changes = diff before translated
+    Assert.Equal<Change list>([ LocalizationChanged("fr-FR", QuestionPrompt q) ], changes)
+    Assert.Equal(impact (QuestionWordingChanged q), impact changes.Head)
+
+    match source, comparability changes with
+    | ComparableWithCaution [ s ], ComparableWithCaution [ t ] -> Assert.Equal($"{s} in fr-FR", t)
+    | other -> failwith $"%A{other}"
+
+    // A translated title or section title: no impact and comparable, as
+    // the source edit is.
+    let retitled = localized [ { valid with Texts = valid.Texts.Add(SurveyTitle, "Autre titre").Add(SectionTitle section, "Autre section") } ]
+    let titleChanges = diff before retitled
+    Assert.Equal(2, titleChanges.Length)
+    Assert.Equal(Comparable, comparability titleChanges)
+    Assert.Equal(comparability [ MetadataChanged; SectionTextChanged section ], comparability titleChanges)
+
+    for c in titleChanges do
+        Assert.Equal({ Scoring = false; Encoding = false }, impact c)
+
+    // A whole new locale changes each of its texts; a translated option
+    // label is an option relabel, a translated result label an
+    // interpretation label change, a translated recommendation a
+    // recommendations change: each a caution, never an encoding change.
+    let added = diff sdra before
+    Assert.Equal(valid.Texts.Count, added.Length)
+    let optionSource = { impact (OptionsChanged q) with Encoding = false }
+    Assert.Equal(optionSource, impact (LocalizationChanged("fr-FR", OptionLabel(q, "o"))))
+    Assert.Equal(sourceEquivalent (ResultLabel("band", "high")), InterpretationLabelsChanged)
+    Assert.Equal(sourceEquivalent (RecommendationTitle "r"), RecommendationsChanged)
+
+[<Fact>]
+let ``accessibility text is a selector change`` () =
     let accessible =
         { sdra with
             Sections =
@@ -140,6 +179,7 @@ let ``translations are a comparable presentation change; accessibility text is a
                     { s with Questions = s.Questions |> List.map (fun x -> if x.Id = q then { x with Selector = { x.Selector with Accessibility = { Name = Some "n"; Description = None } } } else x) }) }
 
     Assert.Equal<Change list>([ SelectorChanged q ], diff sdra accessible)
+    Assert.Equal(sourceEquivalent (AccessibleName q), SelectorChanged q)
 
 [<Fact>]
 let ``a translated template scores and encodes exactly as the untranslated one`` () =

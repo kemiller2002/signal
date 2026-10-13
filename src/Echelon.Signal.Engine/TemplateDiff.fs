@@ -49,8 +49,11 @@ type Change =
     | InterpretationLabelsChanged
     | DisplayChanged
     | ItemKeysChanged
-    /// Translations changed: presentation text only (DF-SIGNAL-2026-0020).
-    | LocalizationChanged
+    /// One translated text changed, was added or was removed in one locale.
+    /// It is classified exactly as the source-text change for that key
+    /// (`sourceEquivalent`), scoped to the locale: respondents in that
+    /// locale answer the translation (DF-SIGNAL-2026-0020).
+    | LocalizationChanged of locale: string * key: LocalizationModel.TextKey
 
 /// Whether a change can alter scores, alter how stored answers are read, or
 /// only how the survey looks.
@@ -58,8 +61,31 @@ type Impact =
     { Scoring: bool
       Encoding: bool }
 
-let impact (change: Change) =
+/// The source-text change a translated text stands for: a translated
+/// prompt is a wording change, a translated title a metadata change.
+let sourceEquivalent (key: LocalizationModel.TextKey) : Change =
+    match key with
+    | LocalizationModel.SurveyTitle
+    | LocalizationModel.SurveyShortTitle
+    | LocalizationModel.SurveyDescription
+    | LocalizationModel.SurveyInstructions -> MetadataChanged
+    | LocalizationModel.SectionTitle id
+    | LocalizationModel.SectionDescription id -> SectionTextChanged id
+    | LocalizationModel.QuestionPrompt id
+    | LocalizationModel.QuestionHelp id -> QuestionWordingChanged id
+    | LocalizationModel.AnswerLabel(id, _)
+    | LocalizationModel.AccessibleName id
+    | LocalizationModel.AccessibleDescription id -> SelectorChanged id
+    | LocalizationModel.OptionLabel(id, _) -> OptionsChanged id
+    | LocalizationModel.RecommendationTitle _
+    | LocalizationModel.RecommendationDescription _ -> RecommendationsChanged
+    | LocalizationModel.ResultLabel _ -> InterpretationLabelsChanged
+
+let rec impact (change: Change) =
     match change with
+    // A translation never changes the encoding: only its scoring impact
+    // follows the source text's rule.
+    | LocalizationChanged(_, key) -> { impact (sourceEquivalent key) with Encoding = false }
     | MetadataChanged
     | PresentationChanged
     | TimersChanged
@@ -80,8 +106,7 @@ let impact (change: Change) =
     | ItemKeysChanged -> { Scoring = true; Encoding = false }
     | InterpretationThresholdsChanged -> { Scoring = true; Encoding = false }
     | InterpretationLabelsChanged
-    | DisplayChanged
-    | LocalizationChanged -> { Scoring = false; Encoding = false }
+    | DisplayChanged -> { Scoring = false; Encoding = false }
     | ValidationRulesChanged
     | CompletionChanged
     | RecommendationsChanged -> { Scoring = false; Encoding = false }
@@ -144,8 +169,17 @@ let diff (before: Content) (after: Content) : Change list =
           InterpretationLabelsChanged
       if before.Results.Display <> after.Results.Display then DisplayChanged
       if before.Results.ItemKeys <> after.Results.ItemKeys then ItemKeysChanged
-      let locales (c: Content) = c.Localizations |> List.sortBy (fun (l: LocalizationModel.Localization) -> l.Locale)
-      if locales before <> locales after then LocalizationChanged
+      // One change per text that differs, per locale; a locale added or
+      // removed changes every text it has.
+      let texts (c: Content) =
+          c.Localizations
+          |> List.collect (fun l -> l.Texts |> Map.toList |> List.map (fun (key, text) -> (l.Locale, key), text))
+          |> Map.ofList
+
+      let a, b = texts before, texts after
+
+      for locale, key in Set.union (a.Keys |> Set.ofSeq) (b.Keys |> Set.ofSeq) do
+          if a.TryFind(locale, key) <> b.TryFind(locale, key) then LocalizationChanged(locale, key)
       let layoutOf (p: Presentation) = { p with Timers = []; Banks = [] }
       if layoutOf before.Presentation <> layoutOf after.Presentation then PresentationChanged
       if before.Presentation.Timers <> after.Presentation.Timers then TimersChanged
@@ -207,38 +241,46 @@ type Comparability =
 /// to what is scored or how is not comparable; a wording or requirement
 /// change is comparable with caution; presentation alone is comparable.
 let comparability (changes: Change list) =
-    let notComparable =
-        changes
-        |> List.choose (function
-            | SectionScoringChanged id -> Some $"scoring of '{id}' changed"
-            | OptionScoresChanged id -> Some $"option scores of '{id}' changed"
-            | AnswerChanged id -> Some $"answer definition of '{id}' changed"
-            | SpecialStatesChanged id -> Some $"special states of '{id}' changed"
-            | QuestionAdded id -> Some $"question '{id}' added"
-            | QuestionRemoved id -> Some $"question '{id}' removed"
-            | QuestionMovedSection id -> Some $"question '{id}' moved section"
-            | SectionAdded id -> Some $"section '{id}' added"
-            | SectionRemoved id -> Some $"section '{id}' removed"
-            | FlowChanged -> Some "flow changed which questions apply"
-            | BanksChanged -> Some "question banks changed which questions an instance answers"
-            | FactsChanged -> Some "derived facts changed"
-            | OverallScoringChanged -> Some "overall scoring changed"
-            | InterpretationThresholdsChanged -> Some "interpretation thresholds changed"
-            | ItemKeysChanged -> Some "item keys changed"
-            | _ -> None)
+    let notComparableReason =
+        function
+        | SectionScoringChanged id -> Some $"scoring of '{id}' changed"
+        | OptionScoresChanged id -> Some $"option scores of '{id}' changed"
+        | AnswerChanged id -> Some $"answer definition of '{id}' changed"
+        | SpecialStatesChanged id -> Some $"special states of '{id}' changed"
+        | QuestionAdded id -> Some $"question '{id}' added"
+        | QuestionRemoved id -> Some $"question '{id}' removed"
+        | QuestionMovedSection id -> Some $"question '{id}' moved section"
+        | SectionAdded id -> Some $"section '{id}' added"
+        | SectionRemoved id -> Some $"section '{id}' removed"
+        | FlowChanged -> Some "flow changed which questions apply"
+        | BanksChanged -> Some "question banks changed which questions an instance answers"
+        | FactsChanged -> Some "derived facts changed"
+        | OverallScoringChanged -> Some "overall scoring changed"
+        | InterpretationThresholdsChanged -> Some "interpretation thresholds changed"
+        | ItemKeysChanged -> Some "item keys changed"
+        | _ -> None
 
-    let caution =
+    let cautionReason =
+        function
+        | QuestionWordingChanged id -> Some $"wording of '{id}' changed"
+        | QuestionRequirementChanged id -> Some $"requirement of '{id}' changed"
+        | SectionRequirementChanged id -> Some $"requirement of section '{id}' changed"
+        | OptionsChanged id -> Some $"options of '{id}' reordered or relabelled"
+        | ValidationRulesChanged -> Some "validation rules changed"
+        | CompletionChanged -> Some "completion policy changed"
+        | RecommendationsChanged -> Some "recommendations changed"
+        | InterpretationLabelsChanged -> Some "interpretation labels changed"
+        | _ -> None
+
+    // A translated text takes its source text's reason, scoped to its locale.
+    let reasons (reason: Change -> string option) =
         changes
         |> List.choose (function
-            | QuestionWordingChanged id -> Some $"wording of '{id}' changed"
-            | QuestionRequirementChanged id -> Some $"requirement of '{id}' changed"
-            | SectionRequirementChanged id -> Some $"requirement of section '{id}' changed"
-            | OptionsChanged id -> Some $"options of '{id}' reordered or relabelled"
-            | ValidationRulesChanged -> Some "validation rules changed"
-            | CompletionChanged -> Some "completion policy changed"
-            | RecommendationsChanged -> Some "recommendations changed"
-            | InterpretationLabelsChanged -> Some "interpretation labels changed"
-            | _ -> None)
+            | LocalizationChanged(locale, key) -> reason (sourceEquivalent key) |> Option.map (fun r -> $"{r} in {locale}")
+            | change -> reason change)
+
+    let notComparable = reasons notComparableReason
+    let caution = reasons cautionReason
 
     match notComparable, caution with
     | [], [] -> Comparable

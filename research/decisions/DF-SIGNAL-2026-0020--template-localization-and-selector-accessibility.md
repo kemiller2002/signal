@@ -54,11 +54,24 @@ CAN-001 lists a Localization area in the canonical template and AccessibilityMet
    - a repeated locale (LOCALE-DUPLICATE);
    - blank accessibility text (ACCESSIBILITY-BLANK).
 4. **Privacy covers translations.** Translated text and accessibility text go through the same PII-like wording check as the text they translate (PRIVACY-PII-LIKE-TRANSLATION). The pattern is English, so it catches only the obvious cases in other locales.
-5. **No effect on meaning.**
+5. **No effect on scoring or the encoding; the same comparability as the source text.**
    - Translations don't enter scoring, the encoding layout or the link.
-   - A translation change is diffed as `LocalizationChanged`: no scoring or encoding impact, and comparable.
-   - An accessibility change is a `SelectorChanged`.
+   - A translation is still the text respondents in that locale answer. Changing a translated prompt can change what is measured, exactly as editing the source prompt does (coordinator review of #105). So each changed, added or removed text is its own `LocalizationChanged(locale, key)`.
+   - Its impact and comparability are those of the source-text change for that key (`TemplateDiff.sourceEquivalent`), and its reason is scoped to the locale (for example, "wording of 'q1' changed in fr-FR"):
+
+     | Key | Classified as |
+     |---|---|
+     | Prompt and help | Wording change: comparable with caution |
+     | Option label | Option relabel: caution |
+     | Result label | Interpretation label change: caution |
+     | Recommendation text | Recommendations change: caution |
+     | Survey metadata and section text | Presentation: no impact, comparable |
+     | Answer labels and accessibility text | Selector change: no impact, comparable |
+
+   - A translation never changes the encoding, so its impact's encoding flag is always false. For an option label the source kind would carry it, because reordering does.
+   - Accessibility text on the selector itself is a `SelectorChanged`.
    - A new translation still needs a new published version, because the artifact is immutable (§17).
+   - Found while doing this, by reading `TemplateDiff.diff` (not yet confirmed by a test): the source diff doesn't detect an option relabel. A single-choice relabel produces no change at all, and a relabel on other option primitives is an `AnswerChanged`. Reported to the coordinator for its own slice. The translation rule already treats an option relabel as a caution.
 6. **`UsesLocalization` is supported.** Declaring it is optional, like every capability.
 
 ## Consequences
