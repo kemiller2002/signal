@@ -44,6 +44,15 @@ export default defineConfig({
       testMatch: /survey-devices\.spec\.js/,
       use: { ...devices["Pixel 7"], launchOptions }
     },
+    // Real WebKit and Firefox (DF-SIGNAL-2026-0016): only when the
+    // cross-browser workflow asks for them (SIGNAL_CROSS_BROWSER=1), never in
+    // the per-pull-request suite, so their OS libraries never hold up PR CI.
+    ...(process.env.SIGNAL_CROSS_BROWSER === "1"
+      ? [
+          { name: "webkit-iphone", testMatch: /(survey|survey-timers|survey-devices)\.spec\.js/, use: { ...devices["iPhone 13"] } },
+          { name: "firefox", testMatch: /(survey|survey-timers)\.spec\.js/, use: { ...devices["Desktop Firefox"] } }
+        ]
+      : []),
     {
       name: "pages",
       testMatch: /(deep-links|survey|survey-timers)\.spec\.js/,

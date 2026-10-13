@@ -749,6 +749,49 @@
     "version": "1.0.0"
   },
   {
+    "created": "2026-10-13",
+    "id": "DF-SIGNAL-2026-0016",
+    "owners": [
+      "signal"
+    ],
+    "path": "research/decisions/DF-SIGNAL-2026-0016--webkit-and-firefox-run-in-a-scheduled-workflow-outside-pr-checks.md",
+    "provenance": {
+      "contributions": {
+        "EXE-20261009T042446720Z-a28d9579": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-13T12:14:09.584Z",
+          "operations": [
+            "created"
+          ],
+          "reason": "Cross-browser workflow outside PR checks (AUT-006 62, WI-0081)"
+        }
+      }
+    },
+    "related_documents": [
+      "research/decisions/DF-SIGNAL-2026-0014--sample-links-are-checked-on-a-phone-and-against-the-url-budget.md",
+      "docs/requirements/implementation-gap-analysis.md"
+    ],
+    "review_cycle": "on-trigger",
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "ci",
+      "browsers",
+      "devices",
+      "survey-page"
+    ],
+    "title": "The survey page runs on real WebKit (iPhone) and Firefox in a scheduled and manual workflow, outside the per-pull-request checks, with bounded apt",
+    "updated": "2026-10-13",
+    "version": "1.0.0"
+  },
+  {
     "created": "2026-10-05",
     "id": "DF-SIGNAL-FND-2026-0001",
     "owners": [
