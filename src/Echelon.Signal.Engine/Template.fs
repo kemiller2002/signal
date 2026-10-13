@@ -119,6 +119,23 @@ type Capability =
     | UsesAdvancedValidation
     | UsesLocalization
 
+/// The capability an answer primitive corresponds to, if any (ACR-003 §10).
+/// Exhaustive, so a new primitive must be classified here; a test checks
+/// that every primitive's capability is supported (WI-0090).
+let capabilityOf (answer: AnswerDefinition) : Capability option =
+    match answer with
+    | Ranking _ -> Some UsesRanking
+    | Allocation _ -> Some UsesAllocation
+    | Boolean
+    | Ordinal _
+    | SingleChoice _
+    | MultiChoice _
+    | BoundedNumber _
+    | BoundedRange _
+    | BestWorst _
+    | Hierarchical _
+    | HierarchicalMulti _ -> None
+
 /// Capabilities this engine version supports (WI-0043 added the rule
 /// capabilities, WI-0044 custom scoring, WI-0090 ranking and allocation,
 /// which the engine has supported since #73). Declaring one is optional
@@ -133,6 +150,13 @@ let supportedCapabilities: Set<Capability> =
           UsesCustomScoring
           UsesRanking
           UsesAllocation ]
+
+/// Why each capability this engine refuses is refused: the template model
+/// has nothing that uses it, so no template can rely on it (WI-0090).
+let unsupportedCapabilities: Map<Capability, string> =
+    Map.ofList
+        [ UsesGroupScoring, "group scoring lives in the group design, not in the template, which has no group-scoring area"
+          UsesLocalization, "the template has no localization area (CAN-001 §2, WI-0091)" ]
 
 type Compatibility =
     { SchemaVersion: int
