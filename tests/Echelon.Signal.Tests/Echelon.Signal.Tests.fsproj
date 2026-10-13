@@ -51,6 +51,7 @@
     <Compile Include="ScopedTimerTests.fs" />
     <Compile Include="SelectorSemanticsTests.fs" />
     <Compile Include="SampleLinkTests.fs" />
+    <Compile Include="MaxLinkTests.fs" />
     <Compile Include="CsvTests.fs" />
     <Compile Include="ReportStateTests.fs" />
     <Compile Include="AdminStateTests.fs" />
