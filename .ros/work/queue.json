@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 96,
+  "nextSeq": 98,
   "items": [
     {
       "id": "WI-0001",
@@ -2271,6 +2271,57 @@
       "attachments": [],
       "createdAt": "2026-10-13T16:33:17Z",
       "updatedAt": "2026-10-13T16:36:31Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0096",
+      "title": "Adopt echelon-current 1.21.0 through Conditor 0.10.1: Ordo 1.5.0 to 1.6.0 with foundations.json moving alongside (registry step 2)",
+      "description": "Step 2 of the 1.19.0 to 1.22.0 path. Conditor 0.10.1 (fixes the 0.10.0 Ordo pin defect in foundations.json), verified by sha256 and attestation, used in place. Stepwise check, authorize from a clean tree with the isolated home, verify; drift and --check must agree afterwards and the lock must have no untracked paths.",
+      "tags": [
+        "signal",
+        "platform",
+        "conditor",
+        "ordo"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-10-13T17:17:08Z",
+      "updatedAt": "2026-10-13T17:17:11Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0097",
+      "title": "Escaped defect from #28: the template diff misses a single-choice option relabel and classifies a relabel on other option primitives as AnswerChanged, so comparability can be wrong",
+      "description": "TemplateDiff.diff (WI-0042, PR #28): for SingleChoice it compares only option ids and scores, so a relabel yields no change and the versions look comparable; for MultiChoice, Ranking, Allocation, BestWorst and option trees any difference, a relabel included, falls to AnswerChanged (not comparable). Write failing tests first, detect and classify every option relabel consistently, and check published version pairs and stored comparisons. Found in WI-0091 review of #105.",
+      "tags": [
+        "signal",
+        "defect",
+        "escaped-defect:#28"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-13T17:17:20Z",
+      "updatedAt": "2026-10-13T17:17:20Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
