@@ -2683,20 +2683,20 @@
         "EXE-20261009T042446720Z-a28d9579"
       ],
       "latestCheckpoint": {
-        "id": "7ef41ec7eb866dcb222d270c",
-        "recordedAt": "2026-10-13T09:54:04Z",
+        "id": "0b93c53be467aa7bc0bb63d3",
+        "recordedAt": "2026-10-13T10:09:42Z",
         "executionId": "EXE-20261009T042446720Z-a28d9579",
         "repository": "echelon-signal",
-        "branch": "feature/timers-banks",
-        "commit": "642b9ec11bde7ad88d97dc2d6a6e291f63e54d3b",
+        "branch": "feature/bank-selection",
+        "commit": "6694e7b9c09900c1825c57fb34ef2e96f04e2557",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/timers-banks",
-        "remoteCommit": "642b9ec11bde7ad88d97dc2d6a6e291f63e54d3b",
-        "summary": "Timers and banks as optional template fields with publication checks, diffs and page refusal; existing hashes pinned (DF-SIGNAL-2026-0008)",
-        "nextAction": "Gate and merge; then the bank selection seed decision and page wiring of timers/banks",
+        "remoteBranch": "feature/bank-selection",
+        "remoteCommit": "6694e7b9c09900c1825c57fb34ef2e96f04e2557",
+        "summary": "Banks run on the survey page and at intake with seeds from link ids (DF-SIGNAL-2026-0009); BANKED demo and browser test",
+        "nextAction": "Gate and merge; then timers on the survey page",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
