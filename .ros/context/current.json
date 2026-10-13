@@ -2683,20 +2683,20 @@
         "EXE-20261009T042446720Z-a28d9579"
       ],
       "latestCheckpoint": {
-        "id": "4cb36f168f4ad9f32f8c7178",
-        "recordedAt": "2026-10-13T15:19:55Z",
+        "id": "f472ddb0192ed3cc0c5d3830",
+        "recordedAt": "2026-10-13T15:43:39Z",
         "executionId": "EXE-20261009T042446720Z-a28d9579",
         "repository": "echelon-signal",
-        "branch": "fix/fixture-encoding-round-trip",
-        "commit": "c2ca5176266d308bb525d5a04167847be063c24a",
+        "branch": "docs/stale-row-recheck",
+        "commit": "7e5f4ee84ba8f193f4b0eea40d64d953281974b4",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "fix/fixture-encoding-round-trip",
-        "remoteCommit": "c2ca5176266d308bb525d5a04167847be063c24a",
-        "summary": "Item 6, AUT-004 s41: slot functions moved to Layout with no test edits; ENCODING-FIXTURE-ROUND-TRIP blocks publication; sweep over SDRA and all 8 published templates passes; the blocker found WI-0089 (fixed in #97). .NET 528 passing.",
-        "nextAction": "Gate and merge; then the stale-row recheck",
+        "remoteBranch": "docs/stale-row-recheck",
+        "remoteCommit": "7e5f4ee84ba8f193f4b0eea40d64d953281974b4",
+        "summary": "Citation guard in GapAnalysisTests: every tested row cites an existing test file; named citations must resolve to a test in that file. 27 older rows gained file citations; the 11 rechecked rows name a test. .NET 530 passing.",
+        "nextAction": "Gate and merge #99; then WI-0090",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"

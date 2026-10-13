@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 90,
+  "nextSeq": 93,
   "items": [
     {
       "id": "WI-0001",
@@ -2121,6 +2121,81 @@
       "attachments": [],
       "createdAt": "2026-10-13T15:09:13Z",
       "updatedAt": "2026-10-13T15:09:37Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0090",
+      "title": "Escaped defect from #73: a template that declares UsesRanking or UsesAllocation is refused as unsupported although the engine supports both since #73 (ACR-003, CAN-001)",
+      "description": "Template.supportedCapabilities lists the rule and custom-scoring capabilities but not UsesRanking or UsesAllocation, so COMPAT-CAPABILITY blocks a template that declares a capability this engine has. Declarations stay optional (ACR-003 section 10); no published template or hash changes. Found in the WI-0081 item 6 recheck.",
+      "tags": [
+        "signal",
+        "defect",
+        "escaped-defect:#73"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-13T15:28:20Z",
+      "updatedAt": "2026-10-13T15:28:20Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0091",
+      "title": "Signal 05f: template localization and selector accessibility metadata (CAN-001), and the authoring workspace areas still missing from the console: validation rules, presentation, explicit scoring configuration and localization (AUT-001)",
+      "description": "Remainder of WI-0081 item 6. CAN-001 section 2 lists Localization in the canonical template and section 7 AccessibilityMetadata on selectors; neither exists (UsesLocalization stays unsupported). AUT-001 section 5 lists authoring areas the console lacks: validation rules, presentation (items per page, timers, banks), explicit section scoring and localization. Related: WI-0053 (ACR-006 localization).",
+      "tags": [
+        "signal",
+        "authoring",
+        "order:05f"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-13T15:28:25Z",
+      "updatedAt": "2026-10-13T15:28:25Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0092",
+      "title": "Signal ARX-002: obligations with discharge evidence and explicit unknown and searched-not-found knowledge across the seven state systems (authoring, respondent, anonymous finalization, import, group aggregation, report-state persistence, report snapshots)",
+      "description": "Remainder of WI-0081 item 6. Legal states and derived capabilities exist for the template lifecycle and the respondent session; ARX-002 also requires each of its seven state systems to define guards, obligations created by transitions with the evidence that discharges them, explicit illegal-transition results, and unknown and scoped negative knowledge (searched X at revision Y, not found).",
+      "tags": [
+        "signal",
+        "ordo",
+        "quality"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-13T15:28:30Z",
+      "updatedAt": "2026-10-13T15:28:30Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
