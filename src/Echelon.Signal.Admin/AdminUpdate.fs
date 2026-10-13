@@ -53,8 +53,23 @@ let private positive (text: string) fallback =
     | true, value when value >= 1 && value <= 100000 -> value
     | _ -> fallback
 
+/// Buttons that name their action in the event itself. Limen sends a value
+/// only for form fields, never a button's `value` attribute, so a button
+/// sending "transition" or "exportSnapshot" arrived with an empty value: the
+/// lifecycle buttons were refused and the exports did nothing (GH-113,
+/// UI-LAYOUT-INTERACTION ULI-A01). Each maps to the original event and value.
+let private buttonActions =
+    Map.ofList
+        [ "closeGroup", ("transition", "close")
+          "reopenGroup", ("transition", "reopen")
+          "finalizeGroup", ("transition", "finalize")
+          "sealGroup", ("transition", "seal")
+          "exportReportJson", ("exportSnapshot", "report.json")
+          "exportSectionsCsv", ("exportSnapshot", "sections.csv")
+          "exportLineage", ("exportSnapshot", "lineage.json") ]
+
 /// What the page does for an event.
-let private onUi (model: Model) (name: string) (key: string option) (value: string) : Model * Effect list =
+let private onNamedEvent (model: Model) (name: string) (key: string option) (value: string) : Model * Effect list =
     let busy effects = { model with Busy = true; Notice = None }, effects
     let routeKey = groupKey model
     let place = model.Place
@@ -75,7 +90,10 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
     | "signOut" -> { model with Dataset = None }, [ SignOut ]
     | "openDataset" ->
         match key with
-        | Some id when model.Principal.IsSome -> busy [ OpenDataset id ]
+        // While an open (such as the one after sign-in) is under way, a second
+        // would race it and report its own setup as a change made elsewhere
+        // (GH-113); the button is disabled meanwhile ("opening").
+        | Some id when model.Principal.IsSome && not model.Busy -> busy [ OpenDataset id ]
         | _ -> model, []
     | "navigate" ->
         // A location the page names (`/groups`), as a link would.
@@ -244,6 +262,12 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
     | other -> invalidOp $"The administrator page sent an event the engine does not know: '{other}'"
 
 /// The next model and the effects to perform.
+/// What the page does for an event, a button's own action event included.
+let private onUi (model: Model) (name: string) (key: string option) (value: string) : Model * Effect list =
+    match Map.tryFind name buttonActions with
+    | Some(original, action) -> onNamedEvent model original key action
+    | None -> onNamedEvent model name key value
+
 let update (msg: Msg) (model: Model) : Model * Effect list =
     match msg with
     | Started(page, query) ->

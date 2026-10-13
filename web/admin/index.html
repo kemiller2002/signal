@@ -99,8 +99,11 @@
     <section id="draft" class="ef-stack" aria-labelledby="draft-heading">
       <template data-if="hasAuthoringProblem"><p class="ef-alert" role="alert" data-tone="attention" data-text="authoringProblem"></p></template>
       <template data-if="hasDraft">
+        <!-- Exactly one root element per data-if: Limen mounts only the first,
+             so the editor below once rendered as its heading alone (GH-113). -->
+        <div class="ef-stack draft-editor">
         <h2 id="draft-heading" data-text="draftHeading"></h2>
-        <p><span data-text="draftParent"></span><template data-if="draftUnsaved"> · <strong>Unsaved changes</strong></template></p>
+        <p><span data-text="draftParent"></span><template data-if="draftUnsaved"><span> · <strong>Unsaved changes</strong></span></template></p>
         <label>Title <input type="text" data-event="draftTitle" data-bind-value="draftTitle" /></label>
         <label>Description <textarea rows="2" data-event="draftDescription" data-bind-value="draftDescription"></textarea></label>
         <h3>Sections</h3>
@@ -171,21 +174,24 @@
           </template>
         </ul>
         <label>Rule <select id="validation-kind" data-event="validationKind"><template data-each="validationKinds" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
-        <template data-if="validationIsRange">
+        <template data-if="validationIsRange"><div class="ef-stack">
           <label>Question <input id="validation-question" type="text" data-event="validationQuestion" data-bind-value="validationQuestion" /></label>
           <label>Lowest <input id="validation-minimum" type="text" inputmode="decimal" data-event="validationMinimum" data-bind-value="validationMinimum" /></label>
           <label>Highest <input id="validation-maximum" type="text" inputmode="decimal" data-event="validationMaximum" data-bind-value="validationMaximum" /></label>
-        </template>
-        <template data-if="validationIsRequiredWhen">
+        </div>
+          </template>
+        <template data-if="validationIsRequiredWhen"><div class="ef-stack">
           <label>Question <input id="validation-required-question" type="text" data-event="validationQuestion" data-bind-value="validationQuestion" /></label>
           <label>is required when question or fact <input id="validation-when" type="text" data-event="validationWhen" data-bind-value="validationWhen" /></label>
           <label>has the answer <input id="validation-answer" type="text" data-event="validationAnswer" data-bind-value="validationAnswer" /></label>
-        </template>
-        <template data-if="validationIsAnsweredBetween">
+        </div>
+          </template>
+        <template data-if="validationIsAnsweredBetween"><div class="ef-stack">
           <label>Questions, separated by commas <input id="validation-questions" type="text" data-event="validationQuestions" data-bind-value="validationQuestions" /></label>
           <label>At least <input id="validation-fewest" type="text" inputmode="numeric" data-event="validationMinimum" data-bind-value="validationMinimum" /></label>
           <label>At most <input id="validation-most" type="text" inputmode="numeric" data-event="validationMaximum" data-bind-value="validationMaximum" /></label>
-        </template>
+        </div>
+          </template>
         <label>Message the respondent sees <input id="validation-message" type="text" data-event="validationMessage" data-bind-value="validationMessage" /></label>
         <button type="button" class="ef-button" data-event="addValidation">Add validation rule</button>
         <h3>Presentation</h3>
@@ -243,6 +249,7 @@
         <template data-if="canRequestReview"><button type="button" class="ef-button" data-event="requestReview" data-bind-disabled="busy">Submit for review</button></template>
         <template data-if="canApproveReview"><button type="button" class="ef-button" data-event="approveReview" data-bind-disabled="busy">Approve as reviewed</button></template>
         <template data-if="canPublishTemplates"><button type="button" class="ef-button" data-event="publishDraft" data-bind-disabled="busy">Publish</button></template>
+      </div>
       </template>
       <template data-if="hasNoDraft"><p>There is no draft of <span data-text="draftSurvey"></span>. Start one or derive one from a published version under Assessments.</p></template>
     </section>
@@ -386,7 +393,7 @@
       <h2>Datasets</h2>
       <ul>
         <template data-each="datasets" data-key="id">
-          <li><button type="button" class="ef-button" data-event="openDataset" data-text="label"></button></li>
+          <li><button type="button" class="ef-button" data-event="openDataset" data-bind-disabled="opening" data-text="label"></button></li>
         </template>
       </ul>
       <button type="button" class="ef-button" data-event="signOut">Sign out</button>
@@ -463,7 +470,12 @@
         </section>
       </template>
 
+      <!-- One root element per data-if (Limen mounts exactly one): a bare
+           nested <template> as the root is left mounted when the outer
+           condition turns false, so the group view stayed on other areas
+           (GH-113, ULI-L08). -->
       <template data-if="viewGroupTabs">
+        <div class="group-view">
         <template data-if="hasGroup">
             <section id="group" class="ef-stack">
               <h2>Group <code id="group-key" data-text="groupKey"></code></h2>
@@ -486,10 +498,10 @@
               </table>
               <p>Report state: <code id="report-fragment" data-text="reportFragment"></code></p>
               <div class="ef-stack" id="lifecycle">
-                <template data-if="canClose"><button type="button" class="ef-button" data-event="transition" value="close">Close incomplete</button></template>
-                <template data-if="canReopen"><button type="button" class="ef-button" data-event="transition" value="reopen">Reopen</button></template>
-                <template data-if="canFinalize"><button type="button" class="ef-button" data-event="transition" value="finalize">Finalize</button></template>
-                <template data-if="canSeal"><button type="button" class="ef-button" data-event="transition" value="seal">Seal</button></template>
+                <template data-if="canClose"><button type="button" class="ef-button" data-event="closeGroup">Close incomplete</button></template>
+                <template data-if="canReopen"><button type="button" class="ef-button" data-event="reopenGroup">Reopen</button></template>
+                <template data-if="canFinalize"><button type="button" class="ef-button" data-event="finalizeGroup">Finalize</button></template>
+                <template data-if="canSeal"><button type="button" class="ef-button" data-event="sealGroup">Seal</button></template>
               </div>
               </section>
               </template>
@@ -500,7 +512,7 @@
                 <div class="explore-controls">
                   <label><input type="checkbox" data-event="exploreSort" value="value" data-bind-checked="exploreByValue" /> Sort by value</label>
                   <label><input type="checkbox" data-event="exploreDisplay" value="percent" data-bind-checked="explorePercent" /> Distribution as percentages</label>
-                  <button type="button" class="ef-button" data-event="exploreSection" value="all">All sections</button>
+                  <button type="button" class="ef-button" data-event="exploreSection">All sections</button>
                 </div>
                 <figure id="section-chart">
                   <figcaption data-text="chartDescription"></figcaption>
@@ -605,6 +617,7 @@
               </template>
             </section>
         </template>
+        </div>
       </template>
 
       <template data-if="viewCompare">
@@ -706,10 +719,11 @@
           <template data-each="reportSnapshots" data-key="key">
             <li>
               <span data-text="label"></span> · <span data-text="intact"></span>
-              <template data-if="canExport">
-                <button type="button" class="ef-button" data-event="exportSnapshot" value="report.json">Report (JSON)</button>
-                <button type="button" class="ef-button" data-event="exportSnapshot" value="sections.csv">Sections (CSV)</button>
-                <button type="button" class="ef-button" data-event="exportSnapshot" value="lineage.json">Lineage</button>
+              <template data-if="canExport"><span class="ef-cluster">
+                <button type="button" class="ef-button" data-event="exportReportJson">Report (JSON)</button>
+                <button type="button" class="ef-button" data-event="exportSectionsCsv">Sections (CSV)</button>
+                <button type="button" class="ef-button" data-event="exportLineage">Lineage</button>
+              </span>
               </template>
             </li>
           </template>
@@ -717,7 +731,10 @@
       </section>
     </section>
   </template>
+  <!-- One root element per data-if, as for the group view above: the report
+       surface stayed mounted, and printable, after leaving the report. -->
   <template data-if="hasReport">
+    <div class="report-view">
     <template data-if="viewReport">
       <ef-print-document class="report-surface" id="report" data-bind-lang="reportLang" data-bind-dir="reportDir">
         <ef-print-title-page>
@@ -790,6 +807,7 @@
         </template>
       </ef-print-document>
     </template>
+    </div>
   </template>
 </main>
 <script type="module" src="./admin.js"></script>

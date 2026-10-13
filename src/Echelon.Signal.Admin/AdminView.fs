@@ -233,7 +233,7 @@ let project (model: Model) : View =
       "datasets",
       Items(
           model.Deployment
-          |> Option.map (fun c -> c.Datasets |> List.map (fun d -> [ "id", Text d.Id; "label", Text d.Label ]))
+          |> Option.map (fun c -> c.Datasets |> List.map (fun d -> [ "id", Text d.Id; "label", Text d.Label; "opening", Flag model.Busy ]))
           |> Option.defaultValue []
       )
       "datasetLabel", text (dataset |> Option.map _.Label |> Option.defaultValue "")
@@ -332,7 +332,9 @@ let project (model: Model) : View =
               |> Map.toList
               |> List.map (fun (id, m) ->
                   [ "id", Text id
-                    "capabilities", Text(allCapabilities |> List.filter m.Capabilities.Contains |> List.map capabilityName |> String.concat ", ") ]))
+                    "capabilities", Text(allCapabilities |> List.filter m.Capabilities.Contains |> List.map capabilityName |> String.concat ", ")
+                    // A row's button binds within the row (GH-113).
+                    "busy", Flag model.Busy ]))
           |> Option.defaultValue []
       )
       "canManageAdministrators", enabled AdminState.CanManageAdministrators

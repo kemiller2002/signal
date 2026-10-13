@@ -60,7 +60,7 @@ inventory test fails on any addition or removal.
 | | link "Go to the overview" | engine | address `#/`, Overview current |
 | | radios "On this page only" / "In this tab until I close it", button "Sign in" | engine (Fides) | disclosure changes; provider redirect (admin.spec.js) |
 | | button "Dismiss", button "Sign out" (store unreachable) | engine | notice removed; sign-in screen |
-| | dataset button, every signed-in view (groups, imports, invitations, lifecycle, reports, snapshots, exports, report builder, drafts, administrators, storage) | engine | UNKNOWN in the browser: no fake GitHub store exists for Playwright; covered by the F# suite only |
+| | dataset button, every signed-in view (groups, imports, invitations, lifecycle, reports, snapshots, exports, report builder, drafts, administrators, storage) | engine | see "Signed-in administration (GH-113)" below: exercised against a test-only fake GitHub store |
 
 No inert, placeholder, `javascript:` or fake-success control was found on any
 reached surface. Every failure path exercised (unanswered results, refused
@@ -105,9 +105,8 @@ Each measurement is attached to its test result as JSON.
 
 ## Remaining debt and unknown coverage
 
-- UNKNOWN: every signed-in administration view in the browser (no fake GitHub
-  store for Playwright); WebKit/Firefox for this spec; right-to-left text;
-  administrator report print/PDF geometry.
+- UNKNOWN: WebKit/Firefox for these specs; administrator report print/PDF
+  geometry; a deployment with several datasets (the fixtures configure one).
 - Pre-existing: survey answer options are content-width boxes of differing
   widths within one question (left edges align; ULI-L02 recommended review);
   survey questions are not grouped in a `fieldset` (radios are described by
@@ -127,3 +126,51 @@ Each measurement is attached to its test result as JSON.
 - `npx playwright test` (chromium, mobile, pages, ui-conformance): 114 passed,
   0 failed; this includes the `ui-conformance` project's 37 tests (36 passed,
   1 expected failure: the Forma exception above).
+
+## Signed-in administration (GH-113, follow-up on signal#113)
+
+`tests/browser/fakes/github-store.js` is a test-only, in-memory fake of the
+GitHub REST API that Arca's GitHub provider (0.5.0) uses, installed with
+Playwright route interception. The page, engine, Fides client and Arca run
+unchanged; blob SHAs are real Git blob SHA-1s. `failNext` injects one
+failure. Specs: `ui-conformance-admin.spec.js`,
+`ui-conformance-admin-content.spec.js`, `ui-conformance-admin-draft.spec.js`
+and the markup guard `ui-conformance-markup.spec.js`.
+
+| Area | Actions exercised (outcome asserted on the page and in the store or a download) |
+| --- | --- |
+| Dataset | sign-in sets the dataset up (administrator, manifest, audit records), Refresh, Sign out |
+| Failure/recovery | a 503 on the ref update: read-only, "nothing is queued", no group stored; Refresh, then the same create succeeds once |
+| Groups | create, list, status filter in the address, compare (one group refused with its reason, two give rows) |
+| Lifecycle | Finalize refused while the index is stale; Rebuild the contribution index; Close incomplete, Reopen, Close incomplete, Finalize, Seal, each changing the stored lifecycle record |
+| Invitations, imports | Create links, Save the links (download), a respondent answers an invitation and submits, Import (accepted and rejected), the same link again (duplicate) |
+| Results, scoring, report | sort, percentages, All sections, scoring section link, report family and language (fr, right-to-left Arabic, no overflow) |
+| Snapshots, exports | Take a snapshot (stored), Report (JSON), Sections (CSV), Lineage (each a download) |
+| Report builder | start, Move up, Detail, Save definition (stored version), Open |
+| Drafts | start, every editor action (section, questions, condition, fact, recommendation, validation rule, time limit, question bank, translation, accessibility text, numbering) added and removed, an impossible answer refused, Save draft, Submit for review, Approve, Publish refused until warnings are acknowledged, Publish, For the respondent site (download), Test links, Hide from new groups |
+| Administrators | a login refused, Admit by account number (stored), Remove |
+| Storage | verification shown, Rebuild the contribution index |
+
+Defects found and fixed (all pre-existing, all in Signal):
+
+| Rule | Defect | Fix |
+| --- | --- | --- |
+| ULI-A01 | Close incomplete, Reopen, Finalize and Seal were refused ("'' is not available for this group now") and the snapshot exports did nothing: Limen sends no value for a button, and these buttons carried their meaning in `value` | each button sends its own event (`closeGroup` … `exportLineage`), mapped in `AdminUpdate.fs`; F# test and markup guard |
+| ULI-A01, L08 | The survey draft editor rendered as its heading alone, two of the three export buttons and two of three fields of each validation rule never rendered: a data-if template mounts only its first root element | one root element per template; markup guard |
+| ULI-L08 | The group view and its lifecycle buttons, and the printable report, stayed on other areas after leaving them: a bare nested `<template>` as a data-if root stays mounted | a wrapper element; print rule follows it |
+| ULI-A01 | The Administrators area, and the published-versions list, failed to render (Limen bridge error): row buttons bound the page-wide `busy` inside a row | the engine projects `busy` into those rows |
+| ULI-A07 | While the only dataset opened after sign-in, its button stayed enabled; a second open raced the first and reported its own setup as "Something changed elsewhere" | the engine ignores an open while one is under way and projects `opening` to disable the button; F# test |
+| — | CI: Ordo strict verification (SDE-STRUCT-001) refused the 542-line spec | split into actions, layout and fixtures files |
+
+Recorded, not fixed here:
+
+- Limen (upstream): a data-if template with several root elements, or a bare
+  `<template>` root, is accepted silently instead of refused; a button's
+  `value` is never sent. Signal now guards both in its own markup.
+- Copy (engine wording, product owner): finalizing an incomplete group says
+  "The group's completion changed elsewhere and needs a decision", though
+  nothing changed elsewhere; report-builder options show raw names such as
+  `AdministratorAudience`.
+- ULI-A06: survey questions are not fieldsets with legends. The survey view is
+  one flat list of rows, so a question's choices have no common element; this
+  needs an engine view-model change and is captured as WI-0099.

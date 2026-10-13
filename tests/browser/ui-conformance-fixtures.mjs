@@ -4,7 +4,8 @@
 // network boundary (the deployment, GitHub's authorize redirect and Fides'
 // exchange). Test-only.
 import { readFileSync } from "node:fs";
-import { test, expect } from "./support.js";
+import { test, expect, expectConsoleError } from "./support.js";
+import { FakeGitHubStore } from "./fakes/github-store.js";
 import {
   expectPeerAlignment as expectPeerAlignmentMeasured,
   inventoryVisibleActions
@@ -94,4 +95,35 @@ export async function signIn(page, width = 1280) {
   await page.getByRole("button", { name: "Sign in" }).click();
   await page.waitForURL(/\/web\/admin\/index\.html/);
   await expect(page.locator("html")).toHaveAttribute("data-kernel", "running", { timeout: KERNEL_START_MS });
+}
+
+// Signs in against a fresh, test-only fake of the GitHub store
+// (fakes/github-store.js) and waits until the dataset is open and writable.
+// The store answers a missing file with 404, which the browser logs as a
+// failed resource load: those lines are expected, nothing else is.
+export async function signInWithStore(page, { width = 1280 } = {}) {
+  const store = new FakeGitHubStore({ origin });
+  expectConsoleError(page, /Failed to load resource: the server responded with a status of 404/);
+  await routeSignIn(page);
+  await store.install(page);
+  await signIn(page, width);
+  await expect(page.getByRole("status").filter({ hasText: "Signed in; changes can be saved." })).toBeVisible({ timeout: KERNEL_START_MS });
+  return store;
+}
+
+const DATASET = "prod/signal/datasets/ds_engagement";
+export const recordsOf = (store, type) =>
+  store.files().filter((path) => path.startsWith(`${DATASET}/records/${type}/`));
+
+// Creates a group through the Groups area's form and returns its key.
+export async function createGroup(page, { expected = "2", minimum = "1" } = {}) {
+  await page.getByRole("navigation", { name: "Administration" }).getByRole("link", { name: "Groups", exact: true }).click();
+  const form = page.locator("#new-group");
+  await form.getByRole("spinbutton", { name: "Expected surveys" }).fill(expected);
+  await form.getByRole("spinbutton", { name: "Expected surveys" }).press("Tab");
+  await form.getByRole("spinbutton", { name: "Minimum reportable count" }).fill(minimum);
+  await form.getByRole("spinbutton", { name: "Minimum reportable count" }).press("Tab");
+  await form.getByRole("button", { name: "Create group" }).click();
+  await expect(page.getByRole("heading", { level: 2, name: /^Group [0-9a-f]{32}$/ })).toBeVisible({ timeout: 15_000 });
+  return (await page.locator("#group-key").textContent()).trim();
 }

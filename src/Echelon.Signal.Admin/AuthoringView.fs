@@ -59,7 +59,9 @@ let project (model: Model) : (string * ViewValue) list =
               [ "key", Text r.Hash
                 "label", Text $"{r.Title} ({r.SurveyId} {r.Version})"
                 "canHide", Flag(not r.Hidden && can.Contains AdminState.CanPublishTemplates)
-                "canDerive", Flag(not (model.Templates.DraftsById.ContainsKey r.SurveyId) && can.Contains AdminState.CanEditDrafts) ])
+                "canDerive", Flag(not (model.Templates.DraftsById.ContainsKey r.SurveyId) && can.Contains AdminState.CanEditDrafts)
+                // A row's buttons bind within the row (GH-113): the page-wide flag, per row.
+                "busy", Flag model.Busy ])
       )
       "draftLinks", Items(model.Templates.Drafts |> List.map (fun (s, title) -> [ "key", Text s; "label", Text $"{title} ({s})"; "href", Text(href (Draft s)) ]))
       "hasDraft", flag editor.IsSome
