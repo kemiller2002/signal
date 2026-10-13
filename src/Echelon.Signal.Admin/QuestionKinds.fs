@@ -43,7 +43,7 @@ let isScored (q: Question) =
     | _ -> false
 
 let private ordinal5 preset labels special : AnswerDefinition * Selectors.Selector * Responses.SpecialState list =
-    Ordinal 5, { Preset = preset; Labels = labels }, special
+    Ordinal 5, { Preset = preset; Labels = labels; Accessibility = Selectors.noAccessibility }, special
 
 let private optionsBetween (low: int) (high: int) (details: string) =
     let labels = details.Split(',', StringSplitOptions.TrimEntries ||| StringSplitOptions.RemoveEmptyEntries) |> List.ofArray
@@ -89,27 +89,27 @@ let build (id: string) (prompt: string) (kind: Kind) (details: string) : Result<
                     [ "Strongly disagree"; "Disagree"; "Neither agree nor disagree"; "Agree"; "Strongly agree" ]
                     [ Responses.DontKnow; Responses.NotApplicable ]
             )
-        | YesNo -> Ok(Boolean, { Preset = Selectors.YesNo; Labels = [ "No"; "Yes" ] }, [ Responses.NotApplicable ])
-        | Choice -> optionsOf details |> Result.map (fun os -> SingleChoice os, { Preset = Selectors.RadioList; Labels = [] }, [ Responses.Declined ])
+        | YesNo -> Ok(Boolean, { Preset = Selectors.YesNo; Labels = [ "No"; "Yes" ]; Accessibility = Selectors.noAccessibility }, [ Responses.NotApplicable ])
+        | Choice -> optionsOf details |> Result.map (fun os -> SingleChoice os, { Preset = Selectors.RadioList; Labels = []; Accessibility = Selectors.noAccessibility }, [ Responses.Declined ])
         | Multi ->
             optionsOf details
             |> Result.map (fun os ->
                 MultiChoice { Options = os; Selection = AnyCount; Exclusive = []; WhenExclusive = RejectCombination },
-                { Preset = Selectors.CheckboxList; Labels = [] },
+                { Preset = Selectors.CheckboxList; Labels = []; Accessibility = Selectors.noAccessibility },
                 [ Responses.Declined ])
-        | Number -> rangeOf details |> Result.map (fun b -> BoundedNumber b, { Preset = Selectors.NumericStepper; Labels = [] }, [ Responses.Declined ])
+        | Number -> rangeOf details |> Result.map (fun b -> BoundedNumber b, { Preset = Selectors.NumericStepper; Labels = []; Accessibility = Selectors.noAccessibility }, [ Responses.Declined ])
         | Rank ->
             optionsBetween 2 8 details
-            |> Result.map (fun os -> Ranking { Options = os; Positions = None }, { Preset = Selectors.RankingList; Labels = [] }, [ Responses.Declined ])
+            |> Result.map (fun os -> Ranking { Options = os; Positions = None }, { Preset = Selectors.RankingList; Labels = []; Accessibility = Selectors.noAccessibility }, [ Responses.Declined ])
         | Allocate ->
             optionsBetween 2 6 details
             |> Result.map (fun os ->
                 Allocation { Options = os; Total = AllocationPoints; Step = 1.0; ItemMinimum = 0; ItemMaximum = AllocationPoints },
-                { Preset = Selectors.ConstantSum; Labels = [] },
+                { Preset = Selectors.ConstantSum; Labels = []; Accessibility = Selectors.noAccessibility },
                 [ Responses.Declined ])
         | BestWorstPair ->
             optionsBetween 3 12 details
-            |> Result.map (fun os -> BestWorst os, { Preset = Selectors.BestWorstSet; Labels = [] }, [ Responses.Declined ])
+            |> Result.map (fun os -> BestWorst os, { Preset = Selectors.BestWorstSet; Labels = []; Accessibility = Selectors.noAccessibility }, [ Responses.Declined ])
 
     shaped
     |> Result.map (fun (answer, selector, special) ->

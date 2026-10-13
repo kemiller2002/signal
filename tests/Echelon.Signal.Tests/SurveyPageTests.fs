@@ -37,7 +37,7 @@ let private question id prompt answer preset labels special : Question =
       Prompt = prompt
       HelpText = None
       Answer = answer
-      Selector = { Preset = preset; Labels = labels }
+      Selector = { Preset = preset; Labels = labels; Accessibility = Selectors.noAccessibility }
       SpecialStates = special
       Required = true
       Tags = [] }
@@ -99,7 +99,7 @@ let compoundEditor =
           Prompt = prompt
           HelpText = None
           Answer = answer
-          Selector = { Preset = preset; Labels = [] }
+          Selector = { Preset = preset; Labels = []; Accessibility = Selectors.noAccessibility }
           SpecialStates = []
           Required = true
           Tags = [] }

@@ -23,7 +23,7 @@ let private ordinal5 id : Question =
       Prompt = $"Prompt {id}"
       HelpText = None
       Answer = Ordinal 5
-      Selector = { Preset = Likert5; Labels = [ "a"; "b"; "c"; "d"; "e" ] }
+      Selector = { Preset = Likert5; Labels = [ "a"; "b"; "c"; "d"; "e" ]; Accessibility = noAccessibility }
       SpecialStates = []
       Required = true
       Tags = [] }

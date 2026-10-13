@@ -65,7 +65,8 @@ let newDraft (surveyId: string) (title: string) : Draft =
           Runtime = defaultRuntime
           Sections = []
           Rules = noRules
-          Results = ResultModel.noResults }
+          Results = ResultModel.noResults
+          Localizations = [] }
       Fixtures = [] }
 
 let sectionIds (content: Content) = content.Sections |> List.map _.Id

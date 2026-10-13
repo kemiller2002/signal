@@ -28,6 +28,7 @@
     <Compile Include="InterpretationDiffTests.fs" />
     <Compile Include="FixtureRoundTripTests.fs" />
     <Compile Include="CapabilityCoverageTests.fs" />
+    <Compile Include="LocalizationTests.fs" />
     <Compile Include="GroupsTests.fs" />
     <Compile Include="ScoringAstTests.fs" />
     <Compile Include="KeyedTests.fs" />

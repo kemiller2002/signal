@@ -20,7 +20,7 @@ let private q id answer specials : Question =
       Prompt = $"How about {id}?"
       HelpText = None
       Answer = answer
-      Selector = { Preset = Frequency5; Labels = [ "0"; "1"; "2"; "3"; "4" ] }
+      Selector = { Preset = Frequency5; Labels = [ "0"; "1"; "2"; "3"; "4" ]; Accessibility = noAccessibility }
       SpecialStates = specials
       Required = true
       Tags = [] }

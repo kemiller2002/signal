@@ -138,7 +138,7 @@ let capabilityOf (answer: AnswerDefinition) : Capability option =
 
 /// Capabilities this engine version supports (WI-0043 added the rule
 /// capabilities, WI-0044 custom scoring, WI-0090 ranking and allocation,
-/// which the engine has supported since #73). Declaring one is optional
+/// which the engine has supported since #73, WI-0091 localization). Declaring one is optional
 /// (ACR-003 §10); declaring one the engine lacks fails explicitly.
 let supportedCapabilities: Set<Capability> =
     Set.ofList
@@ -149,14 +149,14 @@ let supportedCapabilities: Set<Capability> =
           UsesAdvancedValidation
           UsesCustomScoring
           UsesRanking
-          UsesAllocation ]
+          UsesAllocation
+          UsesLocalization ]
 
 /// Why each capability this engine refuses is refused: the template model
 /// has nothing that uses it, so no template can rely on it (WI-0090).
 let unsupportedCapabilities: Map<Capability, string> =
     Map.ofList
-        [ UsesGroupScoring, "group scoring lives in the group design, not in the template, which has no group-scoring area"
-          UsesLocalization, "the template has no localization area (CAN-001 §2, WI-0091)" ]
+        [ UsesGroupScoring, "group scoring lives in the group design, not in the template, which has no group-scoring area" ]
 
 type Compatibility =
     { SchemaVersion: int
@@ -196,7 +196,10 @@ type Content =
       Runtime: RuntimePolicy
       Sections: Section list
       Rules: RuleSet
-      Results: Results }
+      Results: Results
+      /// Translations of the presentation text, one per locale (CAN-001 §2,
+      /// DF-SIGNAL-2026-0020). Empty for a single-language template.
+      Localizations: LocalizationModel.Localization list }
 
 let defaultPresentation =
     { ItemsPerPage = None

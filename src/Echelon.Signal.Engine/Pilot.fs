@@ -78,7 +78,8 @@ let contentOf (assessment: Assessment) : Template.Content =
           Answer = Primitives.Ordinal 5
           Selector =
             { Preset = Selectors.Frequency5
-              Labels = [ Never; Rarely; Sometimes; Often; AlmostAlways ] |> List.map frequencyLabel }
+              Labels = [ Never; Rarely; Sometimes; Often; AlmostAlways ] |> List.map frequencyLabel
+              Accessibility = Selectors.noAccessibility }
           SpecialStates = [ Responses.DontKnow; Responses.NotObserved; Responses.NotApplicable ]
           Required = true
           Tags = [] }
@@ -106,7 +107,8 @@ let contentOf (assessment: Assessment) : Template.Content =
                     { Scorer = dimensionScorer assessment
                       Questions = [] } })
       Rules = RuleModel.noRules
-      Results = ResultModel.noResults }
+      Results = ResultModel.noResults
+      Localizations = [] }
 
 let content: Template.Content = contentOf assessment
 

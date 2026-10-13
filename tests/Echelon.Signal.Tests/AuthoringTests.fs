@@ -24,7 +24,7 @@ let private q id : Question =
       Prompt = $"How often does {id} happen?"
       HelpText = None
       Answer = Ordinal 5
-      Selector = { Preset = Frequency5; Labels = [ "0"; "1"; "2"; "3"; "4" ] }
+      Selector = { Preset = Frequency5; Labels = [ "0"; "1"; "2"; "3"; "4" ]; Accessibility = noAccessibility }
       SpecialStates = [ DontKnow ]
       Required = true
       Tags = [] }
@@ -135,7 +135,7 @@ let ``structural and answer blockers have stable codes`` () =
         |> editQuestion "q1" (fun x ->
             { x with
                 Answer = SingleChoice [ { Id = "a"; Label = "A"; Score = Some 1.0 }; { Id = "a"; Label = "B"; Score = None } ]
-                Selector = { Preset = SingleSelect; Labels = [] } })
+                Selector = { Preset = SingleSelect; Labels = []; Accessibility = noAccessibility } })
         |> ok
 
     let b = blockersOf choice

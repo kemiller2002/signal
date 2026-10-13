@@ -57,7 +57,7 @@ let ``every stored template starts groups through the generic pipeline, and its 
 
     let yesNo =
         { other with
-            Sections = other.Sections |> List.map (fun s -> { s with Scoring = None; Questions = s.Questions |> List.map (fun q -> { q with Answer = Primitives.Boolean; Selector = { Preset = Selectors.YesNo; Labels = [ "No"; "Yes" ] }; SpecialStates = [] }) }) }
+            Sections = other.Sections |> List.map (fun s -> { s with Scoring = None; Questions = s.Questions |> List.map (fun q -> { q with Answer = Primitives.Boolean; Selector = { Preset = Selectors.YesNo; Labels = [ "No"; "Yes" ]; Accessibility = Selectors.noAccessibility }; SpecialStates = [] }) }) }
 
     let yes: Drafts.Fixture =
         { Id = "all-yes"

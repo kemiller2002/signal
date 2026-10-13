@@ -49,7 +49,15 @@ let private question (i: int) answer preset : Question =
       Prompt = $"Prompt {i} \"quoted\" é 日本"
       HelpText = (if i % 2 = 0 then Some "help" else None)
       Answer = answer
-      Selector = { Preset = preset; Labels = (if i % 3 = 0 then [ "one"; "two" ] else []) }
+      Selector =
+        { Preset = preset
+          Labels = (if i % 3 = 0 then [ "one"; "two" ] else [])
+          Accessibility =
+            (match i % 5 with
+             | 1 -> { Name = Some $"Accessible {i}"; Description = None }
+             | 2 -> { Name = None; Description = Some "Read after the prompt" }
+             | 3 -> { Name = Some "Both"; Description = Some "and a description" }
+             | _ -> noAccessibility) }
       SpecialStates = (if i % 2 = 0 then [ DontKnow; NotObserved; NotApplicable; Declined ] else [])
       Required = i % 2 = 1
       Tags = (if i % 4 = 0 then [ "t1"; "t2" ] else []) }
@@ -211,7 +219,17 @@ let private kitchenSink (overall: OverallScoring option) : Content =
       Runtime = { AllowResume = false; AllowChangesAfterCompletion = true; ShowResults = false; ResultMode = Deferred }
       Sections = sections
       Rules = rules
-      Results = results overall }
+      Results = results overall
+      // Locales in canonical (ordinal) order, as decoding returns them.
+      Localizations =
+        [ { Locale = "de"; Texts = Map.ofList [ LocalizationModel.SectionTitle "s0", "Abschnitt" ] }
+          { Locale = "fr-FR"
+            Texts =
+              Map.ofList
+                  [ LocalizationModel.SurveyTitle, "Évier de cuisine"
+                    LocalizationModel.QuestionPrompt "q1", "Énoncé 1 « cité » 日本"
+                    LocalizationModel.AnswerLabel("q3", 1), "deux"
+                    LocalizationModel.ResultLabel("band", "a/b"), "a/b traduit" ] } ] }
 
 let private roundTrip (surveyId: string) (version: string) (content: Content) =
     let bytes = TemplateCanonical.bytes surveyId version content

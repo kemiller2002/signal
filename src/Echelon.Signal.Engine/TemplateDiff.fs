@@ -49,6 +49,8 @@ type Change =
     | InterpretationLabelsChanged
     | DisplayChanged
     | ItemKeysChanged
+    /// Translations changed: presentation text only (DF-SIGNAL-2026-0020).
+    | LocalizationChanged
 
 /// Whether a change can alter scores, alter how stored answers are read, or
 /// only how the survey looks.
@@ -78,7 +80,8 @@ let impact (change: Change) =
     | ItemKeysChanged -> { Scoring = true; Encoding = false }
     | InterpretationThresholdsChanged -> { Scoring = true; Encoding = false }
     | InterpretationLabelsChanged
-    | DisplayChanged -> { Scoring = false; Encoding = false }
+    | DisplayChanged
+    | LocalizationChanged -> { Scoring = false; Encoding = false }
     | ValidationRulesChanged
     | CompletionChanged
     | RecommendationsChanged -> { Scoring = false; Encoding = false }
@@ -141,6 +144,8 @@ let diff (before: Content) (after: Content) : Change list =
           InterpretationLabelsChanged
       if before.Results.Display <> after.Results.Display then DisplayChanged
       if before.Results.ItemKeys <> after.Results.ItemKeys then ItemKeysChanged
+      let locales (c: Content) = c.Localizations |> List.sortBy (fun (l: LocalizationModel.Localization) -> l.Locale)
+      if locales before <> locales after then LocalizationChanged
       let layoutOf (p: Presentation) = { p with Timers = []; Banks = [] }
       if layoutOf before.Presentation <> layoutOf after.Presentation then PresentationChanged
       if before.Presentation.Timers <> after.Presentation.Timers then TimersChanged

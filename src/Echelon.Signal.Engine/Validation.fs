@@ -257,13 +257,26 @@ let private privacy (policy: Policy) (draft: Draft) =
           if any (s.Title :: Option.toList s.Description) then
               finding PrivacyCategory severity "PRIVACY-PII-LIKE-SECTION" s.Id $"Section '{s.Id}' appears to ask for identifying information."
       for _, q in questions draft.Content do
-          if isPiiLike q.Prompt || q.HelpText |> Option.exists isPiiLike then
+          let a = q.Selector.Accessibility
+
+          if isPiiLike q.Prompt || q.HelpText |> Option.exists isPiiLike || any (List.choose id [ a.Name; a.Description ]) then
               finding PrivacyCategory severity "PRIVACY-PII-LIKE-PROMPT" q.Id $"Question '{q.Id}' appears to ask for identifying information."
           if any (q.Selector.Labels @ (options q.Answer |> List.map _.Label)) then
               finding PrivacyCategory severity "PRIVACY-PII-LIKE-LABEL" q.Id $"An answer label of question '{q.Id}' appears to ask for identifying information."
       for r in draft.Content.Rules.Recommendations do
           if any [ r.Title; r.Description ] then
-              finding PrivacyCategory severity "PRIVACY-PII-LIKE-RECOMMENDATION" r.Id $"Recommendation '{r.Id}' appears to ask for identifying information." ]
+              finding PrivacyCategory severity "PRIVACY-PII-LIKE-RECOMMENDATION" r.Id $"Recommendation '{r.Id}' appears to ask for identifying information."
+      // A translation is held to the same rule as the text it translates
+      // (DF-SIGNAL-2026-0020). The pattern is English; it surfaces the
+      // obvious cases in any locale that keeps those words.
+      for locale, key, text in Localization.texts draft.Content do
+          if isPiiLike text then
+              finding
+                  PrivacyCategory
+                  severity
+                  "PRIVACY-PII-LIKE-TRANSLATION"
+                  locale
+                  $"The '{locale}' text for '{LocalizationModel.keyName key}' appears to ask for identifying information." ]
 
 // ---------------------------------------------------------------------------
 // Fixtures and the published test manifest (AUT-003 §§24-26, AUT-006 §§68-69).
@@ -394,6 +407,7 @@ let validate (policy: Policy) (draft: Draft) : ValidationReport =
         @ encoding policy draft
         @ privacy policy draft
         @ RuleChecks.check draft.Content
+        @ Localization.check draft.Content
         @ resultChecks policy draft
         @ fixtures policy draft results
       Capacity = capacity draft.Content
