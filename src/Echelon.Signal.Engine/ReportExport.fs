@@ -131,21 +131,14 @@ let json (report: ReportData) : string =
 
     Encoding.UTF8.GetString(buffer.WrittenSpan)
 
-let private csvField (text: string) =
-    if text.IndexOfAny([| ','; '"'; '\n' |]) >= 0 then "\"" + text.Replace("\"", "\"\"") + "\"" else text
-
-/// Section summary as CSV (RPT-004 §44): tabular data only.
+/// Section summary as CSV (RPT-004 §44): tabular data only, written by the
+/// spreadsheet-safe writer (`Csv`, WI-0084): a section title from a template
+/// can never run as a formula.
 let sectionsCsv (report: ReportData) : string =
-    let header = "section,title,mean,median,minimum,maximum,scored,unscored"
-
-    let rows =
-        report.Sections
-        |> List.map (fun s ->
-            [ s.Section; s.Title; valueText s.Mean; valueText s.Median; valueText s.Minimum; valueText s.Maximum; string s.Scored; string s.Unscored ]
-            |> List.map csvField
-            |> String.concat ",")
-
-    String.concat "\n" (header :: rows) + "\n"
+    Csv.table
+        [ "section"; "title"; "mean"; "median"; "minimum"; "maximum"; "scored"; "unscored" ]
+        (report.Sections
+         |> List.map (fun s -> [ s.Section; s.Title; valueText s.Mean; valueText s.Median; valueText s.Minimum; valueText s.Maximum; string s.Scored; string s.Unscored ]))
 
 /// A formal report's identity (RPT-005 §55, SRPP-010): the hash covers the
 /// export, the locale and the renderer profile (Folio package and profile

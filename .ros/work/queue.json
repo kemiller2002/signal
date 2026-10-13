@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 84,
+  "nextSeq": 85,
   "items": [
     {
       "id": "WI-0001",
@@ -1976,6 +1976,29 @@
       "attachments": [],
       "createdAt": "2026-10-13T09:28:33Z",
       "updatedAt": "2026-10-13T09:33:16Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0084",
+      "title": "Neutralize spreadsheet formulas in every Signal CSV export (CSV injection)",
+      "description": "Coordinator security check 2026-10-13 after Summa's CSV injection finding. Signal's report sections CSV (ReportExport.sectionsCsv, WI-0046) wrote template text (section titles) without neutralizing leading =, +, -, @, tab or carriage return, and did not quote carriage returns; the invitation links CSV (WI-0081) used no shared writer. Fix: one CSV writer that prefixes a single quote to text cells starting with those characters, keeps numbers as numbers, and quotes per RFC 4180. Signal has no free-text answer kind, so respondent text never reached a CSV; template text did. Escaped defect against the PR that introduced the export.",
+      "tags": [
+        "signal,security"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-10-13T12:20:15Z",
+      "updatedAt": "2026-10-13T12:20:15Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
