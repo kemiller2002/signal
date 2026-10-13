@@ -3,6 +3,7 @@
 /// pagination never changes the layout or scores.
 module Echelon.Signal.Engine.Layout
 
+open Echelon.Signal.Engine.Responses
 open Echelon.Signal.Engine.Primitives
 open Echelon.Signal.Engine.Selectors
 open Echelon.Signal.Engine.Template
@@ -77,6 +78,37 @@ let layout (content: Content) : Slot list =
     |> List.map (fun (_, q) ->
         let states = 1UL + valueCount q.Answer + uint64 q.SpecialStates.Length
         { QuestionId = q.Id; States = states; Bits = bitsFor states })
+
+/// A question's slot state: 0 for unanswered and for a value or special state
+/// the question cannot hold, then 1 + the value's index, then each offered
+/// special state. Shared by the envelope and fixture validation.
+let slotState (q: Question) (state: AnswerState option) : uint64 =
+    match state with
+    | None -> 0UL
+    | Some(Value v) ->
+        match toIndex q.Answer v with
+        | Some i -> 1UL + i
+        | None -> 0UL
+    | Some(Special s) ->
+        match q.SpecialStates |> List.tryFindIndex ((=) s) with
+        | Some i -> 1UL + valueCount q.Answer + uint64 i
+        | None -> 0UL
+
+/// The answer a slot state stands for; an error for a state the question
+/// does not offer or a value that breaks the primitive's rules.
+let slotAnswer (q: Question) (state: uint64) : Result<AnswerState option, unit> =
+    let values = valueCount q.Answer
+
+    if state = 0UL then
+        Ok None
+    elif state <= values then
+        match ofIndex q.Answer (state - 1UL) with
+        | Some v when (Primitives.check q.Answer v).IsNone -> Ok(Some(Value v))
+        | _ -> Error()
+    elif state <= values + uint64 q.SpecialStates.Length then
+        Ok(Some(Special q.SpecialStates[int (state - values - 1UL)]))
+    else
+        Error()
 
 /// The most bytes invitation terms add to a generic link (format 2): flags,
 /// a locale of up to 24 characters with its length, a 2-byte expiry day and
