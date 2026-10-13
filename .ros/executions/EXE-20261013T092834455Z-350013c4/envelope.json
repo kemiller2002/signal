@@ -1,0 +1,97 @@
+{
+  "schema": "ordo.execution/1",
+  "executionId": "EXE-20261013T092834455Z-350013c4",
+  "workItem": "kemiller2002/signal:WI-0083",
+  "actor": {
+    "id": "anthropic/claude-code",
+    "kind": "agent",
+    "provider": "anthropic",
+    "model": null,
+    "runtime": "claude-code"
+  },
+  "role": "implementation",
+  "capabilities": [
+    "implementation.modify",
+    "implementation.modify-tests",
+    "evaluator.invoke",
+    "verification.observe",
+    "evidence.record"
+  ],
+  "prohibitions": [
+    "specification.create-promise",
+    "specification.approve",
+    "acceptance.modify",
+    "evaluator.modify",
+    "verification.verdict",
+    "review.accept"
+  ],
+  "baselineRevision": "3a595261ae5a49fdb3c368963bd07c1569f58e24",
+  "candidateRevision": "62e53c81a494d9d0a8550e0864d3f9eb36e245e5",
+  "workspace": "checkout:EXE-20261013T092834455Z-350013c4",
+  "workspaceBinding": {
+    "id": "checkout:EXE-20261013T092834455Z-350013c4",
+    "branch": "docs/measurement-baseline",
+    "path": null,
+    "mechanism": "working-directory"
+  },
+  "containment": "semantic-only",
+  "containmentDetail": {
+    "mechanism": "working-directory",
+    "restrictions": [],
+    "evidence": []
+  },
+  "securitySandbox": false,
+  "mutationBoundary": {
+    "scopes": [],
+    "projections": [],
+    "evaluatorReferences": []
+  },
+  "evaluator": null,
+  "humanOnlyTransitions": [],
+  "parentExecution": null,
+  "startedAt": "2026-10-13T09:28:34.942Z",
+  "state": "completed",
+  "stateReason": null,
+  "origin": {
+    "kind": "work-transition",
+    "reference": "work.begin"
+  },
+  "containmentProfile": {
+    "schema": "praxis.containment/1",
+    "source": null,
+    "hostEnforced": false,
+    "restrictions": [
+      {
+        "dimension": "filesystem",
+        "status": "unknown",
+        "mechanism": null,
+        "evidence": null
+      },
+      {
+        "dimension": "process",
+        "status": "unknown",
+        "mechanism": null,
+        "evidence": null
+      },
+      {
+        "dimension": "network",
+        "status": "unknown",
+        "mechanism": null,
+        "evidence": null
+      },
+      {
+        "dimension": "credential",
+        "status": "unknown",
+        "mechanism": null,
+        "evidence": null
+      },
+      {
+        "dimension": "environment",
+        "status": "unknown",
+        "mechanism": null,
+        "evidence": null
+      }
+    ]
+  },
+  "evaluatorCommand": null
+}
