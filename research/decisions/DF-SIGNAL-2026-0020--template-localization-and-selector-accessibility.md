@@ -16,8 +16,9 @@ tags: [template, localization, accessibility, canonical-form]
 provenance:
   contributions:
     EXE-20261013T170114560Z-a503dddb:
-      operations: [created]
+      operations: [created, modified]
       at: 2026-10-13T17:01:20.216Z
+      last: 2026-10-13T17:59:25.275Z
       actor:
         kind: agent
         id: anthropic/claude-code
@@ -84,7 +85,13 @@ CAN-001 lists a Localization area in the canonical template and AccessibilityMet
    - The source diff's option-relabel gap found while doing this is fixed by WI-0097: every option relabel is now `OptionsRelabelled` (a caution, no impact), and a translated option label maps to it.
 6. **`UsesLocalization` is supported.** Declaring it is optional, like every capability.
 
+7. **Showing it (WI-0091 slice 2).** The survey page reads the translation for the link's locale, which link format 2 carries (VER-003):
+   - **Which translation:** the same tag (any letter case) wins; otherwise the first with the same language subtag (a "fr-CA" link reads "fr"); otherwise the source text.
+   - **Display only:** the projection (`Localization.display`) is used for the page's text. Applicability, paging, timers, validation, scoring and the link always read the published content.
+   - **The page's `lang`** is the translation's tag when one is shown. Without one it stays the link's locale, as before (VER-003). In that case the page's `lang` can name a language whose text the template doesn't have.
+   - **Accessibility text:** the accessible name is read in place of the prompt, which stays visible and is `aria-hidden`, with the name in a screen-reader-only span. The accessible description is a screen-reader-only element added to every input's `aria-describedby` after the prompt.
+
 ## Consequences
 
-- Showing the respondent's locale on the survey page, applying accessibility text in the UI, and authoring both in the console are the next WI-0091 slices.
+- Authoring translations and accessibility text in the console is the next WI-0091 slice.
 - Report-definition localization (AUT-005 §66) stays with the report builder.
