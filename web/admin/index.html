@@ -135,6 +135,35 @@
         <label>only when question <input id="rule-when" type="text" data-event="ruleWhen" data-bind-value="ruleWhen" /></label>
         <label>has the answer <input id="rule-answer" type="text" data-event="ruleAnswer" data-bind-value="ruleAnswer" /></label>
         <button type="button" class="ef-button" data-event="addShowRule">Add condition</button>
+        <h3>Facts</h3>
+        <ul id="draft-facts">
+          <template data-each="draftFacts" data-key="id">
+            <li><span data-text="label"></span> <button type="button" class="ef-button" data-event="removeFact">Remove</button></li>
+          </template>
+        </ul>
+        <label>A yes/no fact, true when question or fact <input id="fact-when" type="text" data-event="factWhen" data-bind-value="factWhen" /></label>
+        <label>has the answer <input id="fact-answer" type="text" data-event="factAnswer" data-bind-value="factAnswer" /></label>
+        <button type="button" class="ef-button" data-event="addFact">Add fact</button>
+        <h3>Recommendations</h3>
+        <ul id="draft-recommendations">
+          <template data-each="draftRecommendations" data-key="id">
+            <li><span data-text="label"></span> <button type="button" class="ef-button" data-event="removeRecommendation">Remove</button></li>
+          </template>
+        </ul>
+        <label>Recommend when question or fact <input id="recommendation-when" type="text" data-event="recommendationWhen" data-bind-value="recommendationWhen" /></label>
+        <label>has the answer <input id="recommendation-answer" type="text" data-event="recommendationAnswer" data-bind-value="recommendationAnswer" /></label>
+        <label>Priority <select id="recommendation-priority" data-event="recommendationPriority"><template data-each="recommendationPriorities" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+        <label>Title <input id="recommendation-title" type="text" data-event="recommendationTitle" data-bind-value="recommendationTitle" /></label>
+        <label>What to do <textarea id="recommendation-text" rows="2" data-event="recommendationText" data-bind-value="recommendationText"></textarea></label>
+        <button type="button" class="ef-button" data-event="addRecommendation">Add recommendation</button>
+        <h3>Completion</h3>
+        <p id="draft-completion" data-text="draftCompletion"></p>
+        <label>Share of applicable questions that must be answered (%) <input id="minimum-answered" type="text" inputmode="numeric" data-event="minimumAnswered" data-bind-value="minimumAnswered" /></label>
+        <ul id="completion-sections">
+          <template data-each="draftSections" data-key="id">
+            <li><label><input type="checkbox" data-event="sectionRequired" value="true" data-bind-checked="requiredForCompletion" /> Section <span data-text="id"></span> must be fully answered</label></li>
+          </template>
+        </ul>
         <h3>Test fixtures</h3>
         <ul id="draft-fixtures"><template data-each="draftFixtures" data-key="id"><li data-text="name"></li></template></ul>
         <button type="button" class="ef-button" data-event="addFixture">Add a fixture: every answer at the midpoint</button>

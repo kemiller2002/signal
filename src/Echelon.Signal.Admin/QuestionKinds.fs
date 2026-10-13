@@ -147,6 +147,30 @@ let afterRemoving (questionId: string) (section: Section) : Section =
 
 // ---- Conditional questions ------------------------------------------------------------------
 
+/// "This question has this answer", the answer named by its label as
+/// respondents see it: a value or a special state of a one-answer question.
+let answerCondition (q: Question) (answerLabel: string) : Result<Condition, string> =
+    match GenericSession.choices q |> List.tryFind (fun (_, label) -> String.Equals(label, answerLabel.Trim(), StringComparison.OrdinalIgnoreCase)) with
+    | None when not (GenericSession.toggles q).IsEmpty -> Error "A condition needs a question with one answer; this one allows several."
+    | None ->
+        let offered = GenericSession.choices q |> List.map snd |> String.concat ", "
+        Error $"'{answerLabel}' is not an answer to {q.Id}. Its answers are: {offered}."
+    | Some(Responses.Value value, _) -> Ok(AnswerIs(q.Id, value))
+    | Some(Responses.Special special, _) -> Ok(IsSpecial(q.Id, special))
+
+/// How a condition reads in the console.
+let describeCondition (content: Content) (condition: Condition) =
+    let label questionId state =
+        tryQuestion content questionId
+        |> Option.bind (fun q -> GenericSession.choices q |> List.tryFind (fst >> (=) state) |> Option.map snd)
+        |> Option.defaultValue "?"
+
+    match condition with
+    | AnswerIs(q, value) -> $"{q} is '{label q (Responses.Value value)}'"
+    | IsSpecial(q, special) -> $"{q} is '{label q (Responses.Special special)}'"
+    | FactTrue fact -> $"{fact} is true"
+    | _ -> "a condition"
+
 /// "Show a question only when an earlier question has an answer" (ACR-001
 /// flow): the answer is named by its label, as respondents see it.
 let showRule (ruleId: string) (content: Content) (questionId: string) (whenQuestion: string) (answerLabel: string) : Result<FlowRule, string> =
@@ -160,13 +184,7 @@ let showRule (ruleId: string) (content: Content) (questionId: string) (whenQuest
     | Some _, Some controlling ->
         let q = ordered[controlling]
 
-        match GenericSession.choices q |> List.tryFind (fun (_, label) -> String.Equals(label, answerLabel.Trim(), StringComparison.OrdinalIgnoreCase)) with
-        | None when not (GenericSession.toggles q).IsEmpty -> Error "A condition needs a question with one answer; this one allows several."
-        | None ->
-            let offered = GenericSession.choices q |> List.map snd |> String.concat ", "
-            Error $"'{answerLabel}' is not an answer to {q.Id}. Its answers are: {offered}."
-        | Some(Responses.Value value, _) -> Ok { Id = ruleId; When = AnswerIs(q.Id, value); Then = ShowQuestion questionId }
-        | Some(Responses.Special special, _) -> Ok { Id = ruleId; When = IsSpecial(q.Id, special); Then = ShowQuestion questionId }
+        answerCondition q answerLabel |> Result.map (fun condition -> { Id = ruleId; When = condition; Then = ShowQuestion questionId })
 
 /// How a flow rule reads in the console.
 let describeRule (content: Content) (rule: FlowRule) =
