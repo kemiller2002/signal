@@ -1729,6 +1729,69 @@
         "name": "ros",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "ts-git-ci",
+      "occurredAt": "2026-10-13T10:31:01Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "ra-implementation",
+      "name": "custom implementation: RuleAuthoring (facts, recommendations, completion) + console UI; 1 failed build (sectionIds not in scope); 2 test failures: admin binding whitelist for a list field, test compile order",
+      "occurredAt": "2026-10-13T10:31:25Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "ra-implementation",
+      "occurredAt": "2026-10-13T10:40:11Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "ra-testing",
+      "name": "testing: dotnet 484/484, browser 52/52, conditor verify",
+      "occurredAt": "2026-10-13T10:40:11Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "ra-testing",
+      "occurredAt": "2026-10-13T10:43:45Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "ra-git-ci",
+      "name": "git/CI integration: rule authoring PR and gate",
+      "occurredAt": "2026-10-13T10:44:20Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {

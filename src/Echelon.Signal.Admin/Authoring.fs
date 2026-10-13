@@ -32,6 +32,8 @@ type Edit =
     /// Show a question only when an earlier question has an answer (named by its label).
     | AddShowRule of questionId: string * whenQuestion: string * answerLabel: string
     | RemoveRule of ruleId: string
+    /// A fact, recommendation or completion edit (`RuleAuthoring`).
+    | Rule of RuleAuthoring.Edit
     /// A fixture where every question is answered at the midpoint.
     | AddMidpointFixture
 
@@ -128,7 +130,7 @@ let apply (edit: Edit) (editor: Editor) : Result<Editor, string> =
             | Some section ->
                 removeQuestion id draft
                 |> Result.bind (editSection section.Id (QuestionKinds.afterRemoving id))
-                |> Result.map (editContent (fun c -> { c with Rules = { c.Rules with Flow = c.Rules.Flow |> List.filter (mentions >> not) } }))
+                |> Result.map (editContent (fun c -> { c with Rules = RuleAuthoring.withoutMentions id { c.Rules with Flow = c.Rules.Flow |> List.filter (mentions >> not) } }))
                 |> Result.mapError describe
         | AddShowRule(questionId, whenQuestion, answerLabel) ->
             QuestionKinds.showRule (nextId "show-" (content.Rules.Flow |> List.map _.Id)) content questionId whenQuestion answerLabel
@@ -136,6 +138,7 @@ let apply (edit: Edit) (editor: Editor) : Result<Editor, string> =
         | RemoveRule ruleId when content.Rules.Flow |> List.exists (fun r -> r.Id = ruleId) ->
             Ok(editContent (fun c -> { c with Rules = { c.Rules with Flow = c.Rules.Flow |> List.filter (fun r -> r.Id <> ruleId) } }) draft)
         | RemoveRule ruleId -> Error $"There is no rule '{ruleId}'."
+        | Rule change -> RuleAuthoring.apply change content |> Result.map (fun c -> editContent (fun _ -> c) draft)
         | AddMidpointFixture ->
             let id = nextId "midpoint-" (draft.Fixtures |> List.map _.Id)
 
@@ -181,6 +184,8 @@ type Screen =
       RuleQuestion: string
       RuleWhen: string
       RuleAnswer: string
+      /// The facts, recommendations and completion form.
+      Rules: RuleAuthoring.Form
       Problem: string option }
 
 let emptyScreen =
@@ -194,6 +199,7 @@ let emptyScreen =
       RuleQuestion = ""
       RuleWhen = ""
       RuleAnswer = ""
+      Rules = RuleAuthoring.emptyForm
       Problem = None }
 
 /// What the screens ask the application to do.
@@ -213,6 +219,7 @@ let events =
           "newSectionTitle"; "addSection"; "removeSection"; "newQuestionPrompt"; "addQuestion"; "removeQuestion"
           "newQuestionKind"; "newQuestionDetails"; "ruleQuestion"; "ruleWhen"; "ruleAnswer"; "addShowRule"; "removeRule"
           "addFixture"; "acknowledgeWarnings"; "saveDraft"; "publishDraft"; "hideVersion"; "requestReview"; "approveReview" ]
+    |> Set.union RuleAuthoring.events
 
 /// The editor for a survey: the one in hand, or its stored draft.
 let current (listing: TemplateListing.Listing) (survey: string) (screen: Screen) =
@@ -274,6 +281,14 @@ let update (listing: TemplateListing.Listing) (survey: string option) (name: str
         let next, commands = edit (AddShowRule(screen.RuleQuestion, screen.RuleWhen, screen.RuleAnswer))
         (if next.Problem.IsNone then { next with RuleQuestion = ""; RuleWhen = ""; RuleAnswer = "" } else next), commands
     | "removeRule", Some id -> edit (RemoveRule id)
+    | name, key when RuleAuthoring.events.Contains name ->
+        let form, change = RuleAuthoring.update name key value screen.Rules
+
+        match change with
+        | None -> { screen with Rules = form }, []
+        | Some change ->
+            let next, commands = edit (Rule change)
+            (if next.Problem.IsNone then { next with Rules = RuleAuthoring.cleared change form } else { next with Rules = form }), commands
     | "removeQuestion", Some id -> edit (RemoveQuestion id)
     | "addFixture", _ -> edit AddMidpointFixture
     | "acknowledgeWarnings", _ ->

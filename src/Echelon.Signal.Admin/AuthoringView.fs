@@ -100,7 +100,38 @@ let project (model: Model) : (string * ViewValue) list =
           |> List.map (fun s ->
               [ "id", Text s.Id
                 "title", Text s.Title
-                "questionCount", Text(string s.Questions.Length) ])
+                "questionCount", Text(string s.Questions.Length)
+                "requiredForCompletion",
+                Flag(editor |> Option.exists (fun e -> e.Draft.Content.Rules.Completion.RequiredSections |> List.contains s.Id)) ])
+      )
+      // Facts, recommendations and completion (RuleAuthoring, DF-SIGNAL-2026-0011).
+      "draftFacts",
+      Items(
+          editor
+          |> Option.map (fun e -> e.Draft.Content.Rules.Facts |> List.map (fun f -> [ "id", Text f.Id; "label", Text(RuleAuthoring.describeFact e.Draft.Content f) ]))
+          |> Option.defaultValue []
+      )
+      "draftRecommendations",
+      Items(
+          editor
+          |> Option.map (fun e ->
+              e.Draft.Content.Rules.Recommendations
+              |> List.map (fun r -> [ "id", Text r.Id; "label", Text(RuleAuthoring.describeRecommendation e.Draft.Content r) ]))
+          |> Option.defaultValue []
+      )
+      "draftCompletion", text (editor |> Option.map (fun e -> RuleAuthoring.describeCompletion e.Draft.Content) |> Option.defaultValue "")
+      "minimumAnswered",
+      text (editor |> Option.bind (fun e -> e.Draft.Content.Rules.Completion.MinimumAnsweredPercent) |> Option.map (fun p -> string (int p)) |> Option.defaultValue "")
+      "factWhen", text model.Authoring.Rules.FactWhen
+      "factAnswer", text model.Authoring.Rules.FactAnswer
+      "recommendationWhen", text model.Authoring.Rules.RecommendationWhen
+      "recommendationAnswer", text model.Authoring.Rules.RecommendationAnswer
+      "recommendationTitle", text model.Authoring.Rules.RecommendationTitle
+      "recommendationText", text model.Authoring.Rules.RecommendationText
+      "recommendationPriorities",
+      Items(
+          RuleAuthoring.priorities
+          |> List.map (fun (key, _, label) -> [ "value", Text key; "label", Text label; "selected", Flag(key = model.Authoring.Rules.RecommendationPriority) ])
       )
       "draftQuestions",
       Items(
