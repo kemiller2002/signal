@@ -2293,10 +2293,10 @@
         "ordo"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-13T17:17:08Z",
-      "updatedAt": "2026-10-13T17:17:11Z",
+      "updatedAt": "2026-10-13T17:21:37Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
