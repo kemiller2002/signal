@@ -15,6 +15,24 @@
   padding: clamp(1rem, 4vw, 2rem) 1rem 4rem;
 }
 
+/* The administrator page: the same centred, guttered page as the assessment,
+   wider for its tables, from Forma's layout tokens (UI-LAYOUT-INTERACTION
+   ULI-L04, ULI-L05, ULI-L13). Without it the page's text ran to the
+   viewport's edge at every width. */
+.admin {
+  max-inline-size: var(--ef-layout-width-wide);
+  margin-inline: auto;
+  padding-block: var(--ef-space-5) var(--ef-space-8);
+  padding-inline: var(--ef-layout-gutter);
+}
+
+/* A best-worst choice on the survey page carries its visible column name
+   ("Fits best", "Fits least") under the radio, so neighbouring columns need
+   room between them to read as two choices, not one phrase (ULI-L04). */
+.survey-pair-choice {
+  padding-inline: var(--ef-space-2);
+}
+
 .page-header h1,
 .results-header h2 {
   margin: 0;
@@ -32,6 +50,11 @@
 
 @media print {
   .app {
+    max-inline-size: none;
+    padding: 0;
+  }
+
+  .admin {
     max-inline-size: none;
     padding: 0;
   }

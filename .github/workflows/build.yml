@@ -113,6 +113,13 @@ jobs:
           fi
           echo "Every shared library Chromium links against is present."
 
+      # The pure decisions behind the UI conformance checks
+      # (UI-LAYOUT-INTERACTION@1.0.0): missing evidence is UNKNOWN, never
+      # PASS. The browser half runs in the next step as the "ui-conformance"
+      # Playwright project (`npm run ui:conformance` runs both locally).
+      - name: Verify the UI conformance helpers
+        run: npm run ui:conformance:unit
+
       # The composed path: DOM event, Limen kernel, WASM shim, F# engine
       # and back, in a real browser, with Forma and Folio presenting it.
       - name: Verify the composed browser path

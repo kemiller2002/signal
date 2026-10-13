@@ -8,6 +8,8 @@
     "check:limen": "limen verify --strict",
     "test:dotnet": "dotnet test Echelon.Signal.sln -c Release",
     "test:browser": "npm run build:wasm && playwright test",
+    "ui:conformance:unit": "node --test \"tests/ui-conformance/**/*.test.mjs\"",
+    "ui:conformance": "npm run build:wasm && npm run ui:conformance:unit && playwright test --project=ui-conformance",
     "test": "npm run check:limen && npm run test:dotnet",
     "serve": "python3 -m http.server 4321",
     "start": "npm run build:wasm && npm run serve"

@@ -106,10 +106,14 @@
               <span class="ef-field__label" data-text="label"></span>
               <input type="number" inputmode="decimal" data-event="numbered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-value="numberValue" data-bind-min="numberMin" data-bind-max="numberMax" data-bind-step="numberStep" data-bind-disabled="locked" />
             </label>
-            <div class="ef-cluster" data-bind-hidden="hidePair">
+            <!-- Forma's best-worst row (UI-LAYOUT-INTERACTION ULI-L01, ULI-L09):
+                 the option, then a fixed "Fits best" and "Fits least" column,
+                 so the columns line up from row to row whatever the option's
+                 length. Each radio's name carries its option (ULI-A06). -->
+            <div class="ef-best-worst__row" data-bind-hidden="hidePair">
               <span data-text="label"></span>
-              <label><input type="radio" data-event="pickedBest" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="groupBest" data-bind-checked="bestChecked" data-bind-disabled="locked" /> Fits best</label>
-              <label><input type="radio" data-event="pickedWorst" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="groupWorst" data-bind-checked="worstChecked" data-bind-disabled="locked" /> Fits least</label>
+              <label class="survey-pair-choice"><input type="radio" data-event="pickedBest" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="groupBest" data-bind-checked="bestChecked" data-bind-disabled="locked" /><span class="ef-sr-only" data-text="label"></span> Fits best</label>
+              <label class="survey-pair-choice"><input type="radio" data-event="pickedWorst" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="groupWorst" data-bind-checked="worstChecked" data-bind-disabled="locked" /><span class="ef-sr-only" data-text="label"></span> Fits least</label>
             </div>
           </div>
         </template>
