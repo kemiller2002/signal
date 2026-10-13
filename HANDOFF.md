@@ -247,6 +247,12 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   is first shown. Starts are whole minutes; the console says so. Any new
   entry kind must keep every committed fixture byte-identical
   (`QuestionTimerTests`) and refuse an unknown kind whole.
+- Template resolution (WI-0081, ADM-055): groups resolve their exact template
+  through `TemplateResolution` (built-in, then the dataset's catalog, then
+  copies verified at the last good read), never by a plain lookup; the
+  resolver returns the outcome's reason (`GroupRecord.TemplateResolver` is a
+  `Result`). Every coded link error keeps a safe description
+  (`DecodeErrorDescriptionTests`).
 - Disclosure in the page (WI-0076): an anonymous group with a minimum above
   one shows its last released state (`Releases.shown`, recorded after each
   import as a `signal.group-release` of opaque keys) and says how many newer

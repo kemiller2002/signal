@@ -16,7 +16,7 @@ let private announce (env: Env) (datasetId: string) =
     env.Bridge.Call(Bridge.Announce(Credential.announcement datasetId Credential.StorageChangedElsewhere))
 
 /// Moves the dataset, then reopens it (its grants follow its new state).
-let transition (env: Env) (backend: Store.Backend) (config: Deployment.DeploymentConfig) (actor: Store.Actor) (opened: Store.Opened) (target: Retention.State) (now: DateTimeOffset) =
+let transition (env: Env) (previous: TemplateCatalog.Loaded) (backend: Store.Backend) (config: Deployment.DeploymentConfig) (actor: Store.Actor) (opened: Store.Opened) (target: Retention.State) (now: DateTimeOffset) =
     async {
         match! GovernanceStore.transition actor now opened target with
         | Error(GovernanceStore.TransitionRefused(Retention.IllegalTransition(from, target))) ->
@@ -31,7 +31,7 @@ let transition (env: Env) (backend: Store.Backend) (config: Deployment.Deploymen
         | Error(GovernanceStore.NotStored failure) -> return [ engine (groupFailure failure) ]
         | Ok state ->
             let! _ = announce env opened.DatasetId
-            let! reopened = AdminGroupWork.openDataset env backend config actor (Some opened.RepositoryId) opened.DatasetId now
+            let! reopened = AdminGroupWork.openDataset env previous backend config actor (Some opened.RepositoryId) opened.DatasetId now
 
             return
                 reopened
