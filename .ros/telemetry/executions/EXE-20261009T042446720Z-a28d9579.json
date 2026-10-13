@@ -1991,6 +1991,59 @@
         "name": "ros",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.started",
+      "stepId": "st-implementation",
+      "name": "custom implementation + decision: scoped timer starts, submission minute, intake late flags (DF-SIGNAL-2026-0015, SIG-LINK-016); 2 failed builds (record pipe; Terms constructions); 7 test updates for the format; 2 test-logic failures on minute boundaries (one led to the strict intake comparison)",
+      "occurredAt": "2026-10-13T11:35:06Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "st-implementation",
+      "occurredAt": "2026-10-13T11:56:14Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "st-testing",
+      "name": "testing: dotnet 502/502, browser 65/65",
+      "occurredAt": "2026-10-13T11:56:14Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "st-testing",
+      "occurredAt": "2026-10-13T12:01:12Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "st-git-ci",
+      "name": "git/CI integration: scoped timers PR and gate",
+      "occurredAt": "2026-10-13T12:02:08Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {
