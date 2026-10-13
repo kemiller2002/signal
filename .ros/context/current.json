@@ -2683,20 +2683,20 @@
         "EXE-20261009T042446720Z-a28d9579"
       ],
       "latestCheckpoint": {
-        "id": "4cf65e3513a1f2f42b80ceea",
-        "recordedAt": "2026-10-13T20:16:42Z",
+        "id": "af0344ab9719ed080de7faf3",
+        "recordedAt": "2026-10-13T21:14:00Z",
         "executionId": "EXE-20261009T042446720Z-a28d9579",
         "repository": "echelon-signal",
-        "branch": "feature/wi0081-slice-1",
-        "commit": "33caaa9757da0a75ecef836d3486dca298ec9f69",
+        "branch": "feature/wi0081-recheck",
+        "commit": "3b486b85fe98dd6185a421d5c3ee7ea0ff4a0e59",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/wi0081-slice-1",
-        "remoteCommit": "33caaa9757da0a75ecef836d3486dca298ec9f69",
-        "summary": "Respondent slice: SCS-011 count guidance and held selections (escaped link defect fixed), SCS-013 pairwise, SCS-014 zoom/motion/target checks; SCS-010/012/018 visual variants deferred by DF-SIGNAL-2026-0022 to WI-0099 (limen#108)",
-        "nextAction": "Recheck slice: VER-004, ARX-013, AUT-006, ADM-055",
+        "remoteBranch": "feature/wi0081-recheck",
+        "remoteCommit": "3b486b85fe98dd6185a421d5c3ee7ea0ff4a0e59",
+        "summary": "Presentation slice: VER-004 tested (numbers, progress modes, review before submit); AUT-006 draft deletion (published refused), §63 remains",
+        "nextAction": "ARX-013 question timers (link kind 3, DF-0015 amendment), then ADM-055 resolution outcomes, then authoring traces, then ARP-001",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"

@@ -237,6 +237,11 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   refuses) is held on the page, never written. The visual selector variants
   wait for nested view lists in Limen (limen#108, DF-SIGNAL-2026-0022,
   WI-0099); never fixed option slots.
+- Survey page presentation (WI-0081, VER-004): question numbers, the
+  template's progress mode and the review before submitting live in
+  `GenericReview`; the review is page state (`Response.Reviewing`), never in
+  the link. Only drafts are deleted (`TemplateStore.delete`); a published
+  version is hidden, never deleted (AUT-006 §§58-59).
 - Disclosure in the page (WI-0076): an anonymous group with a minimum above
   one shows its last released state (`Releases.shown`, recorded after each
   import as a `signal.group-release` of opaque keys) and says how many newer

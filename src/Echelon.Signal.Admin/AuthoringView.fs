@@ -71,6 +71,14 @@ let project (model: Model) : (string * ViewValue) list =
       "draftTitle", text (editor |> Option.map (fun e -> e.Draft.Content.Metadata.Title) |> Option.defaultValue "")
       "draftDescription", text (editor |> Option.bind (fun e -> e.Draft.Content.Metadata.Description) |> Option.defaultValue "")
       "draftUnsaved", flag (editor |> Option.exists _.Unsaved)
+      // Deleting a stored draft (AUT-006 §59), after a confirmation.
+      "canDeleteDraft",
+      flag (
+          editor |> Option.exists (fun e -> model.Templates.DraftsById.ContainsKey e.Draft.SurveyId && model.Authoring.ConfirmDelete <> Some e.Draft.SurveyId)
+          && can.Contains AdminState.CanEditDrafts
+      )
+      "confirmingDeleteDraft",
+      flag (editor |> Option.exists (fun e -> model.Authoring.ConfirmDelete = Some e.Draft.SurveyId) && can.Contains AdminState.CanEditDrafts)
       "draftParent", text (editor |> Option.bind (fun e -> e.Draft.Parent) |> Option.map (fun p -> $"Derived from version {p.Version}") |> Option.defaultValue "New survey")
       "newSectionTitle", text model.Authoring.NewSection
       "newQuestionPrompt", text model.Authoring.NewQuestion

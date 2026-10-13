@@ -203,6 +203,9 @@ type Screen =
       Rules: RuleAuthoring.Form
       /// The validation, presentation, scoring and translation form.
       Areas: AreaAuthoring.Form
+      /// The stored draft about to be deleted, waiting for the person to
+      /// confirm (AUT-006 §59).
+      ConfirmDelete: string option
       Problem: string option }
 
 let emptyScreen =
@@ -218,6 +221,7 @@ let emptyScreen =
       RuleAnswer = ""
       Rules = RuleAuthoring.emptyForm
       Areas = AreaAuthoring.emptyForm
+      ConfirmDelete = None
       Problem = None }
 
 /// What the screens ask the application to do.
@@ -229,6 +233,8 @@ type Command =
     /// Review before publication (AUT-006 §§64-65).
     | RequestReview of survey: string
     | ApproveReview of Draft
+    /// Delete a survey's stored draft (AUT-006 §59).
+    | DeleteDraft of survey: string
 
 /// The page events the authoring screens own.
 let events =
@@ -236,7 +242,8 @@ let events =
         [ "newDraftSurvey"; "newDraftTitle"; "startDraft"; "deriveDraft"; "editDraft"; "draftTitle"; "draftDescription"
           "newSectionTitle"; "addSection"; "removeSection"; "newQuestionPrompt"; "addQuestion"; "removeQuestion"
           "newQuestionKind"; "newQuestionDetails"; "ruleQuestion"; "ruleWhen"; "ruleAnswer"; "addShowRule"; "removeRule"
-          "addFixture"; "acknowledgeWarnings"; "saveDraft"; "publishDraft"; "hideVersion"; "requestReview"; "approveReview" ]
+          "addFixture"; "acknowledgeWarnings"; "saveDraft"; "publishDraft"; "hideVersion"; "requestReview"; "approveReview"
+          "deleteDraft"; "confirmDeleteDraft"; "cancelDeleteDraft" ]
     |> Set.union RuleAuthoring.events
     |> Set.union AreaAuthoring.events
 
@@ -341,6 +348,18 @@ let update (listing: TemplateListing.Listing) (survey: string option) (name: str
         | Some e when e.Unsaved -> fail "This draft has unsaved changes; review the stored draft."
         | Some e -> screen, [ ApproveReview e.Draft ]
         | None -> fail "Open a draft first."
+    // Only a stored draft is deleted, after the person confirms; a published
+    // version is hidden, never deleted (AUT-006 §§58-59).
+    | "deleteDraft", _ ->
+        match editor with
+        | Some e when listing.DraftsById.ContainsKey e.Draft.SurveyId -> { screen with ConfirmDelete = Some e.Draft.SurveyId; Problem = None }, []
+        | Some _ -> fail "This draft is not stored yet: there is nothing to delete."
+        | None -> fail "Open a draft first."
+    | "confirmDeleteDraft", _ ->
+        match editor, screen.ConfirmDelete with
+        | Some e, Some s when s = e.Draft.SurveyId -> { screen with ConfirmDelete = None; Problem = None }, [ DeleteDraft s ]
+        | _ -> fail "Choose Delete draft first."
+    | "cancelDeleteDraft", _ -> { screen with ConfirmDelete = None }, []
     | "hideVersion", Some hash ->
         match listing.Published |> List.tryFind (fun r -> r.Hash = hash) with
         | Some r -> screen, [ HideVersion(r.SurveyId, r.Version) ]
@@ -358,3 +377,9 @@ let published (survey: string) (screen: Screen) =
     match screen.Editor with
     | Some e when e.Draft.SurveyId = survey -> { screen with Editor = None }
     | _ -> screen
+
+/// After a draft was deleted: its editor closes.
+let deleted (survey: string) (screen: Screen) =
+    match screen.Editor with
+    | Some e when e.Draft.SurveyId = survey -> { screen with Editor = None; ConfirmDelete = None }
+    | _ -> { screen with ConfirmDelete = None }

@@ -55,6 +55,7 @@
     <Compile Include="CompoundKindTests.fs" />
     <Compile Include="SelectionCountTests.fs" />
     <Compile Include="PairwisePageTests.fs" />
+    <Compile Include="PagePresentationTests.fs" />
     <Compile Include="LinkRoundTripPropertyTests.fs" />
     <Compile Include="PagingTests.fs" />
     <Compile Include="BaselineSourcesTests.fs" />

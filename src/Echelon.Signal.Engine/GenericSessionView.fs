@@ -16,7 +16,7 @@ let private flag = View.Flag
 
 /// Every row carries every field the page's row template binds; a row's
 /// kind decides which of its parts show.
-let private kinds = [ "section"; "question"; "option"; "toggle"; "number"; "pair" ]
+let private kinds = [ "section"; "question"; "option"; "toggle"; "number"; "pair"; "review" ]
 
 let private defaults =
     [ "title", text ""
@@ -43,6 +43,10 @@ let private defaults =
       "hideError", flag true
       "error", text ""
       "optionalMark", text ""
+      // The question's number, and its answer in words on the review (VER-004).
+      "questionNumber", text ""
+      "hideQuestionNumber", flag true
+      "answerText", text ""
       // Where a multi-choice selection stands (SCS-011).
       "selectionStatus", text ""
       "hideSelectionStatus", flag true
@@ -118,6 +122,30 @@ let private rows (r: Response) =
     let shownContent = Localization.display r.Terms.Locale content
     let displayed = questions shownContent |> List.map (fun (_, q) -> q.Id, q) |> Map.ofList
     let sectionTitle (si: int) = shownContent.Sections[si].Title
+    let allApplicable = (Rules.applicability content r.Answers).Questions
+    let numbers = GenericReview.numbers content allApplicable
+    let numbered (q: Question) =
+        match numbers.TryFind q.Id with
+        | Some n -> [ "questionNumber", text $"{n}."; "hideQuestionNumber", flag false ]
+        | None -> []
+
+    // The review (VER-004): every applicable question with its answer, read only.
+    let reviewRows () =
+        content.Sections
+        |> List.indexed
+        |> List.collect (fun (si, section) ->
+            let shown = indexed |> List.filter (fun (_, q) -> allApplicable.Contains q.Id && section.Questions |> List.exists (fun s -> s.Id = q.Id))
+
+            if shown.IsEmpty then
+                []
+            else
+                row $"s{si}" "section" [ "title", text (sectionTitle si) ]
+                :: (shown
+                    |> List.map (fun (qi, q) ->
+                        let shownQuestion = displayed[q.Id]
+                        row $"{qi}-review" "review" ([ "prompt", text shownQuestion.Prompt; "answerText", text (GenericReview.answerText shownQuestion (r.Answers.TryFind q.Id)) ] @ numbered q))))
+
+    if r.Reviewing then reviewRows () else
 
     r.Published.Form.Content.Sections
     |> List.indexed
@@ -171,7 +199,8 @@ let private rows (r: Response) =
                           "selectionStatus", text selectionStatus
                           "hideSelectionStatus", flag (selectionStatus = "")
                           "component", text family
-                          "variant", text variant ]
+                          "variant", text variant
+                          yield! numbered q ]
                     :: choiceRows qi shownQuestion (r.Answers.TryFind q.Id) held (sealedResponse || locked.Contains q.Id) required invalid)))
 
 /// Which part of the page shows: loading, refused, answering or submitted.
@@ -193,6 +222,12 @@ let view (session: Session) : View.View =
             GenericTimer.notice r.Published.Form.Content r.Terms r.Now shown
         | _ -> ""
 
+    let reviewing, reviewsFirst =
+        match session with
+        | Responding r -> r.Reviewing, GenericSession.reviewsFirst r
+        | Fetching _
+        | Refused _ -> false, false
+
     // Page n of total, and whether Back is offered.
     let page, pageCount, canBack =
         match session with
@@ -209,12 +244,13 @@ let view (session: Session) : View.View =
         | Responding r ->
             let applicable = (Rules.applicability r.Published.Form.Content r.Answers).Questions
             let answered = r.Answers |> Map.filter (fun id _ -> applicable.Contains id) |> Map.count
+            let page, count, onPage = GenericPaging.current r.Published.Form.Content r.Answers r.Position
 
             (Localization.display r.Terms.Locale r.Published.Form.Content).Metadata.Title,
             $"Version {r.Published.Version}",
             "",
             rows r,
-            $"{answered} of {applicable.Count} answered",
+            GenericReview.progress r.Published.Form.Content applicable answered page count onPage,
             r.Refusal
 
     [ for name in [ "loading"; "refused"; "answering"; "submitted" ] -> name, value (flag (name = current)) ]
@@ -223,13 +259,17 @@ let view (session: Session) : View.View =
         "refusal", value (text refusal)
         "rows", View.Items items
         "progress", value (text progress)
+        "hasProgress", value (flag (progress <> ""))
+        // The review before submitting (VER-004).
+        "reviewing", value (flag reviewing)
+        "submitLabel", value (text (if reviewsFirst && not reviewing then "Review answers" else "Submit answers"))
         "hasTimer", value (flag (timerNotice <> ""))
         "timerNotice", value (text timerNotice)
         "hasPages", value (flag (pageCount > 1))
         "pageLabel", value (text $"Page {page + 1} of {pageCount}")
-        "canBack", value (flag canBack)
-        "hasNext", value (flag (page + 1 < pageCount))
-        "isLastPage", value (flag (page + 1 >= pageCount))
+        "canBack", value (flag (canBack && not reviewing))
+        "hasNext", value (flag (page + 1 < pageCount && not reviewing))
+        "isLastPage", value (flag (page + 1 >= pageCount || reviewing))
         "hasRefusal", value (flag submitRefusal.IsSome)
         "submitRefusal", value (text (defaultArg submitRefusal ""))
         // The invitation's locale is presentation only (VER-003): the page's language.

@@ -65,6 +65,7 @@
     <Compile Include="GenericPaging.fs" />
     <Compile Include="GenericChoices.fs" />
     <Compile Include="GenericSession.fs" />
+    <Compile Include="GenericReview.fs" />
     <Compile Include="GenericSessionView.fs" />
     <Compile Include="SessionStates.fs" />
     <Compile Include="Aggregation.fs" />
