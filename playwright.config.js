@@ -34,7 +34,16 @@ export default defineConfig({
   reporter: process.env.CI ? [["github"], ["list"]] : [["list"]],
   use: { baseURL: origin, trace: "retain-on-failure" },
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"], launchOptions } },
+    { name: "chromium", testIgnore: /survey-devices\.spec\.js/, use: { ...devices["Desktop Chrome"], launchOptions } },
+    // Sample links on a phone (AUT-006 §§61-62): touch, a narrow viewport and
+    // a mobile user agent, on the same Chromium. WebKit (iPhone Safari) and
+    // Firefox need OS libraries this suite does not install; which devices
+    // Signal supports is a product decision still to be made.
+    {
+      name: "mobile",
+      testMatch: /survey-devices\.spec\.js/,
+      use: { ...devices["Pixel 7"], launchOptions }
+    },
     {
       name: "pages",
       testMatch: /(deep-links|survey)\.spec\.js/,
