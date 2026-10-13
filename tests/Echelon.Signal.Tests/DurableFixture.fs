@@ -23,7 +23,8 @@ let run work = Async.RunSynchronously work
 let pilot = Pilot.assessment
 let opaque (seed: byte) = (OpaqueId.ofBytes (Array.init 16 (fun i -> seed + byte i))).Value
 let groupId = opaque 200uy
-let resolve: GroupRecord.TemplateResolver = fun hash -> if hash = Canonical.templateHash pilot then Some(pilot, None) else None
+let resolve: GroupRecord.TemplateResolver =
+    fun hash -> if hash = Canonical.templateHash pilot then Ok(pilot, None) else Error $"{hash} was searched for in the test catalog and is not there"
 
 let all (answer: Answer) = pilot.Items |> List.map (fun item -> item.Id, answer) |> Map.ofList
 

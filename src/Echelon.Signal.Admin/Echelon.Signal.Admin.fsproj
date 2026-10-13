@@ -21,6 +21,7 @@
     <Compile Include="RosterStore.fs" />
     <Compile Include="Credential.fs" />
     <Compile Include="GroupRecord.fs" />
+    <Compile Include="TemplateResolution.fs" />
     <Compile Include="ResultRecord.fs" />
     <Compile Include="Intake.fs" />
     <Compile Include="BatchStates.fs" />

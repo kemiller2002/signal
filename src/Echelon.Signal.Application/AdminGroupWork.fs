@@ -12,13 +12,18 @@ open Echelon.Signal.Application.AdminWork
 let private engine msg = ToEngine msg
 
 /// Opens a dataset, its template catalog and its groups.
-let openDataset (env: Env) (backend: Store.Backend) (config: Deployment.DeploymentConfig) (actor: Store.Actor) (pinned: string option) (datasetId: string) (now: DateTimeOffset) =
+let openDataset (env: Env) (previous: TemplateCatalog.Loaded) (backend: Store.Backend) (config: Deployment.DeploymentConfig) (actor: Store.Actor) (pinned: string option) (datasetId: string) (now: DateTimeOffset) =
     async {
         match! Store.openDataset backend config actor pinned env.ApplicationVersion datasetId now with
         | Error failure -> return [ engine (openFailure failure) ]
         | Ok opened ->
             let! loaded = TemplateCatalog.load env.Catalog now opened
-            let catalog = loaded |> Result.defaultValue (TemplateCatalog.builtIn env.Catalog)
+            // A catalog that cannot be read keeps the copies verified at the
+            // last good read, and says why (ADM-055).
+            let catalog =
+                match loaded with
+                | Ok catalog -> catalog
+                | Error failure -> TemplateCatalog.unreadable env.Catalog previous failure
             let catalogFailure = match loaded with Error failure -> [ engine (groupFailure failure) ] | Ok _ -> []
 
             let! snapshots = ReportWork.load now opened
