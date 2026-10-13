@@ -2167,10 +2167,10 @@
         "order:05f"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-10-13T15:28:25Z",
-      "updatedAt": "2026-10-13T15:28:25Z",
+      "updatedAt": "2026-10-13T17:01:10Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

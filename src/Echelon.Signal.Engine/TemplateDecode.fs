@@ -394,16 +394,44 @@ let private content (v: JsonElement) : Decoded<Content> =
                 (flag "showResults" r)
                 (spelled [ Immediate, "immediate"; ResultMode.Hidden, "hidden"; Deferred, "deferred"; External, "external" ] "result mode" "resultMode" r))
 
+    let localization (l: JsonElement) =
+        let texts =
+            field "texts" l
+            |> Result.bind (fun t ->
+                if t.ValueKind <> JsonValueKind.Object then
+                    Error "'texts' is not an object"
+                else
+                    t.EnumerateObject()
+                    |> List.ofSeq
+                    |> traverse (fun p ->
+                        match LocalizationModel.keyOf p.Name, p.Value.ValueKind with
+                        | Some key, JsonValueKind.String -> Ok(key, string (p.Value.GetString()))
+                        | None, _ -> Error $"'{p.Name}' is not a known text key"
+                        | _ -> Error $"the text for '{p.Name}' is not text")
+                    |> Result.map Map.ofList)
+
+        map2 (fun locale texts -> ({ Locale = locale; Texts = texts }: LocalizationModel.Localization)) (text "locale" l) texts
+
+    let localizations = if has "localizations" v then array localization "localizations" v else Ok []
+
     map4
-        (fun (compatibility, metadata) (presentation, runtime) sections (rules, results) ->
-            { Metadata = metadata; Compatibility = compatibility; Presentation = presentation; Runtime = runtime; Sections = sections; Rules = rules; Results = results })
+        (fun (compatibility, metadata) (presentation, runtime) sections (rules, results, localizations) ->
+            { Metadata = metadata
+              Compatibility = compatibility
+              Presentation = presentation
+              Runtime = runtime
+              Sections = sections
+              Rules = rules
+              Results = results
+              Localizations = localizations })
         (map2 (fun a b -> a, b) compatibility metadata)
         (map2 (fun a b -> a, b) (field "presentation" v |> Result.bind presentation) runtime)
         (array section "sections" v)
-        (map2
-            (fun a b -> a, b)
+        (map3
+            (fun a b c -> a, b, c)
             (if has "rules" v then field "rules" v |> Result.bind rules else Ok noRules)
-            (if has "results" v then field "results" v |> Result.bind results else Ok noResults))
+            (if has "results" v then field "results" v |> Result.bind results else Ok noResults)
+            localizations)
 
 /// Reads canonical template bytes (`TemplateCanonical.bytes`).
 let decode (bytes: byte[]) : Decoded<DecodedTemplate> =

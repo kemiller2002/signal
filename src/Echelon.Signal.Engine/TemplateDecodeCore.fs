@@ -326,4 +326,11 @@ let selector (v: JsonElement) : Decoded<Selector> =
             | "semantic-differential" -> map2 (fun l r -> SemanticDifferential(l, r)) (text "left" v) (text "right" v)
             | spelling -> named presets "selector preset" spelling)
 
-    map2 (fun p labels -> { Preset = p; Labels = labels }) preset (strings "labels" v)
+    let accessibility =
+        if has "accessibility" v then
+            field "accessibility" v
+            |> Result.bind (fun a -> map2 (fun n d -> { Name = n; Description = d }) (optional text "name" a) (optional text "description" a))
+        else
+            Ok noAccessibility
+
+    map3 (fun p labels a -> { Preset = p; Labels = labels; Accessibility = a }) preset (strings "labels" v) accessibility

@@ -13,6 +13,8 @@ type Category =
     | FixturesCategory
     /// Flow, facts, validation rules, completion and recommendations.
     | RulesCategory
+    /// Translations and selector accessibility text (DF-SIGNAL-2026-0020).
+    | LocalizationCategory
 
 /// Every category, in the order the validation summary lists them. A test
 /// checks this against the union's cases so a new category cannot be left out.
@@ -25,6 +27,7 @@ let categories =
       EncodingCategory
       PrivacyCategory
       RulesCategory
+      LocalizationCategory
       FixturesCategory ]
 
 type Severity =

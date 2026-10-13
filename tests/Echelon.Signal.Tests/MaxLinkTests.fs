@@ -22,7 +22,7 @@ let private ranking (i: int) : Question =
       Prompt = $"Put these in order ({i})."
       HelpText = None
       Answer = Ranking { Options = [ for o in 1..8 -> { Id = $"o{o}"; Label = $"Option {o}"; Score = None } ]; Positions = None }
-      Selector = { Preset = Selectors.RankingList; Labels = [] }
+      Selector = { Preset = Selectors.RankingList; Labels = []; Accessibility = Selectors.noAccessibility }
       SpecialStates = []
       Required = false
       Tags = [] }

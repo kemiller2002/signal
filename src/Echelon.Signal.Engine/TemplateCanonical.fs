@@ -238,6 +238,15 @@ let private writeQuestion (w: Utf8JsonWriter) (q: Question) =
     w.WriteString("preset", presetName q.Selector.Preset)
     PrimitiveCanonical.writePresetDetail w q.Selector.Preset
     stringList w "labels" q.Selector.Labels
+
+    // Written only when present, so a selector without accessibility
+    // metadata keeps its template's hash (DF-SIGNAL-2026-0020).
+    if q.Selector.Accessibility <> Selectors.noAccessibility then
+        w.WriteStartObject "accessibility"
+        optionalString w "name" q.Selector.Accessibility.Name
+        optionalString w "description" q.Selector.Accessibility.Description
+        w.WriteEndObject()
+
     w.WriteEndObject()
     stringList w "special" (q.SpecialStates |> List.map specialName)
     w.WriteBoolean("required", q.Required)
@@ -368,6 +377,24 @@ let bytes (surveyId: string) (version: string) (content: Content) : byte[] =
         if content.Results <> ResultModel.noResults then
             w.WritePropertyName "results"
             ResultCanonical.write w content.Results
+
+        // Written only when present; locales in ordinal order and texts by
+        // key spelling, so the same translations always hash the same.
+        if not content.Localizations.IsEmpty then
+            w.WriteStartArray "localizations"
+
+            for l in content.Localizations |> List.sortWith (fun a b -> String.CompareOrdinal(a.Locale, b.Locale)) do
+                w.WriteStartObject()
+                w.WriteString("locale", l.Locale)
+                w.WriteStartObject "texts"
+
+                for key, text in LocalizationModel.orderedTexts l.Texts do
+                    w.WriteString(LocalizationModel.keyName key, text)
+
+                w.WriteEndObject()
+                w.WriteEndObject()
+
+            w.WriteEndArray()
 
         w.WriteEndObject()
     )

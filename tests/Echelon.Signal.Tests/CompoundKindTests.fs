@@ -235,5 +235,9 @@ let ``declaring ranking and allocation is accepted, and a capability the engine 
     Assert.Empty(blockers [ Template.UsesRanking; Template.UsesAllocation ])
     Assert.Empty(blockers [])
 
-    for unsupported in [ Template.UsesGroupScoring; Template.UsesLocalization ] do
+    // Every capability the engine refuses (WI-0091 made localization
+    // supported, so only group scoring is left).
+    Assert.NotEmpty Template.unsupportedCapabilities
+
+    for unsupported in Template.unsupportedCapabilities.Keys do
         Assert.Equal<string list>([ "COMPAT-CAPABILITY" ], blockers [ unsupported ])

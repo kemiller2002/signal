@@ -100,7 +100,7 @@ let ``declined is a semantic state of its own`` () =
           Prompt = "p"
           HelpText = None
           Answer = Ordinal 5
-          Selector = { Preset = Likert5; Labels = [ "1"; "2"; "3"; "4"; "5" ] }
+          Selector = { Preset = Likert5; Labels = [ "1"; "2"; "3"; "4"; "5" ]; Accessibility = noAccessibility }
           SpecialStates = [ Declined ]
           Required = true
           Tags = [] }

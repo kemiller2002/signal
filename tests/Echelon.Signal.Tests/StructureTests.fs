@@ -14,7 +14,7 @@ open Echelon.Signal.Engine.ResultModel
 open Echelon.Signal.Engine.Template
 open Echelon.Signal.Tests.PrimitivesTests
 
-let private likert = { Preset = Likert5; Labels = [ "1"; "2"; "3"; "4"; "5" ] }
+let private likert = { Preset = Likert5; Labels = [ "1"; "2"; "3"; "4"; "5" ]; Accessibility = noAccessibility }
 
 let private matrix: Matrix.Spec =
     { Id = "m"
@@ -73,8 +73,8 @@ let ``matrix scoring is row scoring, and its constraints hold`` () =
 
 [<Fact>]
 let ``item keys score quizzes and preference answers inside ordinary sections`` () =
-    let single = { (fst (Matrix.expand matrix)).Head with Id = "capital"; Answer = SingleChoice os; Selector = { Preset = RadioList; Labels = [] } }
-    let picks = { single with Id = "primes"; Answer = multi AnyCount [] RejectCombination; Selector = { Preset = CheckboxList; Labels = [] } }
+    let single = { (fst (Matrix.expand matrix)).Head with Id = "capital"; Answer = SingleChoice os; Selector = { Preset = RadioList; Labels = []; Accessibility = noAccessibility } }
+    let picks = { single with Id = "primes"; Answer = multi AnyCount [] RejectCombination; Selector = { Preset = CheckboxList; Labels = []; Accessibility = noAccessibility } }
 
     let keys =
         [ { Question = "capital"; Key = SingleKeyed { Correct = Set [ "b" ]; PointsCorrect = 1.0; PointsIncorrect = 0.0; PointsBlank = 0.0 } }
@@ -109,7 +109,7 @@ let ``item keys score quizzes and preference answers inside ordinary sections`` 
 [<Fact>]
 let ``malformed primitives are publication blockers`` () =
     let codes def =
-        let q = { (fst (Matrix.expand matrix)).Head with Answer = def; Selector = { Preset = GenericOrdinal; Labels = [] } }
+        let q = { (fst (Matrix.expand matrix)).Head with Answer = def; Selector = { Preset = GenericOrdinal; Labels = []; Accessibility = noAccessibility } }
         PrimitiveChecks.check (contentWith [ q ] []) |> List.map _.Code |> Set.ofList
 
     Assert.Contains("ANSWER-SELECTION", codes (multi (Exactly 9) [] RejectCombination))

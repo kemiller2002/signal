@@ -21,7 +21,7 @@ let private q id : Question =
       Prompt = $"How often does {id} happen?"
       HelpText = None
       Answer = Ordinal 5
-      Selector = { Preset = Frequency5; Labels = [ "0"; "1"; "2"; "3"; "4" ] }
+      Selector = { Preset = Frequency5; Labels = [ "0"; "1"; "2"; "3"; "4" ]; Accessibility = noAccessibility }
       SpecialStates = [ DontKnow ]
       Required = true
       Tags = [] }

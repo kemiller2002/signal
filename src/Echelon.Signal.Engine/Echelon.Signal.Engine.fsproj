@@ -17,6 +17,7 @@
     <Compile Include="Keyed.fs" />
     <Compile Include="RuleModel.fs" />
     <Compile Include="ResultModel.fs" />
+    <Compile Include="LocalizationModel.fs" />
     <Compile Include="Banking.fs" />
     <Compile Include="Timers.fs" />
     <Compile Include="Template.fs" />
@@ -30,6 +31,7 @@
     <Compile Include="Expression.fs" />
     <Compile Include="Composite.fs" />
     <Compile Include="Interpretation.fs" />
+    <Compile Include="Localization.fs" />
     <Compile Include="Registry.fs" />
     <Compile Include="Benchmark.fs" />
     <Compile Include="Compatibility.fs" />

@@ -18,7 +18,7 @@ let private question (id: string) (def: AnswerDefinition) (preset: SelectorPrese
       Prompt = $"Prompt {id}"
       HelpText = None
       Answer = def
-      Selector = { Preset = preset; Labels = [ for i in 1 .. labelsRequired def -> $"label {i}" ] }
+      Selector = { Preset = preset; Labels = [ for i in 1 .. labelsRequired def -> $"label {i}" ]; Accessibility = noAccessibility }
       SpecialStates = [ DontKnow; Declined ]
       Required = false
       Tags = [] }

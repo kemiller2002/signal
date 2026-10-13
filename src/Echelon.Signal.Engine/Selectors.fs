@@ -90,12 +90,23 @@ type SelectorPreset =
     | CascadingSelect
     | TreeMultiSelect
 
+/// Accessibility metadata a template may give a selector (CAN-001 §7,
+/// ACR-006 §18): an accessible name that replaces the prompt for assistive
+/// technology, and a description read after it. Presentation only; the UI
+/// engine applies it consistently. Both absent is the default.
+type SelectorAccessibility =
+    { Name: string option
+      Description: string option }
+
+let noAccessibility = { Name = None; Description = None }
+
 type Selector =
     { Preset: SelectorPreset
       /// One label per stored value, in value order, for binary and ordinal
       /// selectors. Empty for option-based selectors, whose options carry
       /// their own labels, and for numeric scales.
-      Labels: string list }
+      Labels: string list
+      Accessibility: SelectorAccessibility }
 
 /// Whether a preset presents an answer primitive with these special states.
 let fits (preset: SelectorPreset) (answer: AnswerDefinition) (special: SpecialState list) =

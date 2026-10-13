@@ -17,7 +17,7 @@ let private ord id : Question =
       Prompt = $"How often does {id} hold?"
       HelpText = None
       Answer = Ordinal 5
-      Selector = { Preset = Frequency5; Labels = [ "0"; "1"; "2"; "3"; "4" ] }
+      Selector = { Preset = Frequency5; Labels = [ "0"; "1"; "2"; "3"; "4" ]; Accessibility = noAccessibility }
       SpecialStates = [ DontKnow; NotApplicable ]
       Required = true
       Tags = [] }
@@ -25,7 +25,7 @@ let private ord id : Question =
 let private yesNo id : Question =
     { ord id with
         Answer = Boolean
-        Selector = { Preset = YesNo; Labels = [ "No"; "Yes" ] }
+        Selector = { Preset = YesNo; Labels = [ "No"; "Yes" ]; Accessibility = noAccessibility }
         SpecialStates = [] }
 
 let private mean: Scoring.Scorer =
