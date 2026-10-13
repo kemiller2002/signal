@@ -119,3 +119,53 @@ let ``every group that is not yet tested is named by an open work item`` () =
 
     let unplanned = open' |> List.filter (plannedGroups.Contains >> not)
     Assert.Empty unplanned
+
+/// A row marked tested cites tests that exist (WI-0081): at least one test
+/// file in backticks (`ImportTests`), each cited file exists with at least
+/// one fact, and each cited test (`ImportTests: test name`) is a test in that
+/// file. A citation that names no real test fails, so a row cannot be marked
+/// tested on prose alone.
+let private testSource (file: string) =
+    let path = repoFile $"tests/Echelon.Signal.Tests/{file}.fs"
+    if System.IO.File.Exists path then Some(System.IO.File.ReadAllText path) else None
+
+let private citations (row: string) =
+    Regex.Matches(row, @"`([A-Z][A-Za-z0-9]*Tests)(?:: ([^`]+))?`")
+    |> Seq.map (fun m -> m.Groups[1].Value, (if m.Groups[2].Success then Some m.Groups[2].Value else None))
+    |> Seq.toList
+
+let private testedRows =
+    Regex.Matches(analysis, $@"(?m)^\| ({groupPattern}) \| (?:tested|partial|missing|n/a) \| tested \|(.*)$")
+    |> Seq.map (fun m -> m.Groups[1].Value, m.Groups[2].Value)
+    |> Seq.toList
+
+[<Fact>]
+let ``every tested row cites at least one test, and every cited test exists`` () =
+    let problems =
+        [ for group, row in testedRows do
+              let cited = citations row
+
+              if cited.IsEmpty then
+                  $"{group}: cites no test file"
+
+              for file, name in cited do
+                  match testSource file, name with
+                  | None, _ -> $"{group}: {file}.fs does not exist"
+                  | Some text, _ when not (text.Contains "[<Fact>]") -> $"{group}: {file}.fs has no tests"
+                  | Some text, Some n when not (text.Contains("``" + n + "``")) -> $"{group}: {file} has no test '{n}'"
+                  | _ -> () ]
+
+    Assert.True(problems.IsEmpty, String.concat "\n" problems)
+
+[<Fact>]
+let ``the citation check fails a row that cites nothing or a test that does not exist`` () =
+    Assert.Empty(citations "No test is named here.")
+    Assert.Equal<(string * string option) list>([ "ImportTests", None ], citations "Evidence (`ImportTests`).")
+
+    match citations "(`ImportTests: no such test`)" with
+    | [ file, Some name ] ->
+        let text = (testSource file).Value
+        Assert.False(text.Contains("``" + name + "``"))
+    | other -> failwith $"%A{other}"
+
+    Assert.Equal(None, testSource "NoSuchTests")
