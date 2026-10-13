@@ -5,3 +5,6 @@
 @import "../node_modules/@echelon-foundry/design-system/dist/all.css";
 @import "../node_modules/@echelon-foundry/print-components/src/styles/print.css" print;
 @import "../web-kernel/page.css";
+
+/* A fixture's scoring explanation (WI-0081): contributions and calculations sit under their section. */
+#fixture-explanation-lines [data-indented="true"] { margin-inline-start: 1.5rem; }

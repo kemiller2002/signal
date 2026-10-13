@@ -308,6 +308,15 @@ let observation (question: Question) (state: AnswerState option) : Scoring.Obser
 let private keyOf (content: Content) (q: Question) =
     content.Results.ItemKeys |> List.tryFind (fun k -> k.Question = q.Id) |> Option.map _.Key
 
+/// How an answer key credited and penalized a single- or multi-choice
+/// answer (SCS-004 "Explainability"): the same evaluation `keyedNumber`
+/// takes its number from, so the explanation is never a second scoring.
+let keyedExplanation (content: Content) (q: Question) (value: AnswerValue) : Keyed.Explanation option =
+    match keyOf content q, value with
+    | Some(SingleKeyed k), Choice id -> Some(Keyed.single k (Some id))
+    | Some(MultiKeyed k), Choices ids -> Some(Keyed.multi k ids)
+    | _ -> None
+
 /// The number an answer contributes under the template's item key, if it
 /// has one, else `numeric` (SCS-004, SCS-006).
 let keyedNumber (content: Content) (q: Question) (value: AnswerValue) : float option =
@@ -315,8 +324,8 @@ let keyedNumber (content: Content) (q: Question) (value: AnswerValue) : float op
 
     match keyOf content q, value, q.Answer with
     | None, _, _ -> numeric q value
-    | Some(SingleKeyed k), Choice id, _ -> Some (Keyed.single k (Some id)).Final
-    | Some(MultiKeyed k), Choices ids, _ -> Some (Keyed.multi k ids).Final
+    | Some(SingleKeyed _), Choice _, _
+    | Some(MultiKeyed _), Choices _, _ -> keyedExplanation content q value |> Option.map _.Final
     | Some(RankKeyed(item, m)), Order ids, Ranking r -> Keyed.rank m r.Options.Length ids item
     | Some(AllocationKeyed m), Allocated steps, Allocation a ->
         match Keyed.allocation m (steps |> Map.map (fun _ n -> float n * a.Step)) with

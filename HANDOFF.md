@@ -253,6 +253,10 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   resolver returns the outcome's reason (`GroupRecord.TemplateResolver` is a
   `Result`). Every coded link error keeps a safe description
   (`DecodeErrorDescriptionTests`).
+- Scoring explanations (WI-0081, DF-SIGNAL-2026-0024): `ScoringPreview.explain`
+  renders `SurveyResult.compute`'s traces for the author; never add a second
+  scoring path for display. Answer-key reasoning comes from
+  `Template.keyedExplanation`, which `keyedNumber` itself uses.
 - Disclosure in the page (WI-0076): an anonymous group with a minimum above
   one shows its last released state (`Releases.shown`, recorded after each
   import as a `signal.group-release` of opaque keys) and says how many newer

@@ -147,6 +147,7 @@ let project (model: Model) : (string * ViewValue) list =
           |> List.collect (fun s -> s.Questions |> List.map (fun q -> [ "id", Text q.Id; "section", Text s.Id; "prompt", Text q.Prompt; "kind", Text(kindLabel q) ]))
       )
       "draftFixtures", Items(editor |> Option.map (fun e -> e.Draft.Fixtures |> List.map (fun f -> [ "id", Text f.Id; "name", Text f.Name ])) |> Option.defaultValue [])
+      yield! FixtureExplanationView.project editor model.Authoring.Explaining
       "draftFindings",
       Items(
           report

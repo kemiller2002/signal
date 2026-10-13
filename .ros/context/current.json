@@ -2683,20 +2683,20 @@
         "EXE-20261009T042446720Z-a28d9579"
       ],
       "latestCheckpoint": {
-        "id": "43aea65e0de037b87daac524",
-        "recordedAt": "2026-10-13T22:41:45Z",
+        "id": "0987ac5d16a69babf1b218bc",
+        "recordedAt": "2026-10-13T23:14:14Z",
         "executionId": "EXE-20261009T042446720Z-a28d9579",
         "repository": "echelon-signal",
-        "branch": "feature/wi0081-template-resolution",
-        "commit": "c73e09590299e772bc9a6bb91fd861d7c4eada59",
+        "branch": "feature/wi0081-authoring-traces",
+        "commit": "49405babf49c2e795ff43108b5e28bd35a5ce01a",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/wi0081-template-resolution",
-        "remoteCommit": "c73e09590299e772bc9a6bb91fd861d7c4eada59",
-        "summary": "Resolution slice: ADM-055 tested (TemplateResolution, nine outcomes, ordered registries, verified cache, DF-0023); InvalidTerms wording fixed with safe-description guard",
-        "nextAction": "Authoring preview/traces slice (AST-005, AUT-003, SCS-017, ALG-004, AUT-002, AUT-006 §63), then ARP-001",
+        "remoteBranch": "feature/wi0081-authoring-traces",
+        "remoteCommit": "49405babf49c2e795ff43108b5e28bd35a5ce01a",
+        "summary": "Explanation slice: AST-005 and AUT-006 tested (fixture scoring explained from the one evaluation, keyed reasoning, rule trace; DF-0024); SCS-017 and AUT-003 progressed",
+        "nextAction": "In-console draft preview with live scoring (AUT-003 §§20-22, SCS-017), then custom expression authoring (ALG-004, AUT-002), then ARP-001",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
