@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 82,
+  "nextSeq": 83,
   "items": [
     {
       "id": "WI-0001",
@@ -1939,6 +1939,29 @@
         "runtime": "claude-code"
       },
       "source": "WI-0078",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0082",
+      "title": "Adopt echelon-current 1.18.0 through Conditor: Praxis 3.11.0 and Arca 0.4.1 with the Arca 0.4 API migration",
+      "description": "Coordinator decision (a), 2026-10-13: one combined WI. Apply conditor upgrade --current with the checked plan (echelon-current@1.18.0, resolved set sha256 48aeb43c..., plan digest sha256:8c5e5d89...) and --home in the scratch directory so the shared workstation profile is untouched. Never hand-edit pins. Migrate to Arca 0.4: namespace-scoped change tokens and sign-out by AccountId (AccountId.ofIdentity), Fresh.read / ProviderObservation.Current taking NamespaceState. Erasure adoption itself stays with WI-0077.",
+      "tags": [
+        "signal,platform,conditor"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-10-13T09:07:34Z",
+      "updatedAt": "2026-10-13T09:07:44Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
       "sourceReference": null
     }
   ]
