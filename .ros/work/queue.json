@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 98,
+  "nextSeq": 99,
   "items": [
     {
       "id": "WI-0001",
@@ -2322,6 +2322,32 @@
       "attachments": [],
       "createdAt": "2026-10-13T17:17:20Z",
       "updatedAt": "2026-10-13T17:17:20Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0098",
+      "title": "Adopt echelon-current 1.22.0 through Conditor 0.10.1: Ordo 1.6.0 to 1.7.0 (registry step 3)",
+      "description": "Step 3 of the 1.19.0 to 1.22.0 path. Ordo 1.7.0 is stamp-only for repositories; it breaks only the F# construction API (onFailure), which Signal does not use. Stepwise check, authorize from a clean tree with the isolated home, verify; drift and --check must agree and the lock must have no untracked paths.",
+      "tags": [
+        "signal",
+        "platform",
+        "conditor",
+        "ordo"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-10-13T17:30:20Z",
+      "updatedAt": "2026-10-13T17:33:12Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
