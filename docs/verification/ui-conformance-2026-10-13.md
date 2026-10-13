@@ -115,6 +115,15 @@ Each measurement is attached to its test result as JSON.
   administration area navigation is an unstyled list in a one-child
   `.ef-navigation-shell`; `.app`'s padding predates the token rule (ULI-L13).
 - Pre-existing environment note: on a slow machine the kernel can take longer
-  than the 5 s default assertion timeout to start, which made
-  `survey-max-link.spec.js` (and, in one cold run, three others) fail before any
-  change here; the new spec bounds its start-up wait at 30 s.
+  than the 5 s default assertion timeout to start; `survey-max-link.spec.js`
+  failed that way in the baseline runs here (before any change) and passed in
+  the final full run. The new spec bounds its start-up wait at 30 s.
+
+## Runs (rebased on main 64f025a)
+
+- `dotnet test Echelon.Signal.sln -c Release`: 558 passed, 0 failed.
+- `npm run check:limen`: passed (strict).
+- `npm run ui:conformance:unit`: 6 passed, 0 failed.
+- `npx playwright test` (chromium, mobile, pages, ui-conformance): 114 passed,
+  0 failed; this includes the `ui-conformance` project's 37 tests (36 passed,
+  1 expected failure: the Forma exception above).
