@@ -7,7 +7,12 @@
 // holds or the browser receives.
 import { test, expect } from "./support.js";
 import { expectNoHorizontalOverflow } from "./ui-conformance-helpers.mjs";
-import { createGroup, recordsOf, signInWithStore } from "./ui-conformance-fixtures.mjs";
+import { createGroup, recordsOf, signInWithStore, STORE_STEP_MS } from "./ui-conformance-fixtures.mjs";
+
+// Every store request crosses Playwright's route interception, so a signed-in
+// flow makes dozens of local round trips per action; on a loaded runner an
+// action can take tens of seconds. The bounds are generous, never sleeps.
+test.describe.configure({ timeout: 300_000 });
 
 const area = (page, name) => page.getByRole("navigation", { name: "Administration" }).getByRole("link", { name, exact: true }).click();
 const notice = (page) => page.locator("#notice-message");
@@ -55,7 +60,7 @@ test("ULI-A02/A07: a snapshot is stored, and each of its three exports reaches t
   await createGroup(page);
   await groupTab(page, "Report");
   await page.getByRole("button", { name: "Take a snapshot" }).click();
-  await expect(notice(page)).toContainText(/^Snapshot snap-[0-9a-f]+ was taken/, { timeout: 15_000 });
+  await expect(notice(page)).toContainText(/^Snapshot snap-[0-9a-f]+ was taken/, { timeout: STORE_STEP_MS });
   expect(recordsOf(store, "signal.report-snapshot")).toHaveLength(1);
   const snapshot = page.locator("#snapshots li");
   await expect(snapshot).toHaveCount(1);
@@ -88,7 +93,7 @@ test("ULI-A02: a report definition is started, edited, reordered and saved as a 
   await builder.getByRole("combobox", { name: "Detail" }).selectOption({ index: 2 });
 
   await builder.getByRole("button", { name: "Save definition" }).click();
-  await expect(notice(page)).toHaveText("Report definition team-summary was saved as version 1.", { timeout: 15_000 });
+  await expect(notice(page)).toHaveText("Report definition team-summary was saved as version 1.", { timeout: STORE_STEP_MS });
   await expect(builder).not.toContainText("Unsaved changes");
   expect(recordsOf(store, "signal.report-definition")).toHaveLength(1);
   await expect(page.locator("#saved-definitions li")).toContainText("team-summary v1");
@@ -128,18 +133,18 @@ test("ULI-A02/A05: a survey is drafted, saved, reviewed, published, hidden, and 
   // Publishing with unacknowledged warnings is refused, and says why.
   const review = page.locator("#draft-review");
   await draft.getByRole("button", { name: "Save draft" }).click();
-  await expect(notice(page)).toHaveText("The draft of PULSE was saved.", { timeout: 15_000 });
+  await expect(notice(page)).toHaveText("The draft of PULSE was saved.", { timeout: STORE_STEP_MS });
   expect(recordsOf(store, "signal.template-draft")).toHaveLength(1);
   await draft.getByRole("button", { name: "Submit for review" }).click();
-  await expect(review).toHaveText("Ready for review", { timeout: 15_000 });
+  await expect(review).toHaveText("Ready for review", { timeout: STORE_STEP_MS });
   await draft.getByRole("button", { name: "Approve as reviewed" }).click();
-  await expect(review).toHaveText("Reviewed", { timeout: 15_000 });
+  await expect(review).toHaveText("Reviewed", { timeout: STORE_STEP_MS });
   await draft.getByRole("button", { name: "Publish" }).click();
-  await expect(notice(page)).toContainText("Acknowledge the warnings first", { timeout: 15_000 });
+  await expect(notice(page)).toContainText("Acknowledge the warnings first", { timeout: STORE_STEP_MS });
   expect(recordsOf(store, "signal.template")).toHaveLength(0);
   await draft.getByRole("checkbox", { name: "I have read the warnings and accept them" }).check();
   await draft.getByRole("button", { name: "Publish" }).click();
-  await expect(notice(page)).toContainText(/^PULSE version 1 is published \(sha256:[0-9a-f]{64}\)/, { timeout: 15_000 });
+  await expect(notice(page)).toContainText(/^PULSE version 1 is published \(sha256:[0-9a-f]{64}\)/, { timeout: STORE_STEP_MS });
   expect(recordsOf(store, "signal.template")).toHaveLength(1);
 
   await area(page, "Assessments");
@@ -153,7 +158,7 @@ test("ULI-A02/A05: a survey is drafted, saved, reviewed, published, hidden, and 
   await expect(testLinks.getByRole("link")).toHaveCount(3);
   await expect(testLinks.getByRole("link", { name: "Blank, identified" })).toHaveAttribute("href", /^\.\.\/survey\/#r=/);
   await page.locator("#template-actions").getByRole("button", { name: "Hide from new groups" }).click();
-  await expect(notice(page)).toHaveText("PULSE version 1 is hidden from new groups; groups that use it are unaffected.", { timeout: 15_000 });
+  await expect(notice(page)).toHaveText("PULSE version 1 is hidden from new groups; groups that use it are unaffected.", { timeout: STORE_STEP_MS });
   await expect(versions).toContainText("Hidden from new groups");
   await expect(page.locator("#template-actions").getByRole("button", { name: "Hide from new groups" })).toHaveCount(0);
 });
@@ -175,11 +180,11 @@ test("ULI-A02/A07: administrators are admitted by account number and removed; a 
   await account.press("Tab");
   await page.getByRole("combobox", { name: "Grant" }).selectOption("analyst");
   await page.getByRole("button", { name: "Admit" }).click();
-  await expect(rows).toHaveCount(2, { timeout: 15_000 });
+  await expect(rows).toHaveCount(2, { timeout: STORE_STEP_MS });
   await expect(rows.filter({ hasText: "github:1234567" })).toContainText("ViewResults, BuildReports, ExportData");
   expect(recordsOf(store, "signal.administrator")).toHaveLength(2);
 
   await rows.filter({ hasText: "github:1234567" }).getByRole("button", { name: "Remove" }).click();
-  await expect(rows).toHaveCount(1, { timeout: 15_000 });
+  await expect(rows).toHaveCount(1, { timeout: STORE_STEP_MS });
   await expect(rows).toContainText("github:583231");
 });

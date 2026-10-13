@@ -265,7 +265,10 @@ let private onNamedEvent (model: Model) (name: string) (key: string option) (val
             | Some k, Some d -> d.Groups |> List.tryFind (fun g -> g.Key = k)
             | _ -> None
 
-        RetentionScreen.update (can model) selected name value model
+        // A target button sits in a row keyed by its target; Limen sends that
+        // key and never a button's value (GH-113).
+        let target = if value = "" then defaultArg key "" else value
+        RetentionScreen.update (can model) selected name target model
     | other -> invalidOp $"The administrator page sent an event the engine does not know: '{other}'"
 
 /// The next model and the effects to perform.

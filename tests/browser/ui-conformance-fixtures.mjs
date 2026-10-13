@@ -107,7 +107,7 @@ export async function signInWithStore(page, { width = 1280 } = {}) {
   await routeSignIn(page);
   await store.install(page);
   await signIn(page, width);
-  await expect(page.getByRole("status").filter({ hasText: "Signed in; changes can be saved." })).toBeVisible({ timeout: KERNEL_START_MS });
+  await expect(page.getByRole("status").filter({ hasText: "Signed in; changes can be saved." })).toBeVisible({ timeout: STORE_STEP_MS });
   return store;
 }
 
@@ -124,6 +124,9 @@ export async function createGroup(page, { expected = "2", minimum = "1" } = {}) 
   await form.getByRole("spinbutton", { name: "Minimum reportable count" }).fill(minimum);
   await form.getByRole("spinbutton", { name: "Minimum reportable count" }).press("Tab");
   await form.getByRole("button", { name: "Create group" }).click();
-  await expect(page.getByRole("heading", { level: 2, name: /^Group [0-9a-f]{32}$/ })).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByRole("heading", { level: 2, name: /^Group [0-9a-f]{32}$/ })).toBeVisible({ timeout: STORE_STEP_MS });
   return (await page.locator("#group-key").textContent()).trim();
 }
+
+// The bound for one signed-in action against the fake store to show its outcome.
+export const STORE_STEP_MS = 60_000;

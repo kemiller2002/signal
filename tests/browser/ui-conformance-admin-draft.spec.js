@@ -5,7 +5,12 @@
 // visible entry and its Remove button takes that entry away again; an answer
 // the question does not have is refused with the answers it does have.
 import { test, expect } from "./support.js";
-import { signInWithStore } from "./ui-conformance-fixtures.mjs";
+import { signInWithStore, STORE_STEP_MS } from "./ui-conformance-fixtures.mjs";
+
+// Every store request crosses Playwright's route interception, so a signed-in
+// flow makes dozens of local round trips per action; on a loaded runner an
+// action can take tens of seconds. The bounds are generous, never sleeps.
+test.describe.configure({ timeout: 300_000 });
 
 async function startDraft(page) {
   await page.getByRole("navigation", { name: "Administration" }).getByRole("link", { name: "Assessments", exact: true }).click();
