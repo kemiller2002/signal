@@ -25,6 +25,16 @@ provenance:
         model: claude-opus-5-5
         runtime: claude-code
       reason: "Template localization and selector accessibility (WI-0091)"
+    EXE-20261013T173900353Z-347fbe75:
+      operations: [modified]
+      at: 2026-10-13T17:47:43.781Z
+      actor:
+        kind: agent
+        id: anthropic/claude-code
+        provider: anthropic
+        model: claude-opus-5-5
+        runtime: claude-code
+      reason: "Option relabels fixed by WI-0097; translated option labels map to OptionsRelabelled"
 ---
 
 # DF-SIGNAL-2026-0020: Template localization and selector accessibility
@@ -68,10 +78,10 @@ CAN-001 lists a Localization area in the canonical template and AccessibilityMet
      | Survey metadata and section text | Presentation: no impact, comparable |
      | Answer labels and accessibility text | Selector change: no impact, comparable |
 
-   - A translation never changes the encoding, so its impact's encoding flag is always false. For an option label the source kind would carry it, because reordering does.
+   - A translation never changes the encoding, so its impact's encoding flag is always false.
    - Accessibility text on the selector itself is a `SelectorChanged`.
    - A new translation still needs a new published version, because the artifact is immutable (§17).
-   - Found while doing this, by reading `TemplateDiff.diff` (not yet confirmed by a test): the source diff doesn't detect an option relabel. A single-choice relabel produces no change at all, and a relabel on other option primitives is an `AnswerChanged`. Reported to the coordinator for its own slice. The translation rule already treats an option relabel as a caution.
+   - The source diff's option-relabel gap found while doing this is fixed by WI-0097: every option relabel is now `OptionsRelabelled` (a caution, no impact), and a translated option label maps to it.
 6. **`UsesLocalization` is supported.** Declaring it is optional, like every capability.
 
 ## Consequences

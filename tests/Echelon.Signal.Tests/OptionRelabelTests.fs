@@ -95,3 +95,40 @@ let ``every option primitive is classified the same way`` () =
         |> List.distinct
 
     Assert.Equal(1, classified.Length)
+
+/// Applies `f` to the option list of any option primitive.
+let private mapOptions (f: ChoiceOption list -> ChoiceOption list) (answer: AnswerDefinition) =
+    let onTree (nodes: TreeNode list) =
+        let kept = f (nodes |> List.map _.Option)
+        kept |> List.map (fun o -> nodes |> List.tryFind (fun n -> n.Option.Id = o.Id) |> Option.map (fun n -> { n with Option = o }) |> Option.defaultValue { Option = o; Parent = None })
+
+    match answer with
+    | SingleChoice os -> SingleChoice(f os)
+    | MultiChoice m -> MultiChoice { m with Options = f m.Options }
+    | Ranking r -> Ranking { r with Options = f r.Options }
+    | Allocation a -> Allocation { a with Options = f a.Options }
+    | BestWorst os -> BestWorst(f os)
+    | Hierarchical(nodes, terminal) -> Hierarchical(onTree nodes, terminal)
+    | HierarchicalMulti(nodes, rule, selection) -> HierarchicalMulti(onTree nodes, rule, selection)
+    | other -> other
+
+[<Fact>]
+let ``option ids, scores and structure keep their own classification on every primitive`` () =
+    for name, answer in primitives do
+        let changesTo f = diff (contentWith answer) (contentWith (mapOptions f answer))
+        Assert.True(([ OptionsChanged "q" ] = changesTo List.rev), $"{name} reordered: %A{changesTo List.rev}")
+        Assert.True(([ OptionsChanged "q" ] = changesTo (fun os -> os @ [ opt "d" ])), $"{name} added")
+
+        let rescored = changesTo (List.map (fun o -> if o.Id = "a" then { o with Score = Some 9.0 } else o))
+        Assert.True(([ OptionScoresChanged "q" ] = rescored), $"{name} rescored: %A{rescored}")
+
+        // Relabel and rescore together: both, never AnswerChanged.
+        let both = changesTo (List.map (fun o -> if o.Id = "a" then { o with Label = "x"; Score = Some 9.0 } else o))
+        Assert.True(([ OptionsRelabelled "q"; OptionScoresChanged "q" ] = both), $"{name} both: %A{both}")
+
+    // Structure apart from the options, and another primitive, are answer changes.
+    let multi = snd primitives[1]
+    let stricter = match multi with MultiChoice m -> MultiChoice { m with Selection = AtMost 1 } | other -> other
+    Assert.Equal<Change list>([ AnswerChanged "q" ], diff (contentWith multi) (contentWith stricter))
+    Assert.Equal<Change list>([ AnswerChanged "q" ], diff (contentWith (SingleChoice opts)) (contentWith (BestWorst opts)))
+    Assert.Equal<Change list>([ AnswerChanged "q" ], diff (contentWith (Ordinal 5)) (contentWith (Ordinal 7)))
