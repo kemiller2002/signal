@@ -108,9 +108,14 @@ test("other answer kinds and a conditional question work on the page", async ({ 
   await expect(page.locator("#progress")).toHaveText("1 of 6 answered");
 
   const toggle = (row) => page.locator(`[data-row="${row}"] input[type="checkbox"]`);
-  await toggle("3-t0").check();
-  await toggle("3-t2").check();
-  await toggle("3-t2").uncheck();
+  // A person clicks the option's label: the design system hides the box itself
+  // (Forma's .ef-special-choice), and in Firefox the label text covers it.
+  const label = (row) => page.locator(`[data-row="${row}"] label:has(input[type="checkbox"])`);
+  await label("3-t0").click();
+  await expect(toggle("3-t0")).toBeChecked();
+  await label("3-t2").click();
+  await expect(toggle("3-t2")).toBeChecked();
+  await label("3-t2").click();
   await expect(toggle("3-t0")).toBeChecked();
   await expect(toggle("3-t2")).not.toBeChecked();
 
