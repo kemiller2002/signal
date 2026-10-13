@@ -73,6 +73,21 @@ let private progressName =
     | PageProgress -> "page"
     | SectionProgress -> "section"
 
+/// A timer's scope, as its canonical kind and target.
+let timerScope =
+    function
+    | Timers.SurveyScope -> "survey", None
+    | Timers.SectionScope id -> "section", Some id
+    | Timers.PageScope page -> "page", Some(string page)
+    | Timers.QuestionScope id -> "question", Some id
+
+let expiryName =
+    function
+    | Timers.LockAndAdvance -> "lock-and-advance"
+    | Timers.LockOnly -> "lock"
+    | Timers.WarnOnly -> "warn"
+    | Timers.EndSurvey -> "end-survey"
+
 let private resultModeName =
     function
     | Immediate -> "immediate"
@@ -297,6 +312,39 @@ let bytes (surveyId: string) (version: string) (content: Content) : byte[] =
             w.WriteBoolean("lockPreviousQuestions", (p.Revisit.Questions = LockPreviousQuestionsAfterAdvance))
             w.WriteBoolean("lockPreviousSections", (p.Revisit.Sections = LockPreviousSectionsAfterExit))
             w.WriteEndObject()
+
+        // Timers and banks (DF-SIGNAL-2026-0008): written only when present,
+        // so a template without them keeps its exact bytes and hash.
+        if not p.Timers.IsEmpty then
+            w.WriteStartArray "timers"
+
+            for t in p.Timers do
+                w.WriteStartObject()
+                w.WriteString("id", t.Id)
+                let scope, target = timerScope t.Scope
+                w.WriteString("scope", scope)
+                target |> Option.iter (fun target -> w.WriteString("target", target))
+                w.WriteNumber("seconds", int64 t.Duration.TotalSeconds)
+                w.WriteStartArray "warnings"
+                t.Warnings |> List.iter (fun warning -> w.WriteNumberValue(int64 warning.TotalSeconds))
+                w.WriteEndArray()
+                w.WriteString("expiry", expiryName t.Expiry)
+                w.WriteString("enforcement", (match t.Enforcement with Timers.Advisory -> "advisory" | Timers.Enforced -> "enforced"))
+                w.WriteEndObject()
+
+            w.WriteEndArray()
+
+        if not p.Banks.IsEmpty then
+            w.WriteStartArray "banks"
+
+            for b in p.Banks do
+                w.WriteStartObject()
+                w.WriteString("id", b.Id)
+                stringList w "pool" b.Pool
+                w.WriteNumber("select", b.Select)
+                w.WriteEndObject()
+
+            w.WriteEndArray()
         w.WriteEndObject()
 
         let r = content.Runtime

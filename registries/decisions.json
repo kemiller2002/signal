@@ -391,6 +391,51 @@
     "version": "1.0.0"
   },
   {
+    "created": "2026-10-13",
+    "id": "DF-SIGNAL-2026-0008",
+    "owners": [
+      "signal"
+    ],
+    "path": "research/decisions/DF-SIGNAL-2026-0008--timers-and-banks-are-optional-template-fields.md",
+    "provenance": {
+      "contributions": {
+        "EXE-20261009T042446720Z-a28d9579": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-13T09:49:16.277Z",
+          "operations": [
+            "created"
+          ],
+          "reason": "Timers and banks as optional template fields (ARX-013, WI-0081)"
+        }
+      }
+    },
+    "related_documents": [
+      "research/decisions/DF-SIGNAL-2026-0005--respondents-read-published-templates-from-a-static-site-catalog.md",
+      "research/decisions/DF-SIGNAL-2026-0007--the-survey-page-names-its-page-in-the-respondent-link.md",
+      "docs/requirements/implementation-gap-analysis.md"
+    ],
+    "review_cycle": "on-trigger",
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "template",
+      "canonical",
+      "timers",
+      "banking",
+      "compatibility"
+    ],
+    "title": "Timers and question banks are optional template fields, written only when present, so existing templates keep their exact bytes and hashes",
+    "updated": "2026-10-13",
+    "version": "1.0.0"
+  },
+  {
     "created": "2026-10-05",
     "id": "DF-SIGNAL-FND-2026-0001",
     "owners": [

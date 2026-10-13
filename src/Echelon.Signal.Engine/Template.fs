@@ -98,7 +98,12 @@ type Presentation =
       AllowBackNavigation: bool
       ReviewBeforeSubmit: bool
       SectionStartsOnNewPage: bool
-      Revisit: Revisit }
+      Revisit: Revisit
+      /// Timers (ARX-013, DF-SIGNAL-2026-0008): optional; a template without
+      /// any writes none, so its canonical form and hash are unchanged.
+      Timers: Echelon.Signal.Engine.Timers.Timer list
+      /// Content banks (ARX-013, DF-SIGNAL-2026-0008): optional, like timers.
+      Banks: Banking.Bank list }
 
 /// Declared engine features (CAN §2). A template declares what it uses; an
 /// engine refuses what it does not support.
@@ -166,7 +171,9 @@ let defaultPresentation =
       AllowBackNavigation = true
       ReviewBeforeSubmit = false
       SectionStartsOnNewPage = false
-      Revisit = fullRevisit }
+      Revisit = fullRevisit
+      Timers = []
+      Banks = [] }
 
 let defaultSectionPresentation =
     { ItemsPerPage = None

@@ -11,6 +11,10 @@ open Echelon.Signal.Engine.Template
 type Change =
     | MetadataChanged
     | PresentationChanged
+    /// Timers changed (DF-SIGNAL-2026-0008): how long, not what is scored.
+    | TimersChanged
+    /// Banks changed: which questions an instance answers, so scores can move.
+    | BanksChanged
     | RuntimeChanged
     | CompatibilityChanged
     | SectionAdded of sectionId: string
@@ -51,6 +55,7 @@ let impact (change: Change) =
     match change with
     | MetadataChanged
     | PresentationChanged
+    | TimersChanged
     | RuntimeChanged
     | SectionTextChanged _
     | SectionPresentationChanged _
@@ -62,6 +67,7 @@ let impact (change: Change) =
     | SectionScoringChanged _
     | OptionScoresChanged _
     | FlowChanged
+    | BanksChanged
     | FactsChanged
     | OverallScoringChanged
     | ItemKeysChanged -> { Scoring = true; Encoding = false }
@@ -105,7 +111,10 @@ let diff (before: Content) (after: Content) : Change list =
       if before.Results.Interpretations <> after.Results.Interpretations then InterpretationsChanged
       if before.Results.Display <> after.Results.Display then DisplayChanged
       if before.Results.ItemKeys <> after.Results.ItemKeys then ItemKeysChanged
-      if before.Presentation <> after.Presentation then PresentationChanged
+      let layoutOf (p: Presentation) = { p with Timers = []; Banks = [] }
+      if layoutOf before.Presentation <> layoutOf after.Presentation then PresentationChanged
+      if before.Presentation.Timers <> after.Presentation.Timers then TimersChanged
+      if before.Presentation.Banks <> after.Presentation.Banks then BanksChanged
       if before.Runtime <> after.Runtime then RuntimeChanged
       if before.Compatibility <> after.Compatibility then CompatibilityChanged
 
@@ -176,6 +185,7 @@ let comparability (changes: Change list) =
             | SectionAdded id -> Some $"section '{id}' added"
             | SectionRemoved id -> Some $"section '{id}' removed"
             | FlowChanged -> Some "flow changed which questions apply"
+            | BanksChanged -> Some "question banks changed which questions an instance answers"
             | FactsChanged -> Some "derived facts changed"
             | OverallScoringChanged -> Some "overall scoring changed"
             | ItemKeysChanged -> Some "item keys changed"

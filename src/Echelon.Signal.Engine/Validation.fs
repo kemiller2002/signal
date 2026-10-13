@@ -75,6 +75,35 @@ let private structural (draft: Draft) =
       for n in Option.toList c.Presentation.ItemsPerPage do
           if n < 1 then
               block "STRUCT-ITEMS-PER-PAGE" "" "Items per page must be at least 1."
+      // Timers and banks (ARX-013, DF-SIGNAL-2026-0008).
+      let p = c.Presentation
+      let pageCount = (Layout.pages c).Length
+
+      for id in duplicates (p.Timers |> List.map _.Id) do
+          block "STRUCT-DUPLICATE-TIMER" id $"Timer id '{id}' is used more than once."
+      for t in p.Timers do
+          for problem in Timers.check t do
+              block "STRUCT-TIMER" t.Id problem
+          if (t.Duration :: t.Warnings) |> List.exists (fun d -> d.Ticks % TimeSpan.TicksPerSecond <> 0L) then
+              block "STRUCT-TIMER" t.Id $"Timer '{t.Id}' must count whole seconds."
+          match t.Scope with
+          | Timers.SurveyScope -> ()
+          | Timers.SectionScope id when not (sectionIds c |> List.contains id) ->
+              block "STRUCT-TIMER-REFERENCE" t.Id $"Timer '{t.Id}' names no section '{id}'."
+          | Timers.QuestionScope id when not (questionIds c |> List.contains id) ->
+              block "STRUCT-TIMER-REFERENCE" t.Id $"Timer '{t.Id}' names no question '{id}'."
+          | Timers.PageScope page when page < 1 || page > pageCount ->
+              block "STRUCT-TIMER-REFERENCE" t.Id $"Timer '{t.Id}' names page {page}, but the template has {pageCount}."
+          | _ -> ()
+      for id in duplicates (p.Banks |> List.map _.Id) do
+          block "STRUCT-DUPLICATE-BANK" id $"Bank id '{id}' is used more than once."
+      for problem in Banking.check p.Banks do
+          block "STRUCT-BANK" "" problem
+      for b in p.Banks do
+          for id in b.Pool |> List.filter (fun id -> not (questionIds c |> List.contains id)) do
+              block "STRUCT-BANK-REFERENCE" b.Id $"Bank '{b.Id}' names no question '{id}'."
+      for id in duplicates (p.Banks |> List.collect (fun b -> List.distinct b.Pool)) do
+          block "STRUCT-BANK-OVERLAP" id $"Question '{id}' is in more than one bank."
       for _, q in questions c do
           if not (isIdentifier q.Id) then
               block "STRUCT-QUESTION-ID" q.Id $"Question id '{q.Id}' is not a stable identifier."

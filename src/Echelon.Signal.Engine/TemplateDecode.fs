@@ -287,6 +287,47 @@ let private section (v: JsonElement) : Decoded<Section> =
         presentation
         scoring
 
+/// A timer (DF-SIGNAL-2026-0008): whole seconds, its scope and target, and
+/// what happens when it runs out.
+let private timer (t: JsonElement) : Decoded<Echelon.Signal.Engine.Timers.Timer> =
+    let scope =
+        text "scope" t
+        |> Result.bind (fun kind ->
+            match kind with
+            | "survey" when not (has "target" t) -> Ok Timers.SurveyScope
+            | "section" -> text "target" t |> Result.map Timers.SectionScope
+            | "question" -> text "target" t |> Result.map Timers.QuestionScope
+            | "page" ->
+                text "target" t
+                |> Result.bind (fun target ->
+                    match Int32.TryParse target with
+                    | true, page when page >= 1 && string page = target -> Ok(Timers.PageScope page)
+                    | _ -> Error $"timer page '{target}' is not a page number")
+            | other -> Error $"'{other}' is not a timer scope")
+
+    let seconds (n: int) = TimeSpan.FromSeconds(float n)
+
+    map4
+        (fun (id, scope) (duration, warnings) expiry enforcement ->
+            { Echelon.Signal.Engine.Timers.Id = id
+              Echelon.Signal.Engine.Timers.Scope = scope
+              Echelon.Signal.Engine.Timers.Duration = seconds duration
+              Echelon.Signal.Engine.Timers.Warnings = warnings |> List.map seconds
+              Echelon.Signal.Engine.Timers.Expiry = expiry
+              Echelon.Signal.Engine.Timers.Enforcement = enforcement })
+        (map2 (fun a b -> a, b) (text "id" t) scope)
+        (map2 (fun a b -> a, b) (integer "seconds" t) (array intValue "warnings" t))
+        (spelled [ for e in [ Timers.LockAndAdvance; Timers.LockOnly; Timers.WarnOnly; Timers.EndSurvey ] -> e, TemplateCanonical.expiryName e ] "timer expiry" "expiry" t)
+        (spelled [ Timers.Advisory, "advisory"; Timers.Enforced, "enforced" ] "timer enforcement" "enforcement" t)
+
+/// A content bank (DF-SIGNAL-2026-0008).
+let private bank (b: JsonElement) : Decoded<Banking.Bank> =
+    map3
+        (fun id pool select -> { Id = id; Pool = pool; Select = select }: Banking.Bank)
+        (text "id" b)
+        (if has "pool" b then strings "pool" b else Ok [])
+        (integer "select" b)
+
 let private presentation (p: JsonElement) : Decoded<Presentation> =
     let revisit =
         if has "revisit" p then
@@ -301,13 +342,23 @@ let private presentation (p: JsonElement) : Decoded<Presentation> =
         else
             Ok fullRevisit
 
+    let optionalList read name = if has name p then array read name p else Ok []
+
     map4
-        (fun (items, numbers) (progress, back) (review, newPage) revisit ->
-            { ItemsPerPage = items; ShowQuestionNumbers = numbers; Progress = progress; AllowBackNavigation = back; ReviewBeforeSubmit = review; SectionStartsOnNewPage = newPage; Revisit = revisit })
+        (fun (items, numbers) (progress, back) (review, newPage) (revisit, (timers, banks)) ->
+            { ItemsPerPage = items
+              ShowQuestionNumbers = numbers
+              Progress = progress
+              AllowBackNavigation = back
+              ReviewBeforeSubmit = review
+              SectionStartsOnNewPage = newPage
+              Revisit = revisit
+              Timers = timers
+              Banks = banks })
         (map2 (fun a b -> a, b) (optional integer "itemsPerPage" p) (flag "showQuestionNumbers" p))
         (map2 (fun a b -> a, b) (spelled [ NoProgress, "none"; QuestionProgress, "question"; PageProgress, "page"; SectionProgress, "section" ] "progress mode" "progress" p) (flag "allowBackNavigation" p))
         (map2 (fun a b -> a, b) (flag "reviewBeforeSubmit" p) (flag "sectionStartsOnNewPage" p))
-        revisit
+        (map2 (fun a b -> a, b) revisit (map2 (fun a b -> a, b) (optionalList timer "timers") (optionalList bank "banks")))
 
 /// A canonical template document: its survey identifier, version and content.
 type DecodedTemplate = { SurveyId: string; Version: string; Content: Content }
