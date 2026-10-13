@@ -22,7 +22,9 @@ open Echelon.Signal.Engine.RuleChecks
 
 type Policy =
     { /// The longest respondent URL supported, all characters included.
-      /// Provisional until CAN-004 §26's cross-device measurements exist.
+      /// Measured (CAN-004 §26, WI-0081): the longest link publication
+      /// allows opens, survives a reload and submits on Chromium, WebKit
+      /// (iPhone) and Firefox (cross-browser workflow run 38402731660).
       MaximumUrlCharacters: int
       /// Characters reserved for the origin, path and fragment marker.
       BaseUrlAllowance: int
