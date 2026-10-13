@@ -2683,20 +2683,20 @@
         "EXE-20261009T042446720Z-a28d9579"
       ],
       "latestCheckpoint": {
-        "id": "9fc91a7020b802ee66fc296f",
-        "recordedAt": "2026-10-13T10:44:19Z",
+        "id": "b01b93b7802e8fbf5b1c855a",
+        "recordedAt": "2026-10-13T11:00:50Z",
         "executionId": "EXE-20261009T042446720Z-a28d9579",
         "repository": "echelon-signal",
-        "branch": "feature/rule-authoring",
-        "commit": "ba60e2dce16b4338e9e44dddd9aa4d2b293f5f20",
+        "branch": "feature/group-facts-recommendations",
+        "commit": "e02609d33cbb55e6fce25d6105e6e8e32eeb6886",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/rule-authoring",
-        "remoteCommit": "ba60e2dce16b4338e9e44dddd9aa4d2b293f5f20",
-        "summary": "Console authors facts, recommendations and completion policy (AUT-002, DF-SIGNAL-2026-0011)",
-        "nextAction": "Gate and merge; then item 2: import pipeline and group results carrying facts and recommendations (ARP-001, ADM-055)",
+        "remoteBranch": "feature/group-facts-recommendations",
+        "remoteCommit": "e02609d33cbb55e6fce25d6105e6e8e32eeb6886",
+        "summary": "Results carry triggered recommendation and fact ids; groups count them with suppression; reports list generic recommendations (DF-SIGNAL-2026-0012)",
+        "nextAction": "Gate and merge; then item 3: survey page component families (SCS-018, SCS-010, SCS-014)",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
