@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T12:34:53Z",
+  "updatedAt": "2026-10-13T12:38:36Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -2773,13 +2773,24 @@
     {
       "id": "WI-0085",
       "type": "defect",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-13T12:34:53Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/ReportLibrary.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/ReportLibraryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-13T12:38:36Z",
       "telemetryExecutionIds": [
         "EXE-20261013T123454748Z-14971799"
-      ]
+      ],
+      "completedAt": "2026-10-13T12:38:36Z",
+      "conclusion": "Stored CSVs neutralized on delivery; stored bytes and hashes unchanged"
     }
   ]
 }

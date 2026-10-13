@@ -2018,10 +2018,10 @@
         "signal,security"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-13T12:34:53Z",
-      "updatedAt": "2026-10-13T12:34:53Z",
+      "updatedAt": "2026-10-13T12:38:36Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
