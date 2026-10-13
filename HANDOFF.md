@@ -242,6 +242,11 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   `GenericReview`; the review is page state (`Response.Reviewing`), never in
   the link. Only drafts are deleted (`TemplateStore.delete`); a published
   version is hidden, never deleted (AUT-006 §§58-59).
+- Question timers (WI-0081, ARX-013): a question's start is link terms entry
+  kind 3 (SIG-LINK 1.5.0, DF-SIGNAL-2026-0015 §9), stamped when the question
+  is first shown. Starts are whole minutes; the console says so. Any new
+  entry kind must keep every committed fixture byte-identical
+  (`QuestionTimerTests`) and refuse an unknown kind whole.
 - Disclosure in the page (WI-0076): an anonymous group with a minimum above
   one shows its last released state (`Releases.shown`, recorded after each
   import as a `signal.group-release` of opaque keys) and says how many newer

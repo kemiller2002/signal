@@ -2,7 +2,7 @@
 id: DF-SIGNAL-2026-0015
 title: Section and page timer starts and a timed response's submission minute travel in the respondent link's integrity-checked terms; intake flags late submissions and never refuses them
 status: accepted
-version: 1.0.0
+version: 1.1.0
 created: 2026-10-13
 updated: 2026-10-13
 owners:
@@ -19,8 +19,9 @@ tags: [timers, respondent, url, integrity, privacy, anonymity, intake]
 provenance:
   contributions:
     EXE-20261009T042446720Z-a28d9579:
-      operations: [created]
+      operations: [created, modified]
       at: 2026-10-13T12:01:39.943Z
+      last: 2026-10-13T22:09:35.063Z
       actor:
         kind: agent
         id: anthropic/claude-code
@@ -91,3 +92,27 @@ provenance:
    refuses the link. As in DF-SIGNAL-2026-0006, this is not a signature
    (WI-0060).
 8. **Contract.** SIG-LINK 1.4.0 adds SIG-LINK-016.
+
+## §9 Superseding §3 for question timers (2026-10-13, WI-0081)
+
+This section supersedes one sentence of §3, "Question timers stay refused". The original text above is kept as it was decided.
+
+- **What changed:** question timers are supported. The coordinator chose option (a) on 2026-10-13.
+- **Why:**
+  - ARX-013 lists Question among its recommended timer scopes.
+  - The section and page machinery already does everything a question timer needs, and is proven in CI: stamp on first reach, never move a start, lock by coverage, flag at intake.
+  - The only thing missing was a way to name a question in the link.
+- **How:**
+  - A question timer's start is a terms entry of **kind 3**, indexed by the question's position in the template, using the same count, 2-byte index and 4-byte minute as kinds 1 and 2.
+  - It is stamped the first time a page showing the question is shown, and an enforced expiry holds that question only.
+  - Intake flags a late submission exactly as for section and page timers. The link budget (`Layout.scopedTimerBytes`) counts question timers too.
+- **Contract:**
+  - SIG-LINK goes to 1.5.0, and SIG-LINK-016 names kind 3.
+  - Every existing link fixture decodes and re-encodes byte for byte (`QuestionTimerTests`).
+  - A decoder that does not know an entry kind refuses the whole link with `InvalidTerms` and its safe description, never a partial read, as the decoder before this change did for kind 3.
+  - Terms with every kind round-trip, as a property.
+- **Resolution:**
+  - Starts stay whole UTC minutes, so a person can get up to a minute less than a timer's limit from the moment of first display. That matters most for a short question timer.
+  - The console's timer help says so, and authors question timers in whole minutes from when the question is first shown (`AreaAuthoring.timerHelp`).
+- **Unchanged:** more than one timer on the same part stays refused. No published fixture or sample changed: none has a question timer.
+
