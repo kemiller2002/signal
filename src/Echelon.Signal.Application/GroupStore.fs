@@ -378,10 +378,25 @@ let persistReportState (actor: Store.Actor) (budget: ReportState.UrlBudget) (now
             let! target, content = ReportState.encodeRecord state |> Result.mapError (List.singleton >> Unusable) |> lift
             let! existing = call now (group.Dataset.Provider.Read group.Dataset.Namespace target)
 
-            match existing with
-            | ReadOutcome.Found _ -> return external
-            | ReadOutcome.Erased erased -> return! lift (Error(Unusable [ Store.erasedRecord erased ]))
-            | ReadOutcome.Absent ->
+            // The read decides the next step, as ReportStates' persistence
+            // states name it (ARX-002, WI-0092): found means stored, absent
+            // means write once, erased is never written again.
+            let seen =
+                match existing with
+                | ReadOutcome.Found _ -> ReportStates.FoundInStore
+                | ReadOutcome.Absent -> ReportStates.AbsentFromStore
+                | ReadOutcome.Erased _ -> ReportStates.ErasedFromStore
+
+            let checking =
+                match external with
+                | ReportState.ExternalStore(id, fragment) -> ReportStates.CheckingStore(id, fragment)
+                | ReportState.EmbeddedInUrl fragment -> ReportStates.Embedded fragment
+
+            match ReportStates.persistenceAttempt (ReportStates.ObserveRead seen) checking, existing with
+            | Ok(ReportStates.Stored _), _ -> return external
+            | Ok(ReportStates.ErasedInStore _), ReadOutcome.Erased erased -> return! lift (Error(Unusable [ Store.erasedRecord erased ]))
+            | Error illegal, _ -> return! lift (Error(Unusable [ InvalidStoredRecord(RelativePath.render target, illegal.Reason) ]))
+            | Ok _, _ ->
                 let! operation =
                     Storage.operation group.Dataset.Namespace (importContext actor) "store report state" [ Change.Create(target, content) ]
                     |> Result.bind (

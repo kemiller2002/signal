@@ -81,6 +81,7 @@
     <Compile Include="AreaAuthoringTests.fs" />
     <Compile Include="StateModelTests.fs" />
     <Compile Include="StateSystemsTests.fs" />
+    <Compile Include="ReportStatesTests.fs" />
     <Compile Include="GroupSignalsTests.fs" />
     <Compile Include="SnapshotPageTests.fs" />
     <Compile Include="ReportBuilderTests.fs" />

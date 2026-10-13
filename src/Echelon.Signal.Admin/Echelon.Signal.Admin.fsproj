@@ -41,6 +41,7 @@
     <Compile Include="TemplateRecord.fs" />
     <Compile Include="Disclosure.fs" />
     <Compile Include="ReportLibrary.fs" />
+    <Compile Include="ReportStates.fs" />
     <Compile Include="ReportRecord.fs" />
     <Compile Include="PolicyPack.fs" />
     <Compile Include="ConfigPackage.fs" />
