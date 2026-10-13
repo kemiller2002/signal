@@ -49,13 +49,13 @@ export default defineConfig({
     // the per-pull-request suite, so their OS libraries never hold up PR CI.
     ...(process.env.SIGNAL_CROSS_BROWSER === "1"
       ? [
-          { name: "webkit-iphone", testMatch: /(survey|survey-timers|survey-devices)\.spec\.js/, use: { ...devices["iPhone 13"] } },
-          { name: "firefox", testMatch: /(survey|survey-timers)\.spec\.js/, use: { ...devices["Desktop Firefox"] } }
+          { name: "webkit-iphone", testMatch: /(survey|survey-timers|survey-devices|survey-max-link)\.spec\.js/, use: { ...devices["iPhone 13"] } },
+          { name: "firefox", testMatch: /(survey|survey-timers|survey-max-link)\.spec\.js/, use: { ...devices["Desktop Firefox"] } }
         ]
       : []),
     {
       name: "pages",
-      testMatch: /(deep-links|survey|survey-timers)\.spec\.js/,
+      testMatch: /(deep-links|survey|survey-timers|survey-max-link)\.spec\.js/,
       use: { ...devices["Desktop Chrome"], launchOptions, baseURL: `${pagesOrigin}/signal/` }
     }
   ],
