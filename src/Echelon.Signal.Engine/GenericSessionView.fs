@@ -43,6 +43,9 @@ let private defaults =
       "hideError", flag true
       "error", text ""
       "optionalMark", text ""
+      // Where a multi-choice selection stands (SCS-011).
+      "selectionStatus", text ""
+      "hideSelectionStatus", flag true
       "component", text ""
       "variant", text ""
       // Template accessibility metadata (CAN-001 §7, WI-0091).
@@ -69,10 +72,8 @@ let private isRequired (content: Content) (q: Question) =
 /// Every input names its question (and its error, when it has one) as its
 /// description, and states whether it is required and invalid (SCS-014).
 let private choiceRows (qi: int) (q: Question) (answer: AnswerState option) (held: GenericInputs.Held option) (locked: bool) (required: bool) (invalid: bool) =
-    let selected =
-        match answer with
-        | Some(Value(Choices ids)) -> ids
-        | _ -> Set.empty
+    // A selection the count refuses is held, and still shown as chosen.
+    let selected = GenericInputs.selectedWith answer held
 
     // The template's accessible description (CAN-001 §7) is read after the prompt.
     let description = if q.Selector.Accessibility.Description.IsSome then $" q{qi}-description" else ""
@@ -140,8 +141,11 @@ let private rows (r: Response) =
                     // Input the link cannot carry yet says so (WI-0086).
                     let held = if r.Phase = Answering then r.Pending.TryFind q.Id else None
 
+                    let selectionStatus = SelectionGuidance.status q.Answer (GenericInputs.selectedWith (r.Answers.TryFind q.Id) held)
+
                     let error =
                         if invalid then "This question needs an answer."
+                        elif held.IsSome && selectionStatus <> "" then "Not in the link yet: change the selection to fit, or clear it, to keep it."
                         elif held.IsSome then "Not in the link yet: finish this answer, or clear it, to keep it."
                         else ""
 
@@ -164,6 +168,8 @@ let private rows (r: Response) =
                           "hideError", flag (error = "")
                           "error", text error
                           "optionalMark", text (if required then "" else "(optional)")
+                          "selectionStatus", text selectionStatus
+                          "hideSelectionStatus", flag (selectionStatus = "")
                           "component", text family
                           "variant", text variant ]
                     :: choiceRows qi shownQuestion (r.Answers.TryFind q.Id) held (sealedResponse || locked.Contains q.Id) required invalid)))

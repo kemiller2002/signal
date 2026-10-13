@@ -231,6 +231,12 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   dataset is read-only, and retires a finalized group's results from its
   overview only after a confirmation. Page work must stay on the caller's
   context: never `Async.Sequential` or `Async.Parallel` (see `AdminWork`).
+- Survey page selectors (WI-0081): every input settles through
+  `GenericInputs` (`typed`, `pickedHeld`, `toggled`), so a value the link
+  cannot read back (an unfinished ranking, a multi-choice count the rule
+  refuses) is held on the page, never written. The visual selector variants
+  wait for nested view lists in Limen (limen#108, DF-SIGNAL-2026-0022,
+  WI-0099); never fixed option slots.
 - Disclosure in the page (WI-0076): an anonymous group with a minimum above
   one shows its last released state (`Releases.shown`, recorded after each
   import as a `signal.group-release` of opaque keys) and says how many newer

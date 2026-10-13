@@ -111,3 +111,4 @@
 | WI-0096 | Adopt echelon-current 1.21.0 through Conditor 0.10.1: Ordo 1.5.0 to 1.6.0 with foundations.json moving alongside (registry step 2) | complete | signal, platform, conditor, ordo | high |
 | WI-0097 | Escaped defect from #28: the template diff misses a single-choice option relabel and classifies a relabel on other option primitives as AnswerChanged, so comparability can be wrong | complete | signal, defect, escaped-defect:#28 | high |
 | WI-0098 | Adopt echelon-current 1.22.0 through Conditor 0.10.1: Ordo 1.6.0 to 1.7.0 (registry step 3) | complete | signal, platform, conditor, ordo | high |
+| WI-0099 | Signal 05f: survey-page questions in Forma's assessment patterns once Limen renders nested view lists (SCS-010, SCS-012, SCS-018 visual variants) | captured |  | medium |
