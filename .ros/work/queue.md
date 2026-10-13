@@ -99,3 +99,4 @@
 | WI-0084 | Neutralize spreadsheet formulas in every Signal CSV export (CSV injection) | complete | signal,security | high |
 | WI-0085 | Neutralize stored snapshot CSVs on delivery (snapshots stored before WI-0084) | complete | signal,security | high |
 | WI-0086 | Escaped defects from #73: partial compound answers are not in the link, and out-of-order ranking positions collapse | complete | signal,defect, escaped-defect:#73 | high |
+| WI-0087 | Escaped defect from #29: the validation summary omits the Rules category, so rule findings never appear in the per-category summary (AUT-005) | ready | signal, defect, escaped-defect:#29 | high |

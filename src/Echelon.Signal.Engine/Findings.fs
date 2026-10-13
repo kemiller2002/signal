@@ -14,6 +14,19 @@ type Category =
     /// Flow, facts, validation rules, completion and recommendations.
     | RulesCategory
 
+/// Every category, in the order the validation summary lists them. A test
+/// checks this against the union's cases so a new category cannot be left out.
+let categories =
+    [ StructuralCategory
+      AnswerCategory
+      ScoringCategory
+      CompletionCategory
+      CompatibilityCategory
+      EncodingCategory
+      PrivacyCategory
+      RulesCategory
+      FixturesCategory ]
+
 type Severity =
     | Blocker
     | Warning

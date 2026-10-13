@@ -377,7 +377,7 @@ let validate (policy: Policy) (draft: Draft) : ValidationReport =
 
 /// Pass or fail per category, for the validation summary (AUT-005 §49).
 let summary (report: ValidationReport) =
-    [ StructuralCategory; AnswerCategory; ScoringCategory; CompletionCategory; CompatibilityCategory; EncodingCategory; PrivacyCategory; FixturesCategory ]
+    categories
     |> List.map (fun category ->
         category,
         report.Blockers |> List.exists (fun f -> f.Category = category) |> not)
