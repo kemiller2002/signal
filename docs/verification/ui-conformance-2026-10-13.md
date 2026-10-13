@@ -7,7 +7,7 @@ contract's: PASS, FAIL, UNKNOWN (no evidence), NOT_APPLICABLE, EXCEPTION.
 
 Runner: `npm run ui:conformance` (publishes the WASM engine, runs the pure
 helper tests with `node --test`, then the `ui-conformance` Playwright project,
-`tests/browser/ui-conformance.spec.js`). CI runs both halves in
+`tests/browser/ui-conformance-actions.spec.js` and `ui-conformance-layout.spec.js`, sharing `ui-conformance-fixtures.mjs`). CI runs both halves in
 `.github/workflows/build.yml`. Helpers: `tests/browser/ui-conformance-helpers.mjs`,
 which mirrors the API of Forma's reference helpers
 (`forma/tests/site-browser/ui-conformance-helpers.mjs`, branch
@@ -101,7 +101,7 @@ Each measurement is attached to its test result as JSON.
 
 | Rule | Surface | State | Reason | Owner | Evidence | Review trigger |
 | --- | --- | --- | --- | --- | --- | --- |
-| ULI-L05 | Survey best-worst row at 320 | option text containing a word wider than its cell | Forma's `.ef-best-worst__row` option cell (design-system 0.6.1) has `minmax(0, 1fr)` and no `overflow-wrap`; Signal may not restyle Forma components (ULI-L03; `FoundationsConformanceTests`) | Forma | `test.fail` in `ui-conformance.spec.js` (page scrolls by ~78 px with a 35-character word) | next Forma upgrade: the test then fails and becomes an ordinary assertion |
+| ULI-L05 | Survey best-worst row at 320 | option text containing a word wider than its cell | Forma's `.ef-best-worst__row` option cell (design-system 0.6.1) has `minmax(0, 1fr)` and no `overflow-wrap`; Signal may not restyle Forma components (ULI-L03; `FoundationsConformanceTests`) | Forma | `test.fail` in `ui-conformance-layout.spec.js` (page scrolls by ~78 px with a 35-character word) | next Forma upgrade: the test then fails and becomes an ordinary assertion |
 
 ## Remaining debt and unknown coverage
 
