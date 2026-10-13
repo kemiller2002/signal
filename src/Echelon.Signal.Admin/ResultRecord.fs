@@ -154,6 +154,8 @@ let body (datasetId: string) (contribution: Contribution) =
               "recommendations", Json.Array(result.Recommendations |> List.map Json.String)
           if not result.FactsTrue.IsEmpty then
               "factsTrue", Json.Array(result.FactsTrue |> List.map Json.String)
+          if not result.LateTimers.IsEmpty then
+              "lateTimers", Json.Array(result.LateTimers |> List.map Json.String)
           "provenance",
           Json.objectOf
               [ "origin", Json.String(originName contribution.Provenance.Origin)
@@ -251,6 +253,7 @@ let ofBody (template: Assessment) (value: Json) : Decoded<StoredContribution> =
           "factsTrue"
           "group"
           "identity"
+          "lateTimers"
           "nonNumericCount"
           "provenance"
           "recommendations"
@@ -283,11 +286,12 @@ let ofBody (template: Assessment) (value: Json) : Decoded<StoredContribution> =
             | Error _ -> Ok []
 
         let extras =
-            match submission, ids "recommendations", ids "factsTrue" with
-            | Ok submission, Ok recommendations, Ok factsTrue -> Ok(submission, recommendations, factsTrue)
-            | Error e, _, _
-            | _, Error e, _
-            | _, _, Error e -> Error e
+            match submission, ids "recommendations", ids "factsTrue", ids "lateTimers" with
+            | Ok submission, Ok recommendations, Ok factsTrue, Ok lateTimers -> Ok(submission, recommendations, factsTrue, lateTimers)
+            | Error e, _, _, _
+            | _, Error e, _, _
+            | _, _, Error e, _
+            | _, _, _, Error e -> Error e
 
         match
             both (text "datasetId" value) group,
@@ -299,7 +303,7 @@ let ofBody (template: Assessment) (value: Json) : Decoded<StoredContribution> =
             field "provenance" value |> Result.bind provenanceOf,
             extras
         with
-        | Ok(dataset, group), Ok identity, Ok(survey, version), Ok(templateHash, submissionHash), Ok dimensions, Ok(answered, nonNumeric), Ok provenance, Ok(submission, recommendations, factsTrue) ->
+        | Ok(dataset, group), Ok identity, Ok(survey, version), Ok(templateHash, submissionHash), Ok dimensions, Ok(answered, nonNumeric), Ok provenance, Ok(submission, recommendations, factsTrue, lateTimers) ->
             Ok
                 { DatasetId = dataset
                   Contribution =
@@ -314,7 +318,8 @@ let ofBody (template: Assessment) (value: Json) : Decoded<StoredContribution> =
                           AnsweredCount = answered
                           NonNumericCount = nonNumeric
                           Recommendations = recommendations
-                          FactsTrue = factsTrue }
+                          FactsTrue = factsTrue
+                          LateTimers = lateTimers }
                       Provenance = provenance
                       Submission = submission } }
         | Error e, _, _, _, _, _, _, _

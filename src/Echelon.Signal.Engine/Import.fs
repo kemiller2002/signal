@@ -82,7 +82,10 @@ type SurveyResult =
       Recommendations: string list
       /// The yes/no facts that held (ARP §14), by id: only what group
       /// counts and reports need, never other intermediate values.
-      FactsTrue: string list }
+      FactsTrue: string list
+      /// Enforced timers that had run out by the submission minute: a flag
+      /// for the administrator, never a refusal (DF-SIGNAL-2026-0015).
+      LateTimers: string list }
 
 /// Why a submission was not accepted. Stable codes, never guesses (ARP §58).
 type ImportError =
@@ -156,7 +159,8 @@ let private interpret (assessment: Assessment) (identity: SubmissionIdentity) (e
       AnsweredCount = envelope.Answers.Count
       NonNumericCount = envelope.Answers |> Map.filter (fun _ a -> (numericValue a).IsNone) |> Map.count
       Recommendations = []
-      FactsTrue = [] }
+      FactsTrue = []
+      LateTimers = [] }
 
 /// The identity a finalized submission contributes under, or why it cannot
 /// contribute to this group.

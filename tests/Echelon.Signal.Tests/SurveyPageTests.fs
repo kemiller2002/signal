@@ -172,10 +172,10 @@ let private links =
       // Link format 2 (VER-003): an invitation that expired on 2020-01-31, and one in Canadian French.
       "expired",
       "web/survey/#r="
-      + GenericEnvelope.invitationWith { Locale = None; StartedAt = None; ExpiresOn = Some(DateOnly(2020, 1, 31)) } DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group
+      + GenericEnvelope.invitationWith { GenericEnvelope.noTerms with Locale = None; StartedAt = None; ExpiresOn = Some(DateOnly(2020, 1, 31)) } DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group
       "localized",
       "web/survey/#r="
-      + GenericEnvelope.invitationWith { Locale = Some "fr-CA"; StartedAt = None; ExpiresOn = Some(DateOnly(2100, 1, 1)) } DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group
+      + GenericEnvelope.invitationWith { GenericEnvelope.noTerms with Locale = Some "fr-CA"; StartedAt = None; ExpiresOn = Some(DateOnly(2100, 1, 1)) } DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group
       // Ranking, allocation, best-worst, a range and option trees.
       "compound", "web/survey/#r=" + GenericEnvelope.invitation "COMPOUND" "1" compoundEditor.Draft.Content Import.IdentifiedGroup instance group
       "compoundFile", fst (publishedFile "COMPOUND" "1" compoundEditor.Draft.Content)

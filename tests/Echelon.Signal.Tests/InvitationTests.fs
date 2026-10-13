@@ -24,7 +24,7 @@ let private definition mode generic : Import.GroupDefinition =
 let ``a request is a count between 1 and 500, an optional language and an optional last day`` () =
     let parse count locale expires = Invitations.parse { Count = count; Locale = locale; Expires = expires }
     Assert.Equal(Ok(3, GenericEnvelope.noTerms), parse "3" "" "")
-    Assert.Equal(Ok(1, { GenericEnvelope.Terms.Locale = Some "fr-CA"; GenericEnvelope.Terms.StartedAt = None; GenericEnvelope.Terms.ExpiresOn = Some(DateOnly(2026, 12, 31)) }), parse "1" " fr-CA " "2026-12-31")
+    Assert.Equal(Ok(1, { GenericEnvelope.noTerms with Locale = Some "fr-CA"; StartedAt = None; ExpiresOn = Some(DateOnly(2026, 12, 31)) }), parse "1" " fr-CA " "2026-12-31")
     Assert.True(parse "0" "" "" |> Result.isError)
     Assert.True(parse "501" "" "" |> Result.isError)
     Assert.True(parse "two" "" "" |> Result.isError)
@@ -33,7 +33,7 @@ let ``a request is a count between 1 and 500, an optional language and an option
 
 [<Fact>]
 let ``generic links carry the group, a fresh instance each, and the terms`` () =
-    let terms: GenericEnvelope.Terms = { Locale = Some "de"; StartedAt = None; ExpiresOn = Some today }
+    let terms: GenericEnvelope.Terms = { GenericEnvelope.noTerms with Locale = Some "de"; StartedAt = None; ExpiresOn = Some today }
 
     match Invitations.links (definition Import.IdentifiedGroup (Some form)) terms today [ oid 1; oid 2 ] with
     | Ok [ first; second ] ->

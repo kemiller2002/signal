@@ -122,7 +122,7 @@ let ``capacity equals the length of the largest real envelope`` () =
     let envelope: UrlState.Envelope = { Binding = UrlState.Anonymous(id, group); Answers = all }
     // The largest is a generic link with the longest invitation terms
     // (VER-003); the pilot's format-1 link is that less the terms.
-    let terms: GenericEnvelope.Terms = { Locale = Some "sgn-Latn-ABCDEFGH-123456"; StartedAt = Some(System.DateTimeOffset(2026, 12, 31, 23, 59, 0, System.TimeSpan.Zero)); ExpiresOn = Some(System.DateOnly(2026, 12, 31)) }
+    let terms: GenericEnvelope.Terms = { GenericEnvelope.noTerms with Locale = Some "sgn-Latn-ABCDEFGH-123456"; StartedAt = Some(System.DateTimeOffset(2026, 12, 31, 23, 59, 0, System.TimeSpan.Zero)); SubmittedAt = Some(System.DateTimeOffset(2030, 1, 1, 0, 0, 0, System.TimeSpan.Zero)); ExpiresOn = Some(System.DateOnly(2026, 12, 31)) }
     let generic: GenericEnvelope.Envelope = { Binding = UrlState.Anonymous(id, group); Answers = Pilot.answers all }
     let longest = GenericEnvelope.encodeWith sdra (GenericEnvelope.referenceOf "SDRA" "1" sdra) terms generic
     Assert.Equal(longest.Length, size.EncodedCharacters)

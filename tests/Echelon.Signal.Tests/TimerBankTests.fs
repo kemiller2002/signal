@@ -93,15 +93,15 @@ let ``publication checks every timer and bank`` () =
         Assert.Contains(code, found)
 
 [<Fact>]
-let ``the survey page refuses timers it cannot run yet: on sections, pages or questions`` () =
+let ``the survey page refuses timers it cannot run yet: question timers and two on one part`` () =
     let opened (content: Content) =
         let file = publishedFile "DEMO" "1" content |> snd
         let instance = (UrlState.OpaqueId.ofBytes (Array.init 16 byte)).Value
         let group = (UrlState.OpaqueId.ofBytes (Array.init 16 (fun i -> byte (40 + i)))).Value
         start ("#r=" + GenericEnvelope.invitation "DEMO" "1" content Import.IdentifiedGroup instance group) |> received (DateOnly(2026, 1, 1)) (Found file)
 
-    let what = "timers on sections, pages or questions"
-    Assert.Equal(Refused(UnsupportedPresentation what), opened (withTimersAndBanks [ timer "first" (Timers.SectionScope demo.Sections.Head.Id) ] []))
+    let what = "question timers, or two timers on the same part"
+    Assert.Equal(Refused(UnsupportedPresentation what), opened (withTimersAndBanks [ timer "first" (Timers.QuestionScope ids[0]) ] []))
     Assert.Equal(Refused(UnsupportedPresentation what), opened (withTimersAndBanks [ timer "a" Timers.SurveyScope; timer "b" Timers.SurveyScope ] []))
     Assert.Contains("cannot run yet", describe (UnsupportedPresentation what))
 

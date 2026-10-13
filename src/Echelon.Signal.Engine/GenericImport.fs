@@ -65,7 +65,7 @@ let evaluateFor (environment: Environment) (today: System.DateOnly option) (defi
         match GenericEnvelope.decodeWithTerms form.Content form.Reference payload with
         | Error error -> Rejected(Unreadable error)
         | Ok(_, { ExpiresOn = Some expires }) when today |> Option.exists (fun day -> day > expires) -> Rejected(InvitationExpired expires)
-        | Ok(envelope, _) ->
+        | Ok(envelope, terms) ->
             let binding =
                 match environment with
                 | ProductionImport -> envelope.Binding
@@ -100,7 +100,13 @@ let evaluateFor (environment: Environment) (today: System.DateOnly option) (defi
                             result.Evaluation.Facts
                             |> List.choose (function
                                 | id, Some(RuleModel.BoolValue true) -> Some id
-                                | _ -> None) }
+                                | _ -> None)
+                          // Flagged, not refused: the page held answers when time ran out,
+                          // and only the submission came later (DF-SIGNAL-2026-0015).
+                          LateTimers =
+                            match terms.SubmittedAt with
+                            | Some submitted -> GenericTimer.expiredBy content terms submitted
+                            | None -> [] }
 
                     match accepted identity.Key with
                     | Some existing when existing = accepted'.SubmissionHash -> AlreadyImported identity

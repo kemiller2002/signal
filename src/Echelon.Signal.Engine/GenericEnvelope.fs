@@ -38,14 +38,27 @@ let TermsFormatVersion = 2
 let MaximumLocaleLength = 24
 
 /// The most bytes terms add: flags, the locale's length and text, the
-/// expiry day, and the start minute (DF-SIGNAL-2026-0010).
+/// expiry day, the start minute (DF-SIGNAL-2026-0010) and the submission
+/// minute (DF-SIGNAL-2026-0015). Section and page timer starts add
+/// `Layout.scopedTimerBytes` for the template that has them.
 [<Literal>]
-let TermsMaximumBytes = 1 + 1 + MaximumLocaleLength + 2 + 4
+let TermsMaximumBytes = 1 + 1 + MaximumLocaleLength + 2 + 4 + 4
 
 /// What an invitation says beyond its binding. Locale changes presentation
 /// only; it never changes scoring or identity. Expiry is the last UTC day
 /// the invitation may be answered and imported; both are inside the
 /// envelope's integrity check, so editing either invalidates the link.
+/// The scope a timer start belongs to: a section by its position in the
+/// template, or a layout page by its 1-based number.
+type ScopeStart =
+    | SectionStart of index: int
+    | PageStart of number: int
+
+let private scopeKey =
+    function
+    | SectionStart i -> 1, i
+    | PageStart n -> 2, n
+
 type Terms =
     { Locale: string option
       ExpiresOn: DateOnly option
@@ -53,9 +66,15 @@ type Terms =
       /// whole UTC minute, never finer, so it says nothing more about the
       /// respondent than roughly when they started. Inside the integrity
       /// check like the rest of the terms.
-      StartedAt: DateTimeOffset option }
+      StartedAt: DateTimeOffset option
+      /// When each section or page timer started (DF-SIGNAL-2026-0015), in
+      /// scope order, each a whole UTC minute.
+      ScopeStarts: (ScopeStart * DateTimeOffset) list
+      /// The minute a timed response was submitted, for intake's timer flags
+      /// (DF-SIGNAL-2026-0015). Only timed surveys carry it.
+      SubmittedAt: DateTimeOffset option }
 
-let noTerms = { Locale = None; ExpiresOn = None; StartedAt = None }
+let noTerms = { Locale = None; ExpiresOn = None; StartedAt = None; ScopeStarts = []; SubmittedAt = None }
 
 let private epochInstant = DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)
 
@@ -67,6 +86,16 @@ let startMinute (instant: DateTimeOffset) =
 let private epoch = DateOnly(1970, 1, 1)
 let private localePattern = Text.RegularExpressions.Regex("^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8}){0,3}$")
 
+let private carriable (instant: DateTimeOffset) =
+    instant = startMinute instant && instant >= epochInstant && (instant - epochInstant).TotalMinutes <= float UInt32.MaxValue
+
+let private minuteBytes (instant: DateTimeOffset) =
+    let minutes = uint32 (instant - epochInstant).TotalMinutes
+    [| for shift in [ 24; 16; 8; 0 ] -> byte (minutes >>> shift) |]
+
+let private minuteAt (body: byte[]) (at: int) =
+    epochInstant.AddMinutes(float (body[at .. at + 3] |> Array.fold (fun (acc: uint32) b -> (acc <<< 8) ||| uint32 b) 0u))
+
 /// Why terms cannot be written, if they cannot.
 let termsProblem (terms: Terms) : string option =
     match terms.Locale, terms.ExpiresOn with
@@ -75,9 +104,20 @@ let termsProblem (terms: Terms) : string option =
     | _, Some day when day < epoch || day.DayNumber - epoch.DayNumber > 0xFFFF -> Some $"{day} is outside the dates a link can carry."
     | _ ->
         match terms.StartedAt with
-        | Some start when start <> startMinute start || start < epochInstant || (start - epochInstant).TotalMinutes > float UInt32.MaxValue ->
-            Some $"{start:O} is not a whole UTC minute a link can carry."
-        | _ -> None
+        | Some start when not (carriable start) -> Some $"{start:O} is not a whole UTC minute a link can carry."
+        | _ ->
+            let keys = terms.ScopeStarts |> List.map (fst >> scopeKey)
+
+            if keys <> List.sort (List.distinct keys) || keys.Length > 255 then
+                Some "Timer starts must name each section or page once, in order."
+            elif keys |> List.exists (fun (kind, i) -> i < (if kind = 2 then 1 else 0) || i > 0xFFFF) then
+                Some "A timer start names a section or page outside what a link can carry."
+            elif terms.ScopeStarts |> List.exists (snd >> carriable >> not) then
+                Some "A timer start is not a whole UTC minute a link can carry."
+            else
+                match terms.SubmittedAt with
+                | Some at when not (carriable at) -> Some $"{at:O} is not a whole UTC minute a link can carry."
+                | _ -> None
 
 let private termsBytes (terms: Terms) : byte[] =
     if terms = noTerms then
@@ -87,6 +127,8 @@ let private termsBytes (terms: Terms) : byte[] =
                (if terms.Locale.IsSome then 1uy else 0uy)
                ||| (if terms.ExpiresOn.IsSome then 2uy else 0uy)
                ||| (if terms.StartedAt.IsSome then 4uy else 0uy)
+               ||| (if terms.ScopeStarts.IsEmpty then 0uy else 8uy)
+               ||| (if terms.SubmittedAt.IsSome then 16uy else 0uy)
            match terms.Locale with
            | Some locale ->
                yield byte locale.Length
@@ -99,9 +141,19 @@ let private termsBytes (terms: Terms) : byte[] =
                yield byte (days &&& 0xFF)
            | None -> ()
            match terms.StartedAt with
-           | Some start ->
-               let minutes = uint32 (start - epochInstant).TotalMinutes
-               yield! [| for shift in [ 24; 16; 8; 0 ] -> byte (minutes >>> shift) |]
+           | Some start -> yield! minuteBytes start
+           | None -> ()
+           if not terms.ScopeStarts.IsEmpty then
+               yield byte terms.ScopeStarts.Length
+
+               for scope, start in terms.ScopeStarts do
+                   let kind, index = scopeKey scope
+                   yield byte kind
+                   yield byte (index >>> 8)
+                   yield byte (index &&& 0xFF)
+                   yield! minuteBytes start
+           match terms.SubmittedAt with
+           | Some at -> yield! minuteBytes at
            | None -> () |]
 
 /// Reads terms at `at`; the terms and where the item count starts. Only the
@@ -115,7 +167,7 @@ let private readTerms (body: byte[]) (at: int) : Result<Terms * int, DecodeError
     else
         let flags = body[at]
 
-        if flags = 0uy || flags &&& 0xF8uy <> 0uy then
+        if flags = 0uy || flags &&& 0xE0uy <> 0uy then
             Error InvalidTerms
         else
             let locale, next =
@@ -140,13 +192,47 @@ let private readTerms (body: byte[]) (at: int) : Result<Terms * int, DecodeError
                 | Ok _ when next + 2 > body.Length -> Error InvalidTerms
                 | Ok locale -> Ok({ noTerms with Locale = locale; ExpiresOn = Some(epoch.AddDays((int body[next] <<< 8) ||| int body[next + 1])) }, next + 2)
 
-            match expiry with
+            let started =
+                match expiry with
+                | Error e -> Error e
+                | Ok(terms, next) when flags &&& 4uy = 0uy -> Ok(terms, next)
+                | Ok _ when next + 4 > body.Length -> Error InvalidTerms
+                | Ok(terms, next) -> Ok({ terms with StartedAt = Some(minuteAt body next) }, next + 4)
+
+            // Section and page timer starts: a count, then kind, index and minute each.
+            let scoped =
+                match started with
+                | Error e -> Error e
+                | Ok(terms, next) when flags &&& 8uy = 0uy -> Ok(terms, next)
+                | Ok _ when next + 1 > body.Length || body[next] = 0uy -> Error InvalidTerms
+                | Ok(terms, next) ->
+                    let count = int body[next]
+
+                    if next + 1 + count * 7 > body.Length then
+                        Error InvalidTerms
+                    else
+                        let starts =
+                            [ for i in 0 .. count - 1 ->
+                                  let at = next + 1 + i * 7
+                                  let index = (int body[at + 1] <<< 8) ||| int body[at + 2]
+
+                                  match body[at] with
+                                  | 1uy -> Some(SectionStart index, minuteAt body (at + 3))
+                                  | 2uy -> Some(PageStart index, minuteAt body (at + 3))
+                                  | _ -> None ]
+
+                        if starts |> List.exists Option.isNone then
+                            Error InvalidTerms
+                        else
+                            Ok({ terms with ScopeStarts = List.choose id starts }, next + 1 + count * 7)
+
+            match scoped with
             | Error e -> Error e
-            | Ok(terms, next) when flags &&& 4uy = 0uy -> Ok(terms, next)
+            | Ok(terms, next) when flags &&& 16uy = 0uy -> Ok(terms, next)
             | Ok _ when next + 4 > body.Length -> Error InvalidTerms
-            | Ok(terms, next) ->
-                let minutes = body[next .. next + 3] |> Array.fold (fun (acc: uint32) b -> (acc <<< 8) ||| uint32 b) 0u
-                Ok({ terms with StartedAt = Some(epochInstant.AddMinutes(float minutes)) }, next + 4)
+            | Ok(terms, next) -> Ok({ terms with SubmittedAt = Some(minuteAt body next) }, next + 4)
+            // Only the canonical spelling is read.
+            |> Result.bind (fun (terms, next) -> if termsProblem terms = None then Ok(terms, next) else Error InvalidTerms)
 
 /// The reference a URL carries for a published template version.
 let referenceOf (surveyId: string) (version: string) (content: Content) = TemplateCanonical.reference surveyId version content

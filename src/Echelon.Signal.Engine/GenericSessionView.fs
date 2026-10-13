@@ -100,7 +100,8 @@ let private rows (r: Response) =
     let _, _, onPage = GenericPaging.current content r.Answers r.Position
     let applicable = Set.ofList onPage
     let locked = GenericPaging.locked content r.Answers r.Position
-    let sealedResponse = r.Phase = Submitted || GenericTimer.locksAnswers content r.Terms.StartedAt r.Now
+    let sealedResponse = r.Phase = Submitted
+    let locked = Set.union locked (GenericTimer.locked content r.Terms r.Now)
     let indexed = indexedQuestions r
 
     r.Published.Form.Content.Sections
@@ -150,7 +151,9 @@ let view (session: Session) : View.View =
 
     let timerNotice =
         match session with
-        | Responding r when r.Phase = Answering -> GenericTimer.notice r.Published.Form.Content r.Terms.StartedAt r.Now
+        | Responding r when r.Phase = Answering ->
+            let _, _, shown = GenericPaging.current r.Published.Form.Content r.Answers r.Position
+            GenericTimer.notice r.Published.Form.Content r.Terms r.Now shown
         | _ -> ""
 
     // Page n of total, and whether Back is offered.
