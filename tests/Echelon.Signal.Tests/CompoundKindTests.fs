@@ -198,3 +198,24 @@ let ``the row keys name each compound input`` () =
     Assert.Equal(Some("Q3", "o2"), pairFor r "2-p1")
     Assert.Equal(None, pairFor r "0-p0")
     Assert.Equal(None, numberFor r "2-n0")
+
+// WI-0089: escaped defect from #73. The console's midpoint fixture gave an
+// allocation only its first option, a sparse answer the link cannot carry:
+// the link fills the other options with their minimum, so the fixture was
+// not the answer a respondent's link would hold.
+[<Fact>]
+let ``the midpoint fixture's answers are complete and travel in the link unchanged`` () =
+    let fixture = editor.Draft.Fixtures |> List.find (fun f -> f.Id.StartsWith "midpoint-")
+
+    match fixture.Answers["Q2"] with
+    | Value(Allocated steps) ->
+        Assert.Equal(3, steps.Count)
+        Assert.Equal(10, steps |> Map.toSeq |> Seq.sumBy snd)
+    | other -> failwith $"%A{other}"
+
+    let form = GenericImport.formOf "COMPOUND" "1" content
+    let envelope: GenericEnvelope.Envelope = { Binding = Unbound; Answers = fixture.Answers }
+
+    match GenericEnvelope.decode content form.Reference (GenericEnvelope.encode content form.Reference envelope) with
+    | Ok decoded -> Assert.Equal<Answers>(fixture.Answers, decoded.Answers)
+    | Error e -> failwith $"%A{e}"
