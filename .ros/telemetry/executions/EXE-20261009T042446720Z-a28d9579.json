@@ -1792,6 +1792,69 @@
         "name": "ros",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "ra-git-ci",
+      "occurredAt": "2026-10-13T10:48:07Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "gs-implementation",
+      "name": "custom implementation: recommendation/fact ids in results, stored record, incremental and group counts (DF-SIGNAL-2026-0012); 0 failed builds; 0 failing tests",
+      "occurredAt": "2026-10-13T10:48:14Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "gs-implementation",
+      "occurredAt": "2026-10-13T10:56:16Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "gs-testing",
+      "name": "testing: dotnet 489/489, browser 52/52",
+      "occurredAt": "2026-10-13T10:56:16Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "gs-testing",
+      "occurredAt": "2026-10-13T11:00:16Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "gs-git-ci",
+      "name": "git/CI integration: group signals PR and gate",
+      "occurredAt": "2026-10-13T11:00:52Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {

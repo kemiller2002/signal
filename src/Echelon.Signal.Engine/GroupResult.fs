@@ -59,6 +59,9 @@ type Result =
       Interpretations: (string * (string * int) list) list
       /// How many contributions triggered each recommendation.
       Recommendations: (string * int) list
+      /// How many contributions held each yes/no fact (WI-0081); empty when
+      /// suppressed, like recommendations.
+      Facts: (string * int) list
       Coverage: Coverage
       /// Role counts (only when every role holds at least the minimum, in
       /// anonymous groups).
@@ -103,6 +106,7 @@ let private canonical (r: Result) =
       yield! r.Sections |> List.map (fun (id, a) -> agg $"section {id}" a)
       yield! r.Interpretations |> List.map (fun (id, labels) -> $"interpretation {id}=%A{labels}")
       yield! r.Recommendations |> List.map (fun (id, n) -> $"recommendation {id}={n}")
+      yield! r.Facts |> List.map (fun (id, n) -> $"fact {id}={n}")
       $"coverage={r.Coverage.Applicable} {r.Coverage.Answered} {r.Coverage.Special} {r.Coverage.Unanswered}"
       yield! r.Roles |> List.map (fun (role, n) -> $"role %A{role}={n}") ]
     |> String.concat "\n"
@@ -169,7 +173,15 @@ let aggregate
                 []
             else
                 results
-                |> List.collect (fun r -> r.Evaluation.Recommendations |> List.map _.Id)
+                |> List.collect (fun r -> r.Evaluation.Recommendations |> List.map _.Id |> List.distinct)
+                |> List.countBy id
+                |> List.sort
+          Facts =
+            if suppressed then
+                []
+            else
+                results
+                |> List.collect (fun r -> r.Evaluation.Facts |> List.choose (function id, Some(RuleModel.BoolValue true) -> Some id | _ -> None))
                 |> List.countBy id
                 |> List.sort
           Coverage =
@@ -189,7 +201,10 @@ type ScoredContribution =
     { Role: Role option
       /// Section id and its score; None when the section was not scored.
       Sections: (string * float option) list
-      Coverage: Coverage }
+      Coverage: Coverage
+      /// The recommendations it triggered and the yes/no facts that held.
+      Recommendations: string list
+      FactsTrue: string list }
 
 /// Aggregates a group from each section's scores and unscored count
 /// (WI-0062): the same statistics, suppression, role rule and hash as
@@ -205,6 +220,8 @@ let ofEvidence
     (roleCounts: (Role * int) list)
     (sections: (string * float list * int) list)
     (coverage: Coverage)
+    (recommendations: (string * int) list)
+    (facts: (string * int) list)
     : Result =
     let suppressed = mode = AnonymousGroup && accepted < minimumReportable
 
@@ -220,7 +237,8 @@ let ofEvidence
             sections
             |> List.map (fun (section, scores, unscored) -> section, (if suppressed then Suppressed(accepted, minimumReportable) else statistics scores unscored))
           Interpretations = []
-          Recommendations = []
+          Recommendations = (if suppressed then [] else List.sort recommendations)
+          Facts = (if suppressed then [] else List.sort facts)
           Coverage = coverage
           Roles =
             if mode = AnonymousGroup && roleCounts |> List.exists (fun (_, n) -> n < minimumReportable) then [] else roleCounts
@@ -249,6 +267,8 @@ let ofScores (templateHash: string) (mode: IdentityMode) (expectedCount: int) (m
           Answered = sum _.Coverage.Answered
           Special = sum _.Coverage.Special
           Unanswered = sum _.Coverage.Unanswered }
+        (contributions |> List.collect (fun c -> List.distinct c.Recommendations) |> List.countBy id)
+        (contributions |> List.collect (fun c -> List.distinct c.FactsTrue) |> List.countBy id)
 
 /// Aggregates a group from the administrator's incremental accumulator
 /// (ADM-011): its evidence per dimension, in the template's order, and its
@@ -272,6 +292,8 @@ let ofAccumulator (templateHash: string) (minimumReportable: int) (accumulator: 
           Answered = accumulator.Answered - accumulator.NonNumeric
           Special = accumulator.NonNumeric
           Unanswered = max 0 (applicable - accumulator.Answered) }
+        (Map.toList accumulator.Recommendations)
+        (Map.toList accumulator.Facts)
 
 /// A stored submission result as a scored contribution: its dimension scores
 /// as section values (the pilot's generic sections are its dimensions, with
@@ -289,4 +311,6 @@ let ofSubmission (items: int) (result: Import.SurveyResult) : ScoredContribution
         { Applicable = items
           Answered = result.AnsweredCount - result.NonNumericCount
           Special = result.NonNumericCount
-          Unanswered = max 0 (items - result.AnsweredCount) } }
+          Unanswered = max 0 (items - result.AnsweredCount) }
+      Recommendations = result.Recommendations
+      FactsTrue = result.FactsTrue }

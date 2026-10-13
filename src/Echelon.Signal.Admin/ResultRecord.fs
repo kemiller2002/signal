@@ -149,6 +149,11 @@ let body (datasetId: string) (contribution: Contribution) =
           "dimensions", Json.Array(result.Dimensions |> List.map dimensionBody)
           "answeredCount", Json.Number(decimal result.AnsweredCount)
           "nonNumericCount", Json.Number(decimal result.NonNumericCount)
+          // Written only when present, so a result without them is stored as before.
+          if not result.Recommendations.IsEmpty then
+              "recommendations", Json.Array(result.Recommendations |> List.map Json.String)
+          if not result.FactsTrue.IsEmpty then
+              "factsTrue", Json.Array(result.FactsTrue |> List.map Json.String)
           "provenance",
           Json.objectOf
               [ "origin", Json.String(originName contribution.Provenance.Origin)
@@ -243,10 +248,12 @@ let ofBody (template: Assessment) (value: Json) : Decoded<StoredContribution> =
         [ "answeredCount"
           "datasetId"
           "dimensions"
+          "factsTrue"
           "group"
           "identity"
           "nonNumericCount"
           "provenance"
+          "recommendations"
           "submission"
           "submissionHash"
           "surveyIdentifier"
@@ -265,6 +272,23 @@ let ofBody (template: Assessment) (value: Json) : Decoded<StoredContribution> =
                 | Json.String payload -> Ok(Some payload)
                 | _ -> Error "'submission' is not text or null")
 
+        // Optional lists of ids: absent in results stored before WI-0081;
+        // present but not a list of text, the record is refused.
+        let ids (name: string) : Result<string list, string> =
+            match field name value with
+            | Ok(Json.Array items) ->
+                let found = items |> List.choose (function Json.String id -> Some id | _ -> None)
+                if found.Length = items.Length then Ok found else Error $"'{name}' is not a list of ids"
+            | Ok _ -> Error $"'{name}' is not a list of ids"
+            | Error _ -> Ok []
+
+        let extras =
+            match submission, ids "recommendations", ids "factsTrue" with
+            | Ok submission, Ok recommendations, Ok factsTrue -> Ok(submission, recommendations, factsTrue)
+            | Error e, _, _
+            | _, Error e, _
+            | _, _, Error e -> Error e
+
         match
             both (text "datasetId" value) group,
             text "identity" value |> Result.bind identityOf,
@@ -273,9 +297,9 @@ let ofBody (template: Assessment) (value: Json) : Decoded<StoredContribution> =
             list "dimensions" (dimensionOf template) value,
             both (integer "answeredCount" value) (integer "nonNumericCount" value),
             field "provenance" value |> Result.bind provenanceOf,
-            submission
+            extras
         with
-        | Ok(dataset, group), Ok identity, Ok(survey, version), Ok(templateHash, submissionHash), Ok dimensions, Ok(answered, nonNumeric), Ok provenance, Ok submission ->
+        | Ok(dataset, group), Ok identity, Ok(survey, version), Ok(templateHash, submissionHash), Ok dimensions, Ok(answered, nonNumeric), Ok provenance, Ok(submission, recommendations, factsTrue) ->
             Ok
                 { DatasetId = dataset
                   Contribution =
@@ -288,7 +312,9 @@ let ofBody (template: Assessment) (value: Json) : Decoded<StoredContribution> =
                           SubmissionHash = submissionHash
                           Dimensions = dimensions
                           AnsweredCount = answered
-                          NonNumericCount = nonNumeric }
+                          NonNumericCount = nonNumeric
+                          Recommendations = recommendations
+                          FactsTrue = factsTrue }
                       Provenance = provenance
                       Submission = submission } }
         | Error e, _, _, _, _, _, _, _
