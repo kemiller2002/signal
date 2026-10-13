@@ -48,14 +48,21 @@ test("with reduced motion asked for, answering runs no animation or transition",
   await open(page, links.identified);
   await page.locator('[data-row="0-3"] input[data-event="answered"]').tap();
   await expect(page.locator("#progress")).toHaveText("1 of 5 answered");
-  const moving = await page.evaluate(() =>
-    document.getAnimations().length +
-    [...document.querySelectorAll("*")].filter((e) => {
+  // Every running animation or transition, and every element that declares
+  // one, named so a failure says what moved.
+  const moving = await page.evaluate(() => {
+    const name = (e) => (e && e.tagName ? e.tagName.toLowerCase() + (e.id ? "#" + e.id : "") + (e.className && typeof e.className === "string" ? "." + e.className.trim().split(/\s+/).join(".") : "") : String(e));
+    const running = document.getAnimations().map((a) => `running ${a.constructor.name} ${a.transitionProperty ?? a.animationName ?? ""} on ${name(a.effect && a.effect.target)} (${a.effect && a.effect.getTiming().duration}ms)`);
+    const declared = [...document.querySelectorAll("*")].flatMap((e) => {
       const s = getComputedStyle(e);
-      return s.transitionDuration.split(",").some((d) => parseFloat(d) > 0.01) || s.animationName !== "none";
-    }).length
-  );
-  expect(moving).toBe(0);
+      return [
+        ...(s.transitionDuration.split(",").some((d) => parseFloat(d) > 0.01) ? [`transition ${s.transitionProperty} ${s.transitionDuration} on ${name(e)}`] : []),
+        ...(s.animationName !== "none" ? [`animation ${s.animationName} ${s.animationDuration} on ${name(e)}`] : [])
+      ];
+    });
+    return [...running, ...declared];
+  });
+  expect(moving).toEqual([]);
 });
 
 test("every answer's touch target is at least 24 by 24 CSS pixels", async ({ page }) => {
