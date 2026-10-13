@@ -16,12 +16,12 @@
     <Compile Include="Keyed.fs" />
     <Compile Include="RuleModel.fs" />
     <Compile Include="ResultModel.fs" />
+    <Compile Include="Banking.fs" />
+    <Compile Include="Timers.fs" />
     <Compile Include="Template.fs" />
     <Compile Include="Layout.fs" />
     <Compile Include="Instance.fs" />
     <Compile Include="Matrix.fs" />
-    <Compile Include="Banking.fs" />
-    <Compile Include="Timers.fs" />
     <Compile Include="Rules.fs" />
     <Compile Include="Navigation.fs" />
     <Compile Include="Findings.fs" />

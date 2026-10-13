@@ -192,7 +192,22 @@ let private kitchenSink (overall: OverallScoring option) : Content =
           AllowBackNavigation = false
           ReviewBeforeSubmit = true
           SectionStartsOnNewPage = true
-          Revisit = { Questions = LockPreviousQuestionsAfterAdvance; Sections = LockPreviousSectionsAfterExit } }
+          Revisit = { Questions = LockPreviousQuestionsAfterAdvance; Sections = LockPreviousSectionsAfterExit }
+          // Every timer scope, expiry and enforcement, and a bank (DF-SIGNAL-2026-0008).
+          Timers =
+            [ for i, (scope, expiry, enforcement) in
+                  List.indexed
+                      [ Timers.SurveyScope, Timers.LockAndAdvance, Timers.Enforced
+                        Timers.SectionScope "s1", Timers.LockOnly, Timers.Advisory
+                        Timers.PageScope 2, Timers.WarnOnly, Timers.Enforced
+                        Timers.QuestionScope "q1", Timers.EndSurvey, Timers.Advisory ] ->
+                  { Id = $"t{i}"
+                    Scope = scope
+                    Duration = TimeSpan.FromSeconds(float (600 + i))
+                    Warnings = (if i % 2 = 0 then [ TimeSpan.FromSeconds 120.0; TimeSpan.FromSeconds 30.0 ] else [])
+                    Expiry = expiry
+                    Enforcement = enforcement }: Timers.Timer ]
+          Banks = [ { Id = "b1"; Pool = [ "q1"; "q2"; "q3" ]; Select = 2 } ] }
       Runtime = { AllowResume = false; AllowChangesAfterCompletion = true; ShowResults = false; ResultMode = Deferred }
       Sections = sections
       Rules = rules

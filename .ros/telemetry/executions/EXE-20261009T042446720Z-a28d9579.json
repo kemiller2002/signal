@@ -1540,6 +1540,69 @@
         "name": "ros",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "links-git-ci",
+      "occurredAt": "2026-10-13T09:07:24Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "tb-implementation",
+      "name": "custom implementation + decision: timers/banks in template (DF-SIGNAL-2026-0008); 3 failed builds (System.Timers name clash x2, diff union edit)",
+      "occurredAt": "2026-10-13T09:39:30Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "tb-implementation",
+      "occurredAt": "2026-10-13T09:49:24Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "tb-testing",
+      "name": "testing: dotnet 466/466, browser 46/46",
+      "occurredAt": "2026-10-13T09:49:24Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "tb-testing",
+      "occurredAt": "2026-10-13T09:53:48Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "tb-git-ci",
+      "name": "git/CI integration: timers/banks PR and gate",
+      "occurredAt": "2026-10-13T09:54:04Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {

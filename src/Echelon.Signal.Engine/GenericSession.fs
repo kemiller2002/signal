@@ -53,6 +53,9 @@ type Refusal =
     /// The file is a template, but not the version the link names.
     | WrongTemplate
     | UnsupportedAnswer of questionId: string
+    /// Timers or banks (DF-SIGNAL-2026-0008), which this page does not run
+    /// yet: shown without them, the survey would not be the one published.
+    | UnsupportedPresentation of what: string
     /// The invitation's last day has passed (VER-003).
     | InvitationExpired of expiresOn: DateOnly
 
@@ -69,6 +72,8 @@ let describe =
         "The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link."
     | InvitationExpired day ->
         $"""This invitation has expired. It could be answered until {day.ToString("d MMMM yyyy", Globalization.CultureInfo.InvariantCulture)}. Ask the person who sent it for a new link."""
+    | UnsupportedPresentation what ->
+        $"This survey uses {what}, which this page cannot run yet. Ask the person who sent you the link."
     | UnsupportedAnswer questionId ->
         $"This survey has a question ({questionId}) of a kind this page cannot show yet. Ask the person who sent you the link."
 
@@ -158,6 +163,8 @@ let verify (reference: byte[]) (bytes: byte[]) : Result<Published, Refusal> =
         else
             match questions decoded.Content |> List.map snd |> List.tryFind (supported >> not) with
             | Some q -> Error(UnsupportedAnswer q.Id)
+            | None when not decoded.Content.Presentation.Timers.IsEmpty -> Error(UnsupportedPresentation "timers")
+            | None when not decoded.Content.Presentation.Banks.IsEmpty -> Error(UnsupportedPresentation "question banks")
             | None ->
                 Ok
                     { SurveyId = decoded.SurveyId

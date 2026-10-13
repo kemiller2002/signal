@@ -2683,20 +2683,20 @@
         "EXE-20261009T042446720Z-a28d9579"
       ],
       "latestCheckpoint": {
-        "id": "ed2d7a154cf252521a5abf91",
-        "recordedAt": "2026-10-13T09:03:18Z",
+        "id": "7ef41ec7eb866dcb222d270c",
+        "recordedAt": "2026-10-13T09:54:04Z",
         "executionId": "EXE-20261009T042446720Z-a28d9579",
         "repository": "echelon-signal",
-        "branch": "feature/survey-page-links",
-        "commit": "c6acdd94b8e5b66487275e4e44419b450e06b324",
+        "branch": "feature/timers-banks",
+        "commit": "642b9ec11bde7ad88d97dc2d6a6e291f63e54d3b",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/survey-page-links",
-        "remoteCommit": "c6acdd94b8e5b66487275e4e44419b450e06b324",
-        "summary": "Survey page names its page in the link (p); browser Back/Forward move pages under the rules; DF-SIGNAL-2026-0007, SIG-LINK 1.2.0",
-        "nextAction": "Gate and merge the page-links PR; then timers and banks on the survey page",
+        "remoteBranch": "feature/timers-banks",
+        "remoteCommit": "642b9ec11bde7ad88d97dc2d6a6e291f63e54d3b",
+        "summary": "Timers and banks as optional template fields with publication checks, diffs and page refusal; existing hashes pinned (DF-SIGNAL-2026-0008)",
+        "nextAction": "Gate and merge; then the bank selection seed decision and page wiring of timers/banks",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
