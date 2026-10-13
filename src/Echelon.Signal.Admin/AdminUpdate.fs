@@ -241,6 +241,13 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
                 | Authoring.ApproveReview d when permitted AdminState.CanReviewTemplates -> { m with Busy = true }, effects @ [ ApproveReview d ]
                 | _ -> { m with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "This needs EditDrafts (saving, asking for review), ReviewTemplates (approving) or PublishTemplates (publishing, hiding) and a writable store." }, effects)
             (model, [])
+    | retention when RetentionScreen.events.Contains retention ->
+        let selected =
+            match routeKey, model.Dataset with
+            | Some k, Some d -> d.Groups |> List.tryFind (fun g -> g.Key = k)
+            | _ -> None
+
+        RetentionScreen.update (can model) selected name value model
     | other -> invalidOp $"The administrator page sent an event the engine does not know: '{other}'"
 
 /// The next model and the effects to perform.

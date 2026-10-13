@@ -59,6 +59,9 @@ type Model =
       Notice: Notice option
       Busy: bool
       Conflict: Conflicts.Conflict option
+      /// The group whose results are about to be retired, waiting for the
+      /// person to confirm (WI-0077).
+      RetireConfirm: string option
       /// The provider's callback parameters the page was opened with, if any.
       CallbackQuery: (string * string) list }
 
@@ -89,6 +92,7 @@ let initial (catalog: CatalogEntry list) =
       Notice = None
       Busy = false
       Conflict = None
+      RetireConfirm = None
       CallbackQuery = [] }
 
 /// What the page asks the application to do.
@@ -102,6 +106,10 @@ type Effect =
     | OpenGroup of key: string
     | ImportArtifacts of key: string * texts: string list * origin: ResultRecord.ImportOrigin
     | TransitionGroup of key: string * transition: string
+    /// Move the dataset to another ADM-045 lifecycle state (WI-0077).
+    | TransitionDataset of target: Retention.State
+    /// Retire a finalized group's accepted results on a deletion request (WI-0077).
+    | RetireSources of key: string
     /// Issue respondent links for a group: how many, and their terms.
     | IssueInvitations of key: string * count: int * terms: Echelon.Signal.Engine.GenericEnvelope.Terms
     | ChangeRoster of RosterCommand
@@ -198,5 +206,16 @@ let capabilities (model: Model) =
                        UnreconciledBatches = g.UnreconciledBatches }: AdminState.GroupFacts))
             | _ -> None
 
-        AdminState.capabilities storage usable group
+        // The lifecycle is the one change a dataset that is not active still
+        // takes (`Store.openDataset`): ManageStorage held, the credential able
+        // to write it, and online.
+        let held, _ = Credential.usable dataset.Roster principal.PrincipalId dataset.Credential model.Connectivity true
+
+        let lifecycle =
+            if dataset.LifecycleWritable && model.Connectivity = Credential.Online && held.Contains ManageStorage then
+                set [ AdminState.CanManageLifecycle ]
+            else
+                Set.empty
+
+        AdminState.capabilities storage usable group + lifecycle
     | _ -> Set.empty

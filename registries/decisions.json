@@ -996,8 +996,10 @@
             "runtime": "claude-code"
           },
           "at": "2026-10-13T19:30:04.039Z",
+          "last": "2026-10-13T19:45:44.498Z",
           "operations": [
-            "created"
+            "created",
+            "modified"
           ],
           "reason": "Retired results erased from the current tree on Arca 0.5.0 (WI-0077)"
         }

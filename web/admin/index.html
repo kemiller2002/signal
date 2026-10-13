@@ -491,6 +491,21 @@
                 <template data-if="canFinalize"><button type="button" class="ef-button" data-event="transition" value="finalize">Finalize</button></template>
                 <template data-if="canSeal"><button type="button" class="ef-button" data-event="transition" value="seal">Seal</button></template>
               </div>
+              <!-- Retention (ADM-045, ADM-064, WI-0077): retiring a finalized
+                   group's accepted results, confirmed first; the claim the
+                   notice makes is only what the store proved. -->
+              <section id="group-retention" class="ef-stack" aria-labelledby="group-retention-heading">
+                <h3 id="group-retention-heading">Retention</h3>
+                <template data-if="sourcesRetired"><p id="sources-retired">Accepted results retired. <span data-text="sourcesRetiredText"></span></p></template>
+                <template data-if="canRetireSources"><button type="button" class="ef-button" data-event="retireSources">Retire accepted results…</button></template>
+                <template data-if="confirmingRetire">
+                  <div id="retire-confirm" class="ef-stack" role="alertdialog" aria-labelledby="retire-confirm-text">
+                    <p id="retire-confirm-text" data-text="retireWarning"></p>
+                    <button type="button" class="ef-button" data-event="confirmRetire" data-bind-disabled="busy">Retire accepted results</button>
+                    <button type="button" class="ef-button" data-event="cancelRetire">Keep them</button>
+                  </div>
+                </template>
+              </section>
               </section>
               </template>
               <template data-if="viewResults">
@@ -668,6 +683,18 @@
           <h2>Storage</h2>
           <p id="verification" data-text="verification"></p>
           <template data-if="canRepairIndex"><button type="button" class="ef-button" data-event="rebuildIndex">Rebuild the contribution index</button></template>
+          <!-- The dataset's lifecycle (ADM-045, WI-0077). -->
+          <section id="dataset-lifecycle" class="ef-stack" aria-labelledby="dataset-lifecycle-heading">
+            <h3 id="dataset-lifecycle-heading">Lifecycle</h3>
+            <p>State: <code id="dataset-lifecycle-state" data-text="datasetLifecycle"></code>. <span data-text="datasetLifecycleText"></span></p>
+            <template data-if="canManageLifecycle">
+              <ul class="ef-stack" id="lifecycle-targets">
+                <template data-each="lifecycleTargets" data-key="target">
+                  <li><button type="button" class="ef-button" data-event="datasetTransition" data-bind-value="target" data-bind-disabled="busy" data-text="targetLabel"></button> <span data-text="targetMeaning"></span></li>
+                </template>
+              </ul>
+            </template>
+          </section>
           <p>Capabilities now: <code id="capabilities" data-text="capabilityList"></code></p>
         </section>
       </template>

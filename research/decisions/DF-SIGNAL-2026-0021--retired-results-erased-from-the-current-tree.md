@@ -16,8 +16,9 @@ tags: [retention, privacy, storage, erasure]
 provenance:
   contributions:
     EXE-20261013T192337276Z-6816d24f:
-      operations: [created]
+      operations: [created, modified]
       at: 2026-10-13T19:30:04.039Z
+      last: 2026-10-13T19:45:44.498Z
       actor:
         kind: agent
         id: anthropic/claude-code
@@ -71,4 +72,22 @@ Arca 0.5.0 (echelon-current 1.19.0) adds `Capability.Erase` and `Erasure`:
 
 - Arca's in-memory provider and GitHub both declare Erase. So on both, retiring a group's results now removes them from the current tree, and the claim says so.
 - `RetirementTests` covers the three outcomes Signal can produce: erased, not offered, and failed. The earlier retirement test now asserts `RemovedFromCurrentTree` and the tombstones in place of the remaining results. Its application-state assertions moved to the provider-without-Erase test.
-- The console's dataset lifecycle and retention screens are the remainder of ADM-045 (WI-0077 slice 2).
+- The console's dataset lifecycle and retention screens are the remainder of ADM-045 (WI-0077 slice 2, decision 7).
+- The erasure's reads run one after another on the caller's context, never through `Async.Sequential`. That combinator moves the work to the thread pool, so the console's work would finish after the page had settled. This escaped slice 1 and was found and fixed by the console test in slice 2.
+
+## Decision 7: the console screens (WI-0077 slice 2)
+
+1. **Dataset lifecycle** (Storage view):
+   - The page shows the state, what it means, and the legal states it may move to, each with its meaning.
+   - It needs ManageStorage and a credential able to write the lifecycle record. It is offered even while the dataset is read-only because it is not active, since the lifecycle is the one change such a dataset takes (`Store.openDataset`). It is never offered offline.
+   - **Verified provider deletion is never offered.** GitHub keeps history, so a person cannot establish it by hand. The page refuses it like any other state the current one cannot reach.
+   - After a change, the dataset is reopened, so its grants follow its new state.
+2. **Retiring a group's accepted results** (group overview):
+   - It is offered for a finalized or sealed group, with ManageStorage and a writable store.
+   - The first press shows what it costs and asks for confirmation:
+     - the results can no longer be recalculated or verified;
+     - it cannot be undone;
+     - the repository's history keeps the content.
+   - Only the confirmation sends it, as a deletion request. Retention-period retirement needs a stored retention policy, which groups do not have yet.
+   - The notice says only what the claim allows ("erased from the repository's current files; the repository's history still holds them", or "they remain in the repository and its history"). A failed or unknown erasure is named.
+   - A retired group says so, with what reconstruction remains (ADM-064), and offers no second retirement.

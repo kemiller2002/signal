@@ -101,6 +101,13 @@ let transition (artifactId: string) (clock: DateTimeOffset option) (from: State)
         |> Result.map (fun record -> target, record)
         |> Result.mapError NotAudited
 
+/// The states `from` may move to, in declaration order.
+let targets (from: State) =
+    let next = legal |> Map.tryFind from |> Option.defaultValue Set.empty
+
+    [ Active; Archived; RetainedForAudit; Superseded; Retired; DeletedFromActiveState; ProviderDeletionRequested; ProviderDeletionVerified; ProviderDeletionNotProvable ]
+    |> List.filter next.Contains
+
 /// A dataset accepts writes only while active; retired is read-only.
 let writable (dataset: State) = dataset = Active
 

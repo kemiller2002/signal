@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T19:23:36Z",
+  "updatedAt": "2026-10-13T19:47:06Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3329,10 +3329,31 @@
     {
       "id": "WI-0077",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-13T19:23:36Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/RetentionScreen.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/GovernanceStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/RetentionPageTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/RetirementTests.fs"
+        },
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-SIGNAL-2026-0021--retired-results-erased-from-the-current-tree.md"
+        }
+      ],
+      "updatedAt": "2026-10-13T19:47:06Z",
       "telemetryExecutionIds": [
         "EXE-20261013T192337276Z-6816d24f"
       ],
@@ -3355,7 +3376,8 @@
           "status": "verified",
           "mechanism": "git-remote-observation"
         }
-      }
+      },
+      "completedAt": "2026-10-13T19:47:06Z"
     }
   ]
 }

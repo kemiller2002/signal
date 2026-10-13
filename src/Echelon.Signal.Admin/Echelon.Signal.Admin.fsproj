@@ -60,12 +60,14 @@
     <Compile Include="AdminNavigation.fs" />
     <Compile Include="AdminTypes.fs" />
     <Compile Include="AdminApp.fs" />
+    <Compile Include="RetentionScreen.fs" />
     <Compile Include="AdminUpdate.fs" />
     <Compile Include="AdminRouteView.fs" />
     <Compile Include="AreaAuthoringView.fs" />
     <Compile Include="AuthoringView.fs" />
     <Compile Include="AdminReportView.fs" />
     <Compile Include="ReportBuilderView.fs" />
+    <Compile Include="RetentionView.fs" />
     <Compile Include="AdminView.fs" />
   </ItemGroup>
 
