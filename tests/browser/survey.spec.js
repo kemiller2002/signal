@@ -158,3 +158,45 @@ test("rankings, allocations, best-worst, ranges and option trees work on the pag
   await page.locator("#submit-answers").click();
   await expect(page.locator("#submitted-title")).toHaveText("Submitted");
 });
+
+test("a survey in pages moves with Back and Next, and a section left behind stays locked", async ({ page }) => {
+  await open(page, links.paged);
+  await expect(page.locator("#survey-title")).toHaveText("Signal demo survey in pages");
+  await expect(page.locator("#page-label")).toHaveText("Page 1 of 3");
+  await expect(page.locator("#page-back")).toHaveCount(0);
+  await expect(page.locator("#submit-answers")).toHaveCount(0);
+  // Only this page's questions are on it.
+  await expect(page.locator('[data-row="2"]')).toHaveCount(0);
+
+  // Next first needs this page's required answers.
+  await page.locator("#page-next").click();
+  await expect(page.locator("#submit-refusal-message")).toContainText("2 required questions on this page need an answer");
+  await pick(page, "0-3").check();
+  await pick(page, "1-4").check();
+  await page.locator("#page-next").click();
+  await expect(page.locator("#page-label")).toHaveText("Page 2 of 3");
+
+  // Back within the section, then on again.
+  await page.locator("#page-back").click();
+  await expect(page.locator("#page-label")).toHaveText("Page 1 of 3");
+  await expect(pick(page, "0-3")).toBeChecked();
+  await page.locator("#page-next").click();
+  await pick(page, "2-6").check();
+  await page.locator("#page-next").click();
+
+  // The first section is behind its lock: no Back from here.
+  await expect(page.locator("#page-label")).toHaveText("Page 3 of 3");
+  await expect(page.locator("#page-back")).toHaveCount(0);
+  await pick(page, "3-1").check();
+  await pick(page, "4-2").check();
+  await expect(page.locator("#progress")).toHaveText("5 of 5 answered");
+
+  // Reopening the link resumes on the last answered page, still locked.
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-kernel", "running");
+  await expect(page.locator("#page-label")).toHaveText("Page 3 of 3");
+  await expect(page.locator("#page-back")).toHaveCount(0);
+
+  await page.locator("#submit-answers").click();
+  await expect(page.locator("#submitted-title")).toHaveText("Submitted");
+});

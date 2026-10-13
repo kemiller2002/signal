@@ -81,6 +81,9 @@
       <h2 id="questions-title">Questions</h2>
       <p id="link-disclosure" class="ef-field__description">This page's address contains your answers, so you can come back to them. Anyone you give the address to can see them; it is never sent to a server.</p>
       <p id="progress" role="status" data-text="progress"></p>
+      <template data-if="hasPages">
+        <p id="page-label" data-text="pageLabel"></p>
+      </template>
       <div id="survey-rows" class="ef-stack">
         <template data-each="rows" data-key="id">
           <div class="survey-row" data-bind-data-row="id">
@@ -115,7 +118,15 @@
         </ef-alert>
       </template>
       <div class="ef-cluster">
-        <button id="submit-answers" type="button" data-event="submitRequested">Submit answers</button>
+        <template data-if="canBack">
+          <button id="page-back" type="button" data-event="pageBack">Back</button>
+        </template>
+        <template data-if="hasNext">
+          <button id="page-next" type="button" data-event="pageNext">Next</button>
+        </template>
+        <template data-if="isLastPage">
+          <button id="submit-answers" type="button" data-event="submitRequested">Submit answers</button>
+        </template>
       </div>
     </section>
   </template>
