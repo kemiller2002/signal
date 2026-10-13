@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T17:30:26Z",
+  "updatedAt": "2026-10-13T17:33:12Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3146,13 +3146,44 @@
     {
       "id": "WI-0098",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-13T17:30:26Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": ".echelon/foundations.json"
+        },
+        {
+          "type": "tests",
+          "path": ".sde/MANIFEST.json"
+        }
+      ],
+      "updatedAt": "2026-10-13T17:33:12Z",
       "telemetryExecutionIds": [
         "EXE-20261013T173027422Z-d7d5b042"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "b9f75af8e5e3c4d7e289c2c2",
+        "recordedAt": "2026-10-13T17:33:07Z",
+        "executionId": "EXE-20261013T173027422Z-d7d5b042",
+        "repository": "echelon-signal",
+        "branch": "platform/echelon-current-1.22.0-ordo",
+        "commit": "c00539b95422e2334d59c3d345a71f4a05223ce4",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "platform/echelon-current-1.22.0-ordo",
+        "remoteCommit": "c00539b95422e2334d59c3d345a71f4a05223ce4",
+        "summary": "1.22.0 applied via Conditor 0.10.1 (plan sha256:7bfa5e61, unchanged, clean tree): Ordo 1.7.0 with foundations.json; real home unchanged; drift ok everywhere and --check plans nothing; lock paths tracked; ordo verify and conditor verify pass; .NET 542.",
+        "nextAction": "Complete, PR, gate, merge; then WI-0097",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-13T17:33:12Z",
+      "conclusion": "echelon-current 1.22.0 adopted through Conditor 0.10.1: Ordo 1.7.0; drift ok for every component."
     }
   ]
 }
