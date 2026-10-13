@@ -2683,20 +2683,20 @@
         "EXE-20261009T042446720Z-a28d9579"
       ],
       "latestCheckpoint": {
-        "id": "4cb36f168f4ad9f32f8c7178",
-        "recordedAt": "2026-10-13T15:19:55Z",
+        "id": "fb7aed1265213704a22cfabb",
+        "recordedAt": "2026-10-13T15:33:16Z",
         "executionId": "EXE-20261009T042446720Z-a28d9579",
         "repository": "echelon-signal",
-        "branch": "fix/fixture-encoding-round-trip",
-        "commit": "c2ca5176266d308bb525d5a04167847be063c24a",
+        "branch": "docs/stale-row-recheck",
+        "commit": "3791bcdeeae24b1af351d32e5ce314e942c6d036",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "fix/fixture-encoding-round-trip",
-        "remoteCommit": "c2ca5176266d308bb525d5a04167847be063c24a",
-        "summary": "Item 6, AUT-004 s41: slot functions moved to Layout with no test edits; ENCODING-FIXTURE-ROUND-TRIP blocks publication; sweep over SDRA and all 8 published templates passes; the blocker found WI-0089 (fixed in #97). .NET 528 passing.",
-        "nextAction": "Gate and merge; then the stale-row recheck",
+        "remoteBranch": "docs/stale-row-recheck",
+        "remoteCommit": "3791bcdeeae24b1af351d32e5ce314e942c6d036",
+        "summary": "Item 6 recheck: 11 of 15 carried-over rows tested with evidence; ACR-003 (WI-0090), CAN-001 and AUT-001 (WI-0091), ARX-002 (WI-0092) stay partial with named remainders. 16 other partial rows (AST-005, ARP-001, ALG-004, AUT-002, AUT-003, AUT-006, VER-004, ARX-013, ADM-055, SCS-010..014, SCS-017, SCS-018) are still named only by WI-0081.",
+        "nextAction": "Gate and merge; fix WI-0090; recheck the 16 rows named only by WI-0081 before completing it",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
