@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 99,
+  "nextSeq": 100,
   "items": [
     {
       "id": "WI-0001",
@@ -2406,6 +2406,31 @@
       },
       "source": "github-pull-request",
       "sourceReference": "https://github.com/kemiller2002/signal/pull/113"
+    },
+    {
+      "id": "WI-0099",
+      "title": "Group each survey question's choices in a fieldset with its prompt as legend (ULI-A06, WCAG 1.3.1)",
+      "description": "Found under GH-113 (signal#113). The survey page renders one flat data-each of rows (section, question, error, one row per option), so a question's choices have no common parent: radios are grouped only by name and described by the prompt (aria-describedby), with no group role or legend. A fieldset per question needs the survey view to project questions with their options nested, which Signal's View.Items (rows of scalars) cannot express today: an engine view-model change (GenericSessionView, SurveyWire) plus the page markup, then the survey browser specs. No Forma restyling is needed (ef-choice-group/ef-ordinal-scale fieldsets exist).",
+      "tags": [
+        "ui-conformance",
+        "accessibility",
+        "survey"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-13T19:49:10.269Z",
+      "updatedAt": "2026-10-13T19:49:16.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
     }
   ]
 }

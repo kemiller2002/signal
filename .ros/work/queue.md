@@ -5,7 +5,7 @@
 | ECHELON-UPGRADE-2026-09-21 | Reconcile current Echelon engineering capabilities | complete | tooling,ordo,ros,limen | high |
 | FOUNDATIONS-APPLICABILITY | FOUNDATIONS-APPLICABILITY | complete |  |  |
 | GH-104 | Assess and adopt universal UI layout/action conformance (UI-LAYOUT-INTERACTION@1.0.0) | complete | ui-conformance, visual-engineering | high |
-| GH-113 | Follow-ups on signal#113: CI to green, signed-in administration views exercised against a test-only fake GitHub store, survey questions grouped in fieldsets | ready | ui-conformance, visual-engineering | high |
+| GH-113 | Follow-ups on signal#113: CI to green, signed-in administration views exercised against a test-only fake GitHub store, survey questions grouped in fieldsets | active | ui-conformance, visual-engineering | high |
 | GH-5 | Prepare Signal implementation baseline | abandoned | readiness,bootstrap | high |
 | LIMEN-0-7-0 | LIMEN-0-7-0 | complete |  |  |
 | LIMEN-0-7-0-FND | LIMEN-0-7-0-FND | complete |  |  |
@@ -113,3 +113,4 @@
 | WI-0096 | Adopt echelon-current 1.21.0 through Conditor 0.10.1: Ordo 1.5.0 to 1.6.0 with foundations.json moving alongside (registry step 2) | complete | signal, platform, conditor, ordo | high |
 | WI-0097 | Escaped defect from #28: the template diff misses a single-choice option relabel and classifies a relabel on other option primitives as AnswerChanged, so comparability can be wrong | complete | signal, defect, escaped-defect:#28 | high |
 | WI-0098 | Adopt echelon-current 1.22.0 through Conditor 0.10.1: Ordo 1.6.0 to 1.7.0 (registry step 3) | complete | signal, platform, conditor, ordo | high |
+| WI-0099 | Group each survey question's choices in a fieldset with its prompt as legend (ULI-A06, WCAG 1.3.1) | captured | ui-conformance, accessibility, survey | medium |
