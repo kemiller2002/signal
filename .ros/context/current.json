@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T15:09:19Z",
+  "updatedAt": "2026-10-13T15:09:37Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -2905,13 +2905,44 @@
     {
       "id": "WI-0089",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-13T15:09:19Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/Authoring.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/CompoundKindTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-13T15:09:37Z",
       "telemetryExecutionIds": [
         "EXE-20261013T150920363Z-b557ffa4"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "a1c9f50984245f3afaf09ccf",
+        "recordedAt": "2026-10-13T15:09:32Z",
+        "executionId": "EXE-20261013T150920363Z-b557ffa4",
+        "repository": "echelon-signal",
+        "branch": "fix/midpoint-allocation-fixture",
+        "commit": "e39440c3885b6471072dfd56b35a1c01bbf2bf35",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "fix/midpoint-allocation-fixture",
+        "remoteCommit": "e39440c3885b6471072dfd56b35a1c01bbf2bf35",
+        "summary": "Authoring.midpoint builds a complete allocation (every option, minimum first, earliest filled); CompoundKindTests checks the midpoint fixture round-trips through GenericEnvelope; fails on the old generator. .NET 524 passing.",
+        "nextAction": "Complete, open the PR, gate and merge",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-13T15:09:37Z",
+      "conclusion": "The midpoint fixture's allocation is complete and round-trips through the link."
     }
   ]
 }
