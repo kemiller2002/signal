@@ -61,13 +61,13 @@ let private isRequired (content: Content) (q: Question) =
 
 /// Every input names its question (and its error, when it has one) as its
 /// description, and states whether it is required and invalid (SCS-014).
-let private choiceRows (qi: int) (q: Question) (answer: AnswerState option) (locked: bool) (required: bool) (invalid: bool) =
+let private choiceRows (qi: int) (q: Question) (answer: AnswerState option) (held: GenericInputs.Held option) (locked: bool) (required: bool) (invalid: bool) =
     let selected =
         match answer with
         | Some(Value(Choices ids)) -> ids
         | _ -> Set.empty
 
-    let describedBy = if invalid then $"q{qi}-prompt q{qi}-error" else $"q{qi}-prompt"
+    let describedBy = if invalid || held.IsSome then $"q{qi}-prompt q{qi}-error" else $"q{qi}-prompt"
 
     let common label =
         [ "label", text label
@@ -84,13 +84,13 @@ let private choiceRows (qi: int) (q: Question) (answer: AnswerState option) (loc
                $"{qi}-n{ni}"
                "number"
                (common input.Label
-                @ [ "numberValue", text (GenericInputs.numberShown q answer input.Id)
+                @ [ "numberValue", text (GenericInputs.shownWith q answer held input.Id)
                     "numberMin", text input.Minimum
                     "numberMax", text input.Maximum
                     "numberStep", text input.Step ])))
     @ (GenericInputs.pairs q
        |> List.mapi (fun pi (optionId, label) ->
-           let isBest, isWorst = GenericInputs.pairShown answer optionId
+           let isBest, isWorst = GenericInputs.pairShown (GenericInputs.working answer held) optionId
            row $"{qi}-p{pi}" "pair" (common label @ [ "groupBest", text $"q{qi}-best"; "groupWorst", text $"q{qi}-worst"; "bestChecked", flag isBest; "worstChecked", flag isWorst ])))
     @ (choices q |> List.mapi (fun ci (state, label) -> row $"{qi}-{ci}" "option" (common label @ [ "checked", flag (answer = Some state) ])))
 
@@ -121,6 +121,13 @@ let private rows (r: Response) =
                     // After a refused submit or move, an unanswered required question says so.
                     let invalid = r.ShowMissing && required && r.Phase = Answering && not (r.Answers.ContainsKey q.Id)
                     let family, variant = Selectors.componentOf q.Selector.Preset
+                    // Input the link cannot carry yet says so (WI-0086).
+                    let held = if r.Phase = Answering then r.Pending.TryFind q.Id else None
+
+                    let error =
+                        if invalid then "This question needs an answer."
+                        elif held.IsSome then "Not in the link yet: finish this answer, or clear it, to keep it."
+                        else ""
 
                     row
                         $"{qi}"
@@ -130,12 +137,12 @@ let private rows (r: Response) =
                           "group", text $"q{qi}"
                           "promptId", text $"q{qi}-prompt"
                           "errorId", text $"q{qi}-error"
-                          "hideError", flag (not invalid)
-                          "error", text (if invalid then "This question needs an answer." else "")
+                          "hideError", flag (error = "")
+                          "error", text error
                           "optionalMark", text (if required then "" else "(optional)")
                           "component", text family
                           "variant", text variant ]
-                    :: choiceRows qi q (r.Answers.TryFind q.Id) (sealedResponse || locked.Contains q.Id) required invalid)))
+                    :: choiceRows qi q (r.Answers.TryFind q.Id) held (sealedResponse || locked.Contains q.Id) required invalid)))
 
 /// Which part of the page shows: loading, refused, answering or submitted.
 let phaseName =

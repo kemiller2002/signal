@@ -835,6 +835,49 @@
     "version": "1.0.0"
   },
   {
+    "created": "2026-10-13",
+    "id": "DF-SIGNAL-2026-0018",
+    "owners": [
+      "signal"
+    ],
+    "path": "research/decisions/DF-SIGNAL-2026-0018--unfinished-compound-input-is-held-not-answered.md",
+    "provenance": {
+      "contributions": {
+        "EXE-20261013T133239182Z-77fbd18e": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-13T13:45:05.839Z",
+          "operations": [
+            "created"
+          ],
+          "reason": "Unfinished compound input held, not answered (WI-0086)"
+        }
+      }
+    },
+    "related_documents": [
+      "docs/requirements/SIGNAL-DEEP-LINKING.md",
+      "docs/requirements/implementation-gap-analysis.md"
+    ],
+    "review_cycle": "on-trigger",
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "respondent",
+      "url",
+      "compound-answers",
+      "defect"
+    ],
+    "title": "Unfinished compound input is held on the survey page, not answered and not in the link, so the respondent link always equals the response; no link-format change",
+    "updated": "2026-10-13",
+    "version": "1.0.0"
+  },
+  {
     "created": "2026-10-05",
     "id": "DF-SIGNAL-FND-2026-0001",
     "owners": [

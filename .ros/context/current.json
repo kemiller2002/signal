@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T12:38:36Z",
+  "updatedAt": "2026-10-13T13:48:56Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -2791,6 +2791,28 @@
       ],
       "completedAt": "2026-10-13T12:38:36Z",
       "conclusion": "Stored CSVs neutralized on delivery; stored bytes and hashes unchanged"
+    },
+    {
+      "id": "WI-0086",
+      "type": "defect",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/GenericInputs.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/CompoundKindTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-13T13:48:56Z",
+      "telemetryExecutionIds": [
+        "EXE-20261013T133239182Z-77fbd18e"
+      ],
+      "completedAt": "2026-10-13T13:48:56Z",
+      "conclusion": "Unfinished compound input held, not answered; link equals response; out-of-order rankings fixed (escaped defects from #73)"
     }
   ]
 }

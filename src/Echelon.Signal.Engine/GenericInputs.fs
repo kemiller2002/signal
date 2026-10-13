@@ -166,3 +166,93 @@ let picked (q: Question) (answer: AnswerState option) (side: Side) (optionId: st
 let pairShown (answer: AnswerState option) (optionId: string) =
     let b, w = pickOf answer
     b = optionId, w = optionId
+
+// ---------------------------------------------------------------------------
+// Input the link cannot carry yet (WI-0086, escaped defects from #73).
+//
+// The respondent link carries only answers the envelope can encode: a whole
+// ranking, a range with both ends in order, best and least both picked. What
+// a person has typed or picked short of that is held here, on the page: it
+// is not an answer, it is not counted, and it is not in the link, so the
+// link always equals the response (LURL-001). The page says so until the
+// answer is finished or cleared. A ranking is held as the positions typed,
+// so they can be typed in any order.
+// ---------------------------------------------------------------------------
+
+/// What a compound input holds while it is not yet an answer the link can carry.
+type Held =
+    /// A ranking's positions, by option, as typed.
+    | RankPositions of Map<string, int>
+    /// A range with one end, or a best-worst with one side.
+    | Partial of AnswerState
+
+/// Whether the link can carry a state as this question's answer: it has an
+/// index, and it is a value the decoder accepts (`GenericEnvelope.answerOf`
+/// refuses any value `Primitives.check` rejects, such as an allocation that
+/// does not share exactly its points).
+let encodable (q: Question) (state: AnswerState) =
+    match state with
+    | Value v -> (toIndex q.Answer v).IsSome && (check q.Answer v).IsNone
+    | Special s -> List.contains s q.SpecialStates
+
+/// What the inputs show: what is held, else the answer.
+let working (answer: AnswerState option) (held: Held option) =
+    match held with
+    | Some(Partial state) -> Some state
+    | _ -> answer
+
+/// A next value split into what is answered and what is held.
+let private settle (q: Question) (next: AnswerState option) : AnswerState option * Held option =
+    match next with
+    | None -> None, None
+    | Some state when encodable q state -> Some state, None
+    | Some state -> None, Some(Partial state)
+
+let private rankPositions (answer: AnswerState option) (held: Held option) =
+    match held, answer with
+    | Some(RankPositions positions), _ -> positions
+    | _, Some(Value(Order ids)) -> ids |> List.mapi (fun i id -> id, i + 1) |> Map.ofList
+    | _ -> Map.empty
+
+/// The answer and what is held after a number is typed; None when the text
+/// is not a value this input takes, so nothing changes.
+let typed (q: Question) (answer: AnswerState option) (held: Held option) (inputId: string) (text: string) : (AnswerState option * Held option) option =
+    match q.Answer with
+    | Ranking r when r.Options |> List.exists (fun o -> o.Id = inputId) ->
+        let current = rankPositions answer held
+
+        let next =
+            match String.IsNullOrWhiteSpace text, integer text with
+            | true, _ -> Some(current.Remove inputId)
+            // A position another option holds moves to this one.
+            | false, Some p when p >= 1 && p <= positions r -> Some((current |> Map.filter (fun _ v -> v <> p)).Add(inputId, p))
+            | _ -> None
+
+        next
+        |> Option.map (fun positionsByOption ->
+            if positionsByOption.IsEmpty then
+                None, None
+            elif positionsByOption.Count = positions r then
+                Some(Value(Order(positionsByOption |> Map.toList |> List.sortBy snd |> List.map fst))), None
+            else
+                None, Some(RankPositions positionsByOption))
+    // An allocation carries every option, a blank at the minimum, so the link
+    // and the page agree on it exactly.
+    | Allocation a ->
+        numbered q (working answer held) inputId text
+        |> Option.map (fun next ->
+            match next with
+            | Some(Value(Allocated steps)) ->
+                settle q (Some(Value(Allocated(a.Options |> List.map (fun o -> o.Id, steps.TryFind o.Id |> Option.defaultValue a.ItemMinimum) |> Map.ofList))))
+            | other -> settle q other)
+    | _ -> numbered q (working answer held) inputId text |> Option.map (settle q)
+
+/// The answer and what is held after an option is picked as best or worst.
+let pickedHeld (q: Question) (answer: AnswerState option) (held: Held option) (side: Side) (optionId: string) =
+    picked q (working answer held) side optionId |> Option.map (settle q)
+
+/// What an input shows, from what is held or answered.
+let shownWith (q: Question) (answer: AnswerState option) (held: Held option) (inputId: string) =
+    match q.Answer with
+    | Ranking _ -> rankPositions answer held |> Map.tryFind inputId |> Option.map string |> Option.defaultValue ""
+    | _ -> numberShown q (working answer held) inputId

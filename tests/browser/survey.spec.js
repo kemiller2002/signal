@@ -312,3 +312,38 @@ test("inputs name their question, state required and invalid, and questions decl
   await expect(page.locator("#q0-error")).toBeHidden();
   await expect(page.locator("#q1-error")).toBeVisible();
 });
+
+// WI-0086 (escaped defects from #73): the link always equals the response.
+test("an unfinished ranking is held, said so and kept out of the link; out-of-order positions land where typed", async ({ page }) => {
+  await open(page, links.compound);
+  const number = (row) => page.locator(`[data-row="${row}"] input[type="number"]`);
+  const type = async (row, value) => { await number(row).fill(value); await number(row).press("Tab"); };
+  const start = new URL(page.url()).hash;
+
+  // One of three positions: held on the page, not answered, not in the link.
+  await type("0-n2", "1");
+  await expect(page.locator("#q0-error")).toHaveText("Not in the link yet: finish this answer, or clear it, to keep it.");
+  await expect(page.locator("#progress")).toHaveText("0 of 6 answered");
+  expect(new URL(page.url()).hash).toBe(start);
+  await page.locator("#submit-answers").click();
+  await expect(page.locator("#submit-refusal-message")).toContainText("not finished");
+
+  // Typed from the last position down: complete, in the link, and kept across a reload.
+  await type("0-n0", "3");
+  await type("0-n1", "2");
+  await expect(page.locator("#q0-error")).toBeHidden();
+  await expect(page.locator("#progress")).toHaveText("1 of 6 answered");
+  await expect.poll(() => new URL(page.url()).hash).not.toBe(start);
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-kernel", "running");
+  for (const [row, value] of [["0-n0", "3"], ["0-n1", "2"], ["0-n2", "1"]]) await expect(number(row)).toHaveValue(value);
+
+  // An unfinished allocation is held too, and a reload opens the link cleanly.
+  await type("1-n0", "4");
+  await expect(page.locator("#q1-error")).toBeVisible();
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-kernel", "running");
+  await expect(page.locator("#survey-refused")).toHaveCount(0);
+  await expect(number("1-n0")).toHaveValue("");
+  await expect(page.locator("#progress")).toHaveText("1 of 6 answered");
+});

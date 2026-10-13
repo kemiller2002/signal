@@ -14,8 +14,8 @@ test("the longest link opens, keeps its answers across a reload, and submits", a
   await expect(page.locator("#survey-title")).toHaveText("The longest link");
   expect(page.url().length).toBeGreaterThan(1750);
 
-  // A complete ranking of the first question, positions 1 to 8. (Out-of-order
-  // and partial rankings are a known defect from #73, fixed separately.)
+  // A complete ranking of the first question, positions 1 to 8. (Partial and
+  // out-of-order input is covered in survey.spec.js, WI-0086.)
   const position = (n) => page.locator(`[data-row="0-n${n}"] input[type="number"]`);
   for (let n = 0; n < 8; n++) {
     await position(n).fill(String(n + 1));
