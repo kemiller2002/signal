@@ -2318,10 +2318,10 @@
         "escaped-defect:#28"
       ],
       "priority": "high",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-13T17:17:20Z",
-      "updatedAt": "2026-10-13T17:17:20Z",
+      "updatedAt": "2026-10-13T17:47:57Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

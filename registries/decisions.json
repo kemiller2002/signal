@@ -942,6 +942,20 @@
             "created"
           ],
           "reason": "Template localization and selector accessibility (WI-0091)"
+        },
+        "EXE-20261013T173900353Z-347fbe75": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "claude-opus-5-5",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-13T17:47:43.781Z",
+          "operations": [
+            "modified"
+          ],
+          "reason": "Option relabels fixed by WI-0097; translated option labels map to OptionsRelabelled"
         }
       }
     },

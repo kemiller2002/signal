@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T17:33:12Z",
+  "updatedAt": "2026-10-13T17:47:57Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3184,6 +3184,48 @@
       },
       "completedAt": "2026-10-13T17:33:12Z",
       "conclusion": "echelon-current 1.22.0 adopted through Conditor 0.10.1: Ordo 1.7.0; drift ok for every component."
+    },
+    {
+      "id": "WI-0097",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/TemplateDiff.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/OptionRelabelTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-13T17:47:57Z",
+      "telemetryExecutionIds": [
+        "EXE-20261013T173900353Z-347fbe75"
+      ],
+      "latestCheckpoint": {
+        "id": "19508d42b3b96be3347cb073",
+        "recordedAt": "2026-10-13T17:47:51Z",
+        "executionId": "EXE-20261013T173900353Z-347fbe75",
+        "repository": "echelon-signal",
+        "branch": "fix/option-relabel-diff",
+        "commit": "85f03f99bea8ee4976e5b75d3379f59188ea5355",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "fix/option-relabel-diff",
+        "remoteCommit": "85f03f99bea8ee4976e5b75d3379f59188ea5355",
+        "summary": "Failing tests first (302c5cc: single-choice relabel undetected; multi etc. AnswerChanged), then the fix: OptionsRelabelled for every option primitive, structure compared on shared options. Audit: every published survey has only version 1, so no pair crossed a relabel; no stored comparison exists. .NET 547.",
+        "nextAction": "Complete, PR, gate, merge; then WI-0091 slice 2",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-13T17:47:57Z",
+      "conclusion": "Every option relabel is detected and classified as OptionsRelabelled on every option primitive; no published pair or stored comparison was affected."
     }
   ]
 }

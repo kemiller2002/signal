@@ -32,6 +32,9 @@ type Change =
     | QuestionRequirementChanged of questionId: string
     | AnswerChanged of questionId: string
     | OptionsChanged of questionId: string
+    /// An option's label changed, its id and place unchanged: the text a
+    /// respondent answers, like a wording change (WI-0097).
+    | OptionsRelabelled of questionId: string
     | OptionScoresChanged of questionId: string
     | SpecialStatesChanged of questionId: string
     | SelectorChanged of questionId: string
@@ -76,7 +79,7 @@ let sourceEquivalent (key: LocalizationModel.TextKey) : Change =
     | LocalizationModel.AnswerLabel(id, _)
     | LocalizationModel.AccessibleName id
     | LocalizationModel.AccessibleDescription id -> SelectorChanged id
-    | LocalizationModel.OptionLabel(id, _) -> OptionsChanged id
+    | LocalizationModel.OptionLabel(id, _) -> OptionsRelabelled id
     | LocalizationModel.RecommendationTitle _
     | LocalizationModel.RecommendationDescription _ -> RecommendationsChanged
     | LocalizationModel.ResultLabel _ -> InterpretationLabelsChanged
@@ -94,6 +97,7 @@ let rec impact (change: Change) =
     | SectionPresentationChanged _
     | SelectorChanged _ -> { Scoring = false; Encoding = false }
     | QuestionWordingChanged _
+    | OptionsRelabelled _
     | SectionRequirementChanged _
     | QuestionRequirementChanged _
     | CompatibilityChanged -> { Scoring = false; Encoding = false }
@@ -141,6 +145,59 @@ let private meaning (interpretations: ResultModel.Interpretation list) =
 
         i.Id, (i.Target, rule))
     |> Map.ofList
+
+/// An answer definition with every option's label and score blanked and
+/// options in id order: what is left is its structure (selection rules,
+/// totals, positions, tree parents), which only an AnswerChanged may alter.
+/// Only the options whose ids `keep` holds are kept, so two definitions
+/// can be compared on the options they share.
+let private structureOf (keep: string -> bool) (answer: AnswerDefinition) =
+    let blank (o: ChoiceOption) = { o with Label = ""; Score = None }
+    let blankAll = List.filter (fun (o: ChoiceOption) -> keep o.Id) >> List.map blank >> List.sortBy (fun o -> o.Id)
+
+    let blankTree =
+        List.filter (fun (n: TreeNode) -> keep n.Option.Id)
+        >> List.map (fun n -> { n with Option = blank n.Option })
+        >> List.sortBy (fun n -> n.Option.Id)
+
+    match answer with
+    | SingleChoice os -> SingleChoice(blankAll os)
+    | MultiChoice m -> MultiChoice { m with Options = blankAll m.Options }
+    | Ranking r -> Ranking { r with Options = blankAll r.Options }
+    | Allocation a -> Allocation { a with Options = blankAll a.Options }
+    | BestWorst os -> BestWorst(blankAll os)
+    | Hierarchical(nodes, terminal) -> Hierarchical(blankTree nodes, terminal)
+    | HierarchicalMulti(nodes, rule, selection) -> HierarchicalMulti(blankTree nodes, rule, selection)
+    | Boolean
+    | Ordinal _
+    | BoundedNumber _
+    | BoundedRange _ -> answer
+
+/// How one question's answer definition changed (WI-0097). Every primitive
+/// with options follows one rule: ids added, removed or reordered is
+/// OptionsChanged, a label is OptionsRelabelled, a score is
+/// OptionScoresChanged; anything else (another primitive, selection rules,
+/// totals, positions, tree shape, a bound) is AnswerChanged.
+let private answerChanges (id: string) (a: AnswerDefinition) (b: AnswerDefinition) =
+    let ids d = options d |> List.map (fun o -> o.Id)
+    let shared = Set.intersect (Set.ofList (ids a)) (Set.ofList (ids b)) |> Set.toList
+    let on (field: ChoiceOption -> 'v) d = options d |> List.filter (fun o -> List.contains o.Id shared) |> List.map (fun o -> o.Id, field o) |> Map.ofList
+    let all _ = true
+    let sameKind = (structureOf all a).GetType() = (structureOf all b).GetType()
+    let common id = List.contains id shared
+
+    [ if a = b then
+          ()
+      elif not sameKind || (options a).IsEmpty then
+          AnswerChanged id
+      else
+          if ids a <> ids b then OptionsChanged id
+          if on _.Label a <> on _.Label b then OptionsRelabelled id
+          if on _.Score a <> on _.Score b then OptionScoresChanged id
+          // On the options both have, any remaining difference is structure
+          // (selection rules, totals, positions, parents). Exclusive ids
+          // and tree parents naming a removed option count as structure.
+          if structureOf common a <> structureOf common b then AnswerChanged id ]
 
 let diff (before: Content) (after: Content) : Change list =
     let beforeSections = before.Sections |> List.map (fun s -> s.Id, s) |> Map.ofList
@@ -224,13 +281,7 @@ let diff (before: Content) (after: Content) : Change list =
           if a.Selector <> b.Selector then SelectorChanged id
           if a.SpecialStates <> b.SpecialStates then SpecialStatesChanged id
 
-          match a.Answer, b.Answer with
-          | SingleChoice x, SingleChoice y ->
-              if (x |> List.map _.Id) <> (y |> List.map _.Id) then OptionsChanged id
-              if (x |> List.map (fun o -> o.Id, o.Score) |> Map.ofList) <> (y |> List.map (fun o -> o.Id, o.Score) |> Map.ofList) then
-                  OptionScoresChanged id
-          | x, y when x <> y -> AnswerChanged id
-          | _ -> () ]
+          yield! answerChanges id a.Answer b.Answer ]
 
 type Comparability =
     | Comparable
@@ -265,7 +316,8 @@ let comparability (changes: Change list) =
         | QuestionWordingChanged id -> Some $"wording of '{id}' changed"
         | QuestionRequirementChanged id -> Some $"requirement of '{id}' changed"
         | SectionRequirementChanged id -> Some $"requirement of section '{id}' changed"
-        | OptionsChanged id -> Some $"options of '{id}' reordered or relabelled"
+        | OptionsChanged id -> Some $"options of '{id}' added, removed or reordered"
+        | OptionsRelabelled id -> Some $"option labels of '{id}' changed"
         | ValidationRulesChanged -> Some "validation rules changed"
         | CompletionChanged -> Some "completion policy changed"
         | RecommendationsChanged -> Some "recommendations changed"
