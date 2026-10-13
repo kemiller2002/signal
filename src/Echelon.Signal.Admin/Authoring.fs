@@ -39,6 +39,8 @@ type Edit =
     | Area of AreaAuthoring.Edit
     /// A fixture where every question is answered at the midpoint.
     | AddMidpointFixture
+    /// A fixture of answers given in the draft preview (AUT-003 §24).
+    | AddFixture of Drafts.Fixture
 
 let private surveyIdPattern = Regex(@"^[A-Z][A-Z0-9-]{1,31}$", RegexOptions.CultureInvariant)
 
@@ -164,6 +166,7 @@ let apply (edit: Edit) (editor: Editor) : Result<Editor, string> =
                   Expect = [ ExpectComplete true ] }
                 draft
             |> Result.mapError describe
+        | AddFixture fixture -> addFixture fixture draft |> Result.mapError describe
 
     // The template declares what its rules use (a condition needs branching).
     let declared (d: Draft) =
@@ -188,6 +191,7 @@ let preview (catalog: Publication.Catalog) (editor: Editor) = Publication.previe
 // ---- The authoring screens' state -----------------------------------------------------------------
 
 /// What the screens hold between events.
+[<NoComparison>]
 type Screen =
     { Editor: Editor option
       NewSurvey: string
@@ -208,6 +212,8 @@ type Screen =
       ConfirmDelete: string option
       /// The fixture whose scoring is explained (AUT-006 §63); the first when none is chosen.
       Explaining: string option
+      /// The draft running as a respondent would see it (AUT-003 §20), or None.
+      Preview: Echelon.Signal.Engine.GenericSession.Session option
       Problem: string option }
 
 let emptyScreen =
@@ -225,6 +231,7 @@ let emptyScreen =
       Areas = AreaAuthoring.emptyForm
       ConfirmDelete = None
       Explaining = None
+      Preview = None
       Problem = None }
 
 /// What the screens ask the application to do.
@@ -269,7 +276,8 @@ let update (listing: TemplateListing.Listing) (survey: string option) (name: str
         | None -> fail "Open a draft first."
         | Some e ->
             match apply change e with
-            | Ok next -> { screen with Editor = Some next; Problem = None }, []
+            // A changed draft ends the preview: it would show the old one.
+            | Ok next -> { screen with Editor = Some next; Problem = None; Preview = None }, []
             | Error problem -> fail problem
 
     match name, key with

@@ -257,6 +257,11 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   renders `SurveyResult.compute`'s traces for the author; never add a second
   scoring path for display. Answer-key reasoning comes from
   `Template.keyedExplanation`, which `keyedNumber` itself uses.
+- Draft preview (WI-0081, DF-SIGNAL-2026-0025): `DraftPreview` runs the draft
+  through `GenericSession` as a test artifact in the console; its view is the
+  survey page's own, under `preview`-prefixed names, with the survey row
+  markup copied into web/admin/index.html. Keep the two row templates in step
+  when either changes (the binding inventories hold both).
 - Disclosure in the page (WI-0076): an anonymous group with a minimum above
   one shows its last released state (`Releases.shown`, recorded after each
   import as a `signal.group-release` of opaque keys) and says how many newer

@@ -224,6 +224,23 @@ let ``the administrator page binds only what its engine projects, and sends only
             namesOf back.ViewText)
         |> Set.unionMany
 
+    // A running draft preview (WI-0081), so its rows' fields are projected
+    // and checked, not assumed.
+    let previewSeen =
+        changed back "#/assessments"
+        back.Event("newDraftSurvey", value = "PREVIEWED")
+        back.Event("newDraftTitle", value = "Previewed")
+        back.Event("startDraft")
+        back.Event("newSectionTitle", value = "Focus")
+        back.Event("addSection")
+        back.Event("newQuestionPrompt", value = "We finish what we start before starting more.")
+        back.Event("addQuestion", key = "S1")
+        back.Event("previewStart")
+        Assert.True(back.Flag "previewing", back.ViewText)
+        namesOf back.ViewText
+
+    let seen = Set.union seen previewSeen
+
     let attribute (name: string) =
         Text.RegularExpressions.Regex.Matches(html, $"\\s{name}=\"([^\"]+)\"") |> Seq.map (fun m -> m.Groups[1].Value) |> Set.ofSeq
 
@@ -245,12 +262,10 @@ let ``the administrator page binds only what its engine projects, and sends only
     // A draft question's kind (kind) is projected by AuthoringView once a draft has questions;
     // issued invitation links (link) by AdminView once links are issued (CatalogPageTests);
     // a draft section's completion flag (requiredForCompletion) by AuthoringView (RuleAuthoringTests);
-    // a draft section's scoring choice (isMean ... isNone) by AreaAuthoringView (AreaAuthoringTests);
-    // a fixture explanation line's indentation (indented) by FixtureExplanationView once a draft has a
-    // fixture (AuthoringScreenTests: through the page a fixture's scoring is explained).
+    // a draft section's scoring choice (isMean ... isNone) by AreaAuthoringView (AreaAuthoringTests).
     let emptyListFields =
         set [ "code"; "text"; "title"; "priority"; "frequency"; "label"; "baseline"; "delta"; "role"; "count"; "canDerive"; "canHide"; "questionCount"; "name"; "severity"; "message"; "intact"; "canExport"; "kind"; "link"; "requiredForCompletion"
-              "isMean"; "isMedian"; "isSum"; "isMinimum"; "isMaximum"; "isNone"; "indented" ]
+              "isMean"; "isMedian"; "isSum"; "isMinimum"; "isMaximum"; "isNone" ]
     Assert.Empty(Set.difference bound (Set.union seen emptyListFields))
 
     // Every event the page sends is one the engine handles (an unknown one fails loudly).
