@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 88,
+  "nextSeq": 89,
   "items": [
     {
       "id": "WI-0001",
@@ -2071,6 +2071,31 @@
       "attachments": [],
       "createdAt": "2026-10-13T14:16:30Z",
       "updatedAt": "2026-10-13T14:20:59Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0088",
+      "title": "Escaped defect from #30: a changed interpretation threshold, band bound or stage condition is diffed as comparable with caution and no scoring impact; AUT-005 sections 45 and 48 make it not comparable",
+      "description": "TemplateDiff.InterpretationsChanged (WI-0044, PR #30) treats every interpretation change alike. Split it: thresholds, bounds, stage conditions and targets are a scoring change and not comparable; labels and text only stay comparable with caution. Found re-assessing AUT-005 in WI-0081 item 6; approved by the coordinator 2026-10-13.",
+      "tags": [
+        "signal",
+        "defect",
+        "escaped-defect:#30"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-10-13T14:48:20Z",
+      "updatedAt": "2026-10-13T14:48:23Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
