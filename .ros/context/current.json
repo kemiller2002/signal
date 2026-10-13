@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T20:24:49.000Z",
+  "updatedAt": "2026-10-13T20:53:51.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3330,10 +3330,10 @@
     {
       "id": "GH-113",
       "type": "task",
-      "state": "blocked",
-      "semanticState": "blocked",
+      "state": "active",
+      "semanticState": "active",
       "evidence": [],
-      "updatedAt": "2026-10-13T20:24:49.000Z",
+      "updatedAt": "2026-10-13T20:53:51.000Z",
       "telemetryExecutionIds": [
         "EXE-20261013T185710087Z-ad2d6b1a"
       ],
