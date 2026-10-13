@@ -74,11 +74,13 @@ let evaluateFor (environment: Environment) (today: System.DateOnly option) (defi
             match identify definition binding with
             | Error error -> Rejected error
             | Ok identity ->
-                let result = SurveyResult.compute form.Hash form.Content envelope.Answers true
+                // As the instance answered it: its bank selection applied (DF-SIGNAL-2026-0009).
+                let content = BankSelection.forBinding binding form.Content
+                let result = SurveyResult.compute form.Hash content envelope.Answers true
 
                 match result.Evaluation.Completion with
                 | Rules.InProgress missing -> Rejected(IncompleteSubmission missing)
-                | Rules.NotStarted -> Rejected(IncompleteSubmission(questions form.Content |> List.length))
+                | Rules.NotStarted -> Rejected(IncompleteSubmission(questions content |> List.length))
                 | Rules.Invalid problems -> Rejected(IncompleteSubmission problems)
                 | Rules.ReadyToSubmit
                 | Rules.Terminated _ ->
@@ -90,7 +92,7 @@ let evaluateFor (environment: Environment) (today: System.DateOnly option) (defi
                           TemplateVersion = definition.Template.Version
                           TemplateHash = form.Hash
                           SubmissionHash = sha256Of canonical
-                          Dimensions = dimensionResults definition.Template form.Content result
+                          Dimensions = dimensionResults definition.Template content result
                           AnsweredCount = envelope.Answers.Count
                           NonNumericCount = envelope.Answers |> Map.filter (fun _ a -> match a with Special _ -> true | _ -> false) |> Map.count }
 

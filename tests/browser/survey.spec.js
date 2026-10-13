@@ -232,3 +232,25 @@ test("the page is in the link: browser Back and Forward move pages, and a link c
   await expect(page.locator("#page-label")).toHaveText("Page 3 of 3");
   await expect.poll(pageParam).toBe("3");
 });
+
+test("a bank shows each identified respondent their own selection, and only that is required", async ({ page }) => {
+  await open(page, links.banked);
+  // Two of the three banked questions, then the rest of the survey.
+  const banked = page.locator('[data-row="0"], [data-row="1"], [data-row="2"]');
+  await expect(banked).toHaveCount(2);
+  await expect(page.locator("#progress")).toHaveText("0 of 4 answered");
+
+  for (const row of ["0", "1", "2"]) {
+    if (await page.locator(`[data-row="${row}"]`).count()) await pick(page, `${row}-3`).check();
+  }
+  await pick(page, "3-1").check();
+  await pick(page, "4-2").check();
+  await expect(page.locator("#progress")).toHaveText("4 of 4 answered");
+
+  // The same link opens the same selection.
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-kernel", "running");
+  await expect(banked).toHaveCount(2);
+  await page.locator("#submit-answers").click();
+  await expect(page.locator("#submitted-title")).toHaveText("Submitted");
+});

@@ -137,6 +137,11 @@ let paged: Content =
                     { Questions = AllowPreviousQuestions
                       Sections = LockPreviousSectionsAfterExit } } }
 
+/// The demo with its three five-point questions in a bank of which each
+/// identified respondent answers two (DF-SIGNAL-2026-0009).
+let banked: Content =
+    { demo with Presentation = { demo.Presentation with Banks = [ { Id = "core"; Pool = demo.Sections.Head.Questions |> List.map _.Id; Select = 2 } ] } }
+
 let DemoSurvey = "signal-demo"
 let DemoVersion = "1"
 
@@ -172,6 +177,8 @@ let private links =
       // Pages with Back and Next, and a section locked once left.
       "paged", "web/survey/#r=" + GenericEnvelope.invitation "PAGED" "1" paged Import.IdentifiedGroup instance group
       "pagedFile", fst (publishedFile "PAGED" "1" paged)
+      "banked", "web/survey/#r=" + GenericEnvelope.invitation "BANKED" "1" banked Import.IdentifiedGroup instance group
+      "bankedFile", fst (publishedFile "BANKED" "1" banked)
       // A test link (AUT-006 §60): marked on the page and refused by production import.
       "test", "web/survey/#r=" + GenericEnvelope.testLink DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group Map.empty ]
 
@@ -190,8 +197,9 @@ let ``the demo survey file and the browser links are what the code produces`` ()
         File.WriteAllBytes(repoFile kindsFile, kindsBytes)
         let compoundFile, compoundBytes = publishedFile "COMPOUND" "1" compoundEditor.Draft.Content
         File.WriteAllBytes(repoFile compoundFile, compoundBytes)
-        let pagedFile, pagedBytes = publishedFile "PAGED" "1" paged
-        File.WriteAllBytes(repoFile pagedFile, pagedBytes)
+        for surveyId, content in [ "PAGED", paged; "BANKED", banked ] do
+            let file, bytes = publishedFile surveyId "1" content
+            File.WriteAllBytes(repoFile file, bytes)
         File.WriteAllText(repoFile "tests/browser/fixtures/survey-links.json", linksJson ())
 
     Assert.Equal<byte[]>(demoBytes, File.ReadAllBytes(repoFile demoFile))
@@ -199,8 +207,9 @@ let ``the demo survey file and the browser links are what the code produces`` ()
     Assert.Equal<byte[]>(kindsBytes, File.ReadAllBytes(repoFile kindsFile))
     let compoundFile, compoundBytes = publishedFile "COMPOUND" "1" compoundEditor.Draft.Content
     Assert.Equal<byte[]>(compoundBytes, File.ReadAllBytes(repoFile compoundFile))
-    let pagedFile, pagedBytes = publishedFile "PAGED" "1" paged
-    Assert.Equal<byte[]>(pagedBytes, File.ReadAllBytes(repoFile pagedFile))
+    for surveyId, content in [ "PAGED", paged; "BANKED", banked ] do
+        let file, bytes = publishedFile surveyId "1" content
+        Assert.Equal<byte[]>(bytes, File.ReadAllBytes(repoFile file))
     Assert.Equal(linksJson (), readRepoFile "tests/browser/fixtures/survey-links.json")
 
 [<Fact>]

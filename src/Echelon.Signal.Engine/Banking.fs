@@ -12,6 +12,11 @@ module Echelon.Signal.Engine.Banking
 [<Literal>]
 let SelectionAlgorithmVersion = 1
 
+/// The flow-rule id prefix for a question a bank selection leaves out
+/// (`BankSelection.instantiate`); no authored rule may use it.
+[<Literal>]
+let ExcludedRulePrefix = "bank-excluded:"
+
 type Bank =
     { Id: string
       /// Question ids in template order.

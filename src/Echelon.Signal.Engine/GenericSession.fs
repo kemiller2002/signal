@@ -53,8 +53,8 @@ type Refusal =
     /// The file is a template, but not the version the link names.
     | WrongTemplate
     | UnsupportedAnswer of questionId: string
-    /// Timers or banks (DF-SIGNAL-2026-0008), which this page does not run
-    /// yet: shown without them, the survey would not be the one published.
+    /// Timers (DF-SIGNAL-2026-0008), which this page does not run yet: shown
+    /// without them, the survey would not be the one published.
     | UnsupportedPresentation of what: string
     /// The invitation's last day has passed (VER-003).
     | InvitationExpired of expiresOn: DateOnly
@@ -164,7 +164,6 @@ let verify (reference: byte[]) (bytes: byte[]) : Result<Published, Refusal> =
             match questions decoded.Content |> List.map snd |> List.tryFind (supported >> not) with
             | Some q -> Error(UnsupportedAnswer q.Id)
             | None when not decoded.Content.Presentation.Timers.IsEmpty -> Error(UnsupportedPresentation "timers")
-            | None when not decoded.Content.Presentation.Banks.IsEmpty -> Error(UnsupportedPresentation "question banks")
             | None ->
                 Ok
                     { SurveyId = decoded.SurveyId
@@ -188,6 +187,12 @@ let received (today: DateOnly) (fetched: Fetched) (session: Session) : Session =
                 | Ok(envelope, { ExpiresOn = Some day }) when today > day && not (Submission.isFinal { Binding = envelope.Binding; Answers = Map.empty }) ->
                     Refused(InvitationExpired day)
                 | Ok(envelope, terms) ->
+                    // The instance's bank selection (DF-SIGNAL-2026-0009): the
+                    // questions its banks leave out don't apply. Its seed comes
+                    // from ids that survive submission, so it holds throughout.
+                    let published =
+                        { published with Form = { published.Form with Content = BankSelection.forBinding envelope.Binding published.Form.Content } }
+
                     Responding
                         { Published = published
                           Binding = envelope.Binding
