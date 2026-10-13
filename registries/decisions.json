@@ -938,8 +938,10 @@
             "runtime": "claude-code"
           },
           "at": "2026-10-13T17:01:20.216Z",
+          "last": "2026-10-13T17:59:25.275Z",
           "operations": [
-            "created"
+            "created",
+            "modified"
           ],
           "reason": "Template localization and selector accessibility (WI-0091)"
         },

@@ -30,6 +30,7 @@
     <Compile Include="CapabilityCoverageTests.fs" />
     <Compile Include="LocalizationTests.fs" />
     <Compile Include="OptionRelabelTests.fs" />
+    <Compile Include="LocalizedPageTests.fs" />
     <Compile Include="GroupsTests.fs" />
     <Compile Include="ScoringAstTests.fs" />
     <Compile Include="KeyedTests.fs" />

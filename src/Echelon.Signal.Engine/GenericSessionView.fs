@@ -44,7 +44,14 @@ let private defaults =
       "error", text ""
       "optionalMark", text ""
       "component", text ""
-      "variant", text "" ]
+      "variant", text ""
+      // Template accessibility metadata (CAN-001 §7, WI-0091).
+      "promptHidden", text "false"
+      "accessibleName", text ""
+      "hideAccessibleName", flag true
+      "accessibleDescription", text ""
+      "descriptionId", text ""
+      "hideAccessibleDescription", flag true ]
 
 let private row (key: string) (kind: string) (fields: (string * View.Scalar) list) =
     let set = Map.ofList fields
@@ -67,7 +74,9 @@ let private choiceRows (qi: int) (q: Question) (answer: AnswerState option) (hel
         | Some(Value(Choices ids)) -> ids
         | _ -> Set.empty
 
-    let describedBy = if invalid || held.IsSome then $"q{qi}-prompt q{qi}-error" else $"q{qi}-prompt"
+    // The template's accessible description (CAN-001 §7) is read after the prompt.
+    let description = if q.Selector.Accessibility.Description.IsSome then $" q{qi}-description" else ""
+    let describedBy = (if invalid || held.IsSome then $"q{qi}-prompt q{qi}-error" else $"q{qi}-prompt") + description
 
     let common label =
         [ "label", text label
@@ -103,6 +112,11 @@ let private rows (r: Response) =
     let sealedResponse = r.Phase = Submitted
     let locked = Set.union locked (GenericTimer.locked content r.Terms r.Now)
     let indexed = indexedQuestions r
+    // Text in the link's locale when the template translates it (WI-0091):
+    // display only; every rule above reads the published content.
+    let shownContent = Localization.display r.Terms.Locale content
+    let displayed = questions shownContent |> List.map (fun (_, q) -> q.Id, q) |> Map.ofList
+    let sectionTitle (si: int) = shownContent.Sections[si].Title
 
     r.Published.Form.Content.Sections
     |> List.indexed
@@ -113,10 +127,12 @@ let private rows (r: Response) =
         if shown.IsEmpty then
             []
         else
-            row $"s{si}" "section" [ "title", text section.Title ]
+            row $"s{si}" "section" [ "title", text (sectionTitle si) ]
             :: (shown
                 |> List.collect (fun (qi, q) ->
-                    let help = [ defaultArg q.HelpText ""; GenericInputs.hint q ] |> List.filter ((<>) "") |> String.concat " "
+                    let shownQuestion = displayed[q.Id]
+                    let a11y = shownQuestion.Selector.Accessibility
+                    let help = [ defaultArg shownQuestion.HelpText ""; GenericInputs.hint q ] |> List.filter ((<>) "") |> String.concat " "
                     let required = isRequired content q
                     // After a refused submit or move, an unanswered required question says so.
                     let invalid = r.ShowMissing && required && r.Phase = Answering && not (r.Answers.ContainsKey q.Id)
@@ -132,7 +148,15 @@ let private rows (r: Response) =
                     row
                         $"{qi}"
                         "question"
-                        [ "prompt", text q.Prompt
+                        [ "prompt", text shownQuestion.Prompt
+                          // An accessible name replaces the prompt for
+                          // assistive technology; the prompt stays visible.
+                          "promptHidden", text (if a11y.Name.IsSome then "true" else "false")
+                          "accessibleName", text (defaultArg a11y.Name "")
+                          "hideAccessibleName", flag a11y.Name.IsNone
+                          "accessibleDescription", text (defaultArg a11y.Description "")
+                          "descriptionId", text $"q{qi}-description"
+                          "hideAccessibleDescription", flag a11y.Description.IsNone
                           "help", text help
                           "group", text $"q{qi}"
                           "promptId", text $"q{qi}-prompt"
@@ -142,7 +166,7 @@ let private rows (r: Response) =
                           "optionalMark", text (if required then "" else "(optional)")
                           "component", text family
                           "variant", text variant ]
-                    :: choiceRows qi q (r.Answers.TryFind q.Id) held (sealedResponse || locked.Contains q.Id) required invalid)))
+                    :: choiceRows qi shownQuestion (r.Answers.TryFind q.Id) held (sealedResponse || locked.Contains q.Id) required invalid)))
 
 /// Which part of the page shows: loading, refused, answering or submitted.
 let phaseName =
@@ -180,7 +204,7 @@ let view (session: Session) : View.View =
             let applicable = (Rules.applicability r.Published.Form.Content r.Answers).Questions
             let answered = r.Answers |> Map.filter (fun id _ -> applicable.Contains id) |> Map.count
 
-            r.Published.Form.Content.Metadata.Title,
+            (Localization.display r.Terms.Locale r.Published.Form.Content).Metadata.Title,
             $"Version {r.Published.Version}",
             "",
             rows r,
@@ -207,7 +231,12 @@ let view (session: Session) : View.View =
         value (
             text (
                 match session with
-                | Responding r -> r.Terms.Locale |> Option.defaultValue "en"
+                // The translation shown names the page's language; without
+                // one, the link's locale as before (VER-003).
+                | Responding r ->
+                    match Localization.pick r.Terms.Locale r.Published.Form.Content with
+                    | Some l -> l.Locale
+                    | None -> r.Terms.Locale |> Option.defaultValue "en"
                 | Fetching _
                 | Refused _ -> "en"
             )
