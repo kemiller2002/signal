@@ -76,4 +76,4 @@ let links (definition: GroupDefinition) (terms: GenericEnvelope.Terms) (today: D
 
 /// The links as a file to keep and send from: a number per link, nothing else.
 let csv (links: string list) =
-    "invitation,link\n" + (links |> List.mapi (fun i link -> $"{i + 1},{link}") |> String.concat "\n") + "\n"
+    Csv.table [ "invitation"; "link" ] (links |> List.mapi (fun i link -> [ string (i + 1); link ]))

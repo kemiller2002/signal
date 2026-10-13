@@ -6,6 +6,7 @@
        and no package dependencies beyond FSharp.Core. -->
 
   <ItemGroup>
+    <Compile Include="Csv.fs" />
     <Compile Include="View.fs" />
     <Compile Include="Scoring.fs" />
     <Compile Include="Assessment.fs" />
