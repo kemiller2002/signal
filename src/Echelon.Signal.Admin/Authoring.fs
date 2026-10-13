@@ -71,11 +71,22 @@ let private describe (error: EditError) =
 let private nonEmpty (what: string) (text: string) =
     if System.String.IsNullOrWhiteSpace text then Error $"The {what} cannot be empty." else Ok(text.Trim())
 
+/// A complete allocation that meets the total: every option present, as the
+/// survey page and the link hold it (WI-0089), starting at the minimum and
+/// filling the earliest options first; None when no allocation can.
+let private allocated (a: Primitives.AllocationSpec) =
+    let fill (rest, acc) (o: Primitives.ChoiceOption) =
+        let extra = min rest (a.ItemMaximum - a.ItemMinimum)
+        rest - extra, (o.Id, a.ItemMinimum + extra) :: acc
+
+    let rest, steps = a.Options |> List.fold fill (a.Total - a.ItemMinimum * a.Options.Length, [])
+    if rest = 0 && a.Total >= a.ItemMinimum * a.Options.Length then Some(Map.ofList steps) else None
+
 /// A question's middle answer: the middle value, or a multi-choice's first option.
 let private midpoint (q: Question) =
     match q.Answer with
     | Primitives.Ranking r -> Some(Responses.Value(Responses.Order(r.Options |> List.truncate (GenericInputs.positions r) |> List.map _.Id)))
-    | Primitives.Allocation a -> Some(Responses.Value(Responses.Allocated(Map.ofList [ a.Options.Head.Id, a.Total ])))
+    | Primitives.Allocation a -> allocated a |> Option.map (Responses.Allocated >> Responses.Value)
     | Primitives.BestWorst os -> Some(Responses.Value(Responses.BestWorstPick(os.Head.Id, (List.last os).Id)))
     | Primitives.BoundedRange b -> Some(Responses.Value(Responses.TickRange(0, Primitives.ticks b - 1)))
     | _ ->

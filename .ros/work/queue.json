@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 89,
+  "nextSeq": 90,
   "items": [
     {
       "id": "WI-0001",
@@ -2096,6 +2096,31 @@
       "attachments": [],
       "createdAt": "2026-10-13T14:48:20Z",
       "updatedAt": "2026-10-13T14:52:38Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0089",
+      "title": "Escaped defect from #73: the console's midpoint fixture gives an allocation only its first option, a sparse answer that does not round-trip through the link",
+      "description": "Authoring.midpoint built Allocated with one entry; the link fills the rest with the minimum, so the fixture differed from what a respondent's link holds (LURL-001). Found by the ENCODING-FIXTURE-ROUND-TRIP blocker (AUT-004 section 41) in WI-0081.",
+      "tags": [
+        "signal",
+        "defect",
+        "escaped-defect:#73"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-10-13T15:09:13Z",
+      "updatedAt": "2026-10-13T15:09:16Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
