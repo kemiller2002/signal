@@ -53,3 +53,11 @@ let ``a report built from a template whose section title is a formula exports it
         Assert.DoesNotContain("," + formula, csv)
         Assert.DoesNotContain(",=", csv)
     | Error problems -> failwith $"%A{problems}"
+
+[<Fact>]
+let ``parsing and rewriting gives this writer's own output back, byte for byte`` () =
+    let written = Csv.table [ "a"; "b" ] [ [ "x, y"; "-2" ]; [ "line\nbreak"; "'=already" ]; [ "\"quoted\""; "" ] ]
+    Assert.Equal<string list list>([ [ "a"; "b" ]; [ "x, y"; "-2" ]; [ "line\nbreak"; "'=already" ]; [ "\"quoted\""; "" ] ], Csv.parse written)
+    Assert.Equal((written, false), Csv.neutralize written)
+    // An old, unsafe file comes back neutralized, and says it changed.
+    Assert.Equal(("t\n'@SUM(A1)\n", true), Csv.neutralize "t\n@SUM(A1)\n")

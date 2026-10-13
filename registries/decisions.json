@@ -792,6 +792,49 @@
     "version": "1.0.0"
   },
   {
+    "created": "2026-10-13",
+    "id": "DF-SIGNAL-2026-0017",
+    "owners": [
+      "signal"
+    ],
+    "path": "research/decisions/DF-SIGNAL-2026-0017--stored-csvs-are-neutralized-on-delivery.md",
+    "provenance": {
+      "contributions": {
+        "EXE-20261013T123454748Z-14971799": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-13T12:38:30.768Z",
+          "operations": [
+            "created"
+          ],
+          "reason": "Stored CSVs neutralized on delivery (WI-0085)"
+        }
+      }
+    },
+    "related_documents": [
+      "docs/requirements/implementation-gap-analysis.md"
+    ],
+    "review_cycle": "on-trigger",
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "security",
+      "csv",
+      "snapshots",
+      "integrity",
+      "exports"
+    ],
+    "title": "A stored snapshot's sections CSV is neutralized when delivered; stored bytes and hashes never change, so delivered CSV bytes may differ from stored ones",
+    "updated": "2026-10-13",
+    "version": "1.0.0"
+  },
+  {
     "created": "2026-10-05",
     "id": "DF-SIGNAL-FND-2026-0001",
     "owners": [

@@ -323,17 +323,26 @@ let lineage (s: Snapshot) =
 
 type ExportProblem = ReportIsNotTheSnapshot
 
+/// The sections CSV as delivered: the stored text rewritten by the
+/// spreadsheet-safe writer (DF-SIGNAL-2026-0017). The stored bytes and every
+/// hash over them stay as they are; a snapshot taken before WI-0084 whose
+/// sections would run as formulas is delivered neutralized, and says so.
+let deliveredSections (s: Snapshot) = Csv.neutralize s.SectionsCsv
+
 /// The export files for a snapshot, from the ReportData it was taken from:
 /// the structured JSON (canonical), the sections CSV (a legal tabular
-/// projection, never the canonical form) and the lineage on its own.
+/// projection, never the canonical form, delivered spreadsheet-safe) and the
+/// lineage on its own.
 let files (s: Snapshot) =
     let line = lineage s
 
     [ "report.json", "{\"lineage\":" + line + ",\"report\":" + s.ReportData + "}"
-      "sections.csv", s.SectionsCsv
+      "sections.csv", fst (deliveredSections s)
       "lineage.json", line ]
 
 /// The export files, refused unless `report` is the data the snapshot holds.
 let export (s: Snapshot) (report: ReportData) : Result<(string * string) list, ExportProblem> =
-    if sha256 (ReportExport.json report) <> s.CanonicalReportDataHash || ReportExport.sectionsCsv report <> s.SectionsCsv then Error ReportIsNotTheSnapshot
+    // The stored CSV is compared as delivered, so a snapshot taken before
+    // WI-0084 still matches the safe projection of its own data.
+    if sha256 (ReportExport.json report) <> s.CanonicalReportDataHash || ReportExport.sectionsCsv report <> fst (deliveredSections s) then Error ReportIsNotTheSnapshot
     else Ok(files s)

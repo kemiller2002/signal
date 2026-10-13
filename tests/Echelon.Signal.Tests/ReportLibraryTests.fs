@@ -216,3 +216,51 @@ let ``an anonymous group's snapshots must differ by at least the minimum (ARX-00
     Assert.True(ReportLibrary.take library catalog [ first ] (source five None) |> Result.isOk)
     Assert.True(ReportLibrary.take library catalog [ first ] { source one None with Mode = IdentifiedGroup } |> Result.isOk)
     Assert.True(ReportLibrary.take library catalog [ first ] (source report None) |> Result.isOk)
+
+// ---- Stored CSVs taken before WI-0084 are delivered neutralized (WI-0085, DF-SIGNAL-2026-0017) ----
+
+/// The sections CSV writer before WI-0084: quotes commas, quotes and line
+/// feeds, and neutralizes nothing.
+let private oldSectionsCsv (report: ReportData) =
+    let field (text: string) =
+        if text.IndexOfAny([| ','; '"'; '\n' |]) >= 0 then "\"" + text.Replace("\"", "\"\"") + "\"" else text
+
+    let header = "section,title,mean,median,minimum,maximum,scored,unscored"
+
+    let rows =
+        ReportExport.sectionsCsv report
+        |> Csv.parse
+        |> List.tail
+        |> List.map (fun cells -> cells |> List.map (fun c -> if c.StartsWith "'" then c.Substring 1 else c) |> List.map field |> String.concat ",")
+
+    String.concat "\n" (header :: rows) + "\n"
+
+[<Fact>]
+let ``an old snapshot whose stored CSV carries a formula is delivered neutralized, and stays as stored`` () =
+    let formula = "=HYPERLINK(\"http://x\",\"y\")"
+    let first = content.Sections.Head
+    let risky = { content with Sections = { first with Title = formula } :: content.Sections.Tail }
+    let report = Report.build definition { subject with Content = risky } 5 group [] at |> Result.toOption |> Option.get
+    let library, _ = saved (currentPins (ExactTemplate sdra))
+    let taken, _ = ReportLibrary.take library catalog [] (source report None) |> ok
+
+    // As a snapshot taken before WI-0084 was stored: the old writer's CSV, its own id.
+    let stored = oldSectionsCsv report
+    Assert.Contains("," + "\"" + formula.Replace("\"", "\"\"") + "\"", stored)
+    let old = { taken with SectionsCsv = stored }
+    let old = { old with SnapshotId = ReportLibrary.snapshotIdOf old }
+    Assert.True(ReportLibrary.intact old)
+
+    let delivered, changed = ReportLibrary.deliveredSections old
+    Assert.True(changed)
+    Assert.Contains("\"'=HYPERLINK(\"\"http://x\"\",\"\"y\"\")\"", delivered)
+    Assert.Equal(delivered, ReportLibrary.files old |> Map.ofList |> fun m -> m["sections.csv"])
+    // The stored bytes, and so the snapshot's id, are untouched.
+    Assert.Equal(stored, old.SectionsCsv)
+    Assert.Equal(ReportLibrary.snapshotIdOf old, old.SnapshotId)
+    // Still the snapshot of its own data: export is not refused.
+    Assert.True(ReportLibrary.export old report |> Result.isOk)
+
+    // A snapshot taken now is delivered exactly as stored.
+    Assert.False(snd (ReportLibrary.deliveredSections taken))
+    Assert.Equal(taken.SectionsCsv, fst (ReportLibrary.deliveredSections taken))
