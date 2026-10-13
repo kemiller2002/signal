@@ -41,7 +41,12 @@ type Change =
     | CompletionChanged
     | RecommendationsChanged
     | OverallScoringChanged
-    | InterpretationsChanged
+    /// A threshold, band bound, pass/fail direction, stage condition or
+    /// target changed, or an interpretation was added or removed: the same
+    /// score can be read differently (AUT-005 §§45, 48; DF-SIGNAL-2026-0019).
+    | InterpretationThresholdsChanged
+    /// Only labels or the order of interpretations changed.
+    | InterpretationLabelsChanged
     | DisplayChanged
     | ItemKeysChanged
 
@@ -71,7 +76,8 @@ let impact (change: Change) =
     | FactsChanged
     | OverallScoringChanged
     | ItemKeysChanged -> { Scoring = true; Encoding = false }
-    | InterpretationsChanged
+    | InterpretationThresholdsChanged -> { Scoring = true; Encoding = false }
+    | InterpretationLabelsChanged
     | DisplayChanged -> { Scoring = false; Encoding = false }
     | ValidationRulesChanged
     | CompletionChanged
@@ -86,6 +92,27 @@ let impact (change: Change) =
     | SectionsReordered
     | QuestionsReordered
     | OptionsChanged _ -> { Scoring = false; Encoding = true }
+
+/// What an interpretation means without its labels: the numbers or
+/// conditions that decide each outcome.
+type private Meaning =
+    | BandBounds of (float * float) list
+    | Threshold of float * ResultModel.Direction
+    | StageConditions of RuleModel.Condition list
+
+/// Each interpretation's target and meaning, keyed by id so that reordering
+/// alone is not a change of meaning.
+let private meaning (interpretations: ResultModel.Interpretation list) =
+    interpretations
+    |> List.map (fun i ->
+        let rule =
+            match i.Kind with
+            | ResultModel.Bands bands -> BandBounds(bands |> List.map (fun b -> b.From, b.To))
+            | ResultModel.PassFail(threshold, direction) -> Threshold(threshold, direction)
+            | ResultModel.Stages(_, stages) -> StageConditions(stages |> List.map _.Requires)
+
+        i.Id, (i.Target, rule))
+    |> Map.ofList
 
 let diff (before: Content) (after: Content) : Change list =
     let beforeSections = before.Sections |> List.map (fun s -> s.Id, s) |> Map.ofList
@@ -108,7 +135,10 @@ let diff (before: Content) (after: Content) : Change list =
       if before.Rules.Completion <> after.Rules.Completion then CompletionChanged
       if before.Rules.Recommendations <> after.Rules.Recommendations then RecommendationsChanged
       if before.Results.Overall <> after.Results.Overall then OverallScoringChanged
-      if before.Results.Interpretations <> after.Results.Interpretations then InterpretationsChanged
+      if meaning before.Results.Interpretations <> meaning after.Results.Interpretations then
+          InterpretationThresholdsChanged
+      elif before.Results.Interpretations <> after.Results.Interpretations then
+          InterpretationLabelsChanged
       if before.Results.Display <> after.Results.Display then DisplayChanged
       if before.Results.ItemKeys <> after.Results.ItemKeys then ItemKeysChanged
       let layoutOf (p: Presentation) = { p with Timers = []; Banks = [] }
@@ -188,6 +218,7 @@ let comparability (changes: Change list) =
             | BanksChanged -> Some "question banks changed which questions an instance answers"
             | FactsChanged -> Some "derived facts changed"
             | OverallScoringChanged -> Some "overall scoring changed"
+            | InterpretationThresholdsChanged -> Some "interpretation thresholds changed"
             | ItemKeysChanged -> Some "item keys changed"
             | _ -> None)
 
@@ -201,7 +232,7 @@ let comparability (changes: Change list) =
             | ValidationRulesChanged -> Some "validation rules changed"
             | CompletionChanged -> Some "completion policy changed"
             | RecommendationsChanged -> Some "recommendations changed"
-            | InterpretationsChanged -> Some "interpretations changed"
+            | InterpretationLabelsChanged -> Some "interpretation labels changed"
             | _ -> None)
 
     match notComparable, caution with
