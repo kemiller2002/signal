@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T14:16:38Z",
+  "updatedAt": "2026-10-13T14:20:59Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -2817,13 +2817,44 @@
     {
       "id": "WI-0087",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-13T14:16:38Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/Validation.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/ValidationSummaryTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-13T14:20:59Z",
       "telemetryExecutionIds": [
         "EXE-20261013T141639623Z-dc4fd7af"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "0f259f1be6ade6a7779a83da",
+        "recordedAt": "2026-10-13T14:20:53Z",
+        "executionId": "EXE-20261013T141639623Z-dc4fd7af",
+        "repository": "echelon-signal",
+        "branch": "fix/validation-summary-rules",
+        "commit": "d8f3285fc5d3f841a1e8128d3320944998b9478d",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "fix/validation-summary-rules",
+        "remoteCommit": "d8f3285fc5d3f841a1e8128d3320944998b9478d",
+        "summary": "Validation.summary now derives from Findings.categories, which includes RulesCategory; ValidationSummaryTests checks the list against every union case and that a rule cycle fails only the Rules category. .NET 516 passing.",
+        "nextAction": "Complete the work item, open the PR, gate and merge",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-13T14:20:59Z",
+      "conclusion": "The validation summary lists every finding category, including Rules; escaped defect from #29 fixed with a guard test."
     }
   ]
 }

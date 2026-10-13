@@ -2067,10 +2067,10 @@
         "escaped-defect:#29"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-10-13T14:16:30Z",
-      "updatedAt": "2026-10-13T14:16:36Z",
+      "updatedAt": "2026-10-13T14:20:59Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
