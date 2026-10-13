@@ -2117,6 +2117,27 @@
         "name": "ros",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.started",
+      "stepId": "round-trip-property",
+      "name": "testing: link round-trip property over generated input (fixed seeds); no new defect; mutation check reintroducing #92's gap fails at seed 1 step 9; dotnet 514/514",
+      "occurredAt": "2026-10-13T13:56:41Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "round-trip-property",
+      "occurredAt": "2026-10-13T14:03:41Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {
