@@ -2683,20 +2683,20 @@
         "EXE-20261009T042446720Z-a28d9579"
       ],
       "latestCheckpoint": {
-        "id": "e44e3df11a864274113c38ce",
-        "recordedAt": "2026-10-13T22:16:16Z",
+        "id": "43aea65e0de037b87daac524",
+        "recordedAt": "2026-10-13T22:41:45Z",
         "executionId": "EXE-20261009T042446720Z-a28d9579",
         "repository": "echelon-signal",
-        "branch": "feature/wi0081-question-timers",
-        "commit": "ee5e133b59a08eab151062f9e7079a38423644a7",
+        "branch": "feature/wi0081-template-resolution",
+        "commit": "c73e09590299e772bc9a6bb91fd861d7c4eada59",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/wi0081-question-timers",
-        "remoteCommit": "ee5e133b59a08eab151062f9e7079a38423644a7",
-        "summary": "Question-timer slice: ARX-013 tested (link entry kind 3, SIG-LINK 1.5.0, DF-0015 §9; fixtures byte-identical; unknown kind refused whole; console help states whole-minute resolution)",
-        "nextAction": "ADM-055 template resolution outcomes, then authoring preview/traces (AST-005, AUT-003, SCS-017, ALG-004, AUT-002, AUT-006 §63), then ARP-001",
+        "remoteBranch": "feature/wi0081-template-resolution",
+        "remoteCommit": "c73e09590299e772bc9a6bb91fd861d7c4eada59",
+        "summary": "Resolution slice: ADM-055 tested (TemplateResolution, nine outcomes, ordered registries, verified cache, DF-0023); InvalidTerms wording fixed with safe-description guard",
+        "nextAction": "Authoring preview/traces slice (AST-005, AUT-003, SCS-017, ALG-004, AUT-002, AUT-006 §63), then ARP-001",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"

@@ -166,7 +166,7 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
         | Some config, Some actor, Some client ->
             let backend = env.Backend (fun () -> Some(Identity.tokens client)) (fun () -> client.ReportUnauthorized())
             let pinned = state.Opened |> Option.filter (fun o -> o.DatasetId = datasetId) |> Option.map _.RepositoryId
-            start (AdminGroupWork.openDataset env backend config actor pinned datasetId now)
+            start (AdminGroupWork.openDataset env state.Catalog backend config actor pinned datasetId now)
         | _ -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NOT_SIGNED_IN" "Sign in first." false)) ])
 
         state, []
@@ -189,7 +189,7 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
         match model.Deployment, actorOf env model, state.Client, state.Opened with
         | Some config, Some actor, Some client, Some opened ->
             let backend = env.Backend (fun () -> Some(Identity.tokens client)) (fun () -> client.ReportUnauthorized())
-            start (RetentionWork.transition env backend config actor opened target now)
+            start (RetentionWork.transition env state.Catalog backend config actor opened target now)
         | _ -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NOT_SIGNED_IN" "Sign in and open the dataset first." false)) ])
 
         state, []

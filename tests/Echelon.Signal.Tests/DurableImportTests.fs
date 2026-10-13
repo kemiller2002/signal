@@ -225,8 +225,12 @@ let ``a group whose template is not in the catalog is blocked, not guessed`` () 
     let github = InMemoryStore()
     let group = setUp github (fun () -> true) AnonymousGroup GroupRecord.NoneAfterImport
 
-    match GroupStore.openGroup (fun _ -> None) groupId at group.Dataset |> run with
-    | Error(GroupStore.TemplateUnavailable reason) -> Assert.Contains("not in the catalog", reason)
+    // Resolved through the real catalog (ADM-055): the reason says what was
+    // searched and where, never "latest" or a compatible substitute.
+    match GroupStore.openGroup (TemplateCatalog.resolver (TemplateCatalog.builtIn [])) groupId at group.Dataset |> run with
+    | Error(GroupStore.TemplateUnavailable reason) ->
+        Assert.Contains($"template {pilot.Id} {pilot.Version}", reason)
+        Assert.Contains("was searched for in the built-in catalog and is not there", reason)
     | other -> failwith $"%A{other}"
 
 [<Fact>]

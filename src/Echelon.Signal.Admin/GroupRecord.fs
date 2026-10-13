@@ -183,11 +183,11 @@ let reader: Loading.RecordReader<StoredGroup> =
       DatasetOf = fun stored -> Some stored.DatasetId
       References = fun _ -> [] }
 
-/// Resolves an exact template by its canonical hash; None when the catalog
-/// does not hold it.
 /// A group's template by the hash its configuration records: the pilot's
-/// assessment, or a generic template's shape with its form (WI-0078).
-type TemplateResolver = string -> (Assessment.Assessment * GenericForm option) option
+/// assessment, or a generic template's shape with its form (WI-0078); or
+/// why it is not available, as exact resolution found (ADM-055,
+/// `TemplateResolution`).
+type TemplateResolver = string -> Result<Assessment.Assessment * GenericForm option, string>
 
 /// The import definition for a stored group, or why imports are blocked:
 /// the exact template it names is not available (ADM-008).
@@ -200,10 +200,10 @@ let definition (resolve: TemplateResolver) (config: GroupConfig) : Result<GroupD
           Generic = generic }
 
     match resolve config.TemplateHash with
-    | Some(template, Some form) when form.Hash = config.TemplateHash -> Ok(definitionOf template (Some form))
-    | Some(template, None) when Canonical.templateHash template = config.TemplateHash -> Ok(definitionOf template None)
-    | Some _ -> Error $"the catalog's template does not hash to {config.TemplateHash}"
-    | None -> Error $"template {config.SurveyIdentifier} {config.TemplateVersion} ({config.TemplateHash}) is not in the catalog"
+    | Ok(template, Some form) when form.Hash = config.TemplateHash -> Ok(definitionOf template (Some form))
+    | Ok(template, None) when Canonical.templateHash template = config.TemplateHash -> Ok(definitionOf template None)
+    | Ok _ -> Error $"the catalog's template does not hash to {config.TemplateHash}"
+    | Error reason -> Error $"template {config.SurveyIdentifier} {config.TemplateVersion}: {reason}"
 
 /// The disclosure policy a group's result is computed under.
 let policy (config: GroupConfig) : Aggregation.Policy =
