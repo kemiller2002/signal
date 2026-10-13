@@ -110,3 +110,4 @@
 | WI-0095 | Adopt echelon-current 1.20.0 through Conditor 0.10.0: Forma 0.5.0 to 0.6.1 and Folio 0.3.0 to 0.4.0 (registry step 1) | complete | signal, platform, conditor | high |
 | WI-0096 | Adopt echelon-current 1.21.0 through Conditor 0.10.1: Ordo 1.5.0 to 1.6.0 with foundations.json moving alongside (registry step 2) | complete | signal, platform, conditor, ordo | high |
 | WI-0097 | Escaped defect from #28: the template diff misses a single-choice option relabel and classifies a relabel on other option primitives as AnswerChanged, so comparability can be wrong | captured | signal, defect, escaped-defect:#28 | high |
+| WI-0098 | Adopt echelon-current 1.22.0 through Conditor 0.10.1: Ordo 1.6.0 to 1.7.0 (registry step 3) | ready | signal, platform, conditor, ordo | high |
