@@ -1,14 +1,14 @@
 {
   "schemaVersion": 4,
   "project": "signal",
-  "manifestSha256": "cd100b37bdf8d5a10de013a0a89d25652e30f783ee22f9a10009989fe96a830c",
+  "manifestSha256": "f18934303eefa6f0252b7c180db66ffdad278be234adc8da066342fb21190f06",
   "manifest": {
     "schemaVersion": 1,
     "name": "signal",
     "registryAuthority": {
       "kind": "resolved-release-set",
       "path": ".conditor/authority/resolved-release-set.json",
-      "sha256": "d6a26a57b1566ee9641d3d408b790d797845075ff683b52b8a574487e718841e"
+      "sha256": "48aeb43c667f9153eea3bdd16a0d600fa8f93dea109a4fa2411c458a393ffbc5"
     },
     "components": [
       {
@@ -18,7 +18,7 @@
       },
       {
         "id": "praxis",
-        "version": "3.7.2",
+        "version": "3.11.0",
         "required": true
       },
       {
@@ -28,7 +28,7 @@
       },
       {
         "id": "arca",
-        "version": "0.3.0",
+        "version": "0.4.1",
         "required": true
       },
       {
@@ -59,12 +59,12 @@
     },
     {
       "id": "praxis",
-      "version": "3.7.2",
+      "version": "3.11.0",
       "distribution": "host-tool",
       "package": "praxis",
-      "descriptorSha256": "476164cdd93d38e8b7960f37253334f1636204b6950c82e9f993605b269f0d45",
+      "descriptorSha256": "5ff0736baf99518b2a8b9652a9bb0bd4f9403c77170d711c28e69025dba5f6a0",
       "authority": "embedded-component-descriptor",
-      "sourceReference": "host:praxis@3.7.2"
+      "sourceReference": "host:praxis@3.11.0"
     },
     {
       "id": "visual-engineering",
@@ -77,11 +77,11 @@
     },
     {
       "id": "arca",
-      "version": "0.3.0",
+      "version": "0.4.1",
       "distribution": "nuget",
       "package": "EchelonFoundry.Arca.Core,EchelonFoundry.Arca.GitHub,EchelonFoundry.Arca.Limen",
       "authority": "registry-resolved-set",
-      "sourceReference": "nuget-feed:kemiller2002/arca@v0.3.0#sha256:d3b73d5f4ca76b04f9b581e5fb7b138f724b4642f18361cbaf6f60b45a64f803"
+      "sourceReference": "nuget-feed:kemiller2002/arca@v0.4.1#sha256:76c1d7132147044421a5664c3c77cf339ec90a47044fb67ed79c0768de3bf368"
     },
     {
       "id": "fides",

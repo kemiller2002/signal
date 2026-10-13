@@ -40,7 +40,9 @@ let private at = DateTimeOffset(2026, 10, 8, 14, 30, 0, TimeSpan.Zero)
 [<Fact>]
 let ``every ADM-003 capability has explicit knowledge, and none is simulated`` () =
     let github = describe Arca.GitHub.Provider.capabilities
-    Assert.Equal(22, github.Length)
+    // ADM-003's 22, and Arca 0.4's namespace token (ARCA-CON-005), which writes need.
+    Assert.Equal(23, github.Length)
+    Assert.Equal(Available 1, knowledge Arca.GitHub.Provider.capabilities NamespaceToken)
 
     let unavailable =
         github |> List.choose (fun (capability, knowledge) -> match knowledge with Unavailable _ -> Some capability | _ -> None)
