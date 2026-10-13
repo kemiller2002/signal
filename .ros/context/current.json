@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T17:47:57Z",
+  "updatedAt": "2026-10-13T18:23:43Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3073,33 +3073,48 @@
     {
       "id": "WI-0091",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-13T17:01:13Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/AreaAuthoring.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/AreaAuthoringTests.fs"
+        },
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-SIGNAL-2026-0020--template-localization-and-selector-accessibility.md"
+        }
+      ],
+      "updatedAt": "2026-10-13T18:23:43Z",
       "telemetryExecutionIds": [
         "EXE-20261013T170114560Z-a503dddb"
       ],
       "latestCheckpoint": {
-        "id": "b64cb0c8a4b83227528b5d93",
-        "recordedAt": "2026-10-13T18:01:36Z",
+        "id": "cde379b0b5f954d3d7cf80a1",
+        "recordedAt": "2026-10-13T18:23:35Z",
         "executionId": "EXE-20261013T170114560Z-a503dddb",
         "repository": "echelon-signal",
-        "branch": "feature/survey-page-locale",
-        "commit": "78d0c30dacc2c3f6074212fe7905c5c8fa44c956",
+        "branch": "feature/console-authoring-areas",
+        "commit": "6d8484324cf78e13545890d3f8bb0b1af981dd17",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/survey-page-locale",
-        "remoteCommit": "78d0c30dacc2c3f6074212fe7905c5c8fa44c956",
-        "summary": "Slice 2: survey page shows the link-locale translation (same tag, else language, else source), names the shown language, applies accessible name and description; LOCALIZED published; LocalizedPageTests (5) and survey-localized.spec.js; .NET 552.",
-        "nextAction": "PR, cross-browser dispatch, gate, merge; then slice 3 (console authoring areas)",
+        "remoteBranch": "feature/console-authoring-areas",
+        "remoteCommit": "6d8484324cf78e13545890d3f8bb0b1af981dd17",
+        "summary": "Slice 3: AreaAuthoring (validation rules, presentation, timer, banks, section scoring, translations, accessibility) with view, page events and HTML; AUT-001 tested; .NET 558.",
+        "nextAction": "Complete WI-0091, PR, cross-browser dispatch, gate, merge; then WI-0092",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
         }
-      }
+      },
+      "completedAt": "2026-10-13T18:23:43Z",
+      "conclusion": "Template localization and selector accessibility in the model, on the survey page and in the console, plus the console's validation, presentation and scoring areas; CAN-001 and AUT-001 tested."
     },
     {
       "id": "WI-0096",
