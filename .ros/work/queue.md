@@ -4,6 +4,7 @@
 |---|---|---|---|---|
 | ECHELON-UPGRADE-2026-09-21 | Reconcile current Echelon engineering capabilities | complete | tooling,ordo,ros,limen | high |
 | FOUNDATIONS-APPLICABILITY | FOUNDATIONS-APPLICABILITY | complete |  |  |
+| GH-104 | Assess and adopt universal UI layout/action conformance (UI-LAYOUT-INTERACTION@1.0.0) | ready | ui-conformance, visual-engineering | high |
 | GH-5 | Prepare Signal implementation baseline | abandoned | readiness,bootstrap | high |
 | LIMEN-0-7-0 | LIMEN-0-7-0 | complete |  |  |
 | LIMEN-0-7-0-FND | LIMEN-0-7-0-FND | complete |  |  |

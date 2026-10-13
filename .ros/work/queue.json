@@ -2358,6 +2358,30 @@
       },
       "source": "manual",
       "sourceReference": null
+    },
+    {
+      "id": "GH-104",
+      "title": "Assess and adopt universal UI layout/action conformance (UI-LAYOUT-INTERACTION@1.0.0)",
+      "description": "Wave 2 of the Echelon universal UI conformance rollout (visual-engineering#47): classify Signal's UI surfaces, inventory actions, measure declared alignment groups, add Playwright conformance tests and wire them into CI.",
+      "tags": [
+        "ui-conformance",
+        "visual-engineering"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-10-13T17:29:44.000Z",
+      "updatedAt": "2026-10-13T17:29:45.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "github-issue",
+      "sourceReference": "https://github.com/kemiller2002/signal/issues/104"
     }
   ]
 }
