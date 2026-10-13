@@ -8,11 +8,12 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
 
 ## Platform (2026-10-08)
 
-- echelon-current 1.20.0 (WI-0095, 2026-10-13; 1.19.0 in WI-0094, both through Conditor 0.10.0 `upgrade --current --stepwise`; 1.18.0 in WI-0082, 1.12.0 before) through Conditor, repository-only install
+- echelon-current 1.21.0 (WI-0096, 2026-10-13, Conditor 0.10.1; 1.20.0 in WI-0095 and 1.19.0 in WI-0094 through Conditor 0.10.0 `upgrade --current --stepwise`; 1.18.0 in WI-0082, 1.12.0 before) through Conditor, repository-only install
   path (`conditor init --manifest conditor.json`; Conditor's
   `upgrade --current` plan's workstation effects go to an isolated `--home`,
   never the shared workstation profile; WI-0082 applied echelon-current
-  1.18.0 that way): Praxis 3.11.0, Ordo 1.5.0, Visual Engineering
+  1.18.0 that way): Praxis 3.11.0, Ordo 1.6.0 (stamp-only for the
+  repository; `ordo verify` from the isolated home's 1.6.0 CLI passes), Visual Engineering
   1.0.1, and as attested NuGet release assets in `vendor/nuget` (mapped in
   `NuGet.config`, pinned in `Directory.Packages.props`): Arca 0.5.0 (Core,
   GitHub, Limen), Fides 0.2.0 and limen-fsharp 0.9.0. `conditor verify`

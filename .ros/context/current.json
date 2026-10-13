@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T17:01:13Z",
+  "updatedAt": "2026-10-13T17:21:37Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3100,6 +3100,48 @@
           "mechanism": "git-remote-observation"
         }
       }
+    },
+    {
+      "id": "WI-0096",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": ".echelon/foundations.json"
+        },
+        {
+          "type": "tests",
+          "path": ".sde/MANIFEST.json"
+        }
+      ],
+      "updatedAt": "2026-10-13T17:21:37Z",
+      "telemetryExecutionIds": [
+        "EXE-20261013T171724480Z-86bf87b7"
+      ],
+      "latestCheckpoint": {
+        "id": "e0d21842cd15888004b3a3b8",
+        "recordedAt": "2026-10-13T17:21:32Z",
+        "executionId": "EXE-20261013T171724480Z-86bf87b7",
+        "repository": "echelon-signal",
+        "branch": "platform/echelon-current-1.21.0-ordo",
+        "commit": "c49220fabe3e3a2dcef6b7d37f66326fa9bc84c6",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "platform/echelon-current-1.21.0-ordo",
+        "remoteCommit": "c49220fabe3e3a2dcef6b7d37f66326fa9bc84c6",
+        "summary": "1.21.0 applied via Conditor 0.10.1 (plan sha256:b1586247, unchanged at authorize, clean tree): Ordo 1.6.0 with foundations.json moved; real home unchanged; drift and --check agree (no transitions left for 1.21.0); lock paths all tracked; ordo verify and conditor verify pass; .NET 542.",
+        "nextAction": "Complete, PR, gate, merge; then 1.22.0",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-13T17:21:37Z",
+      "conclusion": "echelon-current 1.21.0 adopted through Conditor 0.10.1: Ordo 1.6.0."
     }
   ]
 }
