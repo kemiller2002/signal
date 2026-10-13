@@ -264,6 +264,14 @@ npm run build:wasm && npx playwright test
 ./praxis validate
 ```
 
+### Merging
+
+Merge only through the gate: `gh api -X PUT .../pulls/N/merge -f sha=<head>`
+once every check run and workflow run on the head has completed and passed.
+Query the runs with the **full 40-character head SHA**: the Actions
+`runs?head_sha=` filter matches only a full SHA, so a short SHA returns no
+runs and a waiting gate never sees them (WI-0081, 2026-10-13).
+
 ## Unresolved questions
 
 1. Where invitation links are minted: an administrator surface (WI-0011)
