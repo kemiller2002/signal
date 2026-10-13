@@ -185,6 +185,17 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
     | AdminApp.TransitionGroup(key, name) ->
         withGroup key (fun actor group -> AdminGroupWork.transition env actor group name now)
         state, []
+    | AdminApp.TransitionDataset target ->
+        match model.Deployment, actorOf env model, state.Client, state.Opened with
+        | Some config, Some actor, Some client, Some opened ->
+            let backend = env.Backend (fun () -> Some(Identity.tokens client)) (fun () -> client.ReportUnauthorized())
+            start (RetentionWork.transition env backend config actor opened target now)
+        | _ -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NOT_SIGNED_IN" "Sign in and open the dataset first." false)) ])
+
+        state, []
+    | AdminApp.RetireSources key ->
+        withGroup key (fun actor group -> RetentionWork.retire env state.Catalog actor group now)
+        state, []
     | AdminApp.SaveDraft draft ->
         withDataset (fun actor opened -> AuthoringWork.save env state.Catalog actor opened draft now)
         state, []

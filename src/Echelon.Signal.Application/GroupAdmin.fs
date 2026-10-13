@@ -251,6 +251,7 @@ let summary (unreconciled: int) (imported: Imported option) (live: OpenedGroup) 
       LateSubmissions =
         if group.Config.Mode = Echelon.Signal.Engine.Import.AnonymousGroup && group.Accumulator.Accepted.Count < group.Config.MinimumReportableCount then None
         else Some group.Accumulator.Late
+      SourcesRetired = live.SourcesRetired |> Option.map _.Remaining
       Problems = live.Problems |> List.map Problems.code }
 
 /// What the page shows about a dataset.
@@ -266,4 +267,6 @@ let datasetSummary (config: Deployment.DeploymentConfig) (opened: Store.Opened) 
             $"Repository {repository}: {ProviderContract.writeModeCode mode}" + (if missing.IsEmpty then "" else $"; {missing.Length} capability(ies) missing")
         | ProviderContract.NotVerified -> "Not verified yet"
         | ProviderContract.VerificationFailed reason -> reason
+      Lifecycle = opened.Lifecycle
+      LifecycleWritable = opened.LifecycleGrant.IsSome
       Groups = groups }

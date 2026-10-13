@@ -2683,20 +2683,20 @@
         "EXE-20261009T042446720Z-a28d9579"
       ],
       "latestCheckpoint": {
-        "id": "f472ddb0192ed3cc0c5d3830",
-        "recordedAt": "2026-10-13T15:43:39Z",
+        "id": "4cf65e3513a1f2f42b80ceea",
+        "recordedAt": "2026-10-13T20:16:42Z",
         "executionId": "EXE-20261009T042446720Z-a28d9579",
         "repository": "echelon-signal",
-        "branch": "docs/stale-row-recheck",
-        "commit": "7e5f4ee84ba8f193f4b0eea40d64d953281974b4",
+        "branch": "feature/wi0081-slice-1",
+        "commit": "33caaa9757da0a75ecef836d3486dca298ec9f69",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "docs/stale-row-recheck",
-        "remoteCommit": "7e5f4ee84ba8f193f4b0eea40d64d953281974b4",
-        "summary": "Citation guard in GapAnalysisTests: every tested row cites an existing test file; named citations must resolve to a test in that file. 27 older rows gained file citations; the 11 rechecked rows name a test. .NET 530 passing.",
-        "nextAction": "Gate and merge #99; then WI-0090",
+        "remoteBranch": "feature/wi0081-slice-1",
+        "remoteCommit": "33caaa9757da0a75ecef836d3486dca298ec9f69",
+        "summary": "Respondent slice: SCS-011 count guidance and held selections (escaped link defect fixed), SCS-013 pairwise, SCS-014 zoom/motion/target checks; SCS-010/012/018 visual variants deferred by DF-SIGNAL-2026-0022 to WI-0099 (limen#108)",
+        "nextAction": "Recheck slice: VER-004, ARX-013, AUT-006, ADM-055",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
@@ -3245,33 +3245,139 @@
     {
       "id": "WI-0092",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-13T18:38:46Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/StateModel.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/StateModelTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-13T19:05:25Z",
       "telemetryExecutionIds": [
         "EXE-20261013T183846783Z-14d3b075"
       ],
       "latestCheckpoint": {
-        "id": "11fa34634ecfd9614afb14e7",
-        "recordedAt": "2026-10-13T18:39:00Z",
+        "id": "db93068b410ef383dd210832",
+        "recordedAt": "2026-10-13T19:05:19Z",
         "executionId": "EXE-20261013T183846783Z-14d3b075",
         "repository": "echelon-signal",
-        "branch": "feature/arx-002-state-model",
-        "commit": "a9ba06dd7e0a2168f7907f647d9718f57a755ec4",
+        "branch": "feature/arx-002-report-states",
+        "commit": "eb04f7345274790b90b87a10bd5144dabd123c82",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/arx-002-state-model",
-        "remoteCommit": "a9ba06dd7e0a2168f7907f647d9718f57a755ec4",
-        "summary": "Slice 1: StateModel; SessionStates (guard/attempt/capabilities/obligations/template knowledge); GroupLifecycle.system; StateModelTests shared properties; TemplateNotPublished carries the file searched. .NET 563.",
-        "nextAction": "PR, gate, merge; slice 2: anonymous finalization, import, template authoring",
+        "remoteBranch": "feature/arx-002-report-states",
+        "remoteCommit": "eb04f7345274790b90b87a10bd5144dabd123c82",
+        "summary": "Slice 3: ReportStates persistence and snapshot systems; GroupStore read decision through them; ARX-002 tested. .NET 574.",
+        "nextAction": "Complete WI-0092, PR, gate, merge; then WI-0093",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
         }
-      }
+      },
+      "completedAt": "2026-10-13T19:05:25Z",
+      "conclusion": "All seven ARX-002 state systems share one shape and pass the shared properties; ARX-002 tested."
+    },
+    {
+      "id": "WI-0093",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "docs/requirements/implementation-gap-analysis.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/GapAnalysisTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-13T19:15:43Z",
+      "telemetryExecutionIds": [
+        "EXE-20261013T191038695Z-c9a17535"
+      ],
+      "latestCheckpoint": {
+        "id": "6da8232dcce4399d99288516",
+        "recordedAt": "2026-10-13T19:15:37Z",
+        "executionId": "EXE-20261013T191038695Z-c9a17535",
+        "repository": "echelon-signal",
+        "branch": "docs/named-test-citations",
+        "commit": "95a641ab926ff63c94fc96c9584980ce250d393c",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "docs/named-test-citations",
+        "remoteCommit": "95a641ab926ff63c94fc96c9584980ce250d393c",
+        "summary": "72 tested rows given a named test after checking each cited file's test names; GapAnalysisTests requires a named test for every tested row (proved failing on a removed citation). .NET 574.",
+        "nextAction": "Complete, PR, gate, merge; then WI-0077",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-13T19:15:43Z",
+      "conclusion": "Every gap-analysis row marked tested names a test that resolves; the guard requires it."
+    },
+    {
+      "id": "WI-0077",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/RetentionScreen.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/GovernanceStore.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/RetentionPageTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/RetirementTests.fs"
+        },
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-SIGNAL-2026-0021--retired-results-erased-from-the-current-tree.md"
+        }
+      ],
+      "updatedAt": "2026-10-13T19:47:06Z",
+      "telemetryExecutionIds": [
+        "EXE-20261013T192337276Z-6816d24f"
+      ],
+      "latestCheckpoint": {
+        "id": "e43f67a83eadfcb0ff6dc666",
+        "recordedAt": "2026-10-13T19:31:57Z",
+        "executionId": "EXE-20261013T192337276Z-6816d24f",
+        "repository": "echelon-signal",
+        "branch": "feature/retention-erasure",
+        "commit": "e01be0b135a1ca894494feda67930bf5c7ab0d06",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feature/retention-erasure",
+        "remoteCommit": "e01be0b135a1ca894494feda67930bf5c7ab0d06",
+        "summary": "Slice 1: retired results erased from the current tree on Arca 0.5.0 when the provider declares Erase; claim follows the outcome; DF-SIGNAL-2026-0021; RetirementTests",
+        "nextAction": "Slice 2: dataset lifecycle and retention screens in the console",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-13T19:47:06Z"
     },
     {
       "id": "GH-104",

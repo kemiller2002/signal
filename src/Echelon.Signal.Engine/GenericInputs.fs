@@ -73,6 +73,8 @@ let hint (q: Question) : string =
     | Allocation a -> $"Share {a.Total} points between the options; each point is worth {a.Step.ToString(invariant)}."
     | BoundedRange b -> $"Give a range from {shown b b.Minimum} to {shown b b.Maximum}."
     | BestWorst _ -> "Choose the one that fits best and the one that fits least."
+    | MultiChoice _
+    | HierarchicalMulti _ -> SelectionGuidance.hint q.Answer
     | _ -> ""
 
 let private integer (text: string) =
@@ -256,3 +258,26 @@ let shownWith (q: Question) (answer: AnswerState option) (held: Held option) (in
     match q.Answer with
     | Ranking _ -> rankPositions answer held |> Map.tryFind inputId |> Option.map string |> Option.defaultValue ""
     | _ -> numberShown q (working answer held) inputId
+
+/// What a multi-choice question shows as chosen: what is held, else the answer.
+let selectedWith (answer: AnswerState option) (held: Held option) =
+    match working answer held with
+    | Some(Value(Choices ids)) -> ids
+    | _ -> Set.empty
+
+/// The answer and what is held after an option is selected or cleared
+/// (SCS-011): a selection the question's count or exclusive rule refuses is
+/// held on the page, never written into the link, which could not read it
+/// back (LURL-001). None when nothing changes.
+let toggled (q: Question) (answer: AnswerState option) (held: Held option) (optionId: string) (selected: bool) : (AnswerState option * Held option) option =
+    let current = selectedWith answer held
+
+    let next =
+        match q.Answer with
+        | MultiChoice m when m.Options |> List.exists (fun o -> o.Id = optionId) && current.Contains optionId <> selected -> Some(select m current optionId)
+        | HierarchicalMulti(nodes, _, _) when nodes |> List.exists (fun n -> n.Option.Id = optionId) && current.Contains optionId <> selected ->
+            Some(if selected then current.Add optionId else current.Remove optionId)
+        | _ -> None
+
+    next |> Option.map (fun ids -> settle q (if Set.isEmpty ids then None else Some(Value(Choices ids))))
+

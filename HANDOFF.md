@@ -219,10 +219,24 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   same commit (`GovernanceRecord`, `GovernanceStore.audit`); the dataset
   lifecycle is stored and only an active dataset grants changes
   (`GovernanceStore.transition`); a finalized group's accepted results can
-  be retired (`retireSources`) with the limitation recorded. Arca never
-  deletes an immutable record, so retirement removes results from Signal's
-  state only (a `signal.group-retirement` marker); removing them from the
-  repository tree needs an Arca erasure path.
+  be retired (`retireSources`) with the limitation recorded. Retirement
+  removes results from Signal's state (a `signal.group-retirement` marker)
+  and then, when the provider declares Arca's Erase capability, erases them
+  from the current tree in one tombstone commit (WI-0077,
+  DF-SIGNAL-2026-0021). The claim names only what landed
+  (`Retired.Tree`); Git history still holds the content and is never claimed.
+  The console (WI-0077 slice 2, `RetentionScreen`, `RetentionView`,
+  `RetentionWork`) shows the dataset's lifecycle in the Storage view with
+  its legal moves (never verified provider deletion), usable while the
+  dataset is read-only, and retires a finalized group's results from its
+  overview only after a confirmation. Page work must stay on the caller's
+  context: never `Async.Sequential` or `Async.Parallel` (see `AdminWork`).
+- Survey page selectors (WI-0081): every input settles through
+  `GenericInputs` (`typed`, `pickedHeld`, `toggled`), so a value the link
+  cannot read back (an unfinished ranking, a multi-choice count the rule
+  refuses) is held on the page, never written. The visual selector variants
+  wait for nested view lists in Limen (limen#108, DF-SIGNAL-2026-0022,
+  WI-0099); never fixed option slots.
 - Disclosure in the page (WI-0076): an anonymous group with a minimum above
   one shows its last released state (`Releases.shown`, recorded after each
   import as a `signal.group-release` of opaque keys) and says how many newer

@@ -84,7 +84,23 @@ type Retired =
     { /// What may be claimed about the removed records; never more than the provider can prove.
       Claim: Retention.Claim
       Removed: int
-      Limitation: Retention.Limitation option }
+      Limitation: Retention.Limitation option
+      /// What became of the records in the repository tree (WI-0077).
+      Tree: TreeErasure }
+
+/// The repository tree after a retirement (ADM-045, WI-0077, ARCA-INT-005).
+and TreeErasure =
+    /// The provider does not declare Arca's Erase capability: the records
+    /// stay in the tree; only Signal's state no longer uses them.
+    | ErasureNotOffered
+    /// Each record's content was replaced by a tombstone in the current
+    /// tree. The provider's history still holds it.
+    | ErasedFromTree of records: int
+    /// The erasure was refused or failed; the tree still holds the records.
+    | ErasureFailed of reason: string
+    /// The erasure's outcome is unknown: reading the records again settles
+    /// it (an erased record reads as erased).
+    | ErasureOutcomeUnknown
 
 type RetireFailure =
     | GroupNotFinalized of status: string
@@ -140,11 +156,86 @@ let private holdings now (group: OpenedGroup) (contributions: Loading.Stored<Res
                   Retention.AuditRecord ]
     }
 
-/// The removal itself, in one commit: the group's retirement record, so its
+/// Whether the provider declares Arca's Erase capability.
+let private offersErasure (opened: Store.Opened) =
+    match ProviderCapabilities.state Capability.Erase opened.Provider.Capabilities with
+    | CapabilityState.Available _ -> true
+    | CapabilityState.Unavailable _ -> false
+
+/// Erases retired contribution records from the current tree, each as it
+/// reads now, in one atomic Arca erasure: content replaced by a tombstone
+/// naming its hash, revision, time and reason (ARCA-INT-005). Never claimed
+/// as permanent: the provider's history keeps it.
+let private erase
+    (actor: Store.Actor)
+    (now: DateTimeOffset)
+    (reason: string)
+    (opened: Store.Opened)
+    (reader: Loading.RecordReader<'a>)
+    (targets: Loading.Stored<'a> list)
+    =
+    let request (target: Loading.Stored<'a>) =
+        async {
+            let where = RelativePath.render target.Path
+
+            match! opened.Provider.Read opened.Namespace target.Path with
+            | Ok(ReadOutcome.Found stored) ->
+                match Layout.keyOf target.Path with
+                | Some key ->
+                    return
+                        Integrity.validate key reader.Schema reader.MaxBytes stored
+                        |> Result.mapError (fun failure -> $"{where}: {Codec.describeIntegrity failure}")
+                        |> Result.bind (fun valid ->
+                            // Only the record that was retired is erased.
+                            if valid.ContentHash <> target.ContentHash then
+                                Error $"{where} changed since it was retired"
+                            else
+                                Erasure.request target.Path valid now reason |> Result.mapError (fun e -> $"{where}: %A{e}"))
+                | None -> return Error $"{where} is not a record path"
+            | Ok other -> return Error $"{where}: %A{other}"
+            | Error failure -> return Error $"{where}: %A{failed now failure}"
+        }
+
+    async {
+        if targets.IsEmpty then
+            return ErasedFromTree 0
+        elif not (offersErasure opened) then
+            return ErasureNotOffered
+        else
+            // One read after another, on the caller's context (never the
+            // thread pool: the page's work runs where it started).
+            let rec each acc remaining =
+                async {
+                    match remaining with
+                    | [] -> return List.rev acc
+                    | target :: rest ->
+                        let! made = request target
+                        return! each (made :: acc) rest
+                }
+
+            let! requests = each [] targets
+
+            match requests |> List.choose (function Error e -> Some e | Ok _ -> None) with
+            | first :: _ -> return ErasureFailed first
+            | [] ->
+                let valid = requests |> List.choose (function Ok r -> Some r | Error _ -> None)
+
+                match Erasure.operation opened.Namespace (Storage.metadata (actor.NewContext()) "erase retired accepted results") valid with
+                | Error e -> return ErasureFailed $"%A{e}"
+                | Ok operation ->
+                    match! Erasure.commit opened.Provider operation with
+                    | Ok _ -> return ErasedFromTree valid.Length
+                    | Error(StorageFailure.OutcomeUnknown _) -> return ErasureOutcomeUnknown
+                    | Error failure -> return ErasureFailed (failed now failure |> string)
+    }
+
+/// The removal itself: one commit with the group's retirement record, so its
 /// contributions leave Signal's current state, and the limitation's audit
-/// record. Arca never deletes an immutable record, so the contributions stay
-/// in the repository tree and its history; the claim says exactly that.
-let private remove (actor: Store.Actor) (now: DateTimeOffset) (basis: Basis) (group: OpenedGroup) (contributions: 'a list) held =
+/// record; then, when the provider declares Erase, one atomic erasure of the
+/// contributions from the current tree (WI-0077). The claim names only what
+/// happened: removed from the tree after an erasure that landed, otherwise
+/// from application state. History is never claimed (ProviderHistory = None).
+let private remove (actor: Store.Actor) (now: DateTimeOffset) (basis: Basis) (group: OpenedGroup) (contributions: Loading.Stored<ResultRecord.StoredContribution> list) held =
     let opened = group.Dataset
 
     let claim =
@@ -156,10 +247,13 @@ let private remove (actor: Store.Actor) (now: DateTimeOffset) (basis: Basis) (gr
     async {
         match Retention.delete (groupId group) (Some now) held (set [ Retention.AcceptedResult ]) with
         | Error problems -> return Error(Unrecorded [ UnstorableRecord("audit", $"%A{problems}") ])
-        | Ok(_, None) -> return Ok { Claim = claim; Removed = 0; Limitation = None }
+        | Ok(_, None) -> return Ok { Claim = claim; Removed = 0; Limitation = None; Tree = ErasureNotOffered }
         | Ok(_, Some limited) ->
             let basisCode = match basis with DeletionRequest -> "DELETION-REQUEST" | RetentionExpired _ -> "RETENTION-EXPIRED"
-            let evidence = { limited.Evidence with Reasons = limited.Evidence.Reasons @ [ basisCode; "TREE-REMOVAL-UNAVAILABLE" ] }
+            // Whether the tree can be erased is the provider's declaration,
+            // decided before anything is written (ARCA-INT-005).
+            let treeReason = if offersErasure opened then "TREE-ERASURE-REQUESTED" else "TREE-REMOVAL-UNAVAILABLE"
+            let evidence = { limited.Evidence with Reasons = limited.Evidence.Reasons @ [ basisCode; treeReason ] }
 
             let marker: GovernanceRecord.StoredRetirement =
                 { DatasetId = opened.DatasetId
@@ -178,15 +272,30 @@ let private remove (actor: Store.Actor) (now: DateTimeOffset) (basis: Basis) (gr
             | Error problems -> return Error(Unrecorded problems)
             | Ok operation ->
                 match! opened.Provider.Commit operation with
-                | Ok _ -> return Ok { Claim = claim; Removed = contributions.Length; Limitation = Some { limited with Evidence = evidence } }
                 | Error failure -> return Error(RetireNotStored(failed now failure))
+                | Ok _ ->
+                    let! tree = erase actor now $"retention {basisCode.ToLowerInvariant()}" opened (ResultRecord.reader group.Definition.Template) contributions
+
+                    let claim =
+                        Retention.claim
+                            { FromApplicationState = true
+                              FromRepositoryTree = (match tree with ErasedFromTree _ -> true | _ -> false)
+                              ProviderHistory = None }
+
+                    return
+                        Ok
+                            { Claim = claim
+                              Removed = contributions.Length
+                              Limitation = Some { limited with Evidence = evidence }
+                              Tree = tree }
     }
 
 /// Retires a finalized group's accepted results from Signal's current state,
-/// with the PII-free evidence of what that does to reproducibility, in one
-/// commit. The claim is "removed from application state": never "removed
-/// from the tree" or "permanently erased", which neither Arca nor GitHub can
-/// establish here (ADM-045).
+/// with the PII-free evidence of what that does to reproducibility, and
+/// erases them from the repository tree where the provider can (WI-0077).
+/// The claim is "removed from the current tree" only after that erasure
+/// landed, otherwise "removed from application state"; never "permanently
+/// erased", which neither Arca nor GitHub can establish here (ADM-045).
 let retireSources (actor: Store.Actor) (now: DateTimeOffset) (basis: Basis) (group: OpenedGroup) : Async<Result<Retired, RetireFailure>> =
     let opened = group.Dataset
 

@@ -30,6 +30,7 @@
     <Compile Include="ReportWork.fs" />
     <Compile Include="AdminGroupWork.fs" />
     <Compile Include="AuthoringWork.fs" />
+    <Compile Include="RetentionWork.fs" />
     <Compile Include="AdminWire.fs" />
     <Compile Include="Runtime.fs" />
   </ItemGroup>
