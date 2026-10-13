@@ -208,6 +208,9 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
     | AdminApp.RequestReview survey ->
         withDataset (fun actor opened -> AuthoringWork.requestReview env actor opened survey now)
         state, []
+    | AdminApp.DeleteDraft survey ->
+        withDataset (fun actor opened -> AuthoringWork.deleteDraft env actor opened survey now)
+        state, []
     | AdminApp.ApproveReview draft ->
         withDataset (fun actor opened -> AuthoringWork.approveReview env actor opened draft now)
         state, []

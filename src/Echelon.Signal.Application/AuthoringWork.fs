@@ -79,3 +79,16 @@ let hide (env: Env) (actor: Store.Actor) (opened: Store.Opened) (survey: string)
         | Ok() -> return! reloaded env now opened [ AdminApp.Noted(notice "SIGNAL.AUTHORING.HIDDEN" $"{survey} version {version} is hidden from new groups; groups that use it are unaffected." false) ]
         | Error failure -> return [ ToEngine(storeFailure failure) ]
     }
+
+/// Deletes a survey's stored draft and its review (AUT-006 §59); a
+/// published version is refused with its reason.
+let deleteDraft (env: Env) (actor: Store.Actor) (opened: Store.Opened) (survey: string) (now: DateTimeOffset) =
+    async {
+        match! TemplateStore.delete actor now opened (TemplateStore.DraftOf survey) with
+        | Ok() -> return! reloaded env now opened [ AdminApp.DraftDeleted survey; AdminApp.Noted(notice "SIGNAL.AUTHORING.DRAFT_DELETED" $"The draft of {survey} was deleted. Published versions are unchanged." false) ]
+        | Error(TemplateStore.PublishedNotDeletable(s, v)) ->
+            return [ ToEngine(AdminApp.Failed(notice "SIGNAL.AUTHORING.PUBLISHED_NOT_DELETABLE" $"{s} version {v} is published: groups and links may depend on it, so it can be hidden but never deleted." false)) ]
+        | Error(TemplateStore.NoSuchDraft s) -> return [ ToEngine(AdminApp.Failed(notice "SIGNAL.AUTHORING.NO_DRAFT" $"There is no stored draft of {s}." false)) ]
+        | Error(TemplateStore.DeleteNotStored failure) -> return [ ToEngine(storeFailure failure) ]
+    }
+

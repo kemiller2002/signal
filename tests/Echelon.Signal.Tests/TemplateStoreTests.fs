@@ -222,3 +222,49 @@ let ``publication after review covers exactly the reviewed draft, and each step 
     TemplateStore.approveReview (actor octocat) at admin "team-health" draft |> run |> ok |> ignore
     Assert.True(publishReviewed changed |> Result.isError)
     Assert.Equal("1", (publishReviewed draft |> ok).Version)
+
+// ---- AUT-006 §§58-59: only drafts are deleted ---------------------------------------------------
+
+[<Fact>]
+let ``a stored draft and its review are deleted in one commit, and a published version is refused with its reason`` () =
+    let github, admin, _ = dataset Grants.draftEditor
+    let first = publish octocat admin draft |> ok
+    let child = { deriveDraft first with Content = { first.Content with Metadata = { first.Content.Metadata with Title = "Team health, revised" } } }
+    TemplateStore.saveDraft (actor octocat) at admin None child |> run |> ok
+    TemplateStore.requestReview (actor octocat) at admin "team-health" |> run |> ok |> ignore
+    Assert.True((load admin).Drafts.ContainsKey "team-health")
+    Assert.True((load admin).Reviews.ContainsKey "team-health")
+
+    // A published version is never deleted: groups and links may need it (§58).
+    let before = github.State.History.Length
+
+    match TemplateStore.delete (actor octocat) at admin (TemplateStore.PublishedVersion("team-health", "1")) |> run with
+    | Error(TemplateStore.PublishedNotDeletable("team-health", "1")) -> ()
+    | other -> failwith $"%A{other}"
+
+    Assert.Equal(before, github.State.History.Length)
+
+    // The draft and its review go together, in one commit; the published version stays.
+    TemplateStore.delete (actor octocat) at admin (TemplateStore.DraftOf "team-health") |> run |> ok
+    Assert.Equal(before + 1, github.State.History.Length)
+    let after = load admin
+    Assert.False(after.Drafts.ContainsKey "team-health")
+    Assert.False(after.Reviews.ContainsKey "team-health")
+    Assert.Equal(Some first, Publication.resolve after.Catalog "team-health" "1")
+    Assert.Empty(after.Problems)
+
+    // Nothing left to delete says so.
+    match TemplateStore.delete (actor octocat) at admin (TemplateStore.DraftOf "team-health") |> run with
+    | Error(TemplateStore.NoSuchDraft "team-health") -> ()
+    | other -> failwith $"%A{other}"
+
+[<Fact>]
+let ``deleting a draft needs EditDrafts`` () =
+    let _, admin, analyst = dataset Grants.analyst
+    TemplateStore.saveDraft (actor octocat) at admin None draft |> run |> ok
+
+    match TemplateStore.delete (actor hubot) at analyst (TemplateStore.DraftOf "team-health") |> run with
+    | Error(TemplateStore.DeleteNotStored(GroupStore.NotPermitted _)) -> ()
+    | other -> failwith $"%A{other}"
+
+    Assert.True((load admin).Drafts.ContainsKey "team-health")

@@ -80,6 +80,47 @@ let saveDraft (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Opened) 
         return! commit now opened actor $"save draft {draft.SurveyId}" changes
     }
 
+/// What may be deleted (AUT-006 §§58-59).
+type DeleteTarget =
+    /// A survey's stored draft.
+    | DraftOf of surveyId: string
+    /// A published version: never deleted, only hidden (§58).
+    | PublishedVersion of surveyId: string * version: string
+
+/// Why nothing was deleted.
+type DeleteFailure =
+    | PublishedNotDeletable of surveyId: string * version: string
+    | NoSuchDraft of surveyId: string
+    | DeleteNotStored of GroupFailure
+
+/// Deletes a survey's draft, and its review, in one commit (AUT-006 §59,
+/// EditDrafts). Nothing published depends on a draft. A published version
+/// is refused with its reason: groups and links may still need it, so it is
+/// hidden, never deleted (§58).
+let delete (actor: Store.Actor) (now: DateTimeOffset) (opened: Store.Opened) (target: DeleteTarget) : Async<Result<unit, DeleteFailure>> =
+    async {
+        match target, permitted opened actor Access.EditDrafts with
+        | PublishedVersion(surveyId, version), _ -> return Error(PublishedNotDeletable(surveyId, version))
+        | _, Error failure -> return Error(DeleteNotStored failure)
+        | DraftOf surveyId, Ok _ ->
+            match! load now opened with
+            | Error failure -> return Error(DeleteNotStored failure)
+            | Ok stored ->
+                match stored.Drafts |> Map.tryFind surveyId with
+                | None -> return Error(NoSuchDraft surveyId)
+                | Some(_, revision) ->
+                    let review =
+                        match stored.Reviews |> Map.tryFind surveyId, TemplateRecord.reviewPath surveyId with
+                        | Some(_, r), Ok path -> [ Change.Delete(path, r) ]
+                        | _ -> []
+
+                    let changes = TemplateRecord.draftPath surveyId |> Result.map (fun path -> Change.Delete(path, revision) :: review)
+
+                    match! commit now opened actor $"delete draft {surveyId}" changes with
+                    | Ok() -> return Ok()
+                    | Error failure -> return Error(DeleteNotStored failure)
+    }
+
 /// Why publishing did not happen: the domain's refusal, or storage.
 type PublishFailure =
     | Refused of Refusal

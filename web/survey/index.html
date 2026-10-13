@@ -80,7 +80,12 @@
     <section id="questions" class="ef-stack" aria-labelledby="questions-title">
       <h2 id="questions-title">Questions</h2>
       <p id="link-disclosure" class="ef-field__description">This page's address contains your answers, so you can come back to them. Anyone you give the address to can see them; it is never sent to a server.</p>
-      <p id="progress" role="status" data-text="progress"></p>
+      <template data-if="hasProgress">
+        <p id="progress" role="status" data-text="progress"></p>
+      </template>
+      <template data-if="reviewing">
+        <p id="review-notice" role="status">Check your answers. Submit them, or go back to change them.</p>
+      </template>
       <template data-if="hasTimer">
         <p id="timer-notice" role="status" data-text="timerNotice"></p>
       </template>
@@ -91,10 +96,14 @@
         <template data-each="rows" data-key="id">
           <div class="survey-row" data-bind-data-row="id">
             <h3 class="survey-section" data-bind-hidden="hideSection" data-text="title"></h3>
-            <p class="survey-question" data-bind-hidden="hideQuestion" data-bind-id="promptId" data-bind-data-component="component" data-bind-data-variant="variant"><strong data-text="prompt" data-bind-aria-hidden="promptHidden"></strong><span class="ef-sr-only" data-bind-hidden="hideAccessibleName" data-text="accessibleName"></span> <span class="survey-optional" data-text="optionalMark"></span> <span class="ef-field__description" data-text="help"></span></p>
+            <p class="survey-question" data-bind-hidden="hideQuestion" data-bind-id="promptId" data-bind-data-component="component" data-bind-data-variant="variant"><span class="survey-number" data-bind-hidden="hideQuestionNumber" data-text="questionNumber"></span> <strong data-text="prompt" data-bind-aria-hidden="promptHidden"></strong><span class="ef-sr-only" data-bind-hidden="hideAccessibleName" data-text="accessibleName"></span> <span class="survey-optional" data-text="optionalMark"></span> <span class="ef-field__description" data-text="help"></span></p>
             <p class="ef-sr-only" data-bind-hidden="hideAccessibleDescription" data-bind-id="descriptionId" data-text="accessibleDescription"></p>
             <p class="survey-error" data-bind-hidden="hideError" data-bind-id="errorId" data-text="error"></p>
             <p class="ef-selection-status" role="status" data-bind-hidden="hideSelectionStatus" data-text="selectionStatus"></p>
+            <div class="survey-review" data-bind-hidden="hideReview">
+              <p class="survey-review-prompt"><span data-bind-hidden="hideQuestionNumber" data-text="questionNumber"></span> <span data-text="prompt"></span></p>
+              <p class="survey-review-answer" data-text="answerText"></p>
+            </div>
             <label class="ef-special-choice" data-bind-hidden="hideOption">
               <input type="radio" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="group" data-bind-checked="checked" data-bind-disabled="locked" />
               <span data-text="label"></span>
@@ -130,8 +139,11 @@
         <template data-if="hasNext">
           <button id="page-next" type="button" data-event="pageNext">Next</button>
         </template>
+        <template data-if="reviewing">
+          <button id="review-back" type="button" data-event="reviewClosed">Change answers</button>
+        </template>
         <template data-if="isLastPage">
-          <button id="submit-answers" type="button" data-event="submitRequested">Submit answers</button>
+          <button id="submit-answers" type="button" data-event="submitRequested" data-text="submitLabel"></button>
         </template>
       </div>
     </section>

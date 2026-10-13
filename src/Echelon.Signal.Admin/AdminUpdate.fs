@@ -239,6 +239,7 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
                 | Authoring.HideVersion(s, v) when permitted AdminState.CanPublishTemplates -> { m with Busy = true }, effects @ [ HideTemplate(s, v) ]
                 | Authoring.RequestReview s when permitted AdminState.CanEditDrafts -> { m with Busy = true }, effects @ [ RequestReview s ]
                 | Authoring.ApproveReview d when permitted AdminState.CanReviewTemplates -> { m with Busy = true }, effects @ [ ApproveReview d ]
+                | Authoring.DeleteDraft s when permitted AdminState.CanEditDrafts -> { m with Busy = true }, effects @ [ DeleteDraft s ]
                 | _ -> { m with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "This needs EditDrafts (saving, asking for review), ReviewTemplates (approving) or PublishTemplates (publishing, hiding) and a writable store." }, effects)
             (model, [])
     | retention when RetentionScreen.events.Contains retention ->
@@ -301,6 +302,7 @@ let update (msg: Msg) (model: Model) : Model * Effect list =
         { model with Catalog = catalog; Templates = listing; NewGroup = {| model.NewGroup with Template = template |} }, []
     | SnapshotsLoaded snapshots -> { model with Snapshots = snapshots; Busy = false }, []
     | LibraryLoaded library -> { model with Library = library }, []
+    | DraftDeleted survey -> { model with Authoring = Authoring.deleted survey model.Authoring; Busy = false }, []
     | DefinitionSaved entry -> { model with Builder = ReportBuilder.saved entry model.Builder; Busy = false }, []
     | ExportReady(name, mime, data) -> { model with Busy = false }, [ Download(name, mime, data) ]
     | DraftSaved survey -> { model with Authoring = Authoring.saved survey model.Authoring; Busy = false }, []

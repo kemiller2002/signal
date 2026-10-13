@@ -238,6 +238,14 @@
         <p id="draft-preview" data-text="draftPreview"></p>
         <template data-if="draftHasWarnings"><label><input type="checkbox" data-event="acknowledgeWarnings" value="true" data-bind-checked="acknowledgeWarnings" /> I have read the warnings and accept them</label></template>
         <template data-if="canEditDrafts"><button type="button" class="ef-button" data-event="saveDraft" data-bind-disabled="busy">Save draft</button></template>
+        <template data-if="canDeleteDraft"><button type="button" class="ef-button" data-event="deleteDraft" data-bind-disabled="busy">Delete draft…</button></template>
+        <template data-if="confirmingDeleteDraft">
+          <div id="delete-draft-confirm" class="ef-stack" role="alertdialog" aria-labelledby="delete-draft-text">
+            <p id="delete-draft-text">Delete this draft and its review? Unpublished changes are lost. Published versions are not affected.</p>
+            <button type="button" class="ef-button" data-event="confirmDeleteDraft" data-bind-disabled="busy">Delete draft</button>
+            <button type="button" class="ef-button" data-event="cancelDeleteDraft">Keep it</button>
+          </div>
+        </template>
         <h3>Review</h3>
         <p id="draft-review" data-text="draftReview"></p>
         <template data-if="canRequestReview"><button type="button" class="ef-button" data-event="requestReview" data-bind-disabled="busy">Submit for review</button></template>
