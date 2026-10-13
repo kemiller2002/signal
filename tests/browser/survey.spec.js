@@ -20,7 +20,8 @@ async function open(page, link) {
   await expect(page.locator("html")).toHaveAttribute("data-kernel", "running");
 }
 
-const pick = (page, row) => page.locator(`[data-row="${row}"] input[type="radio"]`);
+// Each row holds every input kind, hidden but the one it shows; name the input by its event.
+const pick = (page, row) => page.locator(`[data-row="${row}"] input[data-event="answered"]`);
 
 test("a published survey is fetched from the site, answered and submitted", async ({ page }) => {
   const seen = requests(page);
@@ -132,4 +133,28 @@ test("an invitation's locale sets the page's language, and stays in the link", a
   await pick(page, "3-1").check();
   // Still link format 2 (first byte 2) after the address follows the answer.
   await expect.poll(() => Buffer.from(new URL(page.url()).hash.split("#r=")[1].replaceAll("-", "+").replaceAll("_", "/"), "base64")[0]).toBe(2);
+});
+
+test("rankings, allocations, best-worst, ranges and option trees work on the page", async ({ page }) => {
+  await open(page, links.compound);
+  await expect(page.locator("#survey-title")).toHaveText("Compound kinds");
+  const number = (row) => page.locator(`[data-row="${row}"] input[type="number"]`);
+  const type = async (row, value) => { await number(row).fill(value); await number(row).press("Tab"); };
+
+  // Ranking: positions 1..3; allocation: 10 points.
+  for (const [row, value] of [["0-n0", "2"], ["0-n1", "1"], ["0-n2", "3"], ["1-n0", "5"], ["1-n1", "3"], ["1-n2", "2"]]) await type(row, value);
+  await expect(number("0-n1")).toHaveValue("1");
+  // Best and least on two scales.
+  await page.locator('[data-row="2-p0"] input[data-event="pickedBest"]').check();
+  await page.locator('[data-row="2-p2"] input[data-event="pickedWorst"]').check();
+  // Range ends, then a leaf of the tree and an area.
+  await type("3-n0", "2");
+  await type("3-n1", "6");
+  await expect(page.locator('[data-row="4-0"]')).toContainText("— Backend");
+  await pick(page, "4-0").check();
+  await page.locator('[data-row="5-t1"] input[type="checkbox"]').check();
+
+  await expect(page.locator("#progress")).toHaveText("6 of 6 answered");
+  await page.locator("#submit-answers").click();
+  await expect(page.locator("#submitted-title")).toHaveText("Submitted");
 });
