@@ -2382,6 +2382,30 @@
       },
       "source": "github-issue",
       "sourceReference": "https://github.com/kemiller2002/signal/issues/104"
+    },
+    {
+      "id": "GH-113",
+      "title": "Follow-ups on signal#113: CI to green, signed-in administration views exercised against a test-only fake GitHub store, survey questions grouped in fieldsets",
+      "description": "Coordinator follow-up to GH-104 (signal#104): watch PR #113 CI and fix failures at the root; replace the largest UNKNOWN (signed-in admin views) with outcome tests against a deterministic network-boundary fake of the GitHub store; group survey questions in fieldsets with legends (ULI-A06).",
+      "tags": [
+        "ui-conformance",
+        "visual-engineering"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-10-13T18:57:08.000Z",
+      "updatedAt": "2026-10-13T18:57:08.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "github-pull-request",
+      "sourceReference": "https://github.com/kemiller2002/signal/pull/113"
     }
   ]
 }

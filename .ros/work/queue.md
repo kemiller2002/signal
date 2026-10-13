@@ -5,6 +5,7 @@
 | ECHELON-UPGRADE-2026-09-21 | Reconcile current Echelon engineering capabilities | complete | tooling,ordo,ros,limen | high |
 | FOUNDATIONS-APPLICABILITY | FOUNDATIONS-APPLICABILITY | complete |  |  |
 | GH-104 | Assess and adopt universal UI layout/action conformance (UI-LAYOUT-INTERACTION@1.0.0) | complete | ui-conformance, visual-engineering | high |
+| GH-113 | Follow-ups on signal#113: CI to green, signed-in administration views exercised against a test-only fake GitHub store, survey questions grouped in fieldsets | ready | ui-conformance, visual-engineering | high |
 | GH-5 | Prepare Signal implementation baseline | abandoned | readiness,bootstrap | high |
 | LIMEN-0-7-0 | LIMEN-0-7-0 | complete |  |  |
 | LIMEN-0-7-0-FND | LIMEN-0-7-0-FND | complete |  |  |
@@ -105,7 +106,7 @@
 | WI-0089 | Escaped defect from #73: the console's midpoint fixture gives an allocation only its first option, a sparse answer that does not round-trip through the link | complete | signal, defect, escaped-defect:#73 | high |
 | WI-0090 | Escaped defect from #73: a template that declares UsesRanking or UsesAllocation is refused as unsupported although the engine supports both since #73 (ACR-003, CAN-001) | complete | signal, defect, escaped-defect:#73 | high |
 | WI-0091 | Signal 05f: template localization and selector accessibility metadata (CAN-001), and the authoring workspace areas still missing from the console: validation rules, presentation, explicit scoring configuration and localization (AUT-001) | complete | signal, authoring, order:05f | medium |
-| WI-0092 | Signal ARX-002: obligations with discharge evidence and explicit unknown and searched-not-found knowledge across the seven state systems (authoring, respondent, anonymous finalization, import, group aggregation, report-state persistence, report snapshots) | ready | signal, ordo, quality | medium |
+| WI-0092 | Signal ARX-002: obligations with discharge evidence and explicit unknown and searched-not-found knowledge across the seven state systems (authoring, respondent, anonymous finalization, import, group aggregation, report-state persistence, report snapshots) | active | signal, ordo, quality | medium |
 | WI-0093 | Every gap-analysis row marked tested names at least one test (FileTests: test name), resolved by GapAnalysisTests; upgrade the file-only citations row by row | captured | signal, quality, gap-analysis | medium |
 | WI-0094 | Adopt echelon-current 1.19.0 through Conditor 0.10.0: declare forma and folio in conditor.json and move Forma 0.4.1 to 0.5.0 (registry opt-in step 0) | complete | signal, platform, conditor | high |
 | WI-0095 | Adopt echelon-current 1.20.0 through Conditor 0.10.0: Forma 0.5.0 to 0.6.1 and Folio 0.3.0 to 0.4.0 (registry step 1) | complete | signal, platform, conditor | high |
