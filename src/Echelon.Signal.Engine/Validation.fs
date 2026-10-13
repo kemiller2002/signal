@@ -201,12 +201,36 @@ let private compatibility (draft: Draft) =
           if not (supportedCapabilities.Contains cap) then
               block "COMPAT-CAPABILITY" (TemplateCanonical.capabilityName cap) $"Capability '{TemplateCanonical.capabilityName cap}' is not supported by this engine." ]
 
+/// Every fixture answer survives the link encoding (AUT-004 §41): it has a
+/// slot state within its slot and decodes back to itself. An answer to a
+/// question the template does not have is left to the fixture run, which
+/// reports it as an invalid answer.
+let private fixtureRoundTrip (draft: Draft) =
+    let byId = questions draft.Content |> List.map (fun (_, q) -> q.Id, q) |> Map.ofList
+    let slots = layout draft.Content |> List.map (fun s -> s.QuestionId, s) |> Map.ofList
+
+    [ for f in draft.Fixtures do
+          for KeyValue(id, answer) in f.Answers do
+              match byId.TryFind id with
+              | None -> ()
+              | Some q ->
+                  let state = slotState q (Some answer)
+
+                  if state = 0UL || state >= slots[id].States || slotAnswer q state <> Ok(Some answer) then
+                      finding
+                          EncodingCategory
+                          Blocker
+                          "ENCODING-FIXTURE-ROUND-TRIP"
+                          f.Id
+                          $"Fixture '{f.Id}': the answer to '{id}' does not encode and decode back to itself in the link." ]
+
 let private encoding (policy: Policy) (draft: Draft) =
     let budget = policy.MaximumUrlCharacters - policy.BaseUrlAllowance
     let size = capacity draft.Content
 
     [ if size.EncodedCharacters > budget then
           finding EncodingCategory Blocker "ENCODING-URL-BUDGET" "" $"The largest response is {size.EncodedCharacters} characters; the budget is {budget}." ]
+    @ fixtureRoundTrip draft
 
 /// Prompt wording that asks for direct identification (AUT-003 §31). It
 /// cannot judge intent; it surfaces the obvious cases.
