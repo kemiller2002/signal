@@ -98,3 +98,4 @@
 | WI-0083 | Measurement baseline: index of Signal's historical evidence sources and Echelon capability adoption commits | complete | signal,measurement | medium |
 | WI-0084 | Neutralize spreadsheet formulas in every Signal CSV export (CSV injection) | complete | signal,security | high |
 | WI-0085 | Neutralize stored snapshot CSVs on delivery (snapshots stored before WI-0084) | complete | signal,security | high |
+| WI-0086 | Escaped defects from #73: partial compound answers are not in the link, and out-of-order ranking positions collapse | ready | signal,defect, escaped-defect:#73 | high |

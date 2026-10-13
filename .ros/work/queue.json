@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 86,
+  "nextSeq": 87,
   "items": [
     {
       "id": "WI-0001",
@@ -2022,6 +2022,30 @@
       "attachments": [],
       "createdAt": "2026-10-13T12:34:53Z",
       "updatedAt": "2026-10-13T12:38:36Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0086",
+      "title": "Escaped defects from #73: partial compound answers are not in the link, and out-of-order ranking positions collapse",
+      "description": "Found by the longest-link test (PR #90). 1) A partial ranking, a half-filled range or a best-worst with one side is held in the session and counted as answered, but the envelope cannot encode it, so the link leaves it out: a reload or copied link loses it and the URL no longer equals the response (LURL-001). A partial allocation encodes but decodes with blanks at the minimum, so session and link disagree. 2) Ranking positions typed out of order collapse (typing 8 first shows 1). Fix without a link-format change: unencodable partials are held as pending input, not answered and not in the response; rankings are held as a position map until complete; allocations carry every option. Browser tests for partial and out-of-order input on all engines, including the cross-browser workflow.",
+      "tags": [
+        "signal,defect",
+        "escaped-defect:#73"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-10-13T13:32:32Z",
+      "updatedAt": "2026-10-13T13:32:35Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

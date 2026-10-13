@@ -101,7 +101,10 @@ type Response =
       Refusal: string option
       /// Once a submit or move was refused for missing answers, unanswered
       /// required questions say so until answered (SCS-014).
-      ShowMissing: bool }
+      ShowMissing: bool
+      /// Compound input the link cannot carry yet (WI-0086): not an answer,
+      /// not counted, not in the link; the page says so until it is finished.
+      Pending: Map<string, GenericInputs.Held> }
 
 [<NoComparison>]
 type Session =
@@ -208,6 +211,7 @@ let receivedAt (now: DateTimeOffset) (fetched: Fetched) (session: Session) : Ses
                       Phase = if Submission.isFinal { Binding = envelope.Binding; Answers = Map.empty } then Submitted else Answering
                       Now = now
                       ShowMissing = false
+                      Pending = Map.empty
                       Position = GenericPaging.reach published.Form.Content envelope.Answers (GenericPaging.resume published.Form.Content envelope.Answers) page
                       Refusal = None }
                     |> stamped
@@ -325,6 +329,8 @@ let private submit (r: Response) (entropy: byte[]) =
     let refuse text = { r with Refusal = Some text }
 
     match (result r).Evaluation.Completion with
+    | _ when not r.Pending.IsEmpty ->
+        refuse $"""{plural r.Pending.Count "answer is" "answers are"} not finished. Finish or clear each answer marked "not in the link yet" before you submit."""
     | Rules.ReadyToSubmit
     | Rules.Terminated _ ->
         match finalOf r r.Binding entropy with
@@ -343,13 +349,23 @@ let private submit (r: Response) (entropy: byte[]) =
     | Rules.InProgress missing -> refuse $"""{plural missing "required question still needs" "required questions still need"} an answer."""
     | Rules.Invalid problems -> refuse $"""{plural problems "answer breaks" "answers break"} this survey's rules. Change it before you submit."""
 
-/// Applies a compound input's change to its question's answer.
-let private compound (r: Response) (questionId: string) (change: Question -> AnswerState option -> AnswerState option option) (session: Session) =
+/// Applies a compound input's change: what the link can carry becomes the
+/// answer, the rest is held (WI-0086).
+let private compound
+    (r: Response)
+    (questionId: string)
+    (change: Question -> AnswerState option -> GenericInputs.Held option -> (AnswerState option * GenericInputs.Held option) option)
+    (session: Session)
+    =
     match tryQuestion r.Published.Form.Content questionId with
     | Some q ->
-        match change q (r.Answers.TryFind questionId) with
-        | Some(Some answer) -> Responding { r with Answers = r.Answers.Add(questionId, answer); Refusal = None }
-        | Some None -> Responding { r with Answers = r.Answers.Remove questionId; Refusal = None }
+        match change q (r.Answers.TryFind questionId) (r.Pending.TryFind questionId) with
+        | Some(answer, held) ->
+            Responding
+                { r with
+                    Answers = (match answer with Some a -> r.Answers.Add(questionId, a) | None -> r.Answers.Remove questionId)
+                    Pending = (match held with Some h -> r.Pending.Add(questionId, h) | None -> r.Pending.Remove questionId)
+                    Refusal = None }
         | None -> session
     | None -> session
 
@@ -383,6 +399,8 @@ and private step (msg: Msg) (session: Session) : Session =
             Responding
                 { r with
                     Answers = r.Answers.Add(questionId, state)
+                    // A chosen answer (such as "Prefer not to answer") replaces what was held.
+                    Pending = r.Pending.Remove questionId
                     Refusal = None }
         | Chose _ -> session
         | Toggled(questionId, optionId, selected) ->
@@ -411,8 +429,8 @@ and private step (msg: Msg) (session: Session) : Session =
                 let next = if selected then current.Add optionId else current.Remove optionId
                 Responding { r with Answers = (if next.IsEmpty then r.Answers.Remove questionId else r.Answers.Add(questionId, Value(Choices next))); Refusal = None }
             | _ -> session
-        | Numbered(questionId, inputId, text) -> compound r questionId (fun q answer -> GenericInputs.numbered q answer inputId text) session
-        | Picked(questionId, side, optionId) -> compound r questionId (fun q answer -> GenericInputs.picked q answer side optionId) session
+        | Numbered(questionId, inputId, text) -> compound r questionId (fun q answer held -> GenericInputs.typed q answer held inputId text) session
+        | Picked(questionId, side, optionId) -> compound r questionId (fun q answer held -> GenericInputs.pickedHeld q answer held side optionId) session
         | Turned direction ->
             match GenericPaging.move r.Published.Form.Content r.Answers r.Position direction with
             | Ok position -> Responding { r with Position = position; Refusal = None }
