@@ -38,7 +38,9 @@ type Edge =
     { /// Fresh cryptographically secure bytes for an anonymous submission id.
       Entropy: unit -> byte[]
       /// Today's date (UTC), for an invitation's expiry (VER-003).
-      Today: unit -> System.DateOnly }
+      Today: unit -> System.DateOnly
+      /// The time now (UTC), for a survey timer (DF-SIGNAL-2026-0010).
+      Now: unit -> System.DateTimeOffset }
 
 /// Every event the page may send, so a test can hold index.html to it. An
 /// `answered` event always comes from a checked radio: the browser fires
@@ -87,7 +89,8 @@ type State =
 /// Crypto `getRandomValues` source (ARX-004).
 let secureEdge =
     { Entropy = fun () -> System.Security.Cryptography.RandomNumberGenerator.GetBytes UrlState.IdLength
-      Today = fun () -> System.DateOnly.FromDateTime System.DateTime.UtcNow }
+      Today = fun () -> System.DateOnly.FromDateTime System.DateTime.UtcNow
+      Now = fun () -> System.DateTimeOffset.UtcNow }
 
 let initialWith (edge: Edge) =
     { Session = start Pilot.assessment

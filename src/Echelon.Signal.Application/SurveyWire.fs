@@ -146,7 +146,9 @@ let private step (state: State) (inbound: Inbound) =
                 let id, state = correlation "copy" state
                 { state with Pending = state.Pending.Add id; CopyNotice = None }, [ CopyText(id, link) ], None
         | Event(name, key, value) ->
-            let state = { state with Session = update (message state name (defaultArg key "") (defaultArg value "")) state.Session }
+            // The time first, so a survey timer is judged at this moment.
+            let ticked = { state with Session = update (Ticked(state.Edge.Now())) state.Session }
+            let state = { ticked with Session = update (message ticked name (defaultArg key "") (defaultArg value "")) ticked.Session }
             let state, effects = synchronize (name = "pageNext" || name = "pageBack") state
             state, effects, None
         | LocationChanged location ->
@@ -172,7 +174,7 @@ let private step (state: State) (inbound: Inbound) =
                 synchronize
                     false
                     { state with
-                        Session = received (state.Edge.Today()) (fetched outcome) state.Session
+                        Session = receivedAt (state.Edge.Now()) (fetched outcome) state.Session
                         Fetch = None }
 
             state, effects, None

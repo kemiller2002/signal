@@ -107,7 +107,7 @@ let ``every stored template starts groups through the generic pipeline, and its 
 
         match GenericEnvelope.decodeWithTerms form.Content form.Reference (link.Split("#r=")[1]) with
         | Ok(envelope, terms) ->
-            Assert.Equal({ GenericEnvelope.Terms.Locale = Some "fr-CA"; GenericEnvelope.Terms.ExpiresOn = Some(DateOnly(2100, 1, 1)) }, terms)
+            Assert.Equal({ GenericEnvelope.Terms.Locale = Some "fr-CA"; GenericEnvelope.Terms.StartedAt = None; GenericEnvelope.Terms.ExpiresOn = Some(DateOnly(2100, 1, 1)) }, terms)
             Assert.True(match envelope.Binding with AnonymousInvitation(_, g) -> g = group | _ -> false)
         | Error e -> failwith $"%A{e}"
 

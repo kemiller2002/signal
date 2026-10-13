@@ -79,10 +79,11 @@ let layout (content: Content) : Slot list =
         { QuestionId = q.Id; States = states; Bits = bitsFor states })
 
 /// The most bytes invitation terms add to a generic link (format 2): flags,
-/// a locale of up to 24 characters with its length, and a 2-byte expiry day
+/// a locale of up to 24 characters with its length, a 2-byte expiry day and
+/// a 4-byte start minute
 /// (`GenericEnvelope.TermsMaximumBytes`, which a test holds equal).
 [<Literal>]
-let TermsOverheadBytes = 1 + 1 + 24 + 2
+let TermsOverheadBytes = 1 + 1 + 24 + 2 + 4
 
 /// Bytes of the largest envelope around the answers: version and binding
 /// kind, the 8-byte template reference, the largest binding (two 16-byte

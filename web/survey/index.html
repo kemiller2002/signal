@@ -81,6 +81,9 @@
       <h2 id="questions-title">Questions</h2>
       <p id="link-disclosure" class="ef-field__description">This page's address contains your answers, so you can come back to them. Anyone you give the address to can see them; it is never sent to a server.</p>
       <p id="progress" role="status" data-text="progress"></p>
+      <template data-if="hasTimer">
+        <p id="timer-notice" role="status" data-text="timerNotice"></p>
+      </template>
       <template data-if="hasPages">
         <p id="page-label" data-text="pageLabel"></p>
       </template>

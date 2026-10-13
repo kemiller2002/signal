@@ -37,10 +37,10 @@ let TermsFormatVersion = 2
 [<Literal>]
 let MaximumLocaleLength = 24
 
-/// The most bytes terms add: flags, the locale's length and text, and the
-/// expiry day.
+/// The most bytes terms add: flags, the locale's length and text, the
+/// expiry day, and the start minute (DF-SIGNAL-2026-0010).
 [<Literal>]
-let TermsMaximumBytes = 1 + 1 + MaximumLocaleLength + 2
+let TermsMaximumBytes = 1 + 1 + MaximumLocaleLength + 2 + 4
 
 /// What an invitation says beyond its binding. Locale changes presentation
 /// only; it never changes scoring or identity. Expiry is the last UTC day
@@ -48,9 +48,21 @@ let TermsMaximumBytes = 1 + 1 + MaximumLocaleLength + 2
 /// envelope's integrity check, so editing either invalidates the link.
 type Terms =
     { Locale: string option
-      ExpiresOn: DateOnly option }
+      ExpiresOn: DateOnly option
+      /// When a timed response was first opened (DF-SIGNAL-2026-0010): a
+      /// whole UTC minute, never finer, so it says nothing more about the
+      /// respondent than roughly when they started. Inside the integrity
+      /// check like the rest of the terms.
+      StartedAt: DateTimeOffset option }
 
-let noTerms = { Locale = None; ExpiresOn = None }
+let noTerms = { Locale = None; ExpiresOn = None; StartedAt = None }
+
+let private epochInstant = DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)
+
+/// An instant as the link carries it: the UTC minute it falls in.
+let startMinute (instant: DateTimeOffset) =
+    let utc = instant.ToUniversalTime()
+    DateTimeOffset(utc.Year, utc.Month, utc.Day, utc.Hour, utc.Minute, 0, TimeSpan.Zero)
 
 let private epoch = DateOnly(1970, 1, 1)
 let private localePattern = Text.RegularExpressions.Regex("^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8}){0,3}$")
@@ -61,13 +73,20 @@ let termsProblem (terms: Terms) : string option =
     | Some locale, _ when locale.Length > MaximumLocaleLength || not (localePattern.IsMatch locale) ->
         Some $"'{locale}' is not a language tag of at most {MaximumLocaleLength} characters (for example en-GB)."
     | _, Some day when day < epoch || day.DayNumber - epoch.DayNumber > 0xFFFF -> Some $"{day} is outside the dates a link can carry."
-    | _ -> None
+    | _ ->
+        match terms.StartedAt with
+        | Some start when start <> startMinute start || start < epochInstant || (start - epochInstant).TotalMinutes > float UInt32.MaxValue ->
+            Some $"{start:O} is not a whole UTC minute a link can carry."
+        | _ -> None
 
 let private termsBytes (terms: Terms) : byte[] =
     if terms = noTerms then
         [||]
     else
-        [| yield (if terms.Locale.IsSome then 1uy else 0uy) ||| (if terms.ExpiresOn.IsSome then 2uy else 0uy)
+        [| yield
+               (if terms.Locale.IsSome then 1uy else 0uy)
+               ||| (if terms.ExpiresOn.IsSome then 2uy else 0uy)
+               ||| (if terms.StartedAt.IsSome then 4uy else 0uy)
            match terms.Locale with
            | Some locale ->
                yield byte locale.Length
@@ -78,6 +97,11 @@ let private termsBytes (terms: Terms) : byte[] =
                let days = day.DayNumber - epoch.DayNumber
                yield byte (days >>> 8)
                yield byte (days &&& 0xFF)
+           | None -> ()
+           match terms.StartedAt with
+           | Some start ->
+               let minutes = uint32 (start - epochInstant).TotalMinutes
+               yield! [| for shift in [ 24; 16; 8; 0 ] -> byte (minutes >>> shift) |]
            | None -> () |]
 
 /// Reads terms at `at`; the terms and where the item count starts. Only the
@@ -91,7 +115,7 @@ let private readTerms (body: byte[]) (at: int) : Result<Terms * int, DecodeError
     else
         let flags = body[at]
 
-        if flags = 0uy || flags &&& 0xFCuy <> 0uy then
+        if flags = 0uy || flags &&& 0xF8uy <> 0uy then
             Error InvalidTerms
         else
             let locale, next =
@@ -109,11 +133,20 @@ let private readTerms (body: byte[]) (at: int) : Result<Terms * int, DecodeError
                          Error InvalidTerms),
                     at + 2 + length
 
-            match locale with
+            let expiry =
+                match locale with
+                | Error e -> Error e
+                | Ok locale when flags &&& 2uy = 0uy -> Ok({ noTerms with Locale = locale }, next)
+                | Ok _ when next + 2 > body.Length -> Error InvalidTerms
+                | Ok locale -> Ok({ noTerms with Locale = locale; ExpiresOn = Some(epoch.AddDays((int body[next] <<< 8) ||| int body[next + 1])) }, next + 2)
+
+            match expiry with
             | Error e -> Error e
-            | Ok locale when flags &&& 2uy = 0uy -> Ok({ Locale = locale; ExpiresOn = None }, next)
-            | Ok _ when next + 2 > body.Length -> Error InvalidTerms
-            | Ok locale -> Ok({ Locale = locale; ExpiresOn = Some(epoch.AddDays((int body[next] <<< 8) ||| int body[next + 1])) }, next + 2)
+            | Ok(terms, next) when flags &&& 4uy = 0uy -> Ok(terms, next)
+            | Ok _ when next + 4 > body.Length -> Error InvalidTerms
+            | Ok(terms, next) ->
+                let minutes = body[next .. next + 3] |> Array.fold (fun (acc: uint32) b -> (acc <<< 8) ||| uint32 b) 0u
+                Ok({ terms with StartedAt = Some(epochInstant.AddMinutes(float minutes)) }, next + 4)
 
 /// The reference a URL carries for a published template version.
 let referenceOf (surveyId: string) (version: string) (content: Content) = TemplateCanonical.reference surveyId version content

@@ -481,6 +481,53 @@
     "version": "1.0.0"
   },
   {
+    "created": "2026-10-13",
+    "id": "DF-SIGNAL-2026-0010",
+    "owners": [
+      "signal"
+    ],
+    "path": "research/decisions/DF-SIGNAL-2026-0010--a-survey-timer-starts-from-a-minute-in-the-integrity-checked-link.md",
+    "provenance": {
+      "contributions": {
+        "EXE-20261009T042446720Z-a28d9579": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-13T10:26:07.764Z",
+          "operations": [
+            "created"
+          ],
+          "reason": "Survey timer start in the integrity-checked link (ARX-013, WI-0081)"
+        }
+      }
+    },
+    "related_documents": [
+      "research/decisions/DF-SIGNAL-2026-0006--respondent-links-carry-locale-and-expiry-in-link-format-2.md",
+      "research/decisions/DF-SIGNAL-2026-0008--timers-and-banks-are-optional-template-fields.md",
+      "docs/requirements/SIGNAL-DEEP-LINKING.md",
+      "docs/requirements/implementation-gap-analysis.md"
+    ],
+    "review_cycle": "on-trigger",
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "timers",
+      "respondent",
+      "url",
+      "integrity",
+      "privacy",
+      "anonymity"
+    ],
+    "title": "A survey timer runs from a start minute carried in the respondent link's integrity-checked terms, stamped at first open; anonymous links gain only that minute",
+    "updated": "2026-10-13",
+    "version": "1.0.0"
+  },
+  {
     "created": "2026-10-05",
     "id": "DF-SIGNAL-FND-2026-0001",
     "owners": [
