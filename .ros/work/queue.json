@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 87,
+  "nextSeq": 88,
   "items": [
     {
       "id": "WI-0001",
@@ -2046,6 +2046,31 @@
       "attachments": [],
       "createdAt": "2026-10-13T13:32:32Z",
       "updatedAt": "2026-10-13T13:48:56Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0087",
+      "title": "Escaped defect from #29: the validation summary omits the Rules category, so rule findings never appear in the per-category summary (AUT-005)",
+      "description": "Validation.summary lists eight categories but not RulesCategory, which Findings.fs defines and RuleChecks emits since WI-0043 (PR #29, c718e89). Found while re-assessing AUT-005 in WI-0081 item 6.",
+      "tags": [
+        "signal",
+        "defect",
+        "escaped-defect:#29"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-10-13T14:16:30Z",
+      "updatedAt": "2026-10-13T14:20:59Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
