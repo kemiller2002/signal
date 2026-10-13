@@ -71,6 +71,12 @@ let private nonEmpty (what: string) (text: string) =
 
 /// A question's middle answer: the middle value, or a multi-choice's first option.
 let private midpoint (q: Question) =
+    match q.Answer with
+    | Primitives.Ranking r -> Some(Responses.Value(Responses.Order(r.Options |> List.truncate (GenericInputs.positions r) |> List.map _.Id)))
+    | Primitives.Allocation a -> Some(Responses.Value(Responses.Allocated(Map.ofList [ a.Options.Head.Id, a.Total ])))
+    | Primitives.BestWorst os -> Some(Responses.Value(Responses.BestWorstPick(os.Head.Id, (List.last os).Id)))
+    | Primitives.BoundedRange b -> Some(Responses.Value(Responses.TickRange(0, Primitives.ticks b - 1)))
+    | _ ->
     match GenericSession.toggles q, GenericSession.choices q |> List.filter (fun (s, _) -> match s with Responses.Value _ -> true | _ -> false) with
     | (first, _) :: _, _ -> Some(Responses.Value(Responses.Choices(Set.singleton first)))
     | [], [] -> None

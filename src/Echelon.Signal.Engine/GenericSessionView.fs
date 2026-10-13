@@ -5,6 +5,7 @@
 /// Pure.
 module Echelon.Signal.Engine.GenericSessionView
 
+open System
 open Echelon.Signal.Engine.Responses
 open Echelon.Signal.Engine.Template
 open Echelon.Signal.Engine.UrlState
@@ -13,35 +14,60 @@ open Echelon.Signal.Engine.GenericSession
 let private text = View.Text
 let private flag = View.Flag
 
-let private row (key: string) (kind: string) (fields: (string * View.Scalar) list) =
-    [ "id", text key
-      "hideSection", flag (kind <> "section")
-      "hideQuestion", flag (kind <> "question")
-      "hideOption", flag (kind <> "option")
-      "hideToggle", flag (kind <> "toggle") ]
-    @ fields
+/// Every row carries every field the page's row template binds; a row's
+/// kind decides which of its parts show.
+let private kinds = [ "section"; "question"; "option"; "toggle"; "number"; "pair" ]
 
-/// A question's toggles (multi-choice options) and choices, as rows.
+let private defaults =
+    [ "title", text ""
+      "prompt", text ""
+      "label", text ""
+      "help", text ""
+      "group", text ""
+      "checked", flag false
+      "locked", flag true
+      "numberValue", text ""
+      "numberMin", text ""
+      "numberMax", text ""
+      "numberStep", text ""
+      "groupBest", text ""
+      "groupWorst", text ""
+      "bestChecked", flag false
+      "worstChecked", flag false ]
+
+let private row (key: string) (kind: string) (fields: (string * View.Scalar) list) =
+    let set = Map.ofList fields
+
+    [ "id", text key ]
+    @ (kinds |> List.map (fun k -> "hide" + string (Char.ToUpperInvariant k[0]) + k.Substring 1, flag (k <> kind)))
+    @ (defaults |> List.map (fun (name, value) -> name, set |> Map.tryFind name |> Option.defaultValue value))
+
+/// A question's answer rows: toggles (multi-choice and tree options),
+/// choices, number inputs and best-worst pairs.
 let private choiceRows (qi: int) (q: Question) (answer: AnswerState option) (locked: bool) =
     let selected =
         match answer with
         | Some(Value(Choices ids)) -> ids
         | _ -> Set.empty
 
-    let choice key kind label isChecked =
-        row
-            key
-            kind
-            [ "title", text ""
-              "prompt", text ""
-              "label", text label
-              "help", text ""
-              "group", text $"q{qi}"
-              "checked", flag isChecked
-              "locked", flag locked ]
+    let common label = [ "label", text label; "group", text $"q{qi}"; "locked", flag locked ]
 
-    (toggles q |> List.mapi (fun ti (optionId, label) -> choice $"{qi}-t{ti}" "toggle" label (selected.Contains optionId)))
-    @ (choices q |> List.mapi (fun ci (state, label) -> choice $"{qi}-{ci}" "option" label (answer = Some state)))
+    (toggles q |> List.mapi (fun ti (optionId, label) -> row $"{qi}-t{ti}" "toggle" (common label @ [ "checked", flag (selected.Contains optionId) ])))
+    @ (GenericInputs.numberInputs q
+       |> List.mapi (fun ni input ->
+           row
+               $"{qi}-n{ni}"
+               "number"
+               (common input.Label
+                @ [ "numberValue", text (GenericInputs.numberShown q answer input.Id)
+                    "numberMin", text input.Minimum
+                    "numberMax", text input.Maximum
+                    "numberStep", text input.Step ])))
+    @ (GenericInputs.pairs q
+       |> List.mapi (fun pi (optionId, label) ->
+           let isBest, isWorst = GenericInputs.pairShown answer optionId
+           row $"{qi}-p{pi}" "pair" (common label @ [ "groupBest", text $"q{qi}-best"; "groupWorst", text $"q{qi}-worst"; "bestChecked", flag isBest; "worstChecked", flag isWorst ])))
+    @ (choices q |> List.mapi (fun ci (state, label) -> row $"{qi}-{ci}" "option" (common label @ [ "checked", flag (answer = Some state) ])))
 
 let private rows (r: Response) =
     let applicable = (Rules.applicability r.Published.Form.Content r.Answers).Questions
@@ -57,22 +83,11 @@ let private rows (r: Response) =
         if shown.IsEmpty then
             []
         else
-            row $"s{si}" "section" [ "title", text section.Title; "prompt", text ""; "label", text ""; "help", text ""; "group", text ""; "checked", flag false; "locked", flag true ]
+            row $"s{si}" "section" [ "title", text section.Title ]
             :: (shown
                 |> List.collect (fun (qi, q) ->
-                    let answer = r.Answers.TryFind q.Id
-
-                    row
-                        $"{qi}"
-                        "question"
-                        [ "title", text ""
-                          "prompt", text q.Prompt
-                          "label", text ""
-                          "help", text (defaultArg q.HelpText "")
-                          "group", text $"q{qi}"
-                          "checked", flag false
-                          "locked", flag true ]
-                    :: choiceRows qi q answer sealedResponse)))
+                    let help = [ defaultArg q.HelpText ""; GenericInputs.hint q ] |> List.filter ((<>) "") |> String.concat " "
+                    row $"{qi}" "question" [ "prompt", text q.Prompt; "help", text help; "group", text $"q{qi}" ] :: choiceRows qi q (r.Answers.TryFind q.Id) sealedResponse)))
 
 /// Which part of the page shows: loading, refused, answering or submitted.
 let phaseName =

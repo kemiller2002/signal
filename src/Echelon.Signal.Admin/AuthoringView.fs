@@ -25,6 +25,9 @@ let private kindLabel (q: Template.Question) =
     | Primitives.SingleChoice os -> $"one of {os.Length}"
     | Primitives.MultiChoice m -> $"any of {m.Options.Length}"
     | Primitives.BoundedNumber b -> $"a number {b.Minimum}-{b.Maximum}"
+    | Primitives.Ranking r -> $"an order of {r.Options.Length}"
+    | Primitives.Allocation a -> $"{a.Total} points shared by {a.Options.Length}"
+    | Primitives.BestWorst os -> $"best and least of {os.Length}"
     | other -> (sprintf "%A" other).Split(' ')[0]
 
 let project (model: Model) : (string * ViewValue) list =

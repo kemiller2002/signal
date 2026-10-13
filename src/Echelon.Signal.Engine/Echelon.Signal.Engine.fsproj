@@ -52,6 +52,7 @@
     <Compile Include="Import.fs" />
     <Compile Include="GenericEnvelope.fs" />
     <Compile Include="GenericImport.fs" />
+    <Compile Include="GenericInputs.fs" />
     <Compile Include="GenericSession.fs" />
     <Compile Include="GenericSessionView.fs" />
     <Compile Include="Aggregation.fs" />

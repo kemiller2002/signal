@@ -87,6 +87,41 @@ let mixedEditor =
     |> Result.bind (Authoring.apply Authoring.AddMidpointFixture)
     |> okOrFail
 
+/// Every compound kind (WI-0081): ranking, allocation and best-worst
+/// authored in the console; a range, an option tree and a tree of toggles
+/// added as template data.
+let compoundEditor =
+    let node id label parent : Primitives.TreeNode = { Option = { Id = id; Label = label; Score = None }; Parent = parent }
+    let tree = [ node "eng" "Engineering" None; node "be" "Backend" (Some "eng"); node "fe" "Frontend" (Some "eng"); node "des" "Design" None ]
+
+    let extra id prompt answer preset : Question =
+        { Id = id
+          Prompt = prompt
+          HelpText = None
+          Answer = answer
+          Selector = { Preset = preset; Labels = [] }
+          SpecialStates = []
+          Required = true
+          Tags = [] }
+
+    let authored =
+        Authoring.start "COMPOUND" "Compound kinds" |> okOrFail
+        |> Authoring.apply (Authoring.AddSection "Everything")
+        |> add "S1" "Put these in order of importance." QuestionKinds.Rank "Speed, Quality, Cost"
+        |> add "S1" "Share 10 points by how much time each takes." QuestionKinds.Allocate "Meetings, Building, Fixing"
+        |> add "S1" "Which fits the team best, and which least?" QuestionKinds.BestWorstPair "Calm, Busy, Chaotic"
+        |> okOrFail
+
+    let more =
+        [ extra "R1" "What is the usual team size range?" (BoundedRange { Minimum = 0.0; Maximum = 10.0; Step = 1.0; Decimals = 0 }) Selectors.RangeSlider
+          extra "T1" "Where do you work?" (Hierarchical(tree, true)) Selectors.CascadingSelect
+          extra "T2" "Which areas do you touch?" (HierarchicalMulti(tree, ParentIndependent, AnyCount)) Selectors.TreeMultiSelect ]
+
+    let withMore =
+        more |> List.fold (fun (e: Authoring.Editor) q -> { e with Draft = Drafts.addQuestion "S1" q e.Draft |> okOrFail }) authored
+
+    withMore |> Authoring.apply Authoring.AddMidpointFixture |> okOrFail
+
 let DemoSurvey = "signal-demo"
 let DemoVersion = "1"
 
@@ -116,6 +151,9 @@ let private links =
       "localized",
       "web/survey/#r="
       + GenericEnvelope.invitationWith { Locale = Some "fr-CA"; ExpiresOn = Some(DateOnly(2100, 1, 1)) } DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group
+      // Ranking, allocation, best-worst, a range and option trees.
+      "compound", "web/survey/#r=" + GenericEnvelope.invitation "COMPOUND" "1" compoundEditor.Draft.Content Import.IdentifiedGroup instance group
+      "compoundFile", fst (publishedFile "COMPOUND" "1" compoundEditor.Draft.Content)
       // A test link (AUT-006 §60): marked on the page and refused by production import.
       "test", "web/survey/#r=" + GenericEnvelope.testLink DemoSurvey DemoVersion demo Import.IdentifiedGroup instance group Map.empty ]
 
@@ -132,11 +170,15 @@ let ``the demo survey file and the browser links are what the code produces`` ()
         File.WriteAllBytes(repoFile demoFile, demoBytes)
         let kindsFile, kindsBytes = publishedFile "MIXED" "1" mixedEditor.Draft.Content
         File.WriteAllBytes(repoFile kindsFile, kindsBytes)
+        let compoundFile, compoundBytes = publishedFile "COMPOUND" "1" compoundEditor.Draft.Content
+        File.WriteAllBytes(repoFile compoundFile, compoundBytes)
         File.WriteAllText(repoFile "tests/browser/fixtures/survey-links.json", linksJson ())
 
     Assert.Equal<byte[]>(demoBytes, File.ReadAllBytes(repoFile demoFile))
     let kindsFile, kindsBytes = publishedFile "MIXED" "1" mixedEditor.Draft.Content
     Assert.Equal<byte[]>(kindsBytes, File.ReadAllBytes(repoFile kindsFile))
+    let compoundFile, compoundBytes = publishedFile "COMPOUND" "1" compoundEditor.Draft.Content
+    Assert.Equal<byte[]>(compoundBytes, File.ReadAllBytes(repoFile compoundFile))
     Assert.Equal(linksJson (), readRepoFile "tests/browser/fixtures/survey-links.json")
 
 [<Fact>]
@@ -209,8 +251,9 @@ let ``a missing, altered, re-spelled or different file is refused with no fallba
 [<Fact>]
 let ``a template with a question this page cannot show is refused`` () =
     let section = demo.Sections[1]
-    let ranking = question "CTX-003" "Rank these." (Ranking { Options = [ option "a" "A"; option "b" "B" ]; Positions = None }) Selectors.RankingList [] []
-    let content = { demo with Sections = [ demo.Sections[0]; { section with Questions = section.Questions @ [ ranking ] } ] }
+    // A number scale with more values than the page shows as choices.
+    let wide = question "CTX-003" "How many?" (BoundedNumber { Minimum = 0.0; Maximum = 100.0; Step = 1.0; Decimals = 0 }) Selectors.NumericStepper [] []
+    let content = { demo with Sections = [ demo.Sections[0]; { section with Questions = section.Questions @ [ wide ] } ] }
     let file, bytes = publishedFile DemoSurvey "3" content
     let session = start ("#r=" + GenericEnvelope.invitation DemoSurvey "3" content Import.IdentifiedGroup instance group)
     Assert.Equal(Some file, wanted session)

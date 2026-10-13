@@ -17,6 +17,9 @@ type Kind =
     | Choice
     | Multi
     | Number
+    | Rank
+    | Allocate
+    | BestWorstPair
 
 /// Each kind's page value, its label, and what its details field holds.
 let kinds =
@@ -25,7 +28,10 @@ let kinds =
       "yesno", YesNo, "Yes or no", ""
       "choice", Choice, "One choice from a list", "the options, separated by commas"
       "multi", Multi, "Any choices from a list", "the options, separated by commas"
-      "number", Number, "A whole number on a short scale", "the lowest and highest numbers, e.g. 1-10" ]
+      "number", Number, "A whole number on a short scale", "the lowest and highest numbers, e.g. 1-10"
+      "rank", Rank, "Put options in order", "2 to 8 options, separated by commas"
+      "allocate", Allocate, "Share 10 points between options", "2 to 6 options, separated by commas"
+      "bestworst", BestWorstPair, "Pick the best and the least fitting", "3 to 12 options, separated by commas" ]
 
 let parse (value: string) =
     kinds |> List.tryFind (fun (key, _, _, _) -> key = value) |> Option.map (fun (_, kind, _, _) -> kind)
@@ -39,15 +45,21 @@ let isScored (q: Question) =
 let private ordinal5 preset labels special : AnswerDefinition * Selectors.Selector * Responses.SpecialState list =
     Ordinal 5, { Preset = preset; Labels = labels }, special
 
-let private optionsOf (details: string) =
+let private optionsBetween (low: int) (high: int) (details: string) =
     let labels = details.Split(',', StringSplitOptions.TrimEntries ||| StringSplitOptions.RemoveEmptyEntries) |> List.ofArray
 
-    if labels.Length < 2 || labels.Length > 20 then
-        Error "List between 2 and 20 options, separated by commas."
+    if labels.Length < low || labels.Length > high then
+        Error $"List between {low} and {high} options, separated by commas."
     elif (labels |> List.distinctBy (fun l -> l.ToLowerInvariant())).Length <> labels.Length then
         Error "Each option must be different."
     else
         Ok(labels |> List.mapi (fun i label -> { Id = $"o{i + 1}"; Label = label; Score = None }))
+
+let private optionsOf = optionsBetween 2 20
+
+/// The points an allocation question shares.
+[<Literal>]
+let AllocationPoints = 10
 
 let private rangeOf (details: string) =
     match details.Split([| '-'; ','; ' ' |], StringSplitOptions.RemoveEmptyEntries) with
@@ -86,6 +98,18 @@ let build (id: string) (prompt: string) (kind: Kind) (details: string) : Result<
                 { Preset = Selectors.CheckboxList; Labels = [] },
                 [ Responses.Declined ])
         | Number -> rangeOf details |> Result.map (fun b -> BoundedNumber b, { Preset = Selectors.NumericStepper; Labels = [] }, [ Responses.Declined ])
+        | Rank ->
+            optionsBetween 2 8 details
+            |> Result.map (fun os -> Ranking { Options = os; Positions = None }, { Preset = Selectors.RankingList; Labels = [] }, [ Responses.Declined ])
+        | Allocate ->
+            optionsBetween 2 6 details
+            |> Result.map (fun os ->
+                Allocation { Options = os; Total = AllocationPoints; Step = 1.0; ItemMinimum = 0; ItemMaximum = AllocationPoints },
+                { Preset = Selectors.ConstantSum; Labels = [] },
+                [ Responses.Declined ])
+        | BestWorstPair ->
+            optionsBetween 3 12 details
+            |> Result.map (fun os -> BestWorst os, { Preset = Selectors.BestWorstSet; Labels = [] }, [ Responses.Declined ])
 
     shaped
     |> Result.map (fun (answer, selector, special) ->

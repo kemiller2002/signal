@@ -46,7 +46,7 @@ let initialWith (edge: Wire.Edge) =
 let initial = initialWith Wire.secureEdge
 
 /// Every event the page may send, so a test can hold the page to it.
-let events = set [ "answered"; "toggled"; "submitRequested"; Wire.CopyRequested ]
+let events = set [ "answered"; "toggled"; "numbered"; "pickedBest"; "pickedWorst"; "submitRequested"; Wire.CopyRequested ]
 
 let private responding (state: State) =
     match state.Session with
@@ -101,6 +101,14 @@ let private fetched (outcome: HttpOutcome) =
 
 let private message (state: State) (name: string) (key: string) (value: string) =
     match name, responding state with
+    | "numbered", Some r ->
+        match numberFor r key with
+        | Some(questionId, inputId) -> Numbered(questionId, inputId, value)
+        | None -> raise (MalformedInput("$.event.key", $"a number input of this survey, not '{key}'"))
+    | ("pickedBest" | "pickedWorst"), Some r ->
+        match pairFor r key with
+        | Some(questionId, optionId) -> Picked(questionId, (if name = "pickedBest" then GenericInputs.Best else GenericInputs.Worst), optionId)
+        | None -> raise (MalformedInput("$.event.key", $"an option of this survey, not '{key}'"))
     | "toggled", Some r ->
         match toggleFor r key with
         // An unchecked box reports "" (protocol 1.2 `checked`, Limen.decode).

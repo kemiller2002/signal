@@ -135,16 +135,13 @@ let wanted =
 [<Literal>]
 let MaximumTicks = 21
 
-/// The answer kinds this page renders: one choice per question, a
-/// multi-choice as toggles, and a short bounded number as its ticks.
+/// The answer kinds this page renders: one choice per question (an option
+/// tree indented), multi-choices as toggles, a short bounded number as its
+/// ticks, and the compound kinds through `GenericInputs`.
 let supported (q: Question) =
     match q.Answer with
-    | Boolean
-    | Ordinal _
-    | SingleChoice _
-    | MultiChoice _ -> true
     | BoundedNumber b -> ticks b > 0 && ticks b <= MaximumTicks
-    | _ -> false
+    | _ -> true
 
 /// Verifies fetched bytes against the reference the link names.
 let verify (reference: byte[]) (bytes: byte[]) : Result<Published, Refusal> =
@@ -212,6 +209,8 @@ let choices (q: Question) : (AnswerState * string) list =
         | Boolean -> [ Value(Flag false), labelAt 0 "No"; Value(Flag true), labelAt 1 "Yes" ]
         | Ordinal points -> [ for p in 0 .. points - 1 -> Value(Point p), labelAt p (string p) ]
         | SingleChoice options -> options |> List.map (fun o -> Value(Choice o.Id), o.Label)
+        | Hierarchical(nodes, terminalOnly) ->
+            GenericInputs.treeLabels nodes |> List.filter (fun (_, _, leaf) -> leaf || not terminalOnly) |> List.map (fun (id, label, _) -> Value(Choice id), label)
         | BoundedNumber b ->
             [ for t in 0 .. ticks b - 1 -> Value(Tick t), (tickValue b t).ToString($"F{b.Decimals}", Globalization.CultureInfo.InvariantCulture) ]
         // A multi-choice's options are toggles (`toggles`); only its special states are choices.
@@ -223,6 +222,7 @@ let choices (q: Question) : (AnswerState * string) list =
 let toggles (q: Question) : (string * string) list =
     match q.Answer with
     | MultiChoice m -> m.Options |> List.map (fun o -> o.Id, o.Label)
+    | HierarchicalMulti(nodes, _, _) -> GenericInputs.treeLabels nodes |> List.map (fun (id, label, _) -> id, label)
     | _ -> []
 
 let indexedQuestions (r: Response) =
@@ -252,11 +252,28 @@ let toggleFor (r: Response) (key: string) : (string * string) option =
         | _ -> None
     | _ -> None
 
+/// The question and item a compound row key (`<question>-<prefix><item>`)
+/// names: `n` a number input, `p` a best-worst option.
+let private compoundFor (prefix: string) (items: Question -> string list) (r: Response) (key: string) : (string * string) option =
+    match key.Split '-' with
+    | [| q; t |] when t.StartsWith prefix ->
+        match Int32.TryParse q, Int32.TryParse(t.Substring prefix.Length) with
+        | (true, qi), (true, ii) ->
+            indexedQuestions r |> List.tryItem qi |> Option.bind (fun (_, question) -> items question |> List.tryItem ii |> Option.map (fun item -> question.Id, item))
+        | _ -> None
+    | _ -> None
+
+let numberFor = compoundFor "n" (GenericInputs.numberInputs >> List.map _.Id)
+let pairFor = compoundFor "p" (GenericInputs.pairs >> List.map fst)
+
 [<NoComparison>]
 type Msg =
     | Chose of questionId: string * state: AnswerState
     /// A multi-choice option was selected or cleared.
     | Toggled of questionId: string * optionId: string * selected: bool
+    /// A number typed into a compound input (a ranking position, an allocation, a range end).
+    | Numbered of questionId: string * inputId: string * text: string
+    | Picked of questionId: string * side: GenericInputs.Side * optionId: string
     /// Finalize. The bytes are fresh secure entropy from the application
     /// edge; only an anonymous invitation uses them.
     | SubmitRequested of entropy: byte[]
@@ -315,6 +332,16 @@ let private submit (r: Response) (entropy: byte[]) =
     | Rules.InProgress missing -> refuse $"""{plural missing "required question still needs" "required questions still need"} an answer."""
     | Rules.Invalid problems -> refuse $"""{plural problems "answer breaks" "answers break"} this survey's rules. Change it before you submit."""
 
+/// Applies a compound input's change to its question's answer.
+let private compound (r: Response) (questionId: string) (change: Question -> AnswerState option -> AnswerState option option) (session: Session) =
+    match tryQuestion r.Published.Form.Content questionId with
+    | Some q ->
+        match change q (r.Answers.TryFind questionId) with
+        | Some(Some answer) -> Responding { r with Answers = r.Answers.Add(questionId, answer); Refusal = None }
+        | Some None -> Responding { r with Answers = r.Answers.Remove questionId; Refusal = None }
+        | None -> session
+    | None -> session
+
 let update (msg: Msg) (session: Session) : Session =
     match session with
     | Responding r when r.Phase = Submitted -> session
@@ -343,7 +370,17 @@ let update (msg: Msg) (session: Session) : Session =
                         { r with
                             Answers = (if next.IsEmpty then r.Answers.Remove questionId else r.Answers.Add(questionId, Value(Choices next)))
                             Refusal = None }
+            | Some(HierarchicalMulti(nodes, _, _)) when nodes |> List.exists (fun n -> n.Option.Id = optionId) ->
+                let current =
+                    match r.Answers.TryFind questionId with
+                    | Some(Value(Choices ids)) -> ids
+                    | _ -> Set.empty
+
+                let next = if selected then current.Add optionId else current.Remove optionId
+                Responding { r with Answers = (if next.IsEmpty then r.Answers.Remove questionId else r.Answers.Add(questionId, Value(Choices next))); Refusal = None }
             | _ -> session
+        | Numbered(questionId, inputId, text) -> compound r questionId (fun q answer -> GenericInputs.numbered q answer inputId text) session
+        | Picked(questionId, side, optionId) -> compound r questionId (fun q answer -> GenericInputs.picked q answer side optionId) session
         | SubmitRequested entropy -> Responding(submit r entropy)
     | Fetching _
     | Refused _ -> session
