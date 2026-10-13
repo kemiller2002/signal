@@ -2096,6 +2096,27 @@
         "name": "ros",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.started",
+      "stepId": "split-refactor",
+      "name": "refactor: GenericSession split into GenericChoices (aliases, no behaviour change); dotnet 511/511 and browser 67/67 unchanged",
+      "occurredAt": "2026-10-13T13:19:37Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "split-refactor",
+      "occurredAt": "2026-10-13T13:26:58Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {

@@ -57,6 +57,7 @@
     <Compile Include="GenericImport.fs" />
     <Compile Include="GenericInputs.fs" />
     <Compile Include="GenericPaging.fs" />
+    <Compile Include="GenericChoices.fs" />
     <Compile Include="GenericSession.fs" />
     <Compile Include="GenericSessionView.fs" />
     <Compile Include="Aggregation.fs" />
