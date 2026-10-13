@@ -2683,20 +2683,20 @@
         "EXE-20261009T042446720Z-a28d9579"
       ],
       "latestCheckpoint": {
-        "id": "da3511c818df4930a36d9837",
-        "recordedAt": "2026-10-13T13:14:02Z",
+        "id": "29c1cc96e6910b29bb2d9604",
+        "recordedAt": "2026-10-13T14:43:00Z",
         "executionId": "EXE-20261009T042446720Z-a28d9579",
         "repository": "echelon-signal",
-        "branch": "test/max-length-sample-link",
-        "commit": "daf066787134d1828c0fe80e1b545ce26d1768f7",
+        "branch": "test/interpretation-checks-and-diffs",
+        "commit": "2099705b72a52672d9ea36380cc4b0fe592418cc",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "test/max-length-sample-link",
-        "remoteCommit": "daf066787134d1828c0fe80e1b545ce26d1768f7",
-        "summary": "Longest link passes on Chromium, WebKit and Firefox; URL budget measured; two escaped defects from #73 found (partial and out-of-order ranking input)",
-        "nextAction": "Gate and merge; split GenericSession (no behavior change); then fix the ranking input defects",
+        "remoteBranch": "test/interpretation-checks-and-diffs",
+        "remoteCommit": "2099705b72a52672d9ea36380cc4b0fe592418cc",
+        "summary": "Item 6: InterpretationDiffTests cover every interpretation check and every rule and result diff kind with impact and comparability; AUT-004 and AUT-005 rows carry the evidence; HANDOFF notes the full-SHA gate rule. .NET 521 passing.",
+        "nextAction": "Gate and merge; then the interpretation threshold/label split (DF), then the stale-row recheck",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
