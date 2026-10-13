@@ -219,3 +219,21 @@ let ``the midpoint fixture's answers are complete and travel in the link unchang
     match GenericEnvelope.decode content form.Reference (GenericEnvelope.encode content form.Reference envelope) with
     | Ok decoded -> Assert.Equal<Answers>(fixture.Answers, decoded.Answers)
     | Error e -> failwith $"%A{e}"
+
+// WI-0090: escaped defect from #73. The engine supports ranking and
+// allocation, but a template that declared UsesRanking or UsesAllocation
+// was refused as unsupported. Declaring stays optional (ACR-003 §10).
+[<Fact>]
+let ``declaring ranking and allocation is accepted, and a capability the engine lacks is still refused`` () =
+    let declaring caps =
+        { editor.Draft with
+            Content =
+                { content with
+                    Compatibility = { content.Compatibility with Capabilities = caps } } }
+
+    let blockers caps = (Validation.validate Validation.defaultPolicy (declaring caps)).Blockers |> List.map _.Code
+    Assert.Empty(blockers [ Template.UsesRanking; Template.UsesAllocation ])
+    Assert.Empty(blockers [])
+
+    for unsupported in [ Template.UsesGroupScoring; Template.UsesLocalization ] do
+        Assert.Equal<string list>([ "COMPAT-CAPABILITY" ], blockers [ unsupported ])

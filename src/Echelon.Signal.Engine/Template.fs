@@ -120,9 +120,19 @@ type Capability =
     | UsesLocalization
 
 /// Capabilities this engine version supports (WI-0043 added the rule
-/// capabilities, WI-0044 custom scoring). Later slices add to it.
+/// capabilities, WI-0044 custom scoring, WI-0090 ranking and allocation,
+/// which the engine has supported since #73). Declaring one is optional
+/// (ACR-003 §10); declaring one the engine lacks fails explicitly.
 let supportedCapabilities: Set<Capability> =
-    Set.ofList [ UsesBranching; UsesConditionalSections; UsesDerivedFacts; UsesRecommendations; UsesAdvancedValidation; UsesCustomScoring ]
+    Set.ofList
+        [ UsesBranching
+          UsesConditionalSections
+          UsesDerivedFacts
+          UsesRecommendations
+          UsesAdvancedValidation
+          UsesCustomScoring
+          UsesRanking
+          UsesAllocation ]
 
 type Compatibility =
     { SchemaVersion: int
