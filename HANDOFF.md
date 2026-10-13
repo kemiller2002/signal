@@ -8,18 +8,21 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
 
 ## Platform (2026-10-08)
 
-- echelon-current 1.18.0 (WI-0082, 2026-10-13; 1.12.0 before) through Conditor, repository-only install
+- echelon-current 1.19.0 (WI-0094, 2026-10-13, Conditor 0.10.0 `upgrade --current --stepwise`; 1.18.0 in WI-0082, 1.12.0 before) through Conditor, repository-only install
   path (`conditor init --manifest conditor.json`; Conditor's
   `upgrade --current` plan's workstation effects go to an isolated `--home`,
   never the shared workstation profile; WI-0082 applied echelon-current
   1.18.0 that way): Praxis 3.11.0, Ordo 1.5.0, Visual Engineering
   1.0.1, and as attested NuGet release assets in `vendor/nuget` (mapped in
-  `NuGet.config`, pinned in `Directory.Packages.props`): Arca 0.4.1 (Core,
+  `NuGet.config`, pinned in `Directory.Packages.props`): Arca 0.5.0 (Core,
   GitHub, Limen), Fides 0.2.0 and limen-fsharp 0.9.0. `conditor verify`
   passes. `EchelonFoundry.Arca.Limen` is pinned, but no project references it:
   Arca's IndexedDB write queue and read cache were evaluated and declined
   (DF-SIGNAL-2026-0001 decision 5, WI-0074): per-respondent data stays off
-  the device.
+  the device. Forma (design system) 0.5.0 and Folio (print components)
+  0.3.0 are npm tarball pins declared in `conditor.json` (the Conditor
+  0.9.0 web-binding opt-in), so Conditor writes their pins, lockfile entries
+  and `.echelon/foundations.json`.
 - Administrator domain (`src/Echelon.Signal.Admin`, pure F# over Arca.Core,
   WI-0038 onward): `Deployment` (closed, validated deployment configuration:
   environment, Fides identity, storage profiles, datasets and their bootstrap

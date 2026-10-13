@@ -18,8 +18,8 @@
          vendor/nuget/arca.lock, vendor/nuget/fides.lock). Fides.Client is the
          WASM sign-in client; Fides.Arca bridges it to Arca's token-provider
          port. Fides.Hosting is the server side and is not referenced here. -->
-    <PackageVersion Include="EchelonFoundry.Arca.Core" Version="0.4.1" />
-    <PackageVersion Include="EchelonFoundry.Arca.GitHub" Version="0.4.1" />
+    <PackageVersion Include="EchelonFoundry.Arca.Core" Version="0.5.0" />
+    <PackageVersion Include="EchelonFoundry.Arca.GitHub" Version="0.5.0" />
     <PackageVersion Include="EchelonFoundry.Fides" Version="0.2.0" />
     <PackageVersion Include="EchelonFoundry.Fides.Client" Version="0.2.0" />
     <PackageVersion Include="EchelonFoundry.Fides.Arca" Version="0.2.0" />
@@ -32,7 +32,7 @@
          brings, declared with limen-fsharp in conditor.json (WI-0072). Pinned
          here and never referenced: the queue and read cache were evaluated
          and declined (DF-SIGNAL-2026-0001 decision 5, WI-0074). -->
-    <PackageVersion Include="EchelonFoundry.Arca.Limen" Version="0.4.1" />
+    <PackageVersion Include="EchelonFoundry.Arca.Limen" Version="0.5.0" />
     <PackageVersion Include="EchelonFoundry.Limen.Store" Version="0.9.0" />
     <PackageVersion Include="EchelonFoundry.Limen.Contract" Version="0.9.0" />
   </ItemGroup>

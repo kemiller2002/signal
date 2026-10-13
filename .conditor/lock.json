@@ -1,14 +1,14 @@
 {
   "schemaVersion": 4,
   "project": "signal",
-  "manifestSha256": "f18934303eefa6f0252b7c180db66ffdad278be234adc8da066342fb21190f06",
+  "manifestSha256": "2050fe8899e3b49ae1e471d641a6862b66d645ce80647ad60dfab634cbca7e41",
   "manifest": {
     "schemaVersion": 1,
     "name": "signal",
     "registryAuthority": {
       "kind": "resolved-release-set",
       "path": ".conditor/authority/resolved-release-set.json",
-      "sha256": "48aeb43c667f9153eea3bdd16a0d600fa8f93dea109a4fa2411c458a393ffbc5"
+      "sha256": "788bcd4907d6ed239684694843d395939266183cb285230cd39f442e2c37ef37"
     },
     "components": [
       {
@@ -28,7 +28,7 @@
       },
       {
         "id": "arca",
-        "version": "0.4.1",
+        "version": "0.5.0",
         "required": true
       },
       {
@@ -39,6 +39,16 @@
       {
         "id": "limen-fsharp",
         "version": "0.9.0",
+        "required": true
+      },
+      {
+        "id": "forma",
+        "version": "0.5.0",
+        "required": true
+      },
+      {
+        "id": "folio",
+        "version": "0.3.0",
         "required": true
       }
     ],
@@ -53,7 +63,7 @@
       "version": "1.5.0",
       "distribution": "host-tool",
       "package": "ordo",
-      "descriptorSha256": "cac222af525161218391dade23d2a583c29315e8df255ffb9f11f0f2bb4eaf3a",
+      "descriptorSha256": "95f0e4d93296abc9707e62df34fc0a023e3d680f1e338d654497ae1597cb85de",
       "authority": "embedded-component-descriptor",
       "sourceReference": "host:ordo@1.5.0"
     },
@@ -77,11 +87,11 @@
     },
     {
       "id": "arca",
-      "version": "0.4.1",
+      "version": "0.5.0",
       "distribution": "nuget",
       "package": "EchelonFoundry.Arca.Core,EchelonFoundry.Arca.GitHub,EchelonFoundry.Arca.Limen",
       "authority": "registry-resolved-set",
-      "sourceReference": "nuget-feed:kemiller2002/arca@v0.4.1#sha256:76c1d7132147044421a5664c3c77cf339ec90a47044fb67ed79c0768de3bf368"
+      "sourceReference": "nuget-feed:kemiller2002/arca@v0.5.0#sha256:1cab5320290e6084f873e942465fe2289c8bc952b8ec7ce3a445ad24b8ac2e84"
     },
     {
       "id": "fides",
@@ -98,6 +108,24 @@
       "package": "EchelonFoundry.Limen.Contract,EchelonFoundry.Limen.Guest,EchelonFoundry.Limen.Routing,EchelonFoundry.Limen.Store",
       "authority": "registry-resolved-set",
       "sourceReference": "nuget-feed:kemiller2002/limen@v0.9.0#sha256:d8aec120fdaff6bb2a9dcd6e4d79b8a92d69f8cc0227de1c6b7166c6c3b8ce3a"
+    },
+    {
+      "id": "forma",
+      "version": "0.5.0",
+      "distribution": "npm",
+      "package": "@echelon-foundry/design-system",
+      "descriptorSha256": "4893621f78f0af5165124418db433e37f7b67365dca13453c5994a7ccf4da1d5",
+      "authority": "embedded-component-descriptor",
+      "sourceReference": "npm:@echelon-foundry/design-system@0.5.0"
+    },
+    {
+      "id": "folio",
+      "version": "0.3.0",
+      "distribution": "npm",
+      "package": "@echelon-foundry/print-components",
+      "descriptorSha256": "51240f698d19e0cd11d527ca9dfb22f3495c383fa6fe2a851bd3c4b224da4f8a",
+      "authority": "embedded-component-descriptor",
+      "sourceReference": "npm:@echelon-foundry/print-components@0.3.0"
     }
   ],
   "requirements": []
