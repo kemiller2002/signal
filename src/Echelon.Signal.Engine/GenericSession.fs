@@ -405,32 +405,7 @@ and private step (msg: Msg) (session: Session) : Session =
                     Pending = r.Pending.Remove questionId
                     Refusal = None }
         | Chose _ -> session
-        | Toggled(questionId, optionId, selected) ->
-            match tryQuestion r.Published.Form.Content questionId |> Option.map _.Answer with
-            | Some(MultiChoice m) when m.Options |> List.exists (fun o -> o.Id = optionId) ->
-                let current =
-                    match r.Answers.TryFind questionId with
-                    | Some(Value(Choices ids)) -> ids
-                    | _ -> Set.empty
-
-                if current.Contains optionId = selected then
-                    session
-                else
-                    let next = select m current optionId
-
-                    Responding
-                        { r with
-                            Answers = (if next.IsEmpty then r.Answers.Remove questionId else r.Answers.Add(questionId, Value(Choices next)))
-                            Refusal = None }
-            | Some(HierarchicalMulti(nodes, _, _)) when nodes |> List.exists (fun n -> n.Option.Id = optionId) ->
-                let current =
-                    match r.Answers.TryFind questionId with
-                    | Some(Value(Choices ids)) -> ids
-                    | _ -> Set.empty
-
-                let next = if selected then current.Add optionId else current.Remove optionId
-                Responding { r with Answers = (if next.IsEmpty then r.Answers.Remove questionId else r.Answers.Add(questionId, Value(Choices next))); Refusal = None }
-            | _ -> session
+        | Toggled(questionId, optionId, selected) -> compound r questionId (fun q answer held -> GenericInputs.toggled q answer held optionId selected) session
         | Numbered(questionId, inputId, text) -> compound r questionId (fun q answer held -> GenericInputs.typed q answer held inputId text) session
         | Picked(questionId, side, optionId) -> compound r questionId (fun q answer held -> GenericInputs.pickedHeld q answer held side optionId) session
         | Turned direction ->
