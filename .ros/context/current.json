@@ -2683,20 +2683,20 @@
         "EXE-20261009T042446720Z-a28d9579"
       ],
       "latestCheckpoint": {
-        "id": "57ebfde6bdd9d7e889209416",
-        "recordedAt": "2026-10-09T04:52:13Z",
+        "id": "5e6b20919d18303f8e9b7b91",
+        "recordedAt": "2026-10-13T08:34:17Z",
         "executionId": "EXE-20261009T042446720Z-a28d9579",
         "repository": "echelon-signal",
-        "branch": "feature/invitation-links",
-        "commit": "bf66800446e020e5d15c4c71b2e72eb1173d5e54",
+        "branch": "feature/remaining-kinds",
+        "commit": "469bfac13180af1686b128b16d311294978835f7",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/invitation-links",
-        "remoteCommit": "bf66800446e020e5d15c4c71b2e72eb1173d5e54",
-        "summary": "Console invitation issuing per group with optional locale and last day; WI-0081 description names it.",
-        "nextAction": "Merge the invitation PR on a green gate, then the remaining answer kinds on the survey page and in authoring.",
+        "remoteBranch": "feature/remaining-kinds",
+        "remoteCommit": "469bfac13180af1686b128b16d311294978835f7",
+        "summary": "Survey page renders ranking, allocation, best-worst, range and option trees; console authors ranking, allocation and best-worst; COMPOUND demo survey and browser test (469bfac)",
+        "nextAction": "Gate and merge PR for compound kinds, then SCS-018 component families and pagination",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
