@@ -1918,6 +1918,69 @@
         "name": "ros",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "cf-git-ci",
+      "occurredAt": "2026-10-13T11:19:25Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "sd-investigation",
+      "name": "investigation: WebKit probe (missing libbacktrace/libjxl; no Firefox); a temporary probe spec was created and deleted on main before branching (uncommitted; process slip)",
+      "occurredAt": "2026-10-13T11:19:40Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "sd-investigation",
+      "occurredAt": "2026-10-13T11:23:06Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "sd-implementation",
+      "name": "custom implementation + testing: SampleLinkTests, mobile project; 1 failing run (tap on desktop project; spec scoped to mobile); dotnet 493/493, browser 61/61",
+      "occurredAt": "2026-10-13T11:23:06Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "sd-implementation",
+      "occurredAt": "2026-10-13T11:29:18Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "sd-git-ci",
+      "name": "git/CI integration: sample link devices PR and gate",
+      "occurredAt": "2026-10-13T11:30:16Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {

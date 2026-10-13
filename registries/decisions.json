@@ -659,6 +659,48 @@
     "version": "1.0.0"
   },
   {
+    "created": "2026-10-13",
+    "id": "DF-SIGNAL-2026-0014",
+    "owners": [
+      "signal"
+    ],
+    "path": "research/decisions/DF-SIGNAL-2026-0014--sample-links-are-checked-on-a-phone-and-against-the-url-budget.md",
+    "provenance": {
+      "contributions": {
+        "EXE-20261009T042446720Z-a28d9579": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-13T11:29:33.596Z",
+          "operations": [
+            "created"
+          ],
+          "reason": "Sample link checks on a phone and the URL budget (AUT-006, WI-0081)"
+        }
+      }
+    },
+    "related_documents": [
+      "docs/requirements/implementation-gap-analysis.md"
+    ],
+    "review_cycle": "on-trigger",
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "survey-page",
+      "devices",
+      "urls",
+      "testing"
+    ],
+    "title": "Published sample links are checked on an emulated phone and against the URL budget; the supported browser and device matrix is an open product decision",
+    "updated": "2026-10-13",
+    "version": "1.0.0"
+  },
+  {
     "created": "2026-10-05",
     "id": "DF-SIGNAL-FND-2026-0001",
     "owners": [
