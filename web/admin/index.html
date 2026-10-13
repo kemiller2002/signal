@@ -230,7 +230,16 @@
         <label>Description read after the prompt (optional) <input id="accessibility-description" type="text" data-event="accessibilityDescription" data-bind-value="accessibilityDescription" /></label>
         <button type="button" class="ef-button" data-event="setAccessibility">Set accessibility text</button>
         <h3>Test fixtures</h3>
-        <ul id="draft-fixtures"><template data-each="draftFixtures" data-key="id"><li data-text="name"></li></template></ul>
+        <ul id="draft-fixtures"><template data-each="draftFixtures" data-key="id"><li><span data-text="name"></span> <button type="button" class="ef-button" data-event="explainFixture">Explain</button></li></template></ul>
+        <!-- How the draft scores a fixture (AUT-006 §63, SCS-017, AST-005): from the one evaluation. -->
+        <template data-if="hasFixtureExplanation">
+          <section id="fixture-explanation" class="ef-stack" aria-labelledby="fixture-explanation-heading">
+            <h4 id="fixture-explanation-heading">How <span data-text="explainingFixture"></span> scores</h4>
+            <ul id="fixture-explanation-lines">
+              <template data-each="fixtureExplanation" data-key="key"><li data-bind-data-kind="kind" data-bind-data-indented="indented" data-text="text"></li></template>
+            </ul>
+          </section>
+        </template>
         <button type="button" class="ef-button" data-event="addFixture">Add a fixture: every answer at the midpoint</button>
         <h3>Validation</h3>
         <table id="draft-findings">

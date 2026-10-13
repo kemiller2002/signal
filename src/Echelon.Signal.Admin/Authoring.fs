@@ -206,6 +206,8 @@ type Screen =
       /// The stored draft about to be deleted, waiting for the person to
       /// confirm (AUT-006 §59).
       ConfirmDelete: string option
+      /// The fixture whose scoring is explained (AUT-006 §63); the first when none is chosen.
+      Explaining: string option
       Problem: string option }
 
 let emptyScreen =
@@ -222,6 +224,7 @@ let emptyScreen =
       Rules = RuleAuthoring.emptyForm
       Areas = AreaAuthoring.emptyForm
       ConfirmDelete = None
+      Explaining = None
       Problem = None }
 
 /// What the screens ask the application to do.
@@ -243,7 +246,7 @@ let events =
           "newSectionTitle"; "addSection"; "removeSection"; "newQuestionPrompt"; "addQuestion"; "removeQuestion"
           "newQuestionKind"; "newQuestionDetails"; "ruleQuestion"; "ruleWhen"; "ruleAnswer"; "addShowRule"; "removeRule"
           "addFixture"; "acknowledgeWarnings"; "saveDraft"; "publishDraft"; "hideVersion"; "requestReview"; "approveReview"
-          "deleteDraft"; "confirmDeleteDraft"; "cancelDeleteDraft" ]
+          "deleteDraft"; "confirmDeleteDraft"; "cancelDeleteDraft"; "explainFixture" ]
     |> Set.union RuleAuthoring.events
     |> Set.union AreaAuthoring.events
 
@@ -325,6 +328,7 @@ let update (listing: TemplateListing.Listing) (survey: string option) (name: str
             (if next.Problem.IsNone then { next with Areas = AreaAuthoring.cleared change form } else { next with Areas = form }), commands
     | "removeQuestion", Some id -> edit (RemoveQuestion id)
     | "addFixture", _ -> edit AddMidpointFixture
+    | "explainFixture", Some id -> { screen with Explaining = Some id; Problem = None }, []
     | "acknowledgeWarnings", _ ->
         match editor with
         | Some e -> { screen with Editor = Some { e with AcknowledgeWarnings = (value = "true" || value = "on") } }, []

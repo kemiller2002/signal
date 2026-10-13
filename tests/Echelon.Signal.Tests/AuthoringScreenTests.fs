@@ -133,3 +133,27 @@ let ``through the page a stored draft is deleted only after a confirmation, and 
     Assert.Equal(commits + 1, github.State.History.Length)
     Assert.False(page.Flag "hasDraft")
     Assert.DoesNotContain(page.Items "draftLinks", fun i -> i["key"].GetValue<string>() = "PULSE")
+
+[<Fact>]
+let ``through the page a fixture's scoring is explained, line by line (AUT-006 section 63)`` () =
+    let _, _, page = signedIn ()
+    page.Event("navigate", key = "/assessments")
+    page.Event("newDraftSurvey", value = "PULSE")
+    page.Event("newDraftTitle", value = "Team pulse")
+    page.Event("startDraft")
+    Assert.False(page.Flag "hasFixtureExplanation")
+
+    page.Event("newSectionTitle", value = "Focus")
+    page.Event("addSection")
+    page.Event("newQuestionPrompt", value = "We finish what we start before starting more.")
+    page.Event("addQuestion", key = "S1")
+    page.Event("addFixture")
+
+    Assert.True(page.Flag "hasFixtureExplanation", page.ViewText)
+    let fixture = (page.Items "draftFixtures").Head["id"].GetValue<string>()
+    page.Event("explainFixture", key = fixture)
+    Assert.Equal((page.Items "draftFixtures").Head["name"].GetValue<string>(), page.Text "explainingFixture")
+    let lines = page.Items "fixtureExplanation" |> List.map (fun i -> i["kind"].GetValue<string>(), i["text"].GetValue<string>())
+    Assert.Contains(lines, fun (kind, text) -> kind = "section" && text.StartsWith "Focus (S1)")
+    Assert.Contains(lines, fun (kind, text) -> kind = "contribution" && text.StartsWith "Q1: ")
+    Assert.Contains(lines, fun (kind, text) -> kind = "calculation" && text.StartsWith "section score: ")
