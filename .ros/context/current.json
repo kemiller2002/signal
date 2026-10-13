@@ -3251,7 +3251,27 @@
       "updatedAt": "2026-10-13T18:38:46Z",
       "telemetryExecutionIds": [
         "EXE-20261013T183846783Z-14d3b075"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "11fa34634ecfd9614afb14e7",
+        "recordedAt": "2026-10-13T18:39:00Z",
+        "executionId": "EXE-20261013T183846783Z-14d3b075",
+        "repository": "echelon-signal",
+        "branch": "feature/arx-002-state-model",
+        "commit": "a9ba06dd7e0a2168f7907f647d9718f57a755ec4",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feature/arx-002-state-model",
+        "remoteCommit": "a9ba06dd7e0a2168f7907f647d9718f57a755ec4",
+        "summary": "Slice 1: StateModel; SessionStates (guard/attempt/capabilities/obligations/template knowledge); GroupLifecycle.system; StateModelTests shared properties; TemplateNotPublished carries the file searched. .NET 563.",
+        "nextAction": "PR, gate, merge; slice 2: anonymous finalization, import, template authoring",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
