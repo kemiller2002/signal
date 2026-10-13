@@ -8,12 +8,13 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
 
 ## Platform (2026-10-08)
 
-- echelon-current 1.12.0 through Conditor 0.7.0, repository-only install
+- echelon-current 1.18.0 (WI-0082, 2026-10-13; 1.12.0 before) through Conditor, repository-only install
   path (`conditor init --manifest conditor.json`; Conditor's
-  `upgrade --current` plan would also change the shared workstation profile,
-  so it is not authorized): Praxis 3.7.2, Ordo 1.5.0, Visual Engineering
+  `upgrade --current` plan's workstation effects go to an isolated `--home`,
+  never the shared workstation profile; WI-0082 applied echelon-current
+  1.18.0 that way): Praxis 3.11.0, Ordo 1.5.0, Visual Engineering
   1.0.1, and as attested NuGet release assets in `vendor/nuget` (mapped in
-  `NuGet.config`, pinned in `Directory.Packages.props`): Arca 0.3.0 (Core,
+  `NuGet.config`, pinned in `Directory.Packages.props`): Arca 0.4.1 (Core,
   GitHub, Limen), Fides 0.2.0 and limen-fsharp 0.9.0. `conditor verify`
   passes. `EchelonFoundry.Arca.Limen` is pinned, but no project references it:
   Arca's IndexedDB write queue and read cache were evaluated and declined

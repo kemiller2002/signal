@@ -39,6 +39,8 @@ type StorageCapability =
     | MaxBatchSize
     | RateLimitObservation
     | ChangeToken
+    /// A token for one namespace's state only (Arca 0.4, ARCA-CON-005).
+    | NamespaceToken
     | StreamingRead
     | StreamingWrite
 
@@ -63,6 +65,7 @@ let allCapabilities =
       MaxBatchSize
       RateLimitObservation
       ChangeToken
+      NamespaceToken
       StreamingRead
       StreamingWrite ]
 
@@ -107,6 +110,7 @@ let knowledge (capabilities: ProviderCapabilities) (capability: StorageCapabilit
     | ListPrefix -> declared Capability.ListPrefix
     | BatchWrite -> declared Capability.BatchWrite
     | ChangeToken -> declared Capability.ChangeToken
+    | NamespaceToken -> declared Capability.NamespaceToken
     | MaxObjectSize -> declared Capability.MaxObjectSize
     | EncryptionAtRestClaim -> declared Capability.AtRestEncryption
     // Every write is conditioned on expected state; a write is a one-change operation.
@@ -136,7 +140,7 @@ let describe (capabilities: ProviderCapabilities) =
     allCapabilities |> List.map (fun capability -> capability, knowledge capabilities capability)
 
 /// What changing administrator data needs from a provider.
-let writeNeeds = [ ReadObject; ConditionalWrite; BatchWrite; ListPrefix; ChangeToken ]
+let writeNeeds = [ ReadObject; ConditionalWrite; BatchWrite; ListPrefix; ChangeToken; NamespaceToken ]
 
 /// What reading administrator data needs.
 let readNeeds = [ ReadObject; ListPrefix ]
@@ -283,6 +287,9 @@ let meaning (now: DateTimeOffset) (failure: StorageFailure) : FailureMeaning =
         make "SIGNAL.STORAGE.OBJECT_TOO_LARGE" $"'{path}' is {bytes} bytes, over the provider's {limit}-byte limit." Never
     | StorageFailure.StaleChangeToken _ ->
         make "SIGNAL.STORAGE.STALE_CHANGE_TOKEN" "The data changed since it was read; it is reloaded and decided again." AfterReloading
+    // Arca 0.4 (ARCA-CON-005): something inside Signal's own namespace changed.
+    | StorageFailure.StaleNamespaceToken _ ->
+        make "SIGNAL.STORAGE.STALE_NAMESPACE_TOKEN" "Signal's data changed since it was read; it is reloaded and decided again." AfterReloading
     | StorageFailure.RateLimited(retryAfter, resetAt) ->
         let retry =
             match retryAfter, resetAt with

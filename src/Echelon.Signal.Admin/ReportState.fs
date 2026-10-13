@@ -353,6 +353,7 @@ let encodeRecord (state: AdminReportState) : Result<RelativePath * string, Probl
 let readRecord (id: string) (stored: ReadOutcome) : Result<AdminReportState, Problems.Problem> =
     match stored with
     | ReadOutcome.Absent -> Error(Problems.InvalidStoredRecord(id, "no report state is stored under this id"))
+    | ReadOutcome.Erased erased -> Error(Problems.InvalidStoredRecord(RelativePath.render erased.Path, "this report state was erased"))
     | ReadOutcome.Found found ->
         let where = RelativePath.render found.Path
 

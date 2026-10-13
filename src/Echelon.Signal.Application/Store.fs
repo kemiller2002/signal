@@ -63,8 +63,11 @@ type Opened =
       Provider: StorageProvider
       Verified: Loading.VerifiedDataset
       Roster: RosterStore.StoredRoster
-      /// The repository state the data was read at.
-      Token: ChangeToken
+      /// The namespace's state the data was read at: the repository's token
+      /// and Signal's own namespace token (Arca 0.4, ARCA-CON-005). Writes
+      /// are conditioned on the namespace token, so commits by other
+      /// applications in a shared repository don't make them stale.
+      State: NamespaceState
       /// The repository the dataset is pinned to.
       RepositoryId: string
       Verification: ProviderContract.ProfileVerification
@@ -118,6 +121,19 @@ let private setUp (now: DateTimeOffset) (provider: StorageProvider) (operation: 
     }
 
 /// Reads every record file in a folder and loads it as untrusted input.
+/// A listed record that is present. An erased record (Arca 0.4,
+/// ARCA-INT-005) is a tombstone, not a record, so it is never loaded.
+let present =
+    function
+    | ReadOutcome.Found stored -> Some stored
+    | ReadOutcome.Absent
+    | ReadOutcome.Erased _ -> None
+
+/// A single read that would otherwise be taken as "not there yet": an erased
+/// record cannot be recreated, so it is refused, never treated as absent.
+let erasedRecord (erased: ErasedObject) =
+    InvalidStoredRecord(RelativePath.render erased.Path, "this record was erased, and an erased record cannot be recreated")
+
 let private loadFolder (now: DateTimeOffset) (provider: StorageProvider) (ns: Namespace) (verified: Loading.VerifiedDataset) reader folder =
     asyncResult {
         let! listing = call now (provider.List ns folder)
@@ -125,9 +141,7 @@ let private loadFolder (now: DateTimeOffset) (provider: StorageProvider) (ns: Na
 
         let found =
             objects
-            |> List.choose (function
-                | ReadOutcome.Found stored -> Some stored
-                | ReadOutcome.Absent -> None)
+            |> List.choose present
 
         return Loading.load verified reader folder listing found
     }
@@ -214,7 +228,7 @@ let openDataset
         let! lifecycle = loadFolder now provider ns verified GovernanceRecord.lifecycleReader (GovernanceRecord.folderOf GovernanceRecord.lifecycleType)
         let stored = lifecycle.Records |> Map.tryFind GovernanceRecord.LifecycleId
         let state = stored |> Option.map _.Value.State |> Option.defaultValue Retention.Active
-        let! token = call now (provider.ChangeToken ns)
+        let! observed = call now (provider.NamespaceState ns)
 
         let verification = ProviderContract.verify provider.Capabilities (Ok snapshot)
 
@@ -230,7 +244,7 @@ let openDataset
               Provider = provider
               Verified = verified
               Roster = roster
-              Token = token
+              State = observed
               RepositoryId = snapshot.RepositoryId
               Verification = verification
               Credential = credential
@@ -269,52 +283,64 @@ let private changeFailed (now: DateTimeOffset) (failure: StorageFailure) =
     | _ -> Failed(ProviderContract.meaning now failure)
 
 /// Changes a dataset's roster: one command, one commit, conditioned on the
-/// revisions last read and on the repository's change token, because the
-/// roster's rule (someone must remain who can manage it) spans records: two
+/// revisions last read and on Signal's namespace token, because the roster's
+/// rule (someone must remain who can manage it) spans records: two
 /// administrators removing each other touch different records, and only the
-/// token shows that the roster moved underneath. Returns the dataset as it
+/// token shows that the roster moved underneath. The namespace token (Arca
+/// 0.4) ignores commits outside Signal's namespace. Returns the dataset as it
 /// stands after the change.
 let changeRoster (actor: Actor) (command: Access.RosterCommand) (now: DateTimeOffset) (opened: Opened) : AsyncResult<Opened, ChangeFailure> =
-    let decide (grant: Loading.WriteGrant) (roster: RosterStore.StoredRoster) (token: ChangeToken) =
+    let decide (grant: Loading.WriteGrant) (roster: RosterStore.StoredRoster) (state: NamespaceState) =
         RosterStore.command grant opened.Namespace (actor.NewContext()) (principalActor actor) command roster
-        |> Result.map (fun (after, operation) -> after, Operation.requireChangeToken token operation)
+        |> Result.map (fun (after, operation) -> after, Operation.requireNamespaceToken state.NamespaceToken operation)
         |> Result.mapError (function
             | RosterStore.Refused refusals -> RefusedByRules refusals
             | RosterStore.Unstorable problems -> Unstorable problems)
 
+    // A receipt names the repository's new state, not the namespace's: the
+    // namespace state is read again. If that read fails, the state held stays;
+    // the next change finds it stale and reloads before deciding.
     let landed (after: Access.Roster) (roster: RosterStore.StoredRoster) (receipt: CommitReceipt) =
-        { opened with
-            Roster = RosterStore.committed after receipt roster
-            Token = receipt.ChangeToken }
+        async {
+            let! state = opened.Provider.NamespaceState opened.Namespace
+
+            return
+                Ok
+                    { opened with
+                        Roster = RosterStore.committed after receipt roster
+                        State = state |> Result.defaultValue opened.State }
+        }
 
     let reload () =
         asyncResult {
             let! roster = loadRoster now opened.Provider opened.Namespace opened.Verified
-            let! token = call now (opened.Provider.ChangeToken opened.Namespace)
-            return roster, token
+            let! state = call now (opened.Provider.NamespaceState opened.Namespace)
+            return roster, state
         }
         |> mapError (fun _ -> ConflictPersists)
 
-    let rec send (round: int) (grant: Loading.WriteGrant) (roster: RosterStore.StoredRoster) (token: ChangeToken) =
+    let rec send (round: int) (grant: Loading.WriteGrant) (roster: RosterStore.StoredRoster) (state: NamespaceState) =
         asyncResult {
-            let! after, operation = decide grant roster token |> lift
+            let! after, operation = decide grant roster state |> lift
             let! result = attempt (opened.Provider.Commit operation)
 
             match result with
-            | Ok receipt -> return landed after roster receipt
+            | Ok receipt -> return! landed after roster receipt
             | Error(StorageFailure.Conflicted _)
+            | Error(StorageFailure.StaleNamespaceToken _)
             | Error(StorageFailure.StaleChangeToken _) when round = 0 ->
                 // Reload and let Signal's rules decide again.
                 let! fresh, freshToken = reload ()
                 return! send 1 grant fresh freshToken
             | Error(StorageFailure.Conflicted _)
+            | Error(StorageFailure.StaleNamespaceToken _)
             | Error(StorageFailure.StaleChangeToken _) -> return! lift (Error ConflictPersists)
             | Error(StorageFailure.OutcomeUnknown pending) ->
                 // Never resent blindly: find out whether it landed first.
                 let! reconciled = attempt (opened.Provider.Reconcile opened.Namespace pending)
 
                 match reconciled with
-                | Ok(ReconcileOutcome.Landed receipt) -> return landed after roster receipt
+                | Ok(ReconcileOutcome.Landed receipt) -> return! landed after roster receipt
                 | Ok ReconcileOutcome.NotLanded when round = 0 ->
                     let! fresh, freshToken = reload ()
                     return! send 1 grant fresh freshToken
@@ -326,7 +352,7 @@ let changeRoster (actor: Actor) (command: Access.RosterCommand) (now: DateTimeOf
 
     match opened.Grant with
     | None -> lift (Error(ReadOnly opened.ReadOnlyReasons))
-    | Some grant -> send 0 grant opened.Roster opened.Token
+    | Some grant -> send 0 grant opened.Roster opened.State
 
 /// Reloads a dataset's roster at the provider's current state, for another
 /// tab's notice or after reconnecting (ADM-070, ADM-072): the provider's
@@ -334,10 +360,10 @@ let changeRoster (actor: Actor) (command: Access.RosterCommand) (now: DateTimeOf
 let refresh (now: DateTimeOffset) (opened: Opened) : AsyncResult<Opened, ChangeFailure> =
     asyncResult {
         let! roster = loadRoster now opened.Provider opened.Namespace opened.Verified |> mapError (fun _ -> ConflictPersists)
-        let! token = opened.Provider.ChangeToken opened.Namespace |> mapError (changeFailed now)
+        let! state = opened.Provider.NamespaceState opened.Namespace |> mapError (changeFailed now)
 
         return
             { opened with
                 Roster = roster
-                Token = token }
+                State = state }
     }

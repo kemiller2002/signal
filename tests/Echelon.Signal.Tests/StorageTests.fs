@@ -155,7 +155,7 @@ let ``setting Signal up beside another application's data leaves that data alone
 
     match read other manifestPath state with
     | ReadOutcome.Found found -> Assert.Equal("summa's manifest", found.Content)
-    | ReadOutcome.Absent -> failwith "the other application's file is gone"
+    | ReadOutcome.Absent | ReadOutcome.Erased _ -> failwith "the other application's file is gone"
 
     // Every operation Signal builds stays inside its namespace: one outside is refused by Arca.
     let app = applicationNamespace binding |> ok
@@ -213,7 +213,7 @@ let ``a dataset in the middle of a migration is not mistaken for an active store
             let manifest = Manifest.decode found.Content |> ok
             let text = Manifest.encode { manifest with Migration = Some { MigrationId = "mig-1"; Phase = MigrationPhase.Copying } }
             ReadOutcome.Found { found with Content = text }
-        | ReadOutcome.Absent -> failwith "no manifest"
+        | ReadOutcome.Absent | ReadOutcome.Erased _ -> failwith "no manifest"
 
     match openNamespace ns migrating with
     | Error [ NamespaceUnusable(_, detail) ] -> Assert.Contains("migration mig-1 is in progress", detail)
@@ -302,7 +302,7 @@ let ``the storage manifest holds no personal data`` () =
 
         Assert.Equal<string list>([ "createdFromApplicationVersion"; "datasetId"; "rootNamespace"; "versions" ], keys |> List.sort)
         Assert.DoesNotContain("583231", Json.canonicalText body)
-    | ReadOutcome.Absent -> failwith "no manifest"
+    | ReadOutcome.Absent | ReadOutcome.Erased _ -> failwith "no manifest"
 
 [<Fact>]
 let ``a newer format, another dataset's manifest or another folder fails explicitly`` () =
@@ -328,7 +328,7 @@ let ``a tampered or misplaced storage manifest is refused, never trusted`` () =
     let edited (change: string -> string) =
         match stored with
         | ReadOutcome.Found found -> ReadOutcome.Found { found with Content = change found.Content }
-        | ReadOutcome.Absent -> failwith "no manifest"
+        | ReadOutcome.Absent | ReadOutcome.Erased _ -> failwith "no manifest"
 
     let check outcome = DatasetManifest.read DatasetManifest.current "ds_engagement" (root ns) outcome |> codeOf
 

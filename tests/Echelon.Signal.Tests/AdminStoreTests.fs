@@ -78,6 +78,7 @@ let private backend (github: InMemoryStore) (access: unit -> Access') : Store.Ba
                 Read = fun ns path -> if (access ()).Reachable then real.Read ns path else unreachable ()
                 List = fun ns path -> if (access ()).Reachable then real.List ns path else unreachable ()
                 ChangeToken = fun ns -> if (access ()).Reachable then real.ChangeToken ns else unreachable ()
+                NamespaceState = fun ns -> if (access ()).Reachable then real.NamespaceState ns else unreachable ()
                 Commit = fun operation -> if (access ()).Reachable then real.Commit operation else unreachable () }
       Resolve =
         fun location ->
@@ -148,6 +149,38 @@ let ``production data is not started in a public repository`` () =
 // ---- One command, one commit ------------------------------------------------------------------
 
 [<Fact>]
+let ``another application's commit in the same repository does not make a roster change stale (ARCA-CON-005)`` () =
+    let github = InMemoryStore()
+    let opened = openAs github (fun () -> writable) octocat None |> ok
+    // Another application commits outside Signal's namespace.
+    github.WriteExternally(opened.Namespace.Location, "deployments/prod/summa/notes.json", Some "summa's notes")
+    let attempts = ref 0
+    let counting = { opened.Provider with Commit = fun operation -> attempts.Value <- attempts.Value + 1; opened.Provider.Commit operation }
+
+    let after = Store.changeRoster (actor octocat) (Admit(hubot, Grants.analyst)) at { opened with Provider = counting } |> run |> ok
+
+    // Landed first time: no stale token, no reload.
+    Assert.Equal(1, attempts.Value)
+    Assert.True(permits after.Roster.Roster hubot.PrincipalId BuildReports)
+
+[<Fact>]
+let ``a change inside Signal's namespace since the read is caught and decided again`` () =
+    let github = InMemoryStore()
+    let opened = openAs github (fun () -> writable) octocat None |> ok
+    let attempts = ref 0
+    let counting = { opened.Provider with Commit = fun operation -> attempts.Value <- attempts.Value + 1; opened.Provider.Commit operation }
+    // A first change moves the namespace; the second still holds the old token.
+    Store.changeRoster (actor octocat) (Admit(hubot, Grants.analyst)) at opened |> run |> ok |> ignore
+
+    let monalisa = person "1" "monalisa"
+    let after = Store.changeRoster (actor octocat) (Admit(monalisa, Grants.analyst)) at { opened with Provider = counting } |> run |> ok
+
+    // Refused as stale, reloaded, decided again and landed, keeping both.
+    Assert.Equal(2, attempts.Value)
+    Assert.True(permits after.Roster.Roster monalisa.PrincipalId BuildReports)
+    Assert.True(permits after.Roster.Roster hubot.PrincipalId BuildReports)
+
+[<Fact>]
 let ``a roster command is one commit and moves the change token`` () =
     let github = InMemoryStore()
     let opened = openAs github (fun () -> writable) octocat None |> ok
@@ -156,7 +189,8 @@ let ``a roster command is one commit and moves the change token`` () =
     let after = Store.changeRoster (actor octocat) (Admit(hubot, Grants.analyst)) at opened |> run |> ok
 
     Assert.Equal(before + 1, commits github)
-    Assert.NotEqual(opened.Token, after.Token)
+    Assert.NotEqual(opened.State.NamespaceToken, after.State.NamespaceToken)
+    Assert.NotEqual(opened.State.RepositoryToken, after.State.RepositoryToken)
     Assert.True(permits after.Roster.Roster hubot.PrincipalId BuildReports)
 
     // The next command conditions on the new revisions and token.

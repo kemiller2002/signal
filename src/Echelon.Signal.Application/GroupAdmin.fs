@@ -31,7 +31,7 @@ let listGroups (now: DateTimeOffset) (opened: Store.Opened) : AsyncResult<Opaque
     asyncResult {
         let! listing = call now (opened.Provider.List opened.Namespace GroupRecord.folder)
         let! objects = Loading.recordFiles listing |> List.map (fun path -> call now (opened.Provider.Read opened.Namespace path)) |> sequence
-        let found = objects |> List.choose (function ReadOutcome.Found stored -> Some stored | ReadOutcome.Absent -> None)
+        let found = objects |> List.choose Store.present
         let loaded = Loading.load opened.Verified GroupRecord.reader GroupRecord.folder listing found
         return loaded.Records |> Map.toList |> List.map (fun (_, stored) -> stored.Value.Config.Group)
     }
@@ -53,7 +53,8 @@ let unfinishedBatches (now: DateTimeOffset) (group: OpenedGroup) : AsyncResult<I
                     Record.decode Record.DefaultMaxBytes stored.Content
                     |> Result.toOption
                     |> Option.bind (fun record -> Intake.ofBody record.Body |> Result.toOption)
-                | ReadOutcome.Absent -> None)
+                | ReadOutcome.Absent
+                | ReadOutcome.Erased _ -> None)
             |> List.map _.Batch
             |> List.filter (fun batch -> batch.Group = group.Config.Group)
 

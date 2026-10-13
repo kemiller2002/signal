@@ -223,6 +223,9 @@ let incompatibilities (supported: FormatVersions) (stored: FormatVersions) =
 let read (supported: FormatVersions) (datasetId: string) (root: string) (stored: ReadOutcome) : Result<StorageManifest, Problem> =
     match stored with
     | ReadOutcome.Absent -> Error(DatasetNotInitialized datasetId)
+    // An erased manifest (Arca 0.4, ARCA-INT-005) is a tombstone: the dataset
+    // cannot be used, and nothing recreates the manifest in its place.
+    | ReadOutcome.Erased _ -> Error(ManifestUnusable(datasetId, "its manifest was erased"))
     | ReadOutcome.Found found ->
         let where = RelativePath.render found.Path
 

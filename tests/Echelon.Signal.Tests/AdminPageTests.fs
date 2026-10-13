@@ -134,7 +134,8 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
                     Read = fun ns p -> if reachable () then real.Read ns p else offline ()
                     List = fun ns p -> if reachable () then real.List ns p else offline ()
                     Commit = fun o -> if reachable () then real.Commit o else offline ()
-                    ChangeToken = fun ns -> if reachable () then real.ChangeToken ns else offline () }
+                    ChangeToken = fun ns -> if reachable () then real.ChangeToken ns else offline ()
+                    NamespaceState = fun ns -> if reachable () then real.NamespaceState ns else offline () }
           Resolve =
             fun location ->
                 if reachable () then

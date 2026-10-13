@@ -116,7 +116,7 @@ let readTree now (provider: StorageProvider) (ns: Namespace) (folder: RelativePa
         return
             { Entries = []
               Complete = (top :: listings) |> List.forall _.Complete },
-            objects |> List.choose (function ReadOutcome.Found stored -> Some stored | ReadOutcome.Absent -> None)
+            objects |> List.choose Store.present
     }
 
 /// Opens a group: its configuration, template and every accepted contribution.
@@ -125,10 +125,12 @@ let openGroup (resolve: GroupRecord.TemplateResolver) (group: UrlState.OpaqueId)
         let! path = GroupRecord.path group |> Result.mapError (List.singleton >> Unusable) |> lift
         let! stored = call now (opened.Provider.Read opened.Namespace path)
 
-        let configs =
+        let! configs =
             match stored with
-            | ReadOutcome.Found found -> Loading.load opened.Verified GroupRecord.reader GroupRecord.folder { Entries = []; Complete = true } [ found ]
-            | ReadOutcome.Absent -> Loading.load opened.Verified GroupRecord.reader GroupRecord.folder { Entries = []; Complete = true } []
+            | ReadOutcome.Found found -> Ok(Loading.load opened.Verified GroupRecord.reader GroupRecord.folder { Entries = []; Complete = true } [ found ])
+            | ReadOutcome.Absent -> Ok(Loading.load opened.Verified GroupRecord.reader GroupRecord.folder { Entries = []; Complete = true } [])
+            | ReadOutcome.Erased erased -> Error(Unusable [ Store.erasedRecord erased ])
+            |> lift
 
         let! found =
             match configs.Records |> Map.tryFind (GroupRecord.groupKey group), configs.Problems with
@@ -144,6 +146,7 @@ let openGroup (resolve: GroupRecord.TemplateResolver) (group: UrlState.OpaqueId)
         let! lifecycle, lifecycleRevision =
             match storedLifecycle with
             | ReadOutcome.Absent -> Ok(GroupLifecycle.initial group None, None)
+            | ReadOutcome.Erased erased -> Error(Unusable [ Store.erasedRecord erased ])
             | ReadOutcome.Found found ->
                 let loaded = Loading.load opened.Verified GroupLifecycle.reader GroupRecord.folder { Entries = []; Complete = true } [ found ]
 
@@ -156,19 +159,26 @@ let openGroup (resolve: GroupRecord.TemplateResolver) (group: UrlState.OpaqueId)
         let! retirementPath = GovernanceRecord.retirementPath (string group) |> Result.mapError (List.singleton >> Unusable) |> lift
         let! storedRetirement = call now (opened.Provider.Read opened.Namespace retirementPath)
 
-        let retirement =
+        let! retirement =
             match storedRetirement with
             | ReadOutcome.Found found ->
-                Loading.load opened.Verified GovernanceRecord.retirementReader (GovernanceRecord.folderOf GovernanceRecord.retirementType) { Entries = []; Complete = true } [ found ]
-            | ReadOutcome.Absent -> Loading.load opened.Verified GovernanceRecord.retirementReader (GovernanceRecord.folderOf GovernanceRecord.retirementType) { Entries = []; Complete = true } []
+                Ok(Loading.load opened.Verified GovernanceRecord.retirementReader (GovernanceRecord.folderOf GovernanceRecord.retirementType) { Entries = []; Complete = true } [ found ])
+            | ReadOutcome.Absent -> Ok(Loading.load opened.Verified GovernanceRecord.retirementReader (GovernanceRecord.folderOf GovernanceRecord.retirementType) { Entries = []; Complete = true } [])
+            | ReadOutcome.Erased erased -> Error(Unusable [ Store.erasedRecord erased ])
+            |> lift
 
         let retired = retirement.Records |> Map.tryPick (fun _ stored -> if stored.Value.Group = string group then Some stored.Value else None)
         let! releasePath = GovernanceRecord.releasePath (string group) |> Result.mapError (List.singleton >> Unusable) |> lift
         let! storedRelease = call now (opened.Provider.Read opened.Namespace releasePath)
         let releaseFolder = GovernanceRecord.folderOf GovernanceRecord.releaseType
 
-        let release =
-            Loading.load opened.Verified GovernanceRecord.releaseReader releaseFolder { Entries = []; Complete = true } (match storedRelease with ReadOutcome.Found found -> [ found ] | ReadOutcome.Absent -> [])
+        let! release =
+            match storedRelease with
+            | ReadOutcome.Found found -> Ok [ found ]
+            | ReadOutcome.Absent -> Ok []
+            | ReadOutcome.Erased erased -> Error(Unusable [ Store.erasedRecord erased ])
+            |> Result.map (Loading.load opened.Verified GovernanceRecord.releaseReader releaseFolder { Entries = []; Complete = true })
+            |> lift
 
         let released = release.Records |> Map.tryPick (fun _ stored -> if stored.Value.Group = string group then Some(stored.Value, stored.Revision) else None)
         let folder = ResultRecord.groupFolder group
@@ -239,6 +249,7 @@ let private readBatch now (opened: Store.Opened) (fresh: Intake.Batch) =
 
         match stored with
         | ReadOutcome.Absent -> return fresh, None
+        | ReadOutcome.Erased erased -> return! lift (Error(Unusable [ Store.erasedRecord erased ]))
         | ReadOutcome.Found found ->
             let! batch =
                 match RecordId.create fresh.BatchId with
@@ -369,6 +380,7 @@ let persistReportState (actor: Store.Actor) (budget: ReportState.UrlBudget) (now
 
             match existing with
             | ReadOutcome.Found _ -> return external
+            | ReadOutcome.Erased erased -> return! lift (Error(Unusable [ Store.erasedRecord erased ]))
             | ReadOutcome.Absent ->
                 let! operation =
                     Storage.operation group.Dataset.Namespace (importContext actor) "store report state" [ Change.Create(target, content) ]

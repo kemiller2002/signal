@@ -1,0 +1,12 @@
+{
+  "schema": "praxis.instance/1",
+  "instanceId": "pxi-5fdaa9297e9a4b5bac07c7cd4c25a887",
+  "createdAt": "2026-10-13T09:08:06.914Z",
+  "createdWith": "3.11.0",
+  "repository": {
+    "provider": "github",
+    "repositoryId": null,
+    "repository": "kemiller2002/signal"
+  },
+  "predecessors": []
+}

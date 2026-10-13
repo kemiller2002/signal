@@ -111,6 +111,7 @@ let root (ns: Namespace) = RelativePath.render ns.Root
 let openNamespace (ns: Namespace) (stored: ReadOutcome) : Result<Manifest, Problem list> =
     match stored with
     | ReadOutcome.Absent -> Error [ NamespaceNotInitialized(root ns) ]
+    | ReadOutcome.Erased _ -> Error [ NamespaceUnusable(root ns, "its manifest was erased") ]
     | ReadOutcome.Found found ->
         Manifest.decode found.Content
         |> Result.mapError (fun error -> [ InvalidStoredRecord(RelativePath.render found.Path, Codec.describeDecode error) ])
