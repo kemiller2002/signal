@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T12:20:15Z",
+  "updatedAt": "2026-10-13T12:27:35Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -2751,13 +2751,24 @@
     {
       "id": "WI-0084",
       "type": "defect",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-13T12:20:15Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/Csv.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/CsvTests.fs"
+        }
+      ],
+      "updatedAt": "2026-10-13T12:27:35Z",
       "telemetryExecutionIds": [
         "EXE-20261013T122017038Z-a33a1f5e"
-      ]
+      ],
+      "completedAt": "2026-10-13T12:27:35Z",
+      "conclusion": "Every CSV export neutralizes formula prefixes and quotes per RFC 4180; escaped defect from PR #32"
     }
   ]
 }

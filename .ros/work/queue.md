@@ -96,4 +96,4 @@
 | WI-0081 | Signal 05e: the rest of generic templates after WI-0078 - survey page components, pagination, banks, timers and back/forward; ranking, allocation, best-worst and hierarchical answers; locale and invitation expiry carriage; cross-device sample URL checks; fact, recommendation, completion and custom-expression authoring; group results carrying facts and recommendations | active | signal,order:05e,authoring | medium |
 | WI-0082 | Adopt echelon-current 1.18.0 through Conditor: Praxis 3.11.0 and Arca 0.4.1 with the Arca 0.4 API migration | complete | signal,platform,conditor | high |
 | WI-0083 | Measurement baseline: index of Signal's historical evidence sources and Echelon capability adoption commits | complete | signal,measurement | medium |
-| WI-0084 | Neutralize spreadsheet formulas in every Signal CSV export (CSV injection) | ready | signal,security | high |
+| WI-0084 | Neutralize spreadsheet formulas in every Signal CSV export (CSV injection) | complete | signal,security | high |
