@@ -1424,6 +1424,59 @@
         "name": "ros",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.started",
+      "stepId": "pages-implementation",
+      "name": "custom implementation: GenericPaging, session/view/wire/page; PAGED fixture",
+      "occurredAt": "2026-10-13T08:40:15Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "pages-implementation",
+      "occurredAt": "2026-10-13T08:45:44Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "pages-testing",
+      "name": "testing: dotnet 453/453 after 1 compile error (ambiguous Assert.Equal overload) and 1 test-logic failure (lock policy needs answers before Next); browser 44/44",
+      "occurredAt": "2026-10-13T08:42:00Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "pages-testing",
+      "occurredAt": "2026-10-13T08:49:27Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "pages-git-ci",
+      "name": "git/CI integration: pages PR and gate",
+      "occurredAt": "2026-10-13T08:49:54Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {
