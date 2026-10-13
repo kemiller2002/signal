@@ -106,7 +106,10 @@ type Response =
       ShowMissing: bool
       /// Compound input the link cannot carry yet (WI-0086): not an answer,
       /// not counted, not in the link; the page says so until it is finished.
-      Pending: Map<string, GenericInputs.Held> }
+      Pending: Map<string, GenericInputs.Held>
+      /// Reviewing the answers before submitting, when the template asks
+      /// for it (VER-004): page state only, never in the link.
+      Reviewing: bool }
 
 [<NoComparison>]
 type Session =
@@ -213,6 +216,7 @@ let receivedAt (now: DateTimeOffset) (fetched: Fetched) (session: Session) : Ses
                       Phase = if Submission.isFinal { Binding = envelope.Binding; Answers = Map.empty } then Submitted else Answering
                       Now = now
                       ShowMissing = false
+                      Reviewing = false
                       Pending = Map.empty
                       Position = GenericPaging.reach published.Form.Content envelope.Answers (GenericPaging.resume published.Form.Content envelope.Answers) page
                       Refusal = None }
@@ -287,8 +291,11 @@ type Msg =
     /// The link now names a page (browser Back or Forward, or an edited link).
     | Reached of page: int
     /// Finalize. The bytes are fresh secure entropy from the application
-    /// edge; only an anonymous invitation uses them.
+    /// edge; only an anonymous invitation uses them. When the template asks
+    /// for a review, the first request shows the answers instead (VER-004).
     | SubmitRequested of entropy: byte[]
+    /// Leave the review to change answers.
+    | ReviewClosed
 
 let envelope (r: Response) : GenericEnvelope.Envelope = { Binding = r.Binding; Answers = r.Answers }
 
@@ -327,14 +334,29 @@ let rec private finalOf (r: Response) (binding: Binding) (entropy: byte[]) : Res
 let private plural count singular pluralForm =
     if count = 1 then $"{count} {singular}" else $"{count} {pluralForm}"
 
+/// Whether the response may be submitted now, or why not.
+let private readiness (r: Response) : Result<unit, string> =
+    match (result r).Evaluation.Completion with
+    | _ when not r.Pending.IsEmpty ->
+        Error $"""{plural r.Pending.Count "answer is" "answers are"} not finished. Finish or clear each answer marked "not in the link yet" before you submit."""
+    | Rules.ReadyToSubmit
+    | Rules.Terminated _ -> Ok()
+    | Rules.NotStarted -> Error "Answer the questions before you submit."
+    | Rules.InProgress missing -> Error $"""{plural missing "required question still needs" "required questions still need"} an answer."""
+    | Rules.Invalid problems -> Error $"""{plural problems "answer breaks" "answers break"} this survey's rules. Change it before you submit."""
+
+/// Whether the template asks to review the answers before submitting (VER-004).
+let reviewsFirst (r: Response) = r.Published.Form.Content.Presentation.ReviewBeforeSubmit
+
 let private submit (r: Response) (entropy: byte[]) =
     let refuse text = { r with Refusal = Some text }
 
-    match (result r).Evaluation.Completion with
-    | _ when not r.Pending.IsEmpty ->
-        refuse $"""{plural r.Pending.Count "answer is" "answers are"} not finished. Finish or clear each answer marked "not in the link yet" before you submit."""
-    | Rules.ReadyToSubmit
-    | Rules.Terminated _ ->
+    match readiness r with
+    | Error text -> refuse text
+    // A template that asks for a review shows the answers first; only
+    // submitting from the review submits.
+    | Ok() when reviewsFirst r && not r.Reviewing -> { r with Reviewing = true; Refusal = None }
+    | Ok() ->
         match finalOf r r.Binding entropy with
         | Ok binding ->
             { r with
@@ -345,11 +367,9 @@ let private submit (r: Response) (entropy: byte[]) =
                 Terms =
                     if r.Published.Form.Content.Presentation.Timers.IsEmpty then r.Terms
                     else { r.Terms with SubmittedAt = Some(GenericEnvelope.startMinute r.Now) }
+                Reviewing = false
                 Refusal = None }
         | Error text -> refuse text
-    | Rules.NotStarted -> refuse "Answer the questions before you submit."
-    | Rules.InProgress missing -> refuse $"""{plural missing "required question still needs" "required questions still need"} an answer."""
-    | Rules.Invalid problems -> refuse $"""{plural problems "answer breaks" "answers break"} this survey's rules. Change it before you submit."""
 
 /// Applies a compound input's change: what the link can carry becomes the
 /// answer, the rest is held (WI-0086).
@@ -381,7 +401,8 @@ let private target =
     | Turned _
     | Reached _
     | Ticked _
-    | SubmitRequested _ -> None
+    | SubmitRequested _
+    | ReviewClosed -> None
 
 let rec update (msg: Msg) (session: Session) : Session =
     match step msg session with
@@ -391,6 +412,9 @@ let rec update (msg: Msg) (session: Session) : Session =
 and private step (msg: Msg) (session: Session) : Session =
     match session with
     | Responding r when r.Phase = Submitted -> session
+    // While the answers are reviewed they are read, not changed, and the
+    // page does not move; closing the review returns to them.
+    | Responding r when r.Reviewing && ((target msg).IsSome || (match msg with Turned _ -> true | _ -> false)) -> session
     // A locked answer (ARX-013) cannot change, whatever the page sends.
     | Responding r when target msg |> Option.exists (GenericPaging.locked r.Published.Form.Content r.Answers r.Position).Contains -> session
     // An enforced timer that ran out holds the answers it covers (ARX-013).
@@ -413,7 +437,8 @@ and private step (msg: Msg) (session: Session) : Session =
             | Ok position -> Responding { r with Position = position; Refusal = None }
             | Error text -> Responding { r with Refusal = Some text; ShowMissing = true }
         | Ticked now -> Responding { r with Now = now }
-        | Reached page -> Responding { r with Position = GenericPaging.reach r.Published.Form.Content r.Answers r.Position page; Refusal = None }
+        | Reached page -> Responding { r with Position = GenericPaging.reach r.Published.Form.Content r.Answers r.Position page; Refusal = None; Reviewing = false }
+        | ReviewClosed -> Responding { r with Reviewing = false; Refusal = None }
         | SubmitRequested entropy ->
             let next = submit r entropy
             Responding { next with ShowMissing = r.ShowMissing || next.Refusal.IsSome }

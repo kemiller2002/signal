@@ -101,3 +101,35 @@ let ``through the page a survey is authored, saved, published, offered for group
     page.Event("hideVersion", key = hash)
     Assert.Contains("hidden from new groups", page.Text "notice")
     Assert.DoesNotContain(page.Items "catalog", fun i -> i["label"].GetValue<string>().Contains "PULSE")
+
+[<Fact>]
+let ``through the page a stored draft is deleted only after a confirmation, and an unsaved one has nothing to delete`` () =
+    let _, github, page = signedIn ()
+    page.Event("navigate", key = "/assessments")
+    page.Event("newDraftSurvey", value = "PULSE")
+    page.Event("newDraftTitle", value = "Team pulse")
+    page.Event("startDraft")
+
+    // Not stored yet: nothing to delete, and the button is not offered.
+    Assert.False(page.Flag "canDeleteDraft")
+    page.Event("deleteDraft")
+    Assert.Contains("not stored yet", page.Text "authoringProblem")
+
+    page.Event("saveDraft")
+    Assert.True(page.Flag "canDeleteDraft", page.ViewText)
+
+    // The first press asks; keeping it changes nothing.
+    page.Event("deleteDraft")
+    Assert.True(page.Flag "confirmingDeleteDraft")
+    Assert.False(page.Flag "canDeleteDraft")
+    page.Event("cancelDeleteDraft")
+    Assert.False(page.Flag "confirmingDeleteDraft")
+    Assert.Contains(page.Items "draftLinks", fun i -> i["key"].GetValue<string>() = "PULSE")
+
+    let commits = github.State.History.Length
+    page.Event("deleteDraft")
+    page.Event("confirmDeleteDraft")
+    Assert.Equal("SIGNAL.AUTHORING.DRAFT_DELETED", page.Text "noticeCode")
+    Assert.Equal(commits + 1, github.State.History.Length)
+    Assert.False(page.Flag "hasDraft")
+    Assert.DoesNotContain(page.Items "draftLinks", fun i -> i["key"].GetValue<string>() = "PULSE")

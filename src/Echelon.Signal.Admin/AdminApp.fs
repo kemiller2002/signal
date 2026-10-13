@@ -120,6 +120,7 @@ type Effect =
     | HideTemplate of survey: string * version: string
     | RequestReview of survey: string
     | ApproveReview of Echelon.Signal.Engine.Drafts.Draft
+    | DeleteDraft of survey: string
     /// Reports (WI-0075): take a formal snapshot of the report in view; download one of a snapshot's export files.
     | TakeSnapshot of group: string * family: string * locale: string
     | ExportSnapshot of snapshotId: string * file: string
@@ -147,6 +148,7 @@ type Msg =
     | CatalogLoaded of CatalogEntry list * TemplateListing.Listing
     /// A draft was stored, or published as a version.
     | DraftSaved of survey: string
+    | DraftDeleted of survey: string
     | SnapshotsLoaded of SnapshotSummary list
     | LibraryLoaded of ReportLibrary.Library
     | DefinitionSaved of ReportLibrary.Entry

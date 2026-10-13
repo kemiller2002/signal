@@ -46,7 +46,7 @@ let initialWith (edge: Wire.Edge) =
 let initial = initialWith Wire.secureEdge
 
 /// Every event the page may send, so a test can hold the page to it.
-let events = set [ "answered"; "toggled"; "numbered"; "pickedBest"; "pickedWorst"; "pageNext"; "pageBack"; "submitRequested"; Wire.CopyRequested ]
+let events = set [ "answered"; "toggled"; "numbered"; "pickedBest"; "pickedWorst"; "pageNext"; "pageBack"; "submitRequested"; "reviewClosed"; Wire.CopyRequested ]
 
 let private responding (state: State) =
     match state.Session with
@@ -125,6 +125,7 @@ let private message (state: State) (name: string) (key: string) (value: string) 
     | "pageNext", Some _ -> Turned GenericPaging.Next
     | "pageBack", Some _ -> Turned GenericPaging.Back
     | "submitRequested", Some _ -> SubmitRequested(state.Edge.Entropy())
+    | "reviewClosed", Some _ -> ReviewClosed
     | _, None -> raise (MalformedInput("$.event.name", $"an event the page can send while a survey is shown, not '{name}'"))
     // The page and the engine disagree: a defect, not an operational failure.
     | _ -> invalidOp $"The survey page sent an event the engine does not know: '{name}'"

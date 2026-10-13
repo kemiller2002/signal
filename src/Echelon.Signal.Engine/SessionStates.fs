@@ -37,6 +37,7 @@ let commandName =
     | Turned GenericPaging.Next -> "next"
     | Reached _ -> "reach"
     | SubmitRequested _ -> "submit"
+    | ReviewClosed -> "close review"
 
 let private answerTarget =
     function
@@ -86,7 +87,8 @@ let requires =
     | SubmitRequested _ -> Some Capability.CanFinalize
     | Turned GenericPaging.Next
     | Reached _
-    | Ticked _ -> None
+    | Ticked _
+    | ReviewClosed -> None
 
 /// Whether a message is legal now, and if not, why.
 let guard (msg: Msg) (session: Session) : Result<unit, Illegal> =
