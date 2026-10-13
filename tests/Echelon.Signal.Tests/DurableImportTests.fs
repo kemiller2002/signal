@@ -12,95 +12,7 @@ open Echelon.Signal.Engine.Import
 open Echelon.Signal.Admin
 open Echelon.Signal.Admin.Access
 open Echelon.Signal.Application
-
-let private ok =
-    function
-    | Ok value -> value
-    | Error error -> failwith $"%A{error}"
-
-let private run work = Async.RunSynchronously work
-let private pilot = Pilot.assessment
-let private opaque (seed: byte) = (OpaqueId.ofBytes (Array.init 16 (fun i -> seed + byte i))).Value
-let private groupId = opaque 200uy
-let private resolve: GroupRecord.TemplateResolver = fun hash -> if hash = Canonical.templateHash pilot then Some(pilot, None) else None
-
-let private all (answer: Answer) = pilot.Items |> List.map (fun item -> item.Id, answer) |> Map.ofList
-
-let private link (binding: Binding) (answers: Answers) =
-    "https://signal.example" + LiveUrl.urlFor pilot "/web/" "" { Binding = binding; Answers = answers }
-
-let private anonymous (seed: byte) answer = link (Anonymous(opaque seed, groupId)) (all (Rated answer))
-let private identified (seed: byte) answer = link (Identified(opaque seed, groupId)) (all (Rated answer))
-
-let private configText =
-    """{"environment":"production","environmentName":"production",
-"identity":{"exchange":"https://fides.test","application":"signal-test","provider":"github","clientId":"Iv23liTEST","redirectUri":"https://signal.test/admin/"},
-"profiles":[{"id":"primary","label":"Survey data","provider":"github","location":{"owner":"acme","repository":"signal-data","branch":"main","basePath":"prod"}}],
-"datasets":[{"id":"ds_engagement","label":"Engagement","profile":"primary","administrators":["583231"]}]}"""
-
-let private config = Deployment.parse configText |> ok
-let private at = DateTimeOffset(2026, 10, 8, 16, 0, 0, TimeSpan.Zero)
-let private octocat = { PrincipalId = "github:583231"; Kind = Human; DisplayName = "octocat" }
-let private keys = ref 0
-
-let private actor: Store.Actor =
-    { Principal = octocat
-      SignIn = Credential.SignedIn "583231"
-      NewContext =
-        fun () ->
-            { Actor = { Kind = ActorKind.Human; Id = ActorId.create octocat.PrincipalId |> ok }
-              ProviderIdentity = None
-              CorrelationId = CorrelationId.create "req-import" |> ok
-              IdempotencyKey = IdempotencyKey.create $"op-import-{Threading.Interlocked.Increment keys:D6}" |> ok
-              At = at } }
-
-let private backend (github: InMemoryStore) (reachable: unit -> bool) : Store.Backend =
-    let offline () = async.Return(Error(StorageFailure.ProviderFailed("AEGIS.NETWORK.UNAVAILABLE", true, "offline")))
-
-    { Provider =
-        fun _ ->
-            let real = github.Provider
-
-            { real with
-                Read = fun ns p -> if reachable () then real.Read ns p else offline ()
-                List = fun ns p -> if reachable () then real.List ns p else offline ()
-                Commit = fun o -> if reachable () then real.Commit o else offline () }
-      Resolve =
-        fun location ->
-            async.Return(
-                Ok
-                    { Identity = { Provider = "github"; Subject = "583231"; Login = Some "octocat"; Kind = IdentityKind.User }
-                      RepositoryId = "R_1"
-                      Repository = location.Repository
-                      Visibility = RepositoryVisibility.Private
-                      CanRead = true
-                      CanWrite = true
-                      Archived = false
-                      Branch = BranchAccess.Writable }
-            ) }
-
-let private groupConfig mode expected retention : GroupRecord.GroupConfig =
-    { Group = groupId
-      Mode = mode
-      ExpectedCount = expected
-      SurveyIdentifier = pilot.Id
-      TemplateVersion = pilot.Version
-      TemplateHash = Canonical.templateHash pilot
-      MinimumReportableCount = 2
-      Retention = retention
-      Revision = 1 }
-
-/// A dataset with one group, opened.
-let private setUp (github: InMemoryStore) (reachable: unit -> bool) mode retention =
-    let opened = Store.openDataset (backend github reachable) config actor None "signal-test" "ds_engagement" at |> run |> ok
-    GroupStore.create actor (groupConfig mode 10 retention) at opened |> run |> ok
-    GroupStore.openGroup resolve groupId at opened |> run |> ok
-
-let private import texts group = GroupStore.importBatch actor resolve ResultRecord.MultiPaste texts at group |> run |> ok
-
-let private stateOf (texts: string list) mode =
-    texts
-    |> List.fold (fun s t -> importOne s t |> fst) (empty { Group = groupId; Mode = mode; ExpectedCount = 10; Template = pilot; Generic = None })
+open Echelon.Signal.Tests.DurableFixture
 
 // ---- ADM-008/010: accepted contributions are durable and reproduce the result -------------
 
@@ -391,49 +303,6 @@ let ``an import writes its audit records in the same commit, naming artifacts by
     for text in stored do
         for forbidden in [ "https://"; "signal.example"; "octocat"; "583231"; "#" ] do
             Assert.DoesNotContain(forbidden, text)
-
-// ---- ADM-045 / ADM-064: retiring a finalized group's sources ------------------------------------
-
-[<Fact>]
-let ``retiring a finalized group's results removes them from Signal's state, claims no more, and records the limit`` () =
-    let github = InMemoryStore()
-    let group = setUp github (fun () -> true) AnonymousGroup GroupRecord.NoneAfterImport
-    let imported = import [ anonymous 1uy Often; anonymous 2uy Never; anonymous 3uy Sometimes ] group
-
-    match GovernanceStore.retireSources actor at GovernanceStore.DeletionRequest imported.Group |> run with
-    | Error(GovernanceStore.GroupNotFinalized "Collecting") -> ()
-    | other -> failwith $"%A{other}"
-
-    GroupStore.rebuildIndex actor at group.Dataset |> run |> ok |> ignore
-    let closed = GroupAdmin.transition actor "close" at imported.Group |> run |> ok
-    let finalized = GroupAdmin.transition actor "finalize" at closed |> run |> ok
-
-    let thirtyDays = Map [ Retention.AcceptedResult, Retention.KeepForDays 30 ]
-
-    match GovernanceStore.retireSources actor at (GovernanceStore.RetentionExpired thirtyDays) finalized |> run with
-    | Error GovernanceStore.RetentionNotDue -> ()
-    | other -> failwith $"%A{other}"
-
-    let retired = GovernanceStore.retireSources actor (at.AddDays 31.0) (GovernanceStore.RetentionExpired thirtyDays) finalized |> run |> ok
-    Assert.Equal(3, retired.Removed)
-    // Arca never deletes an immutable record: the results leave Signal's state, not the tree.
-    Assert.Equal(Retention.RemovedFromApplicationState, retired.Claim)
-    let limitation = Option.get retired.Limitation
-    Assert.Equal((Retention.FullReconstruction, Retention.NotReproducible), (limitation.Before, limitation.After))
-    Assert.Contains(Retention.GroupAggregateRebuild, limitation.Breaks)
-    Assert.True(limitation.LineageClosed)
-    Assert.Contains("TREE-REMOVAL-UNAVAILABLE", limitation.Evidence.Reasons)
-    Assert.Contains("RETENTION-EXPIRED", limitation.Evidence.Reasons)
-
-    let reopened = GroupStore.openGroup resolve groupId at group.Dataset |> run |> ok
-    Assert.Empty(reopened.Contributions)
-    Assert.Equal(Some "state-not-reproducible", reopened.SourcesRetired |> Option.map _.Remaining)
-    Assert.Equal(0, reopened.Accumulator.Accepted.Count)
-    Assert.Equal(3, github.State.Objects |> Map.filter (fun path _ -> path.Contains "signal.result") |> Map.count)
-
-    let records, _ = GovernanceStore.audit at group.Dataset |> run |> ok
-    Assert.Equal("state-not-reproducible", GovernanceStore.reconstructionOf records (string groupId))
-    Assert.Equal("state-full-reconstruction", GovernanceStore.reconstructionOf records "AAECAwQFBgcICQoLDA0ODw")
 
 [<Fact>]
 let ``an item blocked in a run is not retried in the same run, so an import always ends`` () =
