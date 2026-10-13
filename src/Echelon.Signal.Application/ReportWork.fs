@@ -126,6 +126,18 @@ let export (actor: Store.Actor) (opened: Store.Opened) (snapshot: Snapshot) (fil
         | Error f -> return [ ToEngine(failure f) ]
         | Ok files ->
             match files |> List.tryFind (fst >> (=) file) with
+            | Some(name, data) when name = "sections.csv" && snd (ReportLibrary.deliveredSections snapshot) ->
+                // An older snapshot whose stored CSV would have run as formulas (DF-SIGNAL-2026-0017).
+                return
+                    [ ToEngine(AdminApp.ExportReady($"{snapshot.SnapshotId}-{name}", mimeOf name, data))
+                      ToEngine(
+                          AdminApp.Noted(
+                              notice
+                                  "SIGNAL.REPORT.CSV_NEUTRALIZED"
+                                  "This snapshot's sections CSV was neutralized for spreadsheet safety: cells that would have run as formulas start with a single quote. The stored snapshot and its hashes are unchanged."
+                                  false
+                          )
+                      ) ]
             | Some(name, data) -> return [ ToEngine(AdminApp.ExportReady($"{snapshot.SnapshotId}-{name}", mimeOf name, data)) ]
             | None -> return [ ToEngine(AdminApp.Failed(notice "SIGNAL.REPORT.NO_SUCH_EXPORT" "That export is not available." false)) ]
     }

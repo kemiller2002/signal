@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 85,
+  "nextSeq": 86,
   "items": [
     {
       "id": "WI-0001",
@@ -1999,6 +1999,29 @@
       "attachments": [],
       "createdAt": "2026-10-13T12:20:15Z",
       "updatedAt": "2026-10-13T12:27:35Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0085",
+      "title": "Neutralize stored snapshot CSVs on delivery (snapshots stored before WI-0084)",
+      "description": "Coordinator follow-up to WI-0084: snapshots stored before PR #87 keep an unsafe sections.csv. Keep stored bytes and hashes exactly; apply the safe CSV writer when a stored CSV is delivered; say so in the download when delivery changed it; record in a DF that delivered CSV bytes may differ from stored bytes. Also: ReportLibrary.export compared a recomputed safe CSV with the stored one, so after #87 an old snapshot with a risky cell would be refused as not the snapshot.",
+      "tags": [
+        "signal,security"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-10-13T12:34:53Z",
+      "updatedAt": "2026-10-13T12:38:36Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
