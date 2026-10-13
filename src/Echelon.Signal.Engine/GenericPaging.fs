@@ -6,13 +6,17 @@
 /// the template allows going back, and never onto locked answers; Next past
 /// a locking boundary needs the page's required questions answered first.
 ///
-/// The position is not in the link. A reopened link resumes on the last page
-/// holding an answer, and counts as having reached it, so a lock that held
-/// before is not lifted by reloading.
+/// The page shown is in the link as `p` (SIG-LINK-014, DF-SIGNAL-2026-0007),
+/// 1-based and left out on the first page. The link names a page; it never
+/// grants one: the page is reached by moving there under the same rules, so
+/// a link can't skip a required answer or open a locked page. A reopened link
+/// first resumes on the last page holding an answer, counted as reached, so
+/// reloading doesn't lift a lock that held before.
 ///
 /// Pure.
 module Echelon.Signal.Engine.GenericPaging
 
+open System
 open Echelon.Signal.Engine.Responses
 open Echelon.Signal.Engine.Template
 
@@ -71,3 +75,45 @@ let move (content: Content) (answers: Answers) (position: Position) (direction: 
             Error $"""{plural missing.Length "required question on this page needs" "required questions on this page need"} an answer before you go on, because earlier answers cannot be changed after you leave."""
     | Back when canGoBack content answers position -> Ok { position with Page = page - 1 }
     | Back -> Error "This survey does not let you go back to earlier answers."
+
+/// The position after moving toward a page, one page at a time under the
+/// rules, stopping where a move is refused.
+let reach (content: Content) (answers: Answers) (from: Position) (target: int) : Position =
+    let rec go (position: Position) =
+        let direction =
+            if target > position.Page then Some Next
+            elif target < position.Page then Some Back
+            else None
+
+        match direction |> Option.map (move content answers position) with
+        | Some(Ok next) when next.Page <> position.Page -> go next
+        | _ -> position
+
+    go { from with Page = clamp (pagesOf content answers) from.Page }
+
+/// The link parameter that names the page.
+[<Literal>]
+let PageKey = "p"
+
+/// The page a fragment names (0-based), if it names one well: `p` is a
+/// whole number from 2, written once; anything else names no page.
+let pageIn (hash: string) : int option =
+    let body = if hash.StartsWith "#" then hash.Substring 1 else hash
+
+    let values =
+        body.Split('&')
+        |> Array.choose (fun part ->
+            match part.Split('=', 2) with
+            | [| key; value |] when key = PageKey -> Some value
+            | _ -> None)
+
+    match values with
+    | [| value |] when value.Length <= 4 && value |> Seq.forall Char.IsAsciiDigit && not (value.StartsWith "0") ->
+        match int value with
+        | n when n >= 2 -> Some(n - 1)
+        | _ -> None
+    | _ -> None
+
+/// The page parameter for a position: empty on the first page.
+let pageParameter (position: Position) =
+    if position.Page > 0 then $"&{PageKey}={position.Page + 1}" else ""

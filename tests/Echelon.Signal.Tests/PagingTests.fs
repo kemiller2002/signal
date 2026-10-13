@@ -87,3 +87,61 @@ let ``a survey without pagination is one page, with nothing locked`` () =
     Assert.Equal(1, GenericPaging.pagesOf r.Published.Form.Content r.Answers |> List.length)
     Assert.True((GenericPaging.locked r.Published.Form.Content r.Answers r.Position).IsEmpty)
     Assert.True(GenericPaging.move r.Published.Form.Content r.Answers r.Position GenericPaging.Next |> Result.isError)
+
+// ---------------------------------------------------------------------------
+// The page in the link (SIG-LINK-014, DF-SIGNAL-2026-0007).
+// ---------------------------------------------------------------------------
+
+[<Fact>]
+let ``the link names a page as p, from 2, written once`` () =
+    Assert.Equal(Some 2, GenericPaging.pageIn "#r=abc&p=3")
+    Assert.Equal(Some 1, GenericPaging.pageIn "#p=2&r=abc")
+
+    for hash in [ "#r=abc"; "#r=abc&p=1"; "#r=abc&p=03"; "#r=abc&p=x"; "#r=abc&p=2&p=3"; "#r=abc&p=-2"; "#r=abc&p=99999" ] do
+        Assert.Equal(None, GenericPaging.pageIn hash)
+
+let private openAt (answers: Answers) (page: int) =
+    let link = GenericEnvelope.encode content (GenericImport.formOf "PAGED" "1" content).Reference { Binding = IdentifiedInvitation(oid 1, oid 70); Answers = answers }
+    start ($"#r={link}&p={page}") |> received day (Found bytes)
+
+[<Fact>]
+let ``a link's page is reached under the rules, never granted`` () =
+    // Nothing answered under a locking policy: the link cannot skip page 1.
+    Assert.Equal(0, (responding (openAt Map.empty 3)).Position.Page)
+    // Page 1 answered: page 2 opens, and page 3 is still out of reach.
+    let answers = Map.ofList [ for id in ids[0..1] -> id, first id ]
+    Assert.Equal(1, (responding (openAt answers 3)).Position.Page)
+    Assert.Equal(1, (responding (openAt answers 2)).Position.Page)
+
+[<Fact>]
+let ``the response's link carries its page, and the first page is left out`` () =
+    let s = openWith Map.empty |> answer ids[0] |> answer ids[1]
+    Assert.DoesNotContain("&p=", fragment (responding s))
+    let s = update (Turned GenericPaging.Next) s
+    Assert.EndsWith("&p=2", fragment (responding s))
+    Assert.True(isOwnLink (responding s) (fragment (responding (openWith Map.empty))))
+    // Another binding is another response.
+    let other = GenericEnvelope.encode content (GenericImport.formOf "PAGED" "1" content).Reference { Binding = IdentifiedInvitation(oid 2, oid 70); Answers = Map.empty }
+    Assert.False(isOwnLink (responding s) ("#r=" + other))
+
+[<Fact>]
+let ``browser Back moves a page under the rules and keeps the answers held now`` () =
+    let s = openWith Map.empty |> answer ids[0] |> answer ids[1] |> update (Turned GenericPaging.Next)
+    let s = s |> answer ids[2] |> update (Reached 0)
+    Assert.Equal(0, (responding s).Position.Page)
+    Assert.True((responding s).Answers.ContainsKey ids[2])
+    // Past the section lock, Back is refused, however it arrives.
+    let s = s |> update (Reached 2)
+    Assert.Equal(2, (responding s).Position.Page)
+    Assert.Equal(2, (responding (update (Reached 0) s)).Position.Page)
+
+[<Fact>]
+let ``a submission carries no page, only its envelope`` () =
+    let s =
+        openWith Map.empty |> answer ids[0] |> answer ids[1] |> update (Turned GenericPaging.Next)
+        |> answer ids[2] |> update (Turned GenericPaging.Next) |> answer ids[3] |> answer ids[4]
+
+    Assert.EndsWith("&p=3", fragment (responding s))
+    let submitted = responding (update (SubmitRequested(Array.zeroCreate 16)) s)
+    Assert.Equal(Submitted, submitted.Phase)
+    Assert.DoesNotContain("&p=", fragment submitted)

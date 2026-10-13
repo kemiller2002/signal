@@ -99,7 +99,8 @@ type Response =
 
 [<NoComparison>]
 type Session =
-    | Fetching of reference: byte[] * payload: string
+    /// Waiting for the template; the page the link names arrives with it.
+    | Fetching of reference: byte[] * payload: string * page: int
     | Refused of Refusal
     | Responding of Response
 
@@ -124,12 +125,12 @@ let payloadIn (hash: string) : Result<string, Refusal> =
 let start (hash: string) : Session =
     match payloadIn hash |> Result.bind (GenericEnvelope.referenceIn >> Result.mapError UnreadableLink) with
     | Error refusal -> Refused refusal
-    | Ok reference -> Fetching(reference, (payloadIn hash |> Result.defaultValue ""))
+    | Ok reference -> Fetching(reference, (payloadIn hash |> Result.defaultValue ""), (GenericPaging.pageIn hash |> Option.defaultValue 0))
 
 /// The catalog file a session is waiting for, if it is waiting.
 let wanted =
     function
-    | Fetching(reference, _) -> Some(catalogFile reference)
+    | Fetching(reference, _, _) -> Some(catalogFile reference)
     | Refused _
     | Responding _ -> None
 
@@ -167,7 +168,7 @@ let verify (reference: byte[]) (bytes: byte[]) : Result<Published, Refusal> =
 /// expired invitation is refused, so it cannot be filled in.
 let received (today: DateOnly) (fetched: Fetched) (session: Session) : Session =
     match session with
-    | Fetching(reference, payload) ->
+    | Fetching(reference, payload, page) ->
         match fetched with
         | NotFound -> Refused TemplateNotPublished
         | Unreachable reason -> Refused(CatalogUnreachable reason)
@@ -186,7 +187,7 @@ let received (today: DateOnly) (fetched: Fetched) (session: Session) : Session =
                           Answers = envelope.Answers
                           Terms = terms
                           Phase = if Submission.isFinal { Binding = envelope.Binding; Answers = Map.empty } then Submitted else Answering
-                          Position = GenericPaging.resume published.Form.Content envelope.Answers
+                          Position = GenericPaging.reach published.Form.Content envelope.Answers (GenericPaging.resume published.Form.Content envelope.Answers) page
                           Refusal = None }
     | Refused _
     | Responding _ -> session
@@ -279,6 +280,8 @@ type Msg =
     | Picked of questionId: string * side: GenericInputs.Side * optionId: string
     /// Back or Next a page.
     | Turned of GenericPaging.Move
+    /// The link now names a page (browser Back or Forward, or an edited link).
+    | Reached of page: int
     /// Finalize. The bytes are fresh secure entropy from the application
     /// edge; only an anonymous invitation uses them.
     | SubmitRequested of entropy: byte[]
@@ -355,6 +358,7 @@ let private target =
     | Numbered(questionId, _, _)
     | Picked(questionId, _, _) -> Some questionId
     | Turned _
+    | Reached _
     | SubmitRequested _ -> None
 
 let update (msg: Msg) (session: Session) : Session =
@@ -402,10 +406,25 @@ let update (msg: Msg) (session: Session) : Session =
             match GenericPaging.move r.Published.Form.Content r.Answers r.Position direction with
             | Ok position -> Responding { r with Position = position; Refusal = None }
             | Error text -> Responding { r with Refusal = Some text }
+        | Reached page -> Responding { r with Position = GenericPaging.reach r.Published.Form.Content r.Answers r.Position page; Refusal = None }
         | SubmitRequested entropy -> Responding(submit r entropy)
     | Fetching _
     | Refused _ -> session
 
-/// The fragment, including `#`, that carries a response.
+/// The fragment, including `#`, that carries a response, and the page shown
+/// while it is answered. A submission carries no page: it is the envelope
+/// alone, exactly as before.
 let fragment (r: Response) =
-    $"#{LiveUrl.FragmentKey}={GenericEnvelope.encodeWith r.Published.Form.Content r.Published.Form.Reference r.Terms (envelope r)}"
+    let page = if r.Phase = Submitted then "" else GenericPaging.pageParameter r.Position
+    $"#{LiveUrl.FragmentKey}={GenericEnvelope.encodeWith r.Published.Form.Content r.Published.Form.Reference r.Terms (envelope r)}{page}"
+
+/// Whether a link is this response's own (the same template and binding),
+/// so a change to it is a move between pages, not a different response. An
+/// earlier history entry holds earlier answers; the answers held now stand.
+let isOwnLink (r: Response) (hash: string) =
+    match payloadIn hash with
+    | Ok payload ->
+        match GenericEnvelope.decodeWithTerms r.Published.Form.Content r.Published.Form.Reference payload with
+        | Ok(envelope, _) -> envelope.Binding = r.Binding
+        | Error _ -> false
+    | Error _ -> false

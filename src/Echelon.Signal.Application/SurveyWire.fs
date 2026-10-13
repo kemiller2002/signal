@@ -76,16 +76,20 @@ let private open' (state: State) (hash: string) =
         { state with Session = session; Fetch = Some id }, [ FetchBytes(id, SiteRoot + file) ]
     | None -> { state with Session = session; Fetch = None }, []
 
-/// Keeps the URL equal to the response (LURL-001) with one `replace`.
-let private synchronize (state: State) =
+/// Keeps the URL equal to the response (LURL-001): a new page is a new
+/// history entry (`push`), so browser Back returns to the page before; an
+/// answer replaces the entry it was given on.
+let private synchronize (newEntry: bool) (state: State) =
     match state.Location, responding state with
     | Some location, Some r when fragment r <> location.Hash ->
         let id, state = correlation "url" state
+        let url = location.Path + location.Query + fragment r
+        let effect = if newEntry then PushUrl(id, url) else ReplaceUrl(id, url)
 
         { state with
             Location = Some { location with Hash = fragment r }
             Pending = state.Pending.Add id },
-        [ ReplaceUrl(id, location.Path + location.Query + fragment r) ]
+        [ effect ]
     | _ -> state, []
 
 let private fetched (outcome: HttpOutcome) =
@@ -143,21 +147,35 @@ let private step (state: State) (inbound: Inbound) =
                 { state with Pending = state.Pending.Add id; CopyNotice = None }, [ CopyText(id, link) ], None
         | Event(name, key, value) ->
             let state = { state with Session = update (message state name (defaultArg key "") (defaultArg value "")) state.Session }
-            let state, effects = synchronize state
+            let state, effects = synchronize (name = "pageNext" || name = "pageBack") state
             state, effects, None
         | LocationChanged location ->
             match state.Session with
             | Responding r when fragment r = location.Hash -> { state with Location = Some location }, [], None
+            // Back or Forward between this response's pages: the page moves
+            // under the rules; the answers held now stand, and the entry is
+            // rewritten to them.
+            | Responding r when r.Phase = Answering && isOwnLink r location.Hash ->
+                let page = GenericPaging.pageIn location.Hash |> Option.defaultValue 0
+                let state = { state with Location = Some location; Session = update (Reached page) state.Session }
+
+                let state, effects = synchronize false state
+                state, effects, None
             | _ ->
                 // A different link in the same tab: start again from it.
                 let state, effects = open' { state with Location = Some location; UrlNotice = None; CopyNotice = None } location.Hash
                 state, effects, None
+        // The loaded response's own URL (a page the link could not reach, or
+        // a malformed page parameter, is written as it stands).
         | HttpResult(id, outcome) when state.Fetch = Some id ->
-            { state with
-                Session = received (state.Edge.Today()) (fetched outcome) state.Session
-                Fetch = None },
-            [],
-            None
+            let state, effects =
+                synchronize
+                    false
+                    { state with
+                        Session = received (state.Edge.Today()) (fetched outcome) state.Session
+                        Fetch = None }
+
+            state, effects, None
         | HttpResult(id, _) -> raise (MalformedInput("$.result.correlationId", $"the pending catalog request, not '{id}'"))
         | ClipboardResult(id, _) when not (state.Pending.Contains id) ->
             raise (MalformedInput("$.result.correlationId", $"a pending clipboard write, not '{id}'"))
