@@ -69,7 +69,7 @@ test("ULI-A02/A07: each draft editing action adds its entry, refuses an impossib
   }
 
   // Presentation: a time limit, a question bank and a translation each appear as an entry.
-  await type("Survey time limit (minutes)", "20");
+  await type("Time limit (minutes)", "20");
   await type("Warn when this many minutes are left", "5");
   await draft.getByRole("button", { name: "Add time limit" }).click();
   const timer = draft.getByRole("listitem").filter({ hasText: "timer-1: 20 minutes for the whole survey, warning at 5 min left" });
