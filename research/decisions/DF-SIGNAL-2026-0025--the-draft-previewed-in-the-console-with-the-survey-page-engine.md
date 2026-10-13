@@ -16,8 +16,9 @@ tags: [authoring, preview, test-mode, scoring]
 provenance:
   contributions:
     EXE-20261009T042446720Z-a28d9579:
-      operations: [created]
+      operations: [created, modified]
       at: 2026-10-13T23:38:04.424Z
+      last: 2026-10-13T23:43:54.512Z
       actor:
         kind: agent
         id: anthropic/claude-code
@@ -31,7 +32,7 @@ provenance:
 
 - **Date:** 2026-10-13
 - **Status:** accepted. These are routine design choices, taken under the coordinator's standing approval.
-- **Work item:** WI-0081. **Requirements:** AUT-003 §§20-24, SCS-017.
+- **Work items:** WI-0081 (decided here) and WI-0059 (owns confidence). **Requirements:** AUT-003 §§20-24, SCS-017.
 
 ## Decision
 
@@ -54,5 +55,5 @@ provenance:
 
 ## Scope
 
-- **Confidence** (AUT-003 §22, SCS-017's "coverage/confidence sidecars") is a group measure in Signal (WI-0059). A single response has coverage, which the preview shows, and no confidence.
+- **Confidence** (AUT-003 §22, SCS-017's "coverage/confidence sidecars") is a group measure in Signal, owned by **WI-0059** (group confidence; see `.ros/work/queue.json`). It is not shown per response. Coverage is shown per response, in the preview and in each fixture's explanation.
 - AUT-003 and SCS-017 are tested for that stated scope; their rows say so.

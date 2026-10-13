@@ -1170,8 +1170,10 @@
             "runtime": "claude-code"
           },
           "at": "2026-10-13T23:38:04.424Z",
+          "last": "2026-10-13T23:43:54.512Z",
           "operations": [
-            "created"
+            "created",
+            "modified"
           ],
           "reason": "Draft previewed in the console by the survey page engine (WI-0081)"
         }
