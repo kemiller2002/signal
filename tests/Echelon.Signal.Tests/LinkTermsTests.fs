@@ -22,7 +22,7 @@ let private bytes = publishedFile survey version demo |> snd
 let private oid (seed: int) = (OpaqueId.ofBytes (Array.init 16 (fun i -> byte (seed + i)))).Value
 let private instance, group = oid 1, oid 40
 let private lastDay = DateOnly(2026, 3, 31)
-let private terms = { Locale = Some "fr-CA"; StartedAt = None; ExpiresOn = Some lastDay }
+let private terms = { GenericEnvelope.noTerms with Locale = Some "fr-CA"; StartedAt = None; ExpiresOn = Some lastDay }
 
 let private link (t: Terms) = invitationWith t survey version demo Import.IdentifiedGroup instance group
 let private raw (text: string) = Base64Url.DecodeFromChars(text.AsSpan())
@@ -71,7 +71,7 @@ let ``editing the expiry invalidates the link, and only the canonical spelling i
         decodeWithTerms form.Content form.Reference (reseal copy) |> Result.map ignore
 
     let flagsAt = 2 + 8 + 32
-    Assert.Equal(Error InvalidTerms, forged (fun b -> b[flagsAt] <- 0x0Buy))
+    Assert.Equal(Error InvalidTerms, forged (fun b -> b[flagsAt] <- 0x23uy))
     Assert.Equal(Error InvalidTerms, forged (fun b -> b[flagsAt + 2] <- byte '!'))
     Assert.Equal(Error InvalidTerms, forged (fun b -> b[flagsAt + 1] <- 30uy))
     // Format 2 with no terms at all is not a spelling anyone writes.

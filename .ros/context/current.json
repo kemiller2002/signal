@@ -2683,20 +2683,20 @@
         "EXE-20261009T042446720Z-a28d9579"
       ],
       "latestCheckpoint": {
-        "id": "d9056ddc64c8aa81f6c5629f",
-        "recordedAt": "2026-10-13T11:30:14Z",
+        "id": "2deee25dc871f04c9ae21373",
+        "recordedAt": "2026-10-13T12:02:04Z",
         "executionId": "EXE-20261009T042446720Z-a28d9579",
         "repository": "echelon-signal",
-        "branch": "feature/sample-link-devices",
-        "commit": "dcddf919b7098433642e1b56de82f9463d0afc77",
+        "branch": "feature/scoped-timers-intake",
+        "commit": "4f539067ecec7612694623317fb31a711989180c",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/sample-link-devices",
-        "remoteCommit": "dcddf919b7098433642e1b56de82f9463d0afc77",
-        "summary": "Sample links checked URL-safe and within budget; mobile project opens and answers demo links by touch (AUT-006 61-62, DF-SIGNAL-2026-0014)",
-        "nextAction": "Gate and merge; ask coordinator for the supported browser/device matrix; then item 5: section, page and question timers and timer checks at intake",
+        "remoteBranch": "feature/scoped-timers-intake",
+        "remoteCommit": "4f539067ecec7612694623317fb31a711989180c",
+        "summary": "Section and page timers stamped in the link; submission minute; intake late flags (DF-SIGNAL-2026-0015, SIG-LINK 1.4.0)",
+        "nextAction": "Gate and merge; then the WebKit/Firefox scheduled workflow (decision 1); split GenericSession before it reaches 500 lines",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"

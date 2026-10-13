@@ -48,6 +48,7 @@
     <Compile Include="BaselineSourcesTests.fs" />
     <Compile Include="TimerBankTests.fs" />
     <Compile Include="TimerStartTests.fs" />
+    <Compile Include="ScopedTimerTests.fs" />
     <Compile Include="SelectorSemanticsTests.fs" />
     <Compile Include="SampleLinkTests.fs" />
     <Compile Include="ReportStateTests.fs" />

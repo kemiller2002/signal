@@ -80,10 +80,10 @@ let layout (content: Content) : Slot list =
 
 /// The most bytes invitation terms add to a generic link (format 2): flags,
 /// a locale of up to 24 characters with its length, a 2-byte expiry day and
-/// a 4-byte start minute
+/// a 4-byte start minute and a 4-byte submission minute
 /// (`GenericEnvelope.TermsMaximumBytes`, which a test holds equal).
 [<Literal>]
-let TermsOverheadBytes = 1 + 1 + 24 + 2 + 4
+let TermsOverheadBytes = 1 + 1 + 24 + 2 + 4 + 4
 
 /// Bytes of the largest envelope around the answers: version and binding
 /// kind, the 8-byte template reference, the largest binding (two 16-byte
@@ -100,11 +100,18 @@ type Capacity =
       /// Unpadded base64url characters of the largest envelope.
       EncodedCharacters: int }
 
+/// The bytes a template's section and page timer starts can add to a link:
+/// a count, then 7 bytes per timer (DF-SIGNAL-2026-0015).
+let scopedTimerBytes (content: Content) =
+    match content.Presentation.Timers |> List.filter (fun t -> match t.Scope with Timers.SectionScope _ | Timers.PageScope _ -> true | _ -> false) with
+    | [] -> 0
+    | scoped -> 1 + 7 * scoped.Length
+
 let capacity (content: Content) : Capacity =
     let slots = layout content
     let bits = slots |> List.sumBy _.Bits
     let answerBytes = (bits + 7) / 8
-    let envelope = answerBytes + EnvelopeOverheadBytes
+    let envelope = answerBytes + EnvelopeOverheadBytes + scopedTimerBytes content
 
     { Questions = slots.Length
       AnswerBits = bits

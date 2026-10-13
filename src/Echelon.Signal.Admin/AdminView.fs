@@ -281,6 +281,15 @@ let project (model: Model) : View =
           |> Option.defaultValue []
       )
       "lineage", text (selected |> Option.map _.Lineage |> Option.defaultValue "")
+      "lateSubmissions",
+      text (
+          match selected |> Option.bind _.LateSubmissions with
+          | Some 0
+          | None -> ""
+          | Some 1 -> "1 response was submitted after an enforced timer ran out; it is counted, and flagged here."
+          | Some n -> $"{n} responses were submitted after an enforced timer ran out; they are counted, and flagged here."
+      )
+      "hasLateSubmissions", flag (selected |> Option.bind _.LateSubmissions |> Option.exists (fun n -> n > 0))
       yield! charts model selected
       // Invitations (VER-003): links issued for the group in view; nothing is stored.
       "canInvite", enabled AdminState.CanCreateGroup

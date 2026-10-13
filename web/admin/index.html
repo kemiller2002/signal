@@ -481,6 +481,7 @@
                   <tbody><template data-each="scoringMeasures" data-key="key"><tr><td data-text="section"></td><td data-text="measure"></td><td data-text="value"></td></tr></template></tbody>
                 </table>
                 <p>Lineage: <code id="lineage" data-text="lineage"></code></p>
+                <template data-if="hasLateSubmissions"><p id="late-submissions" role="status" data-text="lateSubmissions"></p></template>
               </section>
               </template>
               <template data-if="viewImports">

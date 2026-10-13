@@ -170,12 +170,22 @@ let verify (reference: byte[]) (bytes: byte[]) : Result<Published, Refusal> =
         else
             match questions decoded.Content |> List.map snd |> List.tryFind (supported >> not) with
             | Some q -> Error(UnsupportedAnswer q.Id)
-            | None when not (GenericTimer.supported decoded.Content) -> Error(UnsupportedPresentation "timers on sections, pages or questions")
+            | None when not (GenericTimer.supported decoded.Content) -> Error(UnsupportedPresentation "question timers, or two timers on the same part")
             | None ->
                 Ok
                     { SurveyId = decoded.SurveyId
                       Version = decoded.Version
                       Form = form }
+
+/// A response with a start stamped for every timer the page shown opens
+/// (DF-SIGNAL-2026-0010, DF-SIGNAL-2026-0015); a submitted one never changes.
+let private stamped (r: Response) =
+    if r.Phase = Submitted then
+        Responding r
+    else
+        let content = r.Published.Form.Content
+        let _, _, shown = GenericPaging.current content r.Answers r.Position
+        Responding { r with Terms = GenericTimer.stamp content shown r.Now r.Terms }
 
 /// The fetched catalog file arrives, at an instant: an unsubmitted response
 /// to an expired invitation is refused, so it cannot be filled in. A timed
@@ -203,23 +213,16 @@ let receivedAt (now: DateTimeOffset) (fetched: Fetched) (session: Session) : Ses
                     let published =
                         { published with Form = { published.Form with Content = BankSelection.forBinding envelope.Binding published.Form.Content } }
 
-                    let final = Submission.isFinal { Binding = envelope.Binding; Answers = Map.empty }
-
-                    let terms =
-                        match GenericTimer.surveyTimer published.Form.Content, terms.StartedAt with
-                        | Some _, None when not final -> { terms with StartedAt = Some(GenericEnvelope.startMinute now) }
-                        | _ -> terms
-
-                    Responding
-                        { Published = published
-                          Binding = envelope.Binding
-                          Answers = envelope.Answers
-                          Terms = terms
-                          Phase = if Submission.isFinal { Binding = envelope.Binding; Answers = Map.empty } then Submitted else Answering
-                          Now = now
-                          ShowMissing = false
-                          Position = GenericPaging.reach published.Form.Content envelope.Answers (GenericPaging.resume published.Form.Content envelope.Answers) page
-                          Refusal = None }
+                    { Published = published
+                      Binding = envelope.Binding
+                      Answers = envelope.Answers
+                      Terms = terms
+                      Phase = if Submission.isFinal { Binding = envelope.Binding; Answers = Map.empty } then Submitted else Answering
+                      Now = now
+                      ShowMissing = false
+                      Position = GenericPaging.reach published.Form.Content envelope.Answers (GenericPaging.resume published.Form.Content envelope.Answers) page
+                      Refusal = None }
+                    |> stamped
     | Refused _
     | Responding _ -> session
 
@@ -371,6 +374,11 @@ let private submit (r: Response) (entropy: byte[]) =
             { r with
                 Binding = binding
                 Phase = Submitted
+                // A timed response records the minute it was submitted, and
+                // nothing else, for intake's timer flags (DF-SIGNAL-2026-0015).
+                Terms =
+                    if r.Published.Form.Content.Presentation.Timers.IsEmpty then r.Terms
+                    else { r.Terms with SubmittedAt = Some(GenericEnvelope.startMinute r.Now) }
                 Refusal = None }
         | Error text -> refuse text
     | Rules.NotStarted -> refuse "Answer the questions before you submit."
@@ -399,13 +407,18 @@ let private target =
     | Ticked _
     | SubmitRequested _ -> None
 
-let update (msg: Msg) (session: Session) : Session =
+let rec update (msg: Msg) (session: Session) : Session =
+    match step msg session with
+    | Responding r -> stamped r
+    | other -> other
+
+and private step (msg: Msg) (session: Session) : Session =
     match session with
     | Responding r when r.Phase = Submitted -> session
     // A locked answer (ARX-013) cannot change, whatever the page sends.
     | Responding r when target msg |> Option.exists (GenericPaging.locked r.Published.Form.Content r.Answers r.Position).Contains -> session
-    // An enforced survey timer that ran out holds every answer (ARX-013).
-    | Responding r when (target msg).IsSome && GenericTimer.locksAnswers r.Published.Form.Content r.Terms.StartedAt r.Now -> session
+    // An enforced timer that ran out holds the answers it covers (ARX-013).
+    | Responding r when target msg |> Option.exists (GenericTimer.locked r.Published.Form.Content r.Terms r.Now).Contains -> session
     | Responding r ->
         match msg with
         | Chose(questionId, state) when (tryQuestion r.Published.Form.Content questionId |> Option.exists (fun q -> choices q |> List.exists (fst >> (=) state))) ->

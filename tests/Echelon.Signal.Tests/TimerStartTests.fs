@@ -69,15 +69,15 @@ let ``an enforced timer that runs out holds every answer, and the page says so``
     let s = Responding(responding (openAt opened (invitation Import.IdentifiedGroup)))
     let s = s |> update (Ticked(opened.AddMinutes 3.0)) |> update (Chose(ids[0], first ids[0]))
     Assert.True((responding s).Answers.ContainsKey ids[0])
-    Assert.Contains("Answer by 4 March 2026, 09:25 UTC", GenericTimer.notice timed (responding s).Terms.StartedAt (responding s).Now)
+    Assert.Contains("Answer by 4 March 2026, 09:25 UTC", GenericTimer.notice timed (responding s).Terms (responding s).Now ids)
 
     let nearly = s |> update (Ticked(opened.AddMinutes 8.5))
-    Assert.Contains("nearly up", GenericTimer.notice timed (responding nearly).Terms.StartedAt (responding nearly).Now)
+    Assert.Contains("nearly up", GenericTimer.notice timed (responding nearly).Terms (responding nearly).Now ids)
 
     let late = s |> update (Ticked(opened.AddMinutes 11.0))
     let after = late |> update (Chose(ids[1], first ids[1])) |> update (Chose(ids[0], choices (tryQuestion timed ids[0]).Value |> List.item 1 |> fst))
     Assert.True((responding late).Answers = (responding after).Answers)
-    Assert.Contains("Time is up", GenericTimer.notice timed (responding after).Terms.StartedAt (responding after).Now)
+    Assert.Contains("Time is up", GenericTimer.notice timed (responding after).Terms (responding after).Now ids)
 
 [<Fact>]
 let ``an advisory timer only says the time ran out`` () =
@@ -86,7 +86,7 @@ let ``an advisory timer only says the time ran out`` () =
     let s = start link |> receivedAt opened (Found(publishedFile "ADV" "1" advisory |> snd)) |> update (Ticked(opened.AddHours 1.0))
     let s = update (Chose(ids[0], first ids[0])) s
     Assert.True((responding s).Answers.ContainsKey ids[0])
-    Assert.Contains("You can still finish", GenericTimer.notice advisory (responding s).Terms.StartedAt (responding s).Now)
+    Assert.Contains("You can still finish", GenericTimer.notice advisory (responding s).Terms (responding s).Now ids)
 
 [<Fact>]
 let ``an anonymous link gains only the start minute, and so does its submission`` () =
@@ -98,7 +98,13 @@ let ``an anonymous link gains only the start minute, and so does its submission`
     | Responding submitted when submitted.Phase = Submitted ->
         match payloadIn (fragment submitted) |> Result.bind (GenericEnvelope.decodeWithTerms timed form.Reference >> Result.mapError UnreadableLink) with
         | Ok(envelope, terms) ->
-            Assert.Equal({ GenericEnvelope.noTerms with StartedAt = Some(GenericEnvelope.startMinute opened) }, terms)
+            // The start and the submission minute, and nothing else (DF-SIGNAL-2026-0015).
+            Assert.Equal(
+                { GenericEnvelope.noTerms with
+                    StartedAt = Some(GenericEnvelope.startMinute opened)
+                    SubmittedAt = Some(GenericEnvelope.startMinute opened) },
+                terms
+            )
             Assert.True(match envelope.Binding with Anonymous _ -> true | _ -> false)
         | Error error -> failwith $"%A{error}"
     | other -> failwith $"%A{other}"

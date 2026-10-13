@@ -39,7 +39,9 @@ type Accumulator =
       NonNumeric: int
       /// How many accepted results triggered each recommendation, and held each yes/no fact.
       Recommendations: Map<string, int>
-      Facts: Map<string, int> }
+      Facts: Map<string, int>
+      /// Accepted results submitted after an enforced timer ran out (DF-SIGNAL-2026-0015).
+      Late: int }
 
 let empty (definition: GroupDefinition) =
     { Definition = definition
@@ -51,7 +53,8 @@ let empty (definition: GroupDefinition) =
       Answered = 0
       NonNumeric = 0
       Recommendations = Map.empty
-      Facts = Map.empty }
+      Facts = Map.empty
+      Late = 0 }
 
 /// Inserts into an ascending list, without recursion (a group may be large).
 let private insert (value: float) (sorted: float list) =
@@ -94,7 +97,8 @@ let add (result: SurveyResult) (accumulator: Accumulator) : Result<Accumulator, 
                 Answered = accumulator.Answered + result.AnsweredCount
                 NonNumeric = accumulator.NonNumeric + result.NonNumericCount
                 Recommendations = counted accumulator.Recommendations result.Recommendations
-                Facts = counted accumulator.Facts result.FactsTrue }
+                Facts = counted accumulator.Facts result.FactsTrue
+                Late = accumulator.Late + (if result.LateTimers.IsEmpty then 0 else 1) }
 
 /// The accumulator for a set of accepted results, added one by one.
 let ofResults (definition: GroupDefinition) (results: SurveyResult list) =

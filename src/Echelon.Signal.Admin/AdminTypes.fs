@@ -49,6 +49,9 @@ type GroupSummary =
       Distributions: Map<string, Result<(float * float * int) list, Analysis.Unavailable>>
       /// The group result's derivation hash and contribution count (ADM-020).
       Lineage: string
+      /// Accepted responses submitted after an enforced timer ran out; None
+      /// below an anonymous group's minimum (DF-SIGNAL-2026-0015).
+      LateSubmissions: int option
       /// The group result reports render from, and the survey it reports on (WI-0062).
       Report: Echelon.Signal.Engine.GroupResult.Result
       Template: Echelon.Signal.Engine.Assessment.Assessment

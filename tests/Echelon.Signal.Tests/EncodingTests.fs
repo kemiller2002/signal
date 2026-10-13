@@ -101,7 +101,7 @@ let ``the generic layout is bit for bit the SDRA codec's (1000 samples)`` () =
 [<Fact>]
 let ``capacity is the length of the largest real envelope`` () =
     let envelope: GenericEnvelope.Envelope = { Binding = Anonymous(oid 1, oid 2); Answers = Map.empty }
-    let longest: GenericEnvelope.Terms = { Locale = Some "sgn-Latn-ABCDEFGH-123456"; StartedAt = Some(System.DateTimeOffset(2029, 12, 31, 23, 59, 0, System.TimeSpan.Zero)); ExpiresOn = Some(System.DateOnly(2030, 1, 1)) }
+    let longest: GenericEnvelope.Terms = { GenericEnvelope.noTerms with Locale = Some "sgn-Latn-ABCDEFGH-123456"; StartedAt = Some(System.DateTimeOffset(2029, 12, 31, 23, 59, 0, System.TimeSpan.Zero)); SubmittedAt = Some(System.DateTimeOffset(2030, 1, 1, 0, 0, 0, System.TimeSpan.Zero)); ExpiresOn = Some(System.DateOnly(2030, 1, 1)) }
     Assert.Equal((Layout.capacity mixed).EncodedCharacters, (GenericEnvelope.encodeWith mixed reference longest envelope).Length)
 
 [<Fact>]

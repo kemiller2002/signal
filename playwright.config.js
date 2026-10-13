@@ -46,7 +46,7 @@ export default defineConfig({
     },
     {
       name: "pages",
-      testMatch: /(deep-links|survey)\.spec\.js/,
+      testMatch: /(deep-links|survey|survey-timers)\.spec\.js/,
       use: { ...devices["Desktop Chrome"], launchOptions, baseURL: `${pagesOrigin}/signal/` }
     }
   ],
