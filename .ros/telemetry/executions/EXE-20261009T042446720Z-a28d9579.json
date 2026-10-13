@@ -1360,6 +1360,60 @@
         "name": "ros",
         "mechanism": "work-lifecycle"
       }
+    },
+    {
+      "type": "step.started",
+      "stepId": "restart-testing",
+      "name": "testing: dotnet 448/448 pass; browser 32 pass 10 fail (strict-mode locator ambiguity from hidden compound inputs)",
+      "occurredAt": "2026-10-13T08:25:33Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.failed",
+      "stepId": "restart-testing",
+      "reason": "failed browser run: test logic (locators matched hidden radios); repaired in restart-repair",
+      "occurredAt": "2026-10-13T08:32:47Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "restart-repair",
+      "name": "repair: survey spec locators name inputs by data-event; 20/20 survey browser tests pass",
+      "occurredAt": "2026-10-13T08:32:48Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "restart-repair",
+      "occurredAt": "2026-10-13T08:33:50Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "restart-git-ci",
+      "name": "git/CI integration: push 469bfac + checkpoint 46e3d09, PR, gate",
+      "occurredAt": "2026-10-13T08:34:13Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {
