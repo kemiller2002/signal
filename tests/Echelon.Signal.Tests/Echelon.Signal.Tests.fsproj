@@ -78,6 +78,7 @@
     <Compile Include="CatalogPageTests.fs" />
     <Compile Include="AuthoringScreenTests.fs" />
     <Compile Include="RuleAuthoringTests.fs" />
+    <Compile Include="AreaAuthoringTests.fs" />
     <Compile Include="GroupSignalsTests.fs" />
     <Compile Include="SnapshotPageTests.fs" />
     <Compile Include="ReportBuilderTests.fs" />

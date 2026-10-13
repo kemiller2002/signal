@@ -244,9 +244,11 @@ let ``the administrator page binds only what its engine projects, and sends only
     // group's snapshots (intact, canExport) need one taken (SnapshotPageTests).
     // A draft question's kind (kind) is projected by AuthoringView once a draft has questions;
     // issued invitation links (link) by AdminView once links are issued (CatalogPageTests);
-    // a draft section's completion flag (requiredForCompletion) by AuthoringView (RuleAuthoringTests).
+    // a draft section's completion flag (requiredForCompletion) by AuthoringView (RuleAuthoringTests);
+    // a draft section's scoring choice (isMean ... isNone) by AreaAuthoringView (AreaAuthoringTests).
     let emptyListFields =
-        set [ "code"; "text"; "title"; "priority"; "frequency"; "label"; "baseline"; "delta"; "role"; "count"; "canDerive"; "canHide"; "questionCount"; "name"; "severity"; "message"; "intact"; "canExport"; "kind"; "link"; "requiredForCompletion" ]
+        set [ "code"; "text"; "title"; "priority"; "frequency"; "label"; "baseline"; "delta"; "role"; "count"; "canDerive"; "canHide"; "questionCount"; "name"; "severity"; "message"; "intact"; "canExport"; "kind"; "link"; "requiredForCompletion"
+              "isMean"; "isMedian"; "isSum"; "isMinimum"; "isMaximum"; "isNone" ]
     Assert.Empty(Set.difference bound (Set.union seen emptyListFields))
 
     // Every event the page sends is one the engine handles (an unknown one fails loudly).

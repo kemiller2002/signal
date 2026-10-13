@@ -34,6 +34,9 @@ type Edit =
     | RemoveRule of ruleId: string
     /// A fact, recommendation or completion edit (`RuleAuthoring`).
     | Rule of RuleAuthoring.Edit
+    /// A validation, presentation, scoring, translation or accessibility
+    /// edit (`AreaAuthoring`, WI-0091).
+    | Area of AreaAuthoring.Edit
     /// A fixture where every question is answered at the midpoint.
     | AddMidpointFixture
 
@@ -150,6 +153,7 @@ let apply (edit: Edit) (editor: Editor) : Result<Editor, string> =
             Ok(editContent (fun c -> { c with Rules = { c.Rules with Flow = c.Rules.Flow |> List.filter (fun r -> r.Id <> ruleId) } }) draft)
         | RemoveRule ruleId -> Error $"There is no rule '{ruleId}'."
         | Rule change -> RuleAuthoring.apply change content |> Result.map (fun c -> editContent (fun _ -> c) draft)
+        | Area change -> AreaAuthoring.apply scorer change content |> Result.map (fun c -> editContent (fun _ -> c) draft)
         | AddMidpointFixture ->
             let id = nextId "midpoint-" (draft.Fixtures |> List.map _.Id)
 
@@ -197,6 +201,8 @@ type Screen =
       RuleAnswer: string
       /// The facts, recommendations and completion form.
       Rules: RuleAuthoring.Form
+      /// The validation, presentation, scoring and translation form.
+      Areas: AreaAuthoring.Form
       Problem: string option }
 
 let emptyScreen =
@@ -211,6 +217,7 @@ let emptyScreen =
       RuleWhen = ""
       RuleAnswer = ""
       Rules = RuleAuthoring.emptyForm
+      Areas = AreaAuthoring.emptyForm
       Problem = None }
 
 /// What the screens ask the application to do.
@@ -231,6 +238,7 @@ let events =
           "newQuestionKind"; "newQuestionDetails"; "ruleQuestion"; "ruleWhen"; "ruleAnswer"; "addShowRule"; "removeRule"
           "addFixture"; "acknowledgeWarnings"; "saveDraft"; "publishDraft"; "hideVersion"; "requestReview"; "approveReview" ]
     |> Set.union RuleAuthoring.events
+    |> Set.union AreaAuthoring.events
 
 /// The editor for a survey: the one in hand, or its stored draft.
 let current (listing: TemplateListing.Listing) (survey: string) (screen: Screen) =
@@ -300,6 +308,14 @@ let update (listing: TemplateListing.Listing) (survey: string option) (name: str
         | Some change ->
             let next, commands = edit (Rule change)
             (if next.Problem.IsNone then { next with Rules = RuleAuthoring.cleared change form } else { next with Rules = form }), commands
+    | name, key when AreaAuthoring.events.Contains name ->
+        let form, change = AreaAuthoring.update name key value screen.Areas
+
+        match change with
+        | None -> { screen with Areas = form }, []
+        | Some change ->
+            let next, commands = edit (Area change)
+            (if next.Problem.IsNone then { next with Areas = AreaAuthoring.cleared change form } else { next with Areas = form }), commands
     | "removeQuestion", Some id -> edit (RemoveQuestion id)
     | "addFixture", _ -> edit AddMidpointFixture
     | "acknowledgeWarnings", _ ->

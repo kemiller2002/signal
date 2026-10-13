@@ -18,7 +18,7 @@ provenance:
     EXE-20261013T170114560Z-a503dddb:
       operations: [created, modified]
       at: 2026-10-13T17:01:20.216Z
-      last: 2026-10-13T17:59:25.275Z
+      last: 2026-10-13T18:21:50.632Z
       actor:
         kind: agent
         id: anthropic/claude-code
@@ -93,5 +93,5 @@ CAN-001 lists a Localization area in the canonical template and AccessibilityMet
 
 ## Consequences
 
-- Authoring translations and accessibility text in the console is the next WI-0091 slice.
+- The console authors translations (a locale, a text key and the text; blank text removes it, and a locale with no texts goes) and accessibility text per question (WI-0091 slice 3). A key the template lacks is accepted by the form and blocked by publication validation, like every other draft problem.
 - Report-definition localization (AUT-005 §66) stays with the report builder.

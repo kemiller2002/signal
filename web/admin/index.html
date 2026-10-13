@@ -164,6 +164,69 @@
             <li><label><input type="checkbox" data-event="sectionRequired" value="true" data-bind-checked="requiredForCompletion" /> Section <span data-text="id"></span> must be fully answered</label></li>
           </template>
         </ul>
+        <h3>Validation rules</h3>
+        <ul id="draft-validation">
+          <template data-each="draftValidation" data-key="id">
+            <li><span data-text="label"></span> <button type="button" class="ef-button" data-event="removeValidation">Remove</button></li>
+          </template>
+        </ul>
+        <label>Rule <select id="validation-kind" data-event="validationKind"><template data-each="validationKinds" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+        <template data-if="validationIsRange">
+          <label>Question <input id="validation-question" type="text" data-event="validationQuestion" data-bind-value="validationQuestion" /></label>
+          <label>Lowest <input id="validation-minimum" type="text" inputmode="decimal" data-event="validationMinimum" data-bind-value="validationMinimum" /></label>
+          <label>Highest <input id="validation-maximum" type="text" inputmode="decimal" data-event="validationMaximum" data-bind-value="validationMaximum" /></label>
+        </template>
+        <template data-if="validationIsRequiredWhen">
+          <label>Question <input id="validation-required-question" type="text" data-event="validationQuestion" data-bind-value="validationQuestion" /></label>
+          <label>is required when question or fact <input id="validation-when" type="text" data-event="validationWhen" data-bind-value="validationWhen" /></label>
+          <label>has the answer <input id="validation-answer" type="text" data-event="validationAnswer" data-bind-value="validationAnswer" /></label>
+        </template>
+        <template data-if="validationIsAnsweredBetween">
+          <label>Questions, separated by commas <input id="validation-questions" type="text" data-event="validationQuestions" data-bind-value="validationQuestions" /></label>
+          <label>At least <input id="validation-fewest" type="text" inputmode="numeric" data-event="validationMinimum" data-bind-value="validationMinimum" /></label>
+          <label>At most <input id="validation-most" type="text" inputmode="numeric" data-event="validationMaximum" data-bind-value="validationMaximum" /></label>
+        </template>
+        <label>Message the respondent sees <input id="validation-message" type="text" data-event="validationMessage" data-bind-value="validationMessage" /></label>
+        <button type="button" class="ef-button" data-event="addValidation">Add validation rule</button>
+        <h3>Presentation</h3>
+        <label>Questions per page (blank for one page) <input id="items-per-page" type="text" inputmode="numeric" data-event="itemsPerPage" data-bind-value="itemsPerPage" /></label>
+        <label><input id="show-numbers" type="checkbox" data-event="showNumbers" value="true" data-bind-checked="showNumbers" /> Number the questions</label>
+        <label>Progress <select id="progress-mode" data-event="progressMode"><template data-each="progressModes" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+        <label><input id="allow-back" type="checkbox" data-event="allowBack" value="true" data-bind-checked="allowBack" /> Allow going back</label>
+        <label><input id="review-before-submit" type="checkbox" data-event="reviewBeforeSubmit" value="true" data-bind-checked="reviewBeforeSubmit" /> Review answers before submitting</label>
+        <ul id="draft-timers"><template data-each="draftTimers" data-key="id"><li><span data-text="label"></span> <button type="button" class="ef-button" data-event="removeTimer">Remove</button></li></template></ul>
+        <label>Survey time limit (minutes) <input id="timer-minutes" type="text" inputmode="numeric" data-event="timerMinutes" data-bind-value="timerMinutes" /></label>
+        <label>Warn when this many minutes are left <input id="timer-warning" type="text" inputmode="numeric" data-event="timerWarning" data-bind-value="timerWarning" /></label>
+        <button type="button" class="ef-button" data-event="addTimer">Add time limit</button>
+        <ul id="draft-banks"><template data-each="draftBanks" data-key="id"><li><span data-text="label"></span> <button type="button" class="ef-button" data-event="removeBank">Remove</button></li></template></ul>
+        <label>Bank of questions, separated by commas <input id="bank-questions" type="text" data-event="bankQuestions" data-bind-value="bankQuestions" /></label>
+        <label>Each respondent answers <input id="bank-select" type="text" inputmode="numeric" data-event="bankSelect" data-bind-value="bankSelect" /></label>
+        <button type="button" class="ef-button" data-event="addBank">Add question bank</button>
+        <h3>Scoring</h3>
+        <ul id="draft-scoring">
+          <template data-each="draftScoring" data-key="id">
+            <li><label>Section <span data-text="label"></span> <select data-event="sectionScoring">
+              <option value="mean" data-bind-selected="isMean">Mean</option>
+              <option value="median" data-bind-selected="isMedian">Median</option>
+              <option value="sum" data-bind-selected="isSum">Sum</option>
+              <option value="minimum" data-bind-selected="isMinimum">Lowest</option>
+              <option value="maximum" data-bind-selected="isMaximum">Highest</option>
+              <option value="none" data-bind-selected="isNone">Not scored</option>
+            </select></label></li>
+          </template>
+        </ul>
+        <h3>Translations</h3>
+        <ul id="draft-translations"><template data-each="draftTranslations" data-key="id"><li><span data-text="label"></span> <button type="button" class="ef-button" data-event="removeTranslation">Remove</button></li></template></ul>
+        <label>Language tag <input id="translation-locale" type="text" data-event="translationLocale" data-bind-value="translationLocale" /></label>
+        <label>Text to translate (for example question/Q1/prompt) <input id="translation-key" type="text" data-event="translationKey" data-bind-value="translationKey" /></label>
+        <label>Translation <input id="translation-text" type="text" data-event="translationText" data-bind-value="translationText" /></label>
+        <button type="button" class="ef-button" data-event="setTranslation">Set translation</button>
+        <h3>Accessibility text</h3>
+        <ul id="draft-accessibility"><template data-each="draftAccessibility" data-key="id"><li data-text="label"></li></template></ul>
+        <label>Question <input id="accessibility-question" type="text" data-event="accessibilityQuestion" data-bind-value="accessibilityQuestion" /></label>
+        <label>Name read instead of the prompt (optional) <input id="accessibility-name" type="text" data-event="accessibilityName" data-bind-value="accessibilityName" /></label>
+        <label>Description read after the prompt (optional) <input id="accessibility-description" type="text" data-event="accessibilityDescription" data-bind-value="accessibilityDescription" /></label>
+        <button type="button" class="ef-button" data-event="setAccessibility">Set accessibility text</button>
         <h3>Test fixtures</h3>
         <ul id="draft-fixtures"><template data-each="draftFixtures" data-key="id"><li data-text="name"></li></template></ul>
         <button type="button" class="ef-button" data-event="addFixture">Add a fixture: every answer at the midpoint</button>

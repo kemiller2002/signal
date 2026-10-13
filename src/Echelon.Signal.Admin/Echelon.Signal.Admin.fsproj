@@ -49,6 +49,7 @@
     <Compile Include="TemplateListing.fs" />
     <Compile Include="QuestionKinds.fs" />
     <Compile Include="RuleAuthoring.fs" />
+    <Compile Include="AreaAuthoring.fs" />
     <Compile Include="Authoring.fs" />
     <Compile Include="TestLinks.fs" />
     <Compile Include="Invitations.fs" />
@@ -59,6 +60,7 @@
     <Compile Include="AdminApp.fs" />
     <Compile Include="AdminUpdate.fs" />
     <Compile Include="AdminRouteView.fs" />
+    <Compile Include="AreaAuthoringView.fs" />
     <Compile Include="AuthoringView.fs" />
     <Compile Include="AdminReportView.fs" />
     <Compile Include="ReportBuilderView.fs" />
