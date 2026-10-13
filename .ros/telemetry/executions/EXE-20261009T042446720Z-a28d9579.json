@@ -1855,6 +1855,69 @@
         "name": "ros",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "gs-git-ci",
+      "occurredAt": "2026-10-13T11:04:18Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "cf-implementation",
+      "name": "custom implementation: selector semantics and component handoff on the survey page (DF-SIGNAL-2026-0013); 1 failed build (F# reserved identifier 'component'); 1 test failure (errors cleared on any answer: fixed with ShowMissing)",
+      "occurredAt": "2026-10-13T11:04:25Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "cf-implementation",
+      "occurredAt": "2026-10-13T11:10:36Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "cf-testing",
+      "name": "testing: dotnet 492/492, browser 54/54",
+      "occurredAt": "2026-10-13T11:10:36Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "cf-testing",
+      "occurredAt": "2026-10-13T11:14:49Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "cf-git-ci",
+      "name": "git/CI integration: selector semantics PR and gate",
+      "occurredAt": "2026-10-13T11:15:40Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {

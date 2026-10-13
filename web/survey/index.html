@@ -91,23 +91,24 @@
         <template data-each="rows" data-key="id">
           <div class="survey-row" data-bind-data-row="id">
             <h3 class="survey-section" data-bind-hidden="hideSection" data-text="title"></h3>
-            <p class="survey-question" data-bind-hidden="hideQuestion"><strong data-text="prompt"></strong> <span class="ef-field__description" data-text="help"></span></p>
+            <p class="survey-question" data-bind-hidden="hideQuestion" data-bind-id="promptId" data-bind-data-component="component" data-bind-data-variant="variant"><strong data-text="prompt"></strong> <span class="survey-optional" data-text="optionalMark"></span> <span class="ef-field__description" data-text="help"></span></p>
+            <p class="survey-error" data-bind-hidden="hideError" data-bind-id="errorId" data-text="error"></p>
             <label class="ef-special-choice" data-bind-hidden="hideOption">
-              <input type="radio" data-event="answered" data-bind-name="group" data-bind-checked="checked" data-bind-disabled="locked" />
+              <input type="radio" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="group" data-bind-checked="checked" data-bind-disabled="locked" />
               <span data-text="label"></span>
             </label>
             <label class="ef-special-choice" data-bind-hidden="hideToggle">
-              <input type="checkbox" data-event="toggled" data-bind-checked="checked" data-bind-disabled="locked" />
+              <input type="checkbox" data-event="toggled" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-checked="checked" data-bind-disabled="locked" />
               <span data-text="label"></span>
             </label>
             <label class="ef-field" data-bind-hidden="hideNumber">
               <span class="ef-field__label" data-text="label"></span>
-              <input type="number" inputmode="decimal" data-event="numbered" data-bind-value="numberValue" data-bind-min="numberMin" data-bind-max="numberMax" data-bind-step="numberStep" data-bind-disabled="locked" />
+              <input type="number" inputmode="decimal" data-event="numbered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-value="numberValue" data-bind-min="numberMin" data-bind-max="numberMax" data-bind-step="numberStep" data-bind-disabled="locked" />
             </label>
             <div class="ef-cluster" data-bind-hidden="hidePair">
               <span data-text="label"></span>
-              <label><input type="radio" data-event="pickedBest" data-bind-name="groupBest" data-bind-checked="bestChecked" data-bind-disabled="locked" /> Fits best</label>
-              <label><input type="radio" data-event="pickedWorst" data-bind-name="groupWorst" data-bind-checked="worstChecked" data-bind-disabled="locked" /> Fits least</label>
+              <label><input type="radio" data-event="pickedBest" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="groupBest" data-bind-checked="bestChecked" data-bind-disabled="locked" /> Fits best</label>
+              <label><input type="radio" data-event="pickedWorst" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="groupWorst" data-bind-checked="worstChecked" data-bind-disabled="locked" /> Fits least</label>
             </div>
           </div>
         </template>

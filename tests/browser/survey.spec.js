@@ -286,3 +286,24 @@ test("an enforced timer that ran out holds the answers, and an edited start is r
   await expect(page.locator("#survey-refused-message")).toBeVisible();
   await expect(page.locator("#timer-notice")).toHaveCount(0);
 });
+
+test("inputs name their question, state required and invalid, and questions declare their component", async ({ page }) => {
+  await open(page, links.identified);
+  const first = pick(page, "0-0");
+  await expect(page.locator("#q0-prompt")).toContainText("Major requirements are expected");
+  await expect(page.locator("#q0-prompt")).toHaveAttribute("data-component", /^signal-/);
+  await expect(first).toHaveAttribute("aria-describedby", "q0-prompt");
+  await expect(first).toHaveAttribute("aria-required", "true");
+  await expect(first).toHaveAttribute("aria-invalid", "false");
+  // Nothing starts answered (SCS-010).
+  await expect(page.locator('#survey-rows input[data-event="answered"]:checked')).toHaveCount(0);
+
+  // A refused submit marks each unanswered required question, in words.
+  await page.locator("#submit-answers").click();
+  await expect(page.locator("#q0-error")).toHaveText("This question needs an answer.");
+  await expect(first).toHaveAttribute("aria-invalid", "true");
+  await expect(first).toHaveAttribute("aria-describedby", "q0-prompt q0-error");
+  await first.check();
+  await expect(page.locator("#q0-error")).toBeHidden();
+  await expect(page.locator("#q1-error")).toBeVisible();
+});
