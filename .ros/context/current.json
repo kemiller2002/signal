@@ -3079,7 +3079,27 @@
       "updatedAt": "2026-10-13T17:01:13Z",
       "telemetryExecutionIds": [
         "EXE-20261013T170114560Z-a503dddb"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "610f9b2b229aa52457353691",
+        "recordedAt": "2026-10-13T17:03:43Z",
+        "executionId": "EXE-20261013T170114560Z-a503dddb",
+        "repository": "echelon-signal",
+        "branch": "feature/template-localization-model",
+        "commit": "b3cb9959be1dd145559879d4e8bd01552b1ecce9",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feature/template-localization-model",
+        "remoteCommit": "b3cb9959be1dd145559879d4e8bd01552b1ecce9",
+        "summary": "Slice 1 of WI-0091: template localization area and selector accessibility metadata (canonical, hash-neutral when absent, decoded, checked, diffed, PII-checked), UsesLocalization supported, DF-SIGNAL-2026-0020; CAN-001 tested. .NET 541 passing.",
+        "nextAction": "PR, gate, merge; then Ordo steps; then survey-page rendering and console authoring slices",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
