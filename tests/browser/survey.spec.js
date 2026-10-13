@@ -200,3 +200,35 @@ test("a survey in pages moves with Back and Next, and a section left behind stay
   await page.locator("#submit-answers").click();
   await expect(page.locator("#submitted-title")).toHaveText("Submitted");
 });
+
+test("the page is in the link: browser Back and Forward move pages, and a link cannot skip a page", async ({ page }) => {
+  const pageParam = () => new URLSearchParams(new URL(page.url()).hash.slice(1)).get("p");
+
+  // A cold link naming page 3 with nothing answered opens page 1, and says so.
+  await open(page, `${links.paged}&p=3`);
+  await expect(page.locator("#page-label")).toHaveText("Page 1 of 3");
+  await expect.poll(pageParam).toBe(null);
+
+  await pick(page, "0-3").check();
+  await pick(page, "1-4").check();
+  await page.locator("#page-next").click();
+  await expect(page.locator("#page-label")).toHaveText("Page 2 of 3");
+  await expect.poll(pageParam).toBe("2");
+  await pick(page, "2-6").check();
+
+  // Browser Back: page 1 again, with every answer held now (page 2's too).
+  await page.goBack();
+  await expect(page.locator("#page-label")).toHaveText("Page 1 of 3");
+  await expect(pick(page, "0-3")).toBeChecked();
+  await expect(page.locator("#progress")).toHaveText("3 of 5 answered");
+  await page.goForward();
+  await expect(page.locator("#page-label")).toHaveText("Page 2 of 3");
+  await expect(pick(page, "2-6")).toBeChecked();
+
+  // Past the section lock, browser Back cannot reopen the locked section.
+  await page.locator("#page-next").click();
+  await expect(page.locator("#page-label")).toHaveText("Page 3 of 3");
+  await page.goBack();
+  await expect(page.locator("#page-label")).toHaveText("Page 3 of 3");
+  await expect.poll(pageParam).toBe("3");
+});

@@ -2,14 +2,15 @@
 id: SIG-LINK
 title: Signal deep linking - every navigable view has a URL that opens it
 status: accepted
-version: 1.1.0
+version: 1.2.0
 created: 2026-10-08
-updated: 2026-10-09
+updated: 2026-10-13
 owners:
   - signal
 related_documents:
   - research/decisions/DF-SIGNAL-2026-0003--deep-linking-through-limen-routing.md
   - research/decisions/DF-SIGNAL-2026-0006--respondent-links-carry-locale-and-expiry-in-link-format-2.md
+  - research/decisions/DF-SIGNAL-2026-0007--the-survey-page-names-its-page-in-the-respondent-link.md
   - .echelon/routes.json
   - docs/requirements/implementation-gap-analysis.md
 tags: [requirements, routing, deep-linking, limen, privacy]
@@ -38,6 +39,7 @@ provenance:
     EXE-20261009T042446720Z-a28d9579:
       operations: [modified]
       at: 2026-10-09T04:38:25.498Z
+      last: 2026-10-13T08:56:34.638Z
       actor:
         kind: agent
         id: anthropic/claude-code
@@ -147,4 +149,14 @@ as format 1, and format 1 links MUST decode and behave exactly as before.
 An edited expiry MUST invalidate the link; an expired invitation MUST NOT be
 fillable on the survey page, and intake MUST refuse its submission
 (`rejected:invitation-expired`). Locale MUST change presentation only.
+
+**SIG-LINK-014 The survey page's page.** While a response is answered, the
+survey page MUST name the page it shows in the fragment as `p` (1-based,
+after the answer code, left out on the first page), so a reload, a copied
+link, Back and Forward return to it (DF-SIGNAL-2026-0007). `p` MUST NOT be
+part of the envelope and MUST NOT change SIG-LINK-013's formats. A link MUST
+NOT grant a page: the page is reached under the template's navigation rules,
+and a page the rules refuse MUST open as the nearest allowed page with the
+address rewritten. Page turns MUST add a history entry; answers MUST replace
+the current one. A submission link MUST NOT carry `p`.
 

@@ -70,6 +70,9 @@ type Inbound =
 type Effect =
     /// Replace the current history entry's URL (same-origin, root-relative).
     | ReplaceUrl of correlationId: string * url: string
+    /// Add a history entry (same-origin, root-relative), so Back returns to
+    /// the URL before it.
+    | PushUrl of correlationId: string * url: string
     /// Write text to the clipboard (write-only by design in Limen).
     | CopyText of correlationId: string * text: string
     /// GET a file's exact bytes (base64), without credentials. The address
@@ -237,10 +240,11 @@ let encode (view: View) (effects: Effect list) (handshake: Handshake option) =
 
         for effect in effects do
             match effect with
-            | ReplaceUrl(correlationId, url) ->
+            | ReplaceUrl(correlationId, url)
+            | PushUrl(correlationId, url) ->
                 writer.WriteStartObject()
                 writer.WriteString("kind", "Navigation")
-                writer.WriteString("operation", "replace")
+                writer.WriteString("operation", (match effect with PushUrl _ -> "push" | _ -> "replace"))
                 writer.WriteString("correlationId", correlationId)
                 writer.WriteString("url", url)
                 writer.WriteEndObject()

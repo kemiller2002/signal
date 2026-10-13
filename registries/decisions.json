@@ -345,6 +345,52 @@
     "version": "1.0.0"
   },
   {
+    "created": "2026-10-13",
+    "id": "DF-SIGNAL-2026-0007",
+    "owners": [
+      "signal"
+    ],
+    "path": "research/decisions/DF-SIGNAL-2026-0007--the-survey-page-names-its-page-in-the-respondent-link.md",
+    "provenance": {
+      "contributions": {
+        "EXE-20261009T042446720Z-a28d9579": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-13T08:56:25.802Z",
+          "operations": [
+            "created"
+          ],
+          "reason": "The page in the respondent link as p (VER-004, ARX-013, WI-0081)"
+        }
+      }
+    },
+    "related_documents": [
+      "research/decisions/DF-SIGNAL-2026-0003--deep-linking-through-limen-routing.md",
+      "research/decisions/DF-SIGNAL-2026-0006--respondent-links-carry-locale-and-expiry-in-link-format-2.md",
+      "docs/requirements/SIGNAL-DEEP-LINKING.md",
+      "docs/requirements/implementation-gap-analysis.md"
+    ],
+    "review_cycle": "on-trigger",
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "respondent",
+      "url",
+      "pagination",
+      "navigation",
+      "history"
+    ],
+    "title": "The survey page names the page shown in the respondent link as p, outside the envelope; a link names a page but never grants one",
+    "updated": "2026-10-13",
+    "version": "1.0.0"
+  },
+  {
     "created": "2026-10-05",
     "id": "DF-SIGNAL-FND-2026-0001",
     "owners": [
