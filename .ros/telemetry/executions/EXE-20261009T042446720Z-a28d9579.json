@@ -2044,6 +2044,16 @@
         "name": "ros",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "st-git-ci",
+      "occurredAt": "2026-10-13T12:13:28Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {

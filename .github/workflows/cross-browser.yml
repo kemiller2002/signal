@@ -1,0 +1,69 @@
+name: Cross-browser sample links
+
+# The survey page and its published sample links on real WebKit (iPhone
+# Safari emulation) and Firefox (AUT-006 §62, DF-SIGNAL-2026-0016).
+#
+# It runs on a schedule and by hand, never on pull requests or pushes: WebKit
+# and Firefox need OS libraries the runner image lacks, and installing them
+# uses apt, which once hung the build for six hours (signal#21, signal#22).
+# Here apt runs with per-request timeouts and retries and an overall
+# deadline, and a failure to install is reported as environmental without
+# touching any pull request's checks.
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cross-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Publish the WASM engine
+        run: npm run build:wasm
+
+      - name: Download WebKit and Firefox
+        timeout-minutes: 8
+        run: npx playwright install webkit firefox
+
+      # Bounded apt: 30-second request timeouts, 3 retries, 10 minutes overall.
+      - name: Install their OS libraries
+        id: deps
+        timeout-minutes: 12
+        run: |
+          printf '%s\n' 'Acquire::Retries "3";' 'Acquire::http::Timeout "30";' 'Acquire::https::Timeout "30";' \
+            | sudo tee /etc/apt/apt.conf.d/99-bounded-network > /dev/null
+          if timeout 600 npx playwright install-deps webkit firefox; then
+            echo "installed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "installed=false" >> "$GITHUB_OUTPUT"
+            echo "::error::Environmental: WebKit and Firefox OS libraries could not be installed within ten minutes. The sample-link check did not run."
+            exit 1
+          fi
+
+      - name: Run the survey page on WebKit and Firefox
+        env:
+          SIGNAL_CROSS_BROWSER: "1"
+        run: npx playwright test --project=webkit-iphone --project=firefox
+
+      - name: Upload browser traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cross-browser-traces
+          path: test-results/
+          retention-days: 7
