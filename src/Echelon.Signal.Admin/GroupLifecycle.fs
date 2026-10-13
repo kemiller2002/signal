@@ -258,3 +258,81 @@ let reader: Loading.RecordReader<StoredLifecycle> =
       IdOf = fun stored -> GroupRecord.groupKey stored.Lifecycle.Group
       DatasetOf = fun stored -> Some stored.DatasetId
       References = fun _ -> [] }
+
+// ---- As an ARX-002 state system (WI-0092) ---------------------------------------------------
+
+module SM = Echelon.Signal.Engine.StateModel
+
+/// What discharges each obligation.
+let dischargedBy =
+    function
+    | CompletionNotSettled -> "enough accepted contributions, or closing the group as incomplete"
+    | ReconcileUnknownImport _ -> "reconciling each import batch whose outcome is unknown"
+    | RepairStoredRecords _ -> "repairing or setting aside each record held aside"
+    | RebuildDerivedIndex -> "a rebuilt contribution index that matches the records"
+    | ResolvePrivacyThreshold -> "a minimum reportable group size of at least 1"
+
+/// The group's state as the shared properties see it: its status and the
+/// finalization evidence gathered for it.
+[<NoComparison>]
+type GroupState = { Status: Status; Evidence: Evidence }
+
+let private capabilitiesOf (state: GroupState) =
+    set
+        [ match state.Status with
+          | Collecting -> yield! [ SM.Capability.CanCloseGroup; SM.Capability.CanImportSubmission ]
+          | ClosedIncomplete -> SM.Capability.CanReopenGroup
+          | _ -> ()
+          if state.Status = Collecting || state.Status = ClosedIncomplete then
+              if (obligations state.Status state.Evidence).IsEmpty then SM.Capability.CanFinalize
+          match state.Status with
+          | Finalized
+          | FinalizedIncomplete -> SM.Capability.CanSealGroup
+          | _ -> ()
+          match state.Status with
+          | Superseded _ -> ()
+          | _ -> SM.Capability.CanSupersede ]
+
+let system: SM.System<GroupState, Transition> =
+    { Name = "group"
+      StateName = fun s -> statusName s.Status
+      CommandName = transitionName
+      Attempt =
+        fun transition state ->
+            // Finalization is judged on the evidence gathered for the state,
+            // the same evidence its capability is derived from.
+            let transition =
+                match transition with
+                | Finalize _ -> Finalize state.Evidence
+                | other -> other
+
+            match apply transition state.Status with
+            | Ok next -> Ok { state with Status = next }
+            | Error refusal ->
+                let reason =
+                    match refusal with
+                    | Illegal _ -> $"{transitionName transition} is not a transition from {statusName state.Status}"
+                    | BlockedByObligations open' -> $"""blocked by {open' |> List.map obligationCode |> String.concat ", "}"""
+
+                SM.illegal "group" (statusName state.Status) (transitionName transition) reason
+      Capabilities = capabilitiesOf
+      Requires =
+        function
+        | Close -> Some SM.Capability.CanCloseGroup
+        | Reopen -> Some SM.Capability.CanReopenGroup
+        | Finalize _ -> Some SM.Capability.CanFinalize
+        | Seal -> Some SM.Capability.CanSealGroup
+        | Supersede _ -> Some SM.Capability.CanSupersede
+      Obligations =
+        fun state ->
+            match state.Status with
+            | Collecting
+            | ClosedIncomplete ->
+                obligations state.Status state.Evidence
+                |> List.map (fun o -> { Code = obligationCode o; Detail = $"%A{o}"; DischargedBy = dischargedBy o }: SM.Obligation)
+            | _ -> []
+      Terminal =
+        fun state ->
+            match state.Status with
+            | Superseded _ -> true
+            | _ -> false }

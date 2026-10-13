@@ -40,7 +40,9 @@ type Refusal =
     | NoAnswerLink
     | AmbiguousLink
     | UnreadableLink of DecodeError
-    | TemplateNotPublished
+    /// The catalog file the link names was looked for on this site and is
+    /// not there: searched, not found (ARX-002), never "does not exist".
+    | TemplateNotPublished of file: string
     | CatalogUnreachable of reason: string
     /// The file is not a canonical published template: damaged or altered.
     | NotATemplate of reason: string
@@ -59,7 +61,7 @@ let describe =
     | NoAnswerLink -> "This page needs a survey link. Open the link you were sent; it ends with #r= and a code."
     | AmbiguousLink -> "This link carries more than one answer code, so Signal cannot tell which one is yours. Open the link you were sent."
     | UnreadableLink error -> describe error
-    | TemplateNotPublished -> "The survey this link belongs to is not published on this site. Ask the person who sent you the link."
+    | TemplateNotPublished _ -> "The survey this link belongs to is not published on this site. Ask the person who sent you the link."
     | CatalogUnreachable reason -> $"The survey could not be loaded ({reason}). Check your connection and reload the page."
     | NotATemplate _ ->
         "The survey file on this site is damaged or not in its published form, so it was not used. Ask the person who sent you the link."
@@ -187,7 +189,7 @@ let receivedAt (now: DateTimeOffset) (fetched: Fetched) (session: Session) : Ses
     match session with
     | Fetching(reference, payload, page) ->
         match fetched with
-        | NotFound -> Refused TemplateNotPublished
+        | NotFound -> Refused(TemplateNotPublished(catalogFile reference))
         | Unreachable reason -> Refused(CatalogUnreachable reason)
         | Found bytes ->
             match verify reference bytes with
