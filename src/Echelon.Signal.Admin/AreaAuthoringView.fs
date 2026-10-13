@@ -42,6 +42,8 @@ let project (content: Content option) (form: AreaAuthoring.Form) : (string * Vie
       "draftTimers", Items(p.Timers |> List.map (fun t -> [ "id", Text t.Id; "label", Text(AreaAuthoring.describeTimer t) ]))
       "timerMinutes", text form.TimerMinutes
       "timerWarning", text form.TimerWarning
+      "timerQuestion", text form.TimerQuestion
+      "timerHelp", text AreaAuthoring.timerHelp
       "draftBanks", Items(p.Banks |> List.map (fun b -> [ "id", Text b.Id; "label", Text(AreaAuthoring.describeBank b) ]))
       "bankQuestions", text form.BankQuestions
       "bankSelect", text form.BankSelect

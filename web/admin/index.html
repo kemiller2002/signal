@@ -195,7 +195,9 @@
         <label><input id="allow-back" type="checkbox" data-event="allowBack" value="true" data-bind-checked="allowBack" /> Allow going back</label>
         <label><input id="review-before-submit" type="checkbox" data-event="reviewBeforeSubmit" value="true" data-bind-checked="reviewBeforeSubmit" /> Review answers before submitting</label>
         <ul id="draft-timers"><template data-each="draftTimers" data-key="id"><li><span data-text="label"></span> <button type="button" class="ef-button" data-event="removeTimer">Remove</button></li></template></ul>
-        <label>Survey time limit (minutes) <input id="timer-minutes" type="text" inputmode="numeric" data-event="timerMinutes" data-bind-value="timerMinutes" /></label>
+        <p id="timer-help" class="ef-field__description" data-text="timerHelp"></p>
+        <label>Question (blank for the whole survey) <input id="timer-question" type="text" data-event="timerQuestion" data-bind-value="timerQuestion" /></label>
+        <label>Time limit (minutes) <input id="timer-minutes" type="text" inputmode="numeric" data-event="timerMinutes" data-bind-value="timerMinutes" /></label>
         <label>Warn when this many minutes are left <input id="timer-warning" type="text" inputmode="numeric" data-event="timerWarning" data-bind-value="timerWarning" /></label>
         <button type="button" class="ef-button" data-event="addTimer">Add time limit</button>
         <ul id="draft-banks"><template data-each="draftBanks" data-key="id"><li><span data-text="label"></span> <button type="button" class="ef-button" data-event="removeBank">Remove</button></li></template></ul>

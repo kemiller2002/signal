@@ -49,8 +49,8 @@ type Refusal =
     /// The file is a template, but not the version the link names.
     | WrongTemplate
     | UnsupportedAnswer of questionId: string
-    /// Timers this page does not run yet (section, page or question timers;
-    /// DF-SIGNAL-2026-0010): shown without them, the survey would not be the
+    /// Timers this page does not run (two timers on the same part,
+    /// DF-SIGNAL-2026-0015): shown without them, the survey would not be the
     /// one published.
     | UnsupportedPresentation of what: string
     /// The invitation's last day has passed (VER-003).
@@ -166,7 +166,7 @@ let verify (reference: byte[]) (bytes: byte[]) : Result<Published, Refusal> =
         else
             match questions decoded.Content |> List.map snd |> List.tryFind (supported >> not) with
             | Some q -> Error(UnsupportedAnswer q.Id)
-            | None when not (GenericTimer.supported decoded.Content) -> Error(UnsupportedPresentation "question timers, or two timers on the same part")
+            | None when not (GenericTimer.supported decoded.Content) -> Error(UnsupportedPresentation "two timers on the same part")
             | None ->
                 Ok
                     { SurveyId = decoded.SurveyId
