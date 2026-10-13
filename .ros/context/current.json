@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-13T14:48:27Z",
+  "updatedAt": "2026-10-13T14:52:38Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -2859,13 +2859,48 @@
     {
       "id": "WI-0088",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-10-13T14:48:27Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/TemplateDiff.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/InterpretationDiffTests.fs"
+        },
+        {
+          "type": "decision",
+          "path": "research/decisions/DF-SIGNAL-2026-0019--interpretation-thresholds-are-not-comparable-labels-are-a-caution.md"
+        }
+      ],
+      "updatedAt": "2026-10-13T14:52:38Z",
       "telemetryExecutionIds": [
         "EXE-20261013T144827880Z-0fdeea60"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "1fe37dafaedcad1018f85460",
+        "recordedAt": "2026-10-13T14:52:32Z",
+        "executionId": "EXE-20261013T144827880Z-0fdeea60",
+        "repository": "echelon-signal",
+        "branch": "fix/interpretation-threshold-comparability",
+        "commit": "f7ff8477c05707b9cf72322a11806586d04b461f",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "fix/interpretation-threshold-comparability",
+        "remoteCommit": "f7ff8477c05707b9cf72322a11806586d04b461f",
+        "summary": "InterpretationsChanged split into InterpretationThresholdsChanged (scoring, not comparable) and InterpretationLabelsChanged (caution); DF-SIGNAL-2026-0019; field-by-field tests; .NET 523 passing.",
+        "nextAction": "Complete, open the PR, gate and merge",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-13T14:52:38Z",
+      "conclusion": "Interpretation threshold changes are breaking and not comparable; label and order changes are a caution (DF-SIGNAL-2026-0019)."
     }
   ]
 }

@@ -100,4 +100,4 @@
 | WI-0085 | Neutralize stored snapshot CSVs on delivery (snapshots stored before WI-0084) | complete | signal,security | high |
 | WI-0086 | Escaped defects from #73: partial compound answers are not in the link, and out-of-order ranking positions collapse | complete | signal,defect, escaped-defect:#73 | high |
 | WI-0087 | Escaped defect from #29: the validation summary omits the Rules category, so rule findings never appear in the per-category summary (AUT-005) | complete | signal, defect, escaped-defect:#29 | high |
-| WI-0088 | Escaped defect from #30: a changed interpretation threshold, band bound or stage condition is diffed as comparable with caution and no scoring impact; AUT-005 sections 45 and 48 make it not comparable | ready | signal, defect, escaped-defect:#30 | high |
+| WI-0088 | Escaped defect from #30: a changed interpretation threshold, band bound or stage condition is diffed as comparable with caution and no scoring impact; AUT-005 sections 45 and 48 make it not comparable | complete | signal, defect, escaped-defect:#30 | high |
