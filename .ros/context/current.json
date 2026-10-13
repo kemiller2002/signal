@@ -3081,20 +3081,20 @@
         "EXE-20261013T170114560Z-a503dddb"
       ],
       "latestCheckpoint": {
-        "id": "6126b83af436aa549393dcc8",
-        "recordedAt": "2026-10-13T17:08:52Z",
+        "id": "b64cb0c8a4b83227528b5d93",
+        "recordedAt": "2026-10-13T18:01:36Z",
         "executionId": "EXE-20261013T170114560Z-a503dddb",
         "repository": "echelon-signal",
-        "branch": "feature/template-localization-model",
-        "commit": "a98604f0e4b498098548f27d903eb2d4317112f4",
+        "branch": "feature/survey-page-locale",
+        "commit": "78d0c30dacc2c3f6074212fe7905c5c8fa44c956",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/template-localization-model",
-        "remoteCommit": "a98604f0e4b498098548f27d903eb2d4317112f4",
-        "summary": "Translation changes classified by their key's source-text rule, scoped to the locale (coordinator review of #105); DF-0020 updated; .NET 542 passing.",
-        "nextAction": "Gate and merge #105; then Ordo steps",
+        "remoteBranch": "feature/survey-page-locale",
+        "remoteCommit": "78d0c30dacc2c3f6074212fe7905c5c8fa44c956",
+        "summary": "Slice 2: survey page shows the link-locale translation (same tag, else language, else source), names the shown language, applies accessible name and description; LOCALIZED published; LocalizedPageTests (5) and survey-localized.spec.js; .NET 552.",
+        "nextAction": "PR, cross-browser dispatch, gate, merge; then slice 3 (console authoring areas)",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
