@@ -1603,6 +1603,69 @@
         "name": "ros",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "tb-git-ci",
+      "occurredAt": "2026-10-13T09:58:20Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "bs-implementation",
+      "name": "custom implementation + decision: bank selection seed (DF-SIGNAL-2026-0009); start time is a lower bound (main synced 09:58:23Z; first edit not recorded); 1 failed build (Validation compiled before BankSelection); edited on main before branching (process slip)",
+      "occurredAt": "2026-10-13T09:58:23Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "bs-implementation",
+      "occurredAt": "2026-10-13T10:05:26Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "bs-testing",
+      "name": "testing: dotnet 470/470, browser 48/48",
+      "occurredAt": "2026-10-13T10:05:26Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.completed",
+      "stepId": "bs-testing",
+      "occurredAt": "2026-10-13T10:08:59Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
+    },
+    {
+      "type": "step.started",
+      "stepId": "bs-git-ci",
+      "name": "git/CI integration: bank selection PR and gate",
+      "occurredAt": "2026-10-13T10:09:43Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {

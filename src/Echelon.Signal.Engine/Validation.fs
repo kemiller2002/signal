@@ -102,6 +102,9 @@ let private structural (draft: Draft) =
       for b in p.Banks do
           for id in b.Pool |> List.filter (fun id -> not (questionIds c |> List.contains id)) do
               block "STRUCT-BANK-REFERENCE" b.Id $"Bank '{b.Id}' names no question '{id}'."
+      for rule in c.Rules.Flow do
+          if rule.Id.StartsWith(Banking.ExcludedRulePrefix, StringComparison.Ordinal) then
+              block "STRUCT-RESERVED-RULE-ID" rule.Id $"Flow rule id '{rule.Id}' uses the prefix reserved for bank selection."
       for id in duplicates (p.Banks |> List.collect (fun b -> List.distinct b.Pool)) do
           block "STRUCT-BANK-OVERLAP" id $"Question '{id}' is in more than one bank."
       for _, q in questions c do

@@ -93,7 +93,7 @@ let ``publication checks every timer and bank`` () =
         Assert.Contains(code, found)
 
 [<Fact>]
-let ``the survey page refuses a template with timers or banks it cannot run yet`` () =
+let ``the survey page refuses a template with timers it cannot run yet`` () =
     let opened (content: Content) =
         let file = publishedFile "DEMO" "1" content |> snd
         let instance = (UrlState.OpaqueId.ofBytes (Array.init 16 byte)).Value
@@ -101,7 +101,6 @@ let ``the survey page refuses a template with timers or banks it cannot run yet`
         start ("#r=" + GenericEnvelope.invitation "DEMO" "1" content Import.IdentifiedGroup instance group) |> received (DateOnly(2026, 1, 1)) (Found file)
 
     Assert.Equal(Refused(UnsupportedPresentation "timers"), opened (withTimersAndBanks [ timer "whole" Timers.SurveyScope ] []))
-    Assert.Equal(Refused(UnsupportedPresentation "question banks"), opened (withTimersAndBanks [] [ { Id = "core"; Pool = ids[0..2]; Select = 2 } ]))
     Assert.Contains("cannot run yet", describe (UnsupportedPresentation "timers"))
 
 [<Fact>]
@@ -112,3 +111,67 @@ let ``a version diff names timer and bank changes, and a bank change can move sc
     Assert.DoesNotContain(TemplateDiff.PresentationChanged, changes)
     Assert.True((TemplateDiff.impact TemplateDiff.BanksChanged).Scoring)
     Assert.False((TemplateDiff.impact TemplateDiff.TimersChanged).Scoring)
+
+// ---------------------------------------------------------------------------
+// Bank selection on the page and at intake (DF-SIGNAL-2026-0009).
+// ---------------------------------------------------------------------------
+
+let private oid (seed: int) = (UrlState.OpaqueId.ofBytes (Array.init 16 (fun i -> byte (seed + i)))).Value
+let private bank: Banking.Bank = { Id = "core"; Pool = ids[0..2]; Select = 2 }
+let private banked = withTimersAndBanks [] [ bank ]
+
+let private openAs (mode: Import.IdentityMode) (instance: int) =
+    let file = publishedFile "DEMO" "1" banked |> snd
+    start ("#r=" + GenericEnvelope.invitation "DEMO" "1" banked mode (oid instance) (oid 200)) |> received (DateOnly(2026, 1, 1)) (Found file)
+
+let private responding =
+    function
+    | Responding r -> r
+    | other -> failwith $"%A{other}"
+
+let private applicable (r: Response) = (Rules.applicability r.Published.Form.Content r.Answers).Questions
+
+[<Fact>]
+let ``an identified respondent answers their own reproducible selection`` () =
+    let r = responding (openAs Import.IdentifiedGroup 1)
+    let shown = ids[0..2] |> List.filter (applicable r).Contains
+    Assert.Equal(2, shown.Length)
+    Assert.Equal<string list>(Banking.select (BankSelection.seedFor r.Binding) bank, shown)
+    // The same link opens the same selection; the rest of the survey is untouched.
+    Assert.Equal<Set<string>>(applicable r, applicable (responding (openAs Import.IdentifiedGroup 1)))
+    Assert.True(ids[3..] |> List.forall (applicable r).Contains)
+
+[<Fact>]
+let ``everyone in an anonymous group answers the group's selection, so a submission links to no invitation`` () =
+    let selections = [ for i in 1..12 -> applicable (responding (openAs Import.AnonymousGroup i)) ] |> List.distinct
+    Assert.Equal(1, selections.Length)
+    // Identified respondents differ across instances.
+    let identified = [ for i in 1..12 -> applicable (responding (openAs Import.IdentifiedGroup i)) ] |> List.distinct
+    Assert.True(identified.Length > 1)
+
+[<Fact>]
+let ``intake reads a submission with the selection it was answered under`` () =
+    for mode in [ Import.IdentifiedGroup; Import.AnonymousGroup ] do
+        let r = responding (openAs mode 7)
+        let answer (s: Session) (id: string) = update (Chose(id, choices (tryQuestion banked id).Value |> List.head |> fst)) s
+        let shown = ids |> List.filter (applicable r).Contains
+        let filled = shown |> List.fold answer (Responding r)
+
+        match update (SubmitRequested(Array.init 16 (fun i -> byte (90 + i)))) filled with
+        | Responding submitted when submitted.Phase = Submitted ->
+            let definition: Import.GroupDefinition =
+                { Group = oid 200
+                  Mode = mode
+                  ExpectedCount = 1
+                  Template = GenericImport.shapeOf "DEMO" "1" banked
+                  Generic = Some(GenericImport.formOf "DEMO" "1" banked) }
+
+            match GenericImport.evaluate definition (fun _ -> None) ("https://signal.example/web/survey/" + fragment submitted) with
+            | Import.Accepted accepted -> Assert.Equal(shown.Length, accepted.AnsweredCount)
+            | other -> failwith $"{mode}: %A{other}"
+        | other -> failwith $"{mode}: %A{other}"
+
+[<Fact>]
+let ``an authored flow rule may not use the bank-selection prefix`` () =
+    let reserved: RuleModel.FlowRule = { Id = BankSelection.RulePrefix + "x"; When = RuleModel.Always; Then = RuleModel.HideQuestion ids[0] }
+    Assert.Contains("STRUCT-RESERVED-RULE-ID", codes { banked with Rules = { banked.Rules with Flow = [ reserved ] } })

@@ -436,6 +436,51 @@
     "version": "1.0.0"
   },
   {
+    "created": "2026-10-13",
+    "id": "DF-SIGNAL-2026-0009",
+    "owners": [
+      "signal"
+    ],
+    "path": "research/decisions/DF-SIGNAL-2026-0009--bank-selection-seeds-come-from-ids-the-link-already-carries.md",
+    "provenance": {
+      "contributions": {
+        "EXE-20261009T042446720Z-a28d9579": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-13T10:09:14.922Z",
+          "operations": [
+            "created"
+          ],
+          "reason": "Bank selection seed from ids the link already carries (ARX-013, LURL-002, WI-0081)"
+        }
+      }
+    },
+    "related_documents": [
+      "research/decisions/DF-SIGNAL-2026-0008--timers-and-banks-are-optional-template-fields.md",
+      "docs/requirements/SIGNAL-DEEP-LINKING.md",
+      "docs/requirements/implementation-gap-analysis.md"
+    ],
+    "review_cycle": "on-trigger",
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "banking",
+      "privacy",
+      "anonymity",
+      "respondent",
+      "intake"
+    ],
+    "title": "A bank selection's seed comes from ids the link already carries - the instance in identified groups, the group in anonymous groups - so nothing new travels and no anonymous submission links to its invitation",
+    "updated": "2026-10-13",
+    "version": "1.0.0"
+  },
+  {
     "created": "2026-10-05",
     "id": "DF-SIGNAL-FND-2026-0001",
     "owners": [

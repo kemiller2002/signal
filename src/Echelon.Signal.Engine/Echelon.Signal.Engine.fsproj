@@ -47,6 +47,7 @@
     <Compile Include="Pilot.fs" />
     <Compile Include="Canonical.fs" />
     <Compile Include="UrlState.fs" />
+    <Compile Include="BankSelection.fs" />
     <Compile Include="LiveUrl.fs" />
     <Compile Include="Submission.fs" />
     <Compile Include="Import.fs" />
