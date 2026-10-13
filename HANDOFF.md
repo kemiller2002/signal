@@ -225,6 +225,12 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   from the current tree in one tombstone commit (WI-0077,
   DF-SIGNAL-2026-0021). The claim names only what landed
   (`Retired.Tree`); Git history still holds the content and is never claimed.
+  The console (WI-0077 slice 2, `RetentionScreen`, `RetentionView`,
+  `RetentionWork`) shows the dataset's lifecycle in the Storage view with
+  its legal moves (never verified provider deletion), usable while the
+  dataset is read-only, and retires a finalized group's results from its
+  overview only after a confirmation. Page work must stay on the caller's
+  context: never `Async.Sequential` or `Async.Parallel` (see `AdminWork`).
 - Disclosure in the page (WI-0076): an anonymous group with a minimum above
   one shows its last released state (`Releases.shown`, recorded after each
   import as a `signal.group-release` of opaque keys) and says how many newer

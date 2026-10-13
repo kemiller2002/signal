@@ -202,12 +202,23 @@ let private erase
         elif not (offersErasure opened) then
             return ErasureNotOffered
         else
-            let! requests = targets |> List.map request |> Async.Sequential
+            // One read after another, on the caller's context (never the
+            // thread pool: the page's work runs where it started).
+            let rec each acc remaining =
+                async {
+                    match remaining with
+                    | [] -> return List.rev acc
+                    | target :: rest ->
+                        let! made = request target
+                        return! each (made :: acc) rest
+                }
 
-            match requests |> Array.toList |> List.choose (function Error e -> Some e | Ok _ -> None) with
+            let! requests = each [] targets
+
+            match requests |> List.choose (function Error e -> Some e | Ok _ -> None) with
             | first :: _ -> return ErasureFailed first
             | [] ->
-                let valid = requests |> Array.toList |> List.choose (function Ok r -> Some r | Error _ -> None)
+                let valid = requests |> List.choose (function Ok r -> Some r | Error _ -> None)
 
                 match Erasure.operation opened.Namespace (Storage.metadata (actor.NewContext()) "erase retired accepted results") valid with
                 | Error e -> return ErasureFailed $"%A{e}"

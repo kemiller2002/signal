@@ -93,6 +93,11 @@ type AdminCapability =
     | CanPublishTemplates
     /// Review a draft before publication (ReviewTemplates, AUT-006 §64).
     | CanReviewTemplates
+    /// Retire a finalized group's accepted results (ManageStorage, ADM-045, WI-0077).
+    | CanRetireSources
+    /// Move the dataset through its lifecycle (ManageStorage, ADM-045, WI-0077):
+    /// also while it is read-only because it is not active.
+    | CanManageLifecycle
 
 let capabilityName (capability: AdminCapability) = $"%A{capability}"
 
@@ -113,6 +118,7 @@ let capabilities (storage: StorageState) (usable: Set<Capability>) (group: Group
     let collecting = status = Some GroupLifecycle.Collecting
     let closedIncomplete = status = Some GroupLifecycle.ClosedIncomplete
     let finalized = status = Some GroupLifecycle.Finalized || status = Some GroupLifecycle.FinalizedIncomplete
+    let retirable = finalized || status = Some GroupLifecycle.Sealed
 
     set
         [ if reading then CanReadStore
@@ -121,6 +127,7 @@ let capabilities (storage: StorageState) (usable: Set<Capability>) (group: Group
               CanConfigureStorage
               CanMigrateStorage
               CanRepairIndex
+          if writing && holds ManageStorage && retirable then CanRetireSources
           if writing && holds ManageGroups then CanCreateGroup
           if writing && holds ImportSubmissions && collecting then
               CanImportSubmission

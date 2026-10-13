@@ -57,6 +57,9 @@ type GroupSummary =
       Template: Echelon.Signal.Engine.Assessment.Assessment
       /// The template content reports describe (a generic template's own, or the pilot's generic form).
       Content: Echelon.Signal.Engine.Template.Content
+      /// What reconstruction remains once its accepted results were retired
+      /// (a `Retention.reconstructionId`); None while they are held (ADM-045, ADM-064).
+      SourcesRetired: string option
       Problems: string list }
 
 /// What the page shows about the open dataset.
@@ -68,6 +71,10 @@ type DatasetSummary =
       Credential: Credential.CredentialState
       ReadOnlyReasons: string list
       Verification: string
+      /// The dataset's ADM-045 lifecycle state, and whether the credential
+      /// could write a lifecycle change (only an active dataset grants others).
+      Lifecycle: Retention.State
+      LifecycleWritable: bool
       Groups: GroupSummary list }
 
 /// A message for the person: a stable code and a sentence (ADM-031).
