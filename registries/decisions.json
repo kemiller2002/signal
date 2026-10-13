@@ -617,6 +617,48 @@
     "version": "1.0.0"
   },
   {
+    "created": "2026-10-13",
+    "id": "DF-SIGNAL-2026-0013",
+    "owners": [
+      "signal"
+    ],
+    "path": "research/decisions/DF-SIGNAL-2026-0013--survey-inputs-carry-their-accessibility-state-and-component-family.md",
+    "provenance": {
+      "contributions": {
+        "EXE-20261009T042446720Z-a28d9579": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-13T11:15:03.989Z",
+          "operations": [
+            "created"
+          ],
+          "reason": "Survey page selector semantics and component handoff (SCS-014, SCS-018, WI-0081)"
+        }
+      }
+    },
+    "related_documents": [
+      "docs/requirements/implementation-gap-analysis.md"
+    ],
+    "review_cycle": "on-trigger",
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "accessibility",
+      "selectors",
+      "survey-page",
+      "design-system"
+    ],
+    "title": "Survey page inputs carry their question, required and invalid state programmatically, and each question declares its component family for the design system's handoff",
+    "updated": "2026-10-13",
+    "version": "1.0.0"
+  },
+  {
     "created": "2026-10-05",
     "id": "DF-SIGNAL-FND-2026-0001",
     "owners": [

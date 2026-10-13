@@ -33,7 +33,18 @@ let private defaults =
       "groupBest", text ""
       "groupWorst", text ""
       "bestChecked", flag false
-      "worstChecked", flag false ]
+      "worstChecked", flag false
+      // Accessibility and handoff (SCS-014, SCS-018, DF-SIGNAL-2026-0013).
+      "promptId", text ""
+      "errorId", text ""
+      "describedBy", text ""
+      "required", text "false"
+      "invalid", text "false"
+      "hideError", flag true
+      "error", text ""
+      "optionalMark", text ""
+      "component", text ""
+      "variant", text "" ]
 
 let private row (key: string) (kind: string) (fields: (string * View.Scalar) list) =
     let set = Map.ofList fields
@@ -44,13 +55,27 @@ let private row (key: string) (kind: string) (fields: (string * View.Scalar) lis
 
 /// A question's answer rows: toggles (multi-choice and tree options),
 /// choices, number inputs and best-worst pairs.
-let private choiceRows (qi: int) (q: Question) (answer: AnswerState option) (locked: bool) =
+/// Whether a question must be answered: it and its section are required.
+let private isRequired (content: Content) (q: Question) =
+    q.Required && (content.Sections |> List.exists (fun s -> s.Required && s.Questions |> List.exists (fun x -> x.Id = q.Id)))
+
+/// Every input names its question (and its error, when it has one) as its
+/// description, and states whether it is required and invalid (SCS-014).
+let private choiceRows (qi: int) (q: Question) (answer: AnswerState option) (locked: bool) (required: bool) (invalid: bool) =
     let selected =
         match answer with
         | Some(Value(Choices ids)) -> ids
         | _ -> Set.empty
 
-    let common label = [ "label", text label; "group", text $"q{qi}"; "locked", flag locked ]
+    let describedBy = if invalid then $"q{qi}-prompt q{qi}-error" else $"q{qi}-prompt"
+
+    let common label =
+        [ "label", text label
+          "group", text $"q{qi}"
+          "locked", flag locked
+          "describedBy", text describedBy
+          "required", text (if required then "true" else "false")
+          "invalid", text (if invalid then "true" else "false") ]
 
     (toggles q |> List.mapi (fun ti (optionId, label) -> row $"{qi}-t{ti}" "toggle" (common label @ [ "checked", flag (selected.Contains optionId) ])))
     @ (GenericInputs.numberInputs q
@@ -91,7 +116,25 @@ let private rows (r: Response) =
             :: (shown
                 |> List.collect (fun (qi, q) ->
                     let help = [ defaultArg q.HelpText ""; GenericInputs.hint q ] |> List.filter ((<>) "") |> String.concat " "
-                    row $"{qi}" "question" [ "prompt", text q.Prompt; "help", text help; "group", text $"q{qi}" ] :: choiceRows qi q (r.Answers.TryFind q.Id) (sealedResponse || locked.Contains q.Id))))
+                    let required = isRequired content q
+                    // After a refused submit or move, an unanswered required question says so.
+                    let invalid = r.ShowMissing && required && r.Phase = Answering && not (r.Answers.ContainsKey q.Id)
+                    let family, variant = Selectors.componentOf q.Selector.Preset
+
+                    row
+                        $"{qi}"
+                        "question"
+                        [ "prompt", text q.Prompt
+                          "help", text help
+                          "group", text $"q{qi}"
+                          "promptId", text $"q{qi}-prompt"
+                          "errorId", text $"q{qi}-error"
+                          "hideError", flag (not invalid)
+                          "error", text (if invalid then "This question needs an answer." else "")
+                          "optionalMark", text (if required then "" else "(optional)")
+                          "component", text family
+                          "variant", text variant ]
+                    :: choiceRows qi q (r.Answers.TryFind q.Id) (sealedResponse || locked.Contains q.Id) required invalid)))
 
 /// Which part of the page shows: loading, refused, answering or submitted.
 let phaseName =

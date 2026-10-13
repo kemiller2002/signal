@@ -104,7 +104,10 @@ type Response =
       /// The page shown and the furthest reached (`GenericPaging`).
       Position: GenericPaging.Position
       /// Why the last request to submit or move was refused, if it was.
-      Refusal: string option }
+      Refusal: string option
+      /// Once a submit or move was refused for missing answers, unanswered
+      /// required questions say so until answered (SCS-014).
+      ShowMissing: bool }
 
 [<NoComparison>]
 type Session =
@@ -214,6 +217,7 @@ let receivedAt (now: DateTimeOffset) (fetched: Fetched) (session: Session) : Ses
                           Terms = terms
                           Phase = if Submission.isFinal { Binding = envelope.Binding; Answers = Map.empty } then Submitted else Answering
                           Now = now
+                          ShowMissing = false
                           Position = GenericPaging.reach published.Form.Content envelope.Answers (GenericPaging.resume published.Form.Content envelope.Answers) page
                           Refusal = None }
     | Refused _
@@ -441,10 +445,12 @@ let update (msg: Msg) (session: Session) : Session =
         | Turned direction ->
             match GenericPaging.move r.Published.Form.Content r.Answers r.Position direction with
             | Ok position -> Responding { r with Position = position; Refusal = None }
-            | Error text -> Responding { r with Refusal = Some text }
+            | Error text -> Responding { r with Refusal = Some text; ShowMissing = true }
         | Ticked now -> Responding { r with Now = now }
         | Reached page -> Responding { r with Position = GenericPaging.reach r.Published.Form.Content r.Answers r.Position page; Refusal = None }
-        | SubmitRequested entropy -> Responding(submit r entropy)
+        | SubmitRequested entropy ->
+            let next = submit r entropy
+            Responding { next with ShowMissing = r.ShowMissing || next.Refusal.IsSome }
     | Fetching _
     | Refused _ -> session
 
