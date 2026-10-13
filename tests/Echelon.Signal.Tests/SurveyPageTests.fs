@@ -272,7 +272,8 @@ let private refusalFor fetched =
 
 [<Fact>]
 let ``a missing, altered, re-spelled or different file is refused with no fallback`` () =
-    Assert.Equal(TemplateNotPublished, refusalFor NotFound)
+    // Searched, not found: the refusal names the file looked for (ARX-002).
+    Assert.Equal(TemplateNotPublished demoFile, refusalFor NotFound)
     Assert.Equal(CatalogUnreachable "offline", refusalFor (Unreachable "offline"))
     // One label changed: still JSON, still a template, but not the published bytes.
     let altered = Text.Encoding.UTF8.GetBytes((Text.Encoding.UTF8.GetString demoBytes).Replace("In an office", "In an 0ffice"))
@@ -284,7 +285,7 @@ let ``a missing, altered, re-spelled or different file is refused with no fallba
     // A genuine published template, but another one.
     let _, other = publishedFile "SDRA" "1" Pilot.content
     Assert.Equal(WrongTemplate, refusalFor (Found other))
-    Assert.All([ TemplateNotPublished; WrongTemplate; NotATemplate "x" ], fun r -> Assert.Contains("Ask the person who sent you the link", describe r))
+    Assert.All([ TemplateNotPublished demoFile; WrongTemplate; NotATemplate "x" ], fun r -> Assert.Contains("Ask the person who sent you the link", describe r))
 
 [<Fact>]
 let ``a template with a question this page cannot show is refused`` () =
@@ -434,7 +435,7 @@ let ``the fetched survey is shown, and answering keeps the URL equal to the resp
 let ``a missing or altered file is refused on the page`` () =
     let _, missing = run [ initialize (invitation Import.IdentifiedGroup DemoVersion); httpResult "fetch-1" """{"kind":"Success","status":404,"body":""}""" ]
     Assert.True(flag "refused" missing)
-    Assert.Equal(describe TemplateNotPublished, text "refusal" missing)
+    Assert.Equal(describe (TemplateNotPublished demoFile), text "refusal" missing)
     let altered = Convert.ToBase64String(Array.append demoBytes [| 0x20uy |])
     let _, tampered = run [ initialize (invitation Import.IdentifiedGroup DemoVersion); httpResult "fetch-1" $"""{{"kind":"Success","status":200,"body":"{altered}"}}""" ]
     Assert.True(flag "refused" tampered)

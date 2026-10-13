@@ -2192,10 +2192,10 @@
         "quality"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-10-13T15:28:30Z",
-      "updatedAt": "2026-10-13T15:28:30Z",
+      "updatedAt": "2026-10-13T18:38:42Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
