@@ -317,7 +317,14 @@ runs and a waiting gate never sees them (WI-0081, 2026-10-13).
 Signal's gate script is `signal-gate.sh <full SHA>` in the session
 scratchpad, which refuses a short SHA. Don't use a shared name such as
 `gate.sh`: another session overwrote that file with a script for another
-repository on 2026-10-13.
+repository on 2026-10-13. From 2026-10-14 the gate waits up to 60 minutes
+(`signal-gate-60.sh`, the same checks with 180 polls), because Echelon
+foundations runs queue behind other branches' runs; a timeout while runs
+are still queued is not a failure, and the merge condition (every check on
+the exact head green) is unchanged.
+- Scoring authoring (WI-0081, DF-SIGNAL-2026-0026): `ScoringAuthoring`
+  offers named models that compile to the scorer algebra; it never emits
+  custom code.
 
 ## Unresolved questions
 

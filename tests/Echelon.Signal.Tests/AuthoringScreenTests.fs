@@ -157,3 +157,31 @@ let ``through the page a fixture's scoring is explained, line by line (AUT-006 s
     Assert.Contains(lines, fun (kind, text) -> kind = "section" && text.StartsWith "Focus (S1)")
     Assert.Contains(lines, fun (kind, text) -> kind = "contribution" && text.StartsWith "Q1: ")
     Assert.Contains(lines, fun (kind, text) -> kind = "calculation" && text.StartsWith "section score: ")
+
+[<Fact>]
+let ``through the page a section's scoring model, an interpretation and the overall score are authored`` () =
+    let _, _, page = signedIn ()
+    page.Event("navigate", key = "/assessments")
+    page.Event("newDraftSurvey", value = "PULSE")
+    page.Event("newDraftTitle", value = "Team pulse")
+    page.Event("startDraft")
+    page.Event("newSectionTitle", value = "Focus")
+    page.Event("addSection")
+    page.Event("newQuestionPrompt", value = "We finish what we start before starting more.")
+    page.Event("addQuestion", key = "S1")
+
+    // The first section is shown selected, and is the one changed.
+    Assert.Contains(page.Items "scoringSectionChoices", fun i -> i["value"].GetValue<string>() = "S1" && i["selected"].GetValue<bool>())
+    page.Event("scoringModel", value = "normalized")
+    page.Event("applySectionModel")
+    Assert.Contains("average on 0–100", (page.Items "draftSectionScoring").Head["label"].GetValue<string>())
+
+    page.Event("bandTarget", value = "S1")
+    page.Event("bandText", value = "Low 0-50; High 50-100")
+    page.Event("addBands")
+    Assert.Contains(page.Items "draftInterpretations", fun i -> i["label"].GetValue<string>().Contains "Low 0–50, High 50–100")
+
+    page.Event("overallMethod", value = "weakest-link")
+    page.Event("setOverall")
+    Assert.Equal("The weakest scored section.", page.Text "overallNow")
+    Assert.False(page.Flag "hasAuthoringProblem", page.Text "authoringProblem")
