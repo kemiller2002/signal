@@ -53,6 +53,7 @@
     <Compile Include="QuestionKinds.fs" />
     <Compile Include="RuleAuthoring.fs" />
     <Compile Include="ScoringPreview.fs" />
+    <Compile Include="DraftPreview.fs" />
     <Compile Include="AreaAuthoring.fs" />
     <Compile Include="Authoring.fs" />
     <Compile Include="TestLinks.fs" />
@@ -67,6 +68,7 @@
     <Compile Include="AdminRouteView.fs" />
     <Compile Include="AreaAuthoringView.fs" />
     <Compile Include="FixtureExplanationView.fs" />
+    <Compile Include="DraftPreviewView.fs" />
     <Compile Include="AuthoringView.fs" />
     <Compile Include="AdminReportView.fs" />
     <Compile Include="ReportBuilderView.fs" />

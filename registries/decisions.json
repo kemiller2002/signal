@@ -1153,6 +1153,50 @@
     "version": "1.0.0"
   },
   {
+    "created": "2026-10-13",
+    "id": "DF-SIGNAL-2026-0025",
+    "owners": [
+      "signal"
+    ],
+    "path": "research/decisions/DF-SIGNAL-2026-0025--the-draft-previewed-in-the-console-with-the-survey-page-engine.md",
+    "provenance": {
+      "contributions": {
+        "EXE-20261009T042446720Z-a28d9579": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-13T23:38:04.424Z",
+          "last": "2026-10-13T23:43:54.512Z",
+          "operations": [
+            "created",
+            "modified"
+          ],
+          "reason": "Draft previewed in the console by the survey page engine (WI-0081)"
+        }
+      }
+    },
+    "related_documents": [
+      "docs/requirements/implementation-gap-analysis.md"
+    ],
+    "review_cycle": "on-trigger",
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "authoring",
+      "preview",
+      "test-mode",
+      "scoring"
+    ],
+    "title": "The draft is previewed in the console by the survey page's own engine, as a test artifact that stores and sends nothing, scored live",
+    "updated": "2026-10-13",
+    "version": "1.0.0"
+  },
+  {
     "created": "2026-10-05",
     "id": "DF-SIGNAL-FND-2026-0001",
     "owners": [

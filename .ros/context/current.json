@@ -2683,20 +2683,20 @@
         "EXE-20261009T042446720Z-a28d9579"
       ],
       "latestCheckpoint": {
-        "id": "0987ac5d16a69babf1b218bc",
-        "recordedAt": "2026-10-13T23:14:14Z",
+        "id": "057811f92b9faebf9ed32d5a",
+        "recordedAt": "2026-10-13T23:43:07Z",
         "executionId": "EXE-20261009T042446720Z-a28d9579",
         "repository": "echelon-signal",
-        "branch": "feature/wi0081-authoring-traces",
-        "commit": "49405babf49c2e795ff43108b5e28bd35a5ce01a",
+        "branch": "feature/wi0081-draft-preview",
+        "commit": "4c5eeaaa0cdff14a4f86c7b96d84c3b12aba3e96",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/wi0081-authoring-traces",
-        "remoteCommit": "49405babf49c2e795ff43108b5e28bd35a5ce01a",
-        "summary": "Explanation slice: AST-005 and AUT-006 tested (fixture scoring explained from the one evaluation, keyed reasoning, rule trace; DF-0024); SCS-017 and AUT-003 progressed",
-        "nextAction": "In-console draft preview with live scoring (AUT-003 §§20-22, SCS-017), then custom expression authoring (ALG-004, AUT-002), then ARP-001",
+        "remoteBranch": "feature/wi0081-draft-preview",
+        "remoteCommit": "4c5eeaaa0cdff14a4f86c7b96d84c3b12aba3e96",
+        "summary": "Preview slice: AUT-003 and SCS-017 tested (draft previewed by the survey page engine as a test artifact, scored live, kept as fixtures; DF-0025)",
+        "nextAction": "echelon-current 1.23.0 upgrade PR (Praxis 3.12.0), then custom expression authoring (ALG-004, AUT-002), then ARP-001",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"

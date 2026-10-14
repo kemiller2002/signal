@@ -87,6 +87,7 @@
     <Compile Include="PiiInjectionTests.fs" />
     <Compile Include="CatalogPageTests.fs" />
     <Compile Include="AuthoringScreenTests.fs" />
+    <Compile Include="DraftPreviewTests.fs" />
     <Compile Include="RuleAuthoringTests.fs" />
     <Compile Include="AreaAuthoringTests.fs" />
     <Compile Include="StateModelTests.fs" />

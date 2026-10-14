@@ -260,6 +260,26 @@ let private onNamedEvent (model: Model) (name: string) (key: string option) (val
                 | Authoring.DeleteDraft s when permitted AdminState.CanEditDrafts -> { m with Busy = true }, effects @ [ DeleteDraft s ]
                 | _ -> { m with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "This needs EditDrafts (saving, asking for review), ReviewTemplates (approving) or PublishTemplates (publishing, hiding) and a writable store." }, effects)
             (model, [])
+    // The draft preview (AUT-003 §§20-22): the survey page's engine on the
+    // draft, as a test artifact; nothing is stored or sent.
+    | previewing when DraftPreview.events.Contains previewing ->
+        let survey = match place.View with Ok(Draft s) -> Some s | _ -> None
+        let editor = survey |> Option.bind (fun s -> Authoring.current model.Templates s model.Authoring)
+        let screen = model.Authoring
+        let set preview = { model with Authoring = { screen with Preview = preview; Problem = None } }, []
+
+        match name, editor, screen.Preview with
+        | "previewStart", Some e, _ -> set (Some(DraftPreview.start e.Draft (model.LastVerified |> Option.defaultValue DateTimeOffset.UnixEpoch)))
+        | "previewClose", _, _ -> set None
+        | "previewKeep", Some e, Some session ->
+            match DraftPreview.answers session with
+            | Some answers when not answers.IsEmpty ->
+                match Authoring.apply (Authoring.AddFixture(DraftPreview.fixtureOf e.Draft answers)) e with
+                | Ok next -> { model with Authoring = { screen with Editor = Some next; Problem = None } }, []
+                | Error problem -> { model with Authoring = { screen with Problem = Some problem } }, []
+            | _ -> { model with Authoring = { screen with Problem = Some "Answer something in the preview first." } }, []
+        | _, _, Some session -> set (Some(DraftPreview.step name key value session))
+        | _ -> model, []
     | retention when RetentionScreen.events.Contains retention ->
         let selected =
             match routeKey, model.Dataset with
