@@ -66,6 +66,7 @@
     <Compile Include="DecodeErrorDescriptionTests.fs" />
     <Compile Include="TemplateResolutionTests.fs" />
     <Compile Include="ScoringPreviewTests.fs" />
+    <Compile Include="ScoringAuthoringTests.fs" />
     <Compile Include="SelectorSemanticsTests.fs" />
     <Compile Include="SampleLinkTests.fs" />
     <Compile Include="MaxLinkTests.fs" />

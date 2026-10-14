@@ -55,6 +55,7 @@
     <Compile Include="ScoringPreview.fs" />
     <Compile Include="DraftPreview.fs" />
     <Compile Include="AreaAuthoring.fs" />
+    <Compile Include="ScoringAuthoring.fs" />
     <Compile Include="Authoring.fs" />
     <Compile Include="TestLinks.fs" />
     <Compile Include="Invitations.fs" />
@@ -67,6 +68,7 @@
     <Compile Include="AdminUpdate.fs" />
     <Compile Include="AdminRouteView.fs" />
     <Compile Include="AreaAuthoringView.fs" />
+    <Compile Include="ScoringAuthoringView.fs" />
     <Compile Include="FixtureExplanationView.fs" />
     <Compile Include="DraftPreviewView.fs" />
     <Compile Include="AuthoringView.fs" />

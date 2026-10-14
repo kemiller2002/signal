@@ -1197,6 +1197,47 @@
     "version": "1.0.0"
   },
   {
+    "created": "2026-10-14",
+    "id": "DF-SIGNAL-2026-0026",
+    "owners": [
+      "signal"
+    ],
+    "path": "research/decisions/DF-SIGNAL-2026-0026--scoring-models-authored-by-name-in-the-console.md",
+    "provenance": {
+      "contributions": {
+        "EXE-20261009T042446720Z-a28d9579": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-10-14T00:28:05.548Z",
+          "operations": [
+            "created"
+          ],
+          "reason": "Scoring models authored by name in the console (WI-0081)"
+        }
+      }
+    },
+    "related_documents": [
+      "docs/requirements/implementation-gap-analysis.md"
+    ],
+    "review_cycle": "on-trigger",
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "authoring",
+      "scoring",
+      "presets"
+    ],
+    "title": "The console authors scoring by named built-in choices that compile to the engine's scorer algebra; advanced and custom scoring are offered separately",
+    "updated": "2026-10-14",
+    "version": "1.0.0"
+  },
+  {
     "created": "2026-10-05",
     "id": "DF-SIGNAL-FND-2026-0001",
     "owners": [

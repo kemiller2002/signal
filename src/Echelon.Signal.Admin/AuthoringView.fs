@@ -166,3 +166,4 @@ let project (model: Model) : (string * ViewValue) list =
       "canApproveReview", flag (can.Contains AdminState.CanReviewTemplates)
       "draftPreview", text preview ]
     @ AreaAuthoringView.project (editor |> Option.map (fun e -> e.Draft.Content)) model.Authoring.Areas
+    @ ScoringAuthoringView.project (editor |> Option.map (fun e -> e.Draft.Content)) model.Authoring.ScoringForm

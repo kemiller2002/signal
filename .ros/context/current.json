@@ -2683,20 +2683,20 @@
         "EXE-20261009T042446720Z-a28d9579"
       ],
       "latestCheckpoint": {
-        "id": "057811f92b9faebf9ed32d5a",
-        "recordedAt": "2026-10-13T23:43:07Z",
+        "id": "909ac58049363f85ed663eac",
+        "recordedAt": "2026-10-14T00:33:33Z",
         "executionId": "EXE-20261009T042446720Z-a28d9579",
         "repository": "echelon-signal",
-        "branch": "feature/wi0081-draft-preview",
-        "commit": "4c5eeaaa0cdff14a4f86c7b96d84c3b12aba3e96",
+        "branch": "feature/wi0081-expression-authoring",
+        "commit": "746cfc0e2cbf6aa2333ce14627d5056f07fbf7a9",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
-        "remoteBranch": "feature/wi0081-draft-preview",
-        "remoteCommit": "4c5eeaaa0cdff14a4f86c7b96d84c3b12aba3e96",
-        "summary": "Preview slice: AUT-003 and SCS-017 tested (draft previewed by the survey page engine as a test artifact, scored live, kept as fixtures; DF-0025)",
-        "nextAction": "echelon-current 1.23.0 upgrade PR (Praxis 3.12.0), then custom expression authoring (ALG-004, AUT-002), then ARP-001",
+        "remoteBranch": "feature/wi0081-expression-authoring",
+        "remoteCommit": "746cfc0e2cbf6aa2333ce14627d5056f07fbf7a9",
+        "summary": "Scoring-model slice: named scoring models, interpretations and overall composites authored in the console (DF-0026); ALG-004 and AUT-002 progressed",
+        "nextAction": "Custom expression escape hatch with validation and preview (ALG-004, AUT-002), then ARP-001",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"

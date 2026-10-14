@@ -223,6 +223,38 @@
             </select></label></li>
           </template>
         </ul>
+        <!-- Scoring models, interpretations and the overall score (ALG-004, WI-0081):
+             named built-in choices, each compiling to the engine's scorer algebra. -->
+        <section id="scoring-authoring" class="ef-stack" aria-labelledby="scoring-authoring-heading">
+          <h4 id="scoring-authoring-heading">How sections score</h4>
+          <ul id="scoring-sections"><template data-each="draftSectionScoring" data-key="id"><li data-text="label"></li></template></ul>
+          <label>Section <select id="scoring-section" data-event="scoringSection"><template data-each="scoringSectionChoices" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+          <label>Model <select id="scoring-model" data-event="scoringModel"><template data-each="scoringModels" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+          <label>Weights, one per scored question in order (weighted models) <input id="scoring-weights" type="text" data-event="scoringWeights" data-bind-value="scoringWeights" /></label>
+          <label>Values, one per answer position from the first (mapped model) <input id="scoring-values" type="text" data-event="scoringValues" data-bind-value="scoringValues" /></label>
+          <button type="button" class="ef-button" data-event="applySectionModel">Use this model</button>
+          <label><input type="checkbox" data-event="scoringReverse" value="true" data-bind-checked="scoringReverse" /> Reverse the scale (higher answers score lower)</label>
+          <button type="button" class="ef-button" data-event="applySectionReverse">Apply</button>
+          <label>Special answers count as (blank: left out) <input id="scoring-substitute" type="text" data-event="scoringSubstitute" data-bind-value="scoringSubstitute" /></label>
+          <label>Answers a score needs <input id="scoring-minimum" type="text" inputmode="numeric" data-event="scoringMinimum" data-bind-value="scoringMinimum" /></label>
+          <button type="button" class="ef-button" data-event="applySectionSpecials">Apply</button>
+          <h4>Interpretations</h4>
+          <ul id="draft-interpretations"><template data-each="draftInterpretations" data-key="id"><li><span data-text="label"></span> <button type="button" class="ef-button" data-event="removeInterpretation">Remove</button></li></template></ul>
+          <label>Bands on (a section id, or overall) <input id="band-target" type="text" data-event="bandTarget" data-bind-value="bandTarget" /></label>
+          <label>Bands, as "Low 0-40; Medium 40-70; High 70-100" <input id="band-text" type="text" data-event="bandText" data-bind-value="bandText" /></label>
+          <button type="button" class="ef-button" data-event="addBands">Add bands</button>
+          <label>Pass / fail on (a section id, or overall) <input id="pass-target" type="text" data-event="passTarget" data-bind-value="passTarget" /></label>
+          <label>Threshold <input id="pass-threshold" type="text" data-event="passThreshold" data-bind-value="passThreshold" /></label>
+          <label>Direction <select data-event="passDirection"><template data-each="passDirections" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+          <button type="button" class="ef-button" data-event="addPassFail">Add pass / fail</button>
+          <h4>Overall score</h4>
+          <p id="overall-now" data-text="overallNow"></p>
+          <label>Method <select id="overall-method" data-event="overallMethod"><template data-each="overallMethods" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+          <label>Section weights, as "S1=2, S2=1" (weighted sections) <input id="overall-weights" type="text" data-event="overallWeights" data-bind-value="overallWeights" /></label>
+          <label>Threshold and cap (capped average) <input id="overall-threshold" type="text" data-event="overallThreshold" data-bind-value="overallThreshold" /> <input id="overall-cap" type="text" data-event="overallCap" data-bind-value="overallCap" /></label>
+          <label>Direction <select data-event="overallDirection"><template data-each="overallDirections" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+          <button type="button" class="ef-button" data-event="setOverall">Set the overall score</button>
+        </section>
         <h3>Translations</h3>
         <ul id="draft-translations"><template data-each="draftTranslations" data-key="id"><li><span data-text="label"></span> <button type="button" class="ef-button" data-event="removeTranslation">Remove</button></li></template></ul>
         <label>Language tag <input id="translation-locale" type="text" data-event="translationLocale" data-bind-value="translationLocale" /></label>
@@ -251,58 +283,61 @@
         <section id="draft-preview-area" class="ef-stack" aria-labelledby="draft-preview-heading">
           <h4 id="draft-preview-heading">Preview</h4>
           <template data-if="canPreview"><button type="button" class="ef-button" data-event="previewStart">Preview as a respondent</button></template>
+          <!-- One root: Limen mounts only a data-if template's first root element (ULI-A01/L08). -->
           <template data-if="previewing">
-            <p id="preview-notice" role="note">Preview of this draft: a test, not a real response. Nothing you answer here is saved or sent. Timers run from when the dataset was last checked and do not count down.</p>
-            <template data-if="previewRefused"><p id="preview-refused" role="alert" data-text="previewRefusal"></p></template>
-            <template data-if="previewHasProgress"><p id="preview-progress" role="status" data-text="previewProgress"></p></template>
-            <template data-if="previewHasTimer"><p id="preview-timer" role="status" data-text="previewTimerNotice"></p></template>
-            <template data-if="previewHasPages"><p id="preview-page" data-text="previewPageLabel"></p></template>
-            <template data-if="previewReviewing"><p id="preview-review-notice" role="status">Check the answers. Submit them, or go back to change them.</p></template>
-            <div id="preview-rows" class="ef-stack">
-              <template data-each="previewRows" data-key="id">
-                <div class="survey-row" data-bind-data-row="id">
-                  <h3 class="survey-section" data-bind-hidden="hideSection" data-text="title"></h3>
-                  <p class="survey-question" data-bind-hidden="hideQuestion" data-bind-id="promptId" data-bind-data-component="component" data-bind-data-variant="variant"><span class="survey-number" data-bind-hidden="hideQuestionNumber" data-text="questionNumber"></span> <strong data-text="prompt" data-bind-aria-hidden="promptHidden"></strong><span class="ef-sr-only" data-bind-hidden="hideAccessibleName" data-text="accessibleName"></span> <span class="survey-optional" data-text="optionalMark"></span> <span class="ef-field__description" data-text="help"></span></p>
-                  <p class="ef-sr-only" data-bind-hidden="hideAccessibleDescription" data-bind-id="descriptionId" data-text="accessibleDescription"></p>
-                  <p class="survey-error" data-bind-hidden="hideError" data-bind-id="errorId" data-text="error"></p>
-                  <p class="ef-selection-status" role="status" data-bind-hidden="hideSelectionStatus" data-text="selectionStatus"></p>
-                  <div class="survey-review" data-bind-hidden="hideReview">
-                    <p class="survey-review-prompt"><span data-bind-hidden="hideQuestionNumber" data-text="questionNumber"></span> <span data-text="prompt"></span></p>
-                    <p class="survey-review-answer" data-text="answerText"></p>
+            <div id="preview-running" class="ef-stack">
+              <p id="preview-notice" role="note">Preview of this draft: a test, not a real response. Nothing you answer here is saved or sent. Timers run from when the dataset was last checked and do not count down.</p>
+              <template data-if="previewRefused"><p id="preview-refused" role="alert" data-text="previewRefusal"></p></template>
+              <template data-if="previewHasProgress"><p id="preview-progress" role="status" data-text="previewProgress"></p></template>
+              <template data-if="previewHasTimer"><p id="preview-timer" role="status" data-text="previewTimerNotice"></p></template>
+              <template data-if="previewHasPages"><p id="preview-page" data-text="previewPageLabel"></p></template>
+              <template data-if="previewReviewing"><p id="preview-review-notice" role="status">Check the answers. Submit them, or go back to change them.</p></template>
+              <div id="preview-rows" class="ef-stack">
+                <template data-each="previewRows" data-key="id">
+                  <div class="survey-row" data-bind-data-row="id">
+                    <h3 class="survey-section" data-bind-hidden="hideSection" data-text="title"></h3>
+                    <p class="survey-question" data-bind-hidden="hideQuestion" data-bind-id="promptId" data-bind-data-component="component" data-bind-data-variant="variant"><span class="survey-number" data-bind-hidden="hideQuestionNumber" data-text="questionNumber"></span> <strong data-text="prompt" data-bind-aria-hidden="promptHidden"></strong><span class="ef-sr-only" data-bind-hidden="hideAccessibleName" data-text="accessibleName"></span> <span class="survey-optional" data-text="optionalMark"></span> <span class="ef-field__description" data-text="help"></span></p>
+                    <p class="ef-sr-only" data-bind-hidden="hideAccessibleDescription" data-bind-id="descriptionId" data-text="accessibleDescription"></p>
+                    <p class="survey-error" data-bind-hidden="hideError" data-bind-id="errorId" data-text="error"></p>
+                    <p class="ef-selection-status" role="status" data-bind-hidden="hideSelectionStatus" data-text="selectionStatus"></p>
+                    <div class="survey-review" data-bind-hidden="hideReview">
+                      <p class="survey-review-prompt"><span data-bind-hidden="hideQuestionNumber" data-text="questionNumber"></span> <span data-text="prompt"></span></p>
+                      <p class="survey-review-answer" data-text="answerText"></p>
+                    </div>
+                    <label class="ef-special-choice" data-bind-hidden="hideOption">
+                      <input type="radio" data-event="previewAnswered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="group" data-bind-checked="checked" data-bind-disabled="locked" />
+                      <span data-text="label"></span>
+                    </label>
+                    <label class="ef-special-choice" data-bind-hidden="hideToggle">
+                      <input type="checkbox" data-event="previewToggled" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-checked="checked" data-bind-disabled="locked" />
+                      <span data-text="label"></span>
+                    </label>
+                    <label class="ef-field" data-bind-hidden="hideNumber">
+                      <span class="ef-field__label" data-text="label"></span>
+                      <input type="number" inputmode="decimal" data-event="previewNumbered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-value="numberValue" data-bind-min="numberMin" data-bind-max="numberMax" data-bind-step="numberStep" data-bind-disabled="locked" />
+                    </label>
+                    <div class="ef-cluster" data-bind-hidden="hidePair">
+                      <span data-text="label"></span>
+                      <label><input type="radio" data-event="previewPickedBest" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="groupBest" data-bind-checked="bestChecked" data-bind-disabled="locked" /> Fits best</label>
+                      <label><input type="radio" data-event="previewPickedWorst" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="groupWorst" data-bind-checked="worstChecked" data-bind-disabled="locked" /> Fits least</label>
+                    </div>
                   </div>
-                  <label class="ef-special-choice" data-bind-hidden="hideOption">
-                    <input type="radio" data-event="previewAnswered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="group" data-bind-checked="checked" data-bind-disabled="locked" />
-                    <span data-text="label"></span>
-                  </label>
-                  <label class="ef-special-choice" data-bind-hidden="hideToggle">
-                    <input type="checkbox" data-event="previewToggled" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-checked="checked" data-bind-disabled="locked" />
-                    <span data-text="label"></span>
-                  </label>
-                  <label class="ef-field" data-bind-hidden="hideNumber">
-                    <span class="ef-field__label" data-text="label"></span>
-                    <input type="number" inputmode="decimal" data-event="previewNumbered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-value="numberValue" data-bind-min="numberMin" data-bind-max="numberMax" data-bind-step="numberStep" data-bind-disabled="locked" />
-                  </label>
-                  <div class="ef-cluster" data-bind-hidden="hidePair">
-                    <span data-text="label"></span>
-                    <label><input type="radio" data-event="previewPickedBest" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="groupBest" data-bind-checked="bestChecked" data-bind-disabled="locked" /> Fits best</label>
-                    <label><input type="radio" data-event="previewPickedWorst" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="groupWorst" data-bind-checked="worstChecked" data-bind-disabled="locked" /> Fits least</label>
-                  </div>
-                </div>
-              </template>
+                </template>
+              </div>
+              <template data-if="previewHasRefusal"><p id="preview-submit-refusal" role="alert" data-text="previewSubmitRefusal"></p></template>
+              <template data-if="previewSubmitted"><p id="preview-submitted" role="status">Submitted in the preview: nothing was sent.</p></template>
+              <div class="ef-cluster">
+                <template data-if="previewCanBack"><button type="button" class="ef-button" data-event="previewBack">Back</button></template>
+                <template data-if="previewHasNext"><button type="button" class="ef-button" data-event="previewNext">Next</button></template>
+                <template data-if="previewReviewing"><button type="button" class="ef-button" data-event="previewReviewClosed">Change answers</button></template>
+                <template data-if="previewIsLastPage"><button type="button" class="ef-button" data-event="previewSubmit" data-text="previewSubmitLabel"></button></template>
+                <button type="button" class="ef-button" data-event="previewKeep">Keep these answers as a fixture</button>
+                <button type="button" class="ef-button" data-event="previewClose">Close the preview</button>
+              </div>
+              <ul id="preview-explanation-lines">
+                <template data-each="previewExplanation" data-key="key"><li data-bind-data-kind="kind" data-bind-data-indented="indented" data-text="text"></li></template>
+              </ul>
             </div>
-            <template data-if="previewHasRefusal"><p id="preview-submit-refusal" role="alert" data-text="previewSubmitRefusal"></p></template>
-            <template data-if="previewSubmitted"><p id="preview-submitted" role="status">Submitted in the preview: nothing was sent.</p></template>
-            <div class="ef-cluster">
-              <template data-if="previewCanBack"><button type="button" class="ef-button" data-event="previewBack">Back</button></template>
-              <template data-if="previewHasNext"><button type="button" class="ef-button" data-event="previewNext">Next</button></template>
-              <template data-if="previewReviewing"><button type="button" class="ef-button" data-event="previewReviewClosed">Change answers</button></template>
-              <template data-if="previewIsLastPage"><button type="button" class="ef-button" data-event="previewSubmit" data-text="previewSubmitLabel"></button></template>
-              <button type="button" class="ef-button" data-event="previewKeep">Keep these answers as a fixture</button>
-              <button type="button" class="ef-button" data-event="previewClose">Close the preview</button>
-            </div>
-            <ul id="preview-explanation-lines">
-              <template data-each="previewExplanation" data-key="key"><li data-bind-data-kind="kind" data-bind-data-indented="indented" data-text="text"></li></template>
-            </ul>
           </template>
         </section>
         <button type="button" class="ef-button" data-event="addFixture">Add a fixture: every answer at the midpoint</button>
