@@ -2362,13 +2362,13 @@
     {
       "id": "WI-0099",
       "title": "Signal 05f: survey-page questions in Forma's assessment patterns once Limen renders nested view lists (SCS-010, SCS-012, SCS-018 visual variants)",
-      "description": "Blocked on https://github.com/kemiller2002/limen/issues/108 (nested view lists). When Limen offers them, render each survey question in its Forma 0.6.1 assessment pattern (.ef-ordinal-scale, .ef-binary-choice, .ef-choice-group, .ef-matrix and the dropdown, slider, button, card, chip and star variants) with a per-question container, keeping native input semantics. Closes the visual-variant remainder of SCS-010, SCS-012 and SCS-018 deferred by DF-SIGNAL-2026-0022. Never fixed option slots.",
+      "description": "Blocked on https://github.com/kemiller2002/limen/issues/108 (nested view lists). When Limen offers them, render each survey question in its Forma 0.6.1 assessment pattern (.ef-ordinal-scale, .ef-binary-choice, .ef-choice-group, .ef-matrix and the dropdown, slider, button, card, chip and star variants) with a per-question container, keeping native input semantics. Closes the visual-variant remainder of SCS-010, SCS-012 and SCS-018 deferred by DF-SIGNAL-2026-0022. Never fixed option slots. Also (GH-113, signal#113): give each question's choices a fieldset with the prompt as its legend (ULI-A06, WCAG 1.3.1); today the radios are grouped only by name and described by the prompt. A duplicate captured on the GH-113 branch under the same ID was dropped in the merge in favour of this item.",
       "tags": [],
       "priority": "medium",
       "status": "captured",
       "attachments": [],
       "createdAt": "2026-10-13T19:56:07Z",
-      "updatedAt": "2026-10-13T19:56:07Z",
+      "updatedAt": "2026-10-13T20:54:41.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -2379,6 +2379,54 @@
       },
       "source": "manual",
       "sourceReference": null
+    },
+    {
+      "id": "GH-104",
+      "title": "Assess and adopt universal UI layout/action conformance (UI-LAYOUT-INTERACTION@1.0.0)",
+      "description": "Wave 2 of the Echelon universal UI conformance rollout (visual-engineering#47): classify Signal's UI surfaces, inventory actions, measure declared alignment groups, add Playwright conformance tests and wire them into CI.",
+      "tags": [
+        "ui-conformance",
+        "visual-engineering"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-10-13T17:29:44.000Z",
+      "updatedAt": "2026-10-13T18:48:29.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "github-issue",
+      "sourceReference": "https://github.com/kemiller2002/signal/issues/104"
+    },
+    {
+      "id": "GH-113",
+      "title": "Follow-ups on signal#113: CI to green, signed-in administration views exercised against a test-only fake GitHub store, survey questions grouped in fieldsets",
+      "description": "Coordinator follow-up to GH-104 (signal#104): watch PR #113 CI and fix failures at the root; replace the largest UNKNOWN (signed-in admin views) with outcome tests against a deterministic network-boundary fake of the GitHub store; group survey questions in fieldsets with legends (ULI-A06).",
+      "tags": [
+        "ui-conformance",
+        "visual-engineering"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-10-13T18:57:08.000Z",
+      "updatedAt": "2026-10-13T22:37:18.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "github-pull-request",
+      "sourceReference": "https://github.com/kemiller2002/signal/pull/113"
     }
   ]
 }

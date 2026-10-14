@@ -33,7 +33,9 @@ let project (model: Model) (selected: GroupSummary option) : (string * ViewValue
               |> List.map (fun target ->
                   [ "target", Text(Retention.stateId target)
                     "targetLabel", Text(RetentionScreen.targetLabel target)
-                    "targetMeaning", Text(RetentionScreen.stateLabel target) ]))
+                    "targetMeaning", Text(RetentionScreen.stateLabel target)
+                    // The row's button binds within the row (GH-113).
+                    "busy", Flag model.Busy ]))
           |> Option.defaultValue []
       )
       // The open group's accepted results (ADM-045, ADM-064).

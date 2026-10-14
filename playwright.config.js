@@ -34,7 +34,12 @@ export default defineConfig({
   reporter: process.env.CI ? [["github"], ["list"]] : [["list"]],
   use: { baseURL: origin, trace: "retain-on-failure" },
   projects: [
-    { name: "chromium", testIgnore: /survey-devices\.spec\.js/, use: { ...devices["Desktop Chrome"], launchOptions } },
+    { name: "chromium", testIgnore: /(survey-devices|ui-conformance-[a-z-]+)\.spec\.js/, use: { ...devices["Desktop Chrome"], launchOptions } },
+    // Universal UI layout and interaction conformance
+    // (UI-LAYOUT-INTERACTION@1.0.0, signal#104): its own project, so
+    // `npm run ui:conformance` runs exactly it and the full suite runs it once.
+    // Each test sets the viewport widths it measures (320/390/768/1280).
+    { name: "ui-conformance", testMatch: /ui-conformance-[a-z-]+\.spec\.js/, use: { ...devices["Desktop Chrome"], launchOptions } },
     // Sample links on a phone (AUT-006 §§61-62): touch, a narrow viewport and
     // a mobile user agent, on the same Chromium. WebKit (iPhone Safari) and
     // Firefox need OS libraries this suite does not install; which devices

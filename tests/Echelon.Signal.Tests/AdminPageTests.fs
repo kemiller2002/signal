@@ -248,6 +248,26 @@ let ``the configured administrator signs in, and the dataset is set up and opene
     Assert.DoesNotContain(accessToken, page.ViewText)
     Assert.True(github.State.History.Length > InMemory.empty.History.Length)
 
+[<Fact>]
+let ``a dataset already opening is not opened a second time, and its button says so`` () =
+    let principal = { Access.PrincipalId = "github:583231"; Access.Kind = Access.Human; Access.DisplayName = "octocat" }
+    let config = (Deployment.parse configured |> Result.toOption).Value
+    let ready = { AdminApp.initial [] with Principal = Some principal; Deployment = Some config }
+    let opening' = { ready with Busy = true }
+
+    let _, effects = AdminUpdate.update (AdminApp.Ui("openDataset", Some "ds_engagement", "")) opening'
+    Assert.Empty(effects)
+    let _, effects = AdminUpdate.update (AdminApp.Ui("openDataset", Some "ds_engagement", "")) ready
+    Assert.Equal<AdminApp.Effect list>([ AdminApp.OpenDataset "ds_engagement" ], effects)
+
+    let opening (model: AdminApp.Model) =
+        match AdminView.project model |> List.pick (fun (name, value) -> if name = "datasets" then Some value else None) with
+        | View.Items [ row ] -> row |> List.pick (fun (field, value) -> if field = "opening" then Some value else None)
+        | other -> failwithf "unexpected datasets projection %A" other
+
+    Assert.Equal(View.Flag true, opening opening')
+    Assert.Equal(View.Flag false, opening ready)
+
 // ---- Groups, imports and the lifecycle -----------------------------------------------------------
 
 let link (seed: byte) (group: OpaqueId) =
@@ -322,6 +342,25 @@ let ``an administrator creates a group, imports into it, and finalization waits 
     page.Event("transition", value = "seal")
     Assert.Equal("Sealed", page.Text "groupPhase")
     Assert.False(page.Flag "canSeal")
+
+[<Fact>]
+let ``lifecycle buttons name their action, as the browser sends them with no value`` () =
+    let _, _, page = signedIn ()
+    page.Event("navigate", key = "groups")
+    page.Event("newGroupExpected", value = "2")
+    page.Event("createGroup")
+    Assert.Equal("GroupReady", page.Text "groupPhase")
+    // Limen sends no value for a button: the generic event cannot say which transition.
+    page.Event("transition")
+    Assert.Equal("SIGNAL.GROUP.ILLEGAL_TRANSITION", page.Text "noticeCode")
+    Assert.Equal("GroupReady", page.Text "groupPhase")
+    // The page's buttons send their own event instead (GH-113).
+    page.Event("dismissNotice")
+    page.Event("closeGroup")
+    Assert.NotEqual<string>("GroupReady", page.Text "groupPhase")
+    let closed = page.Text "groupPhase"
+    page.Event("reopenGroup")
+    Assert.NotEqual<string>(closed, page.Text "groupPhase")
 
 [<Fact>]
 let ``administrators are admitted by account number only, and capabilities follow`` () =

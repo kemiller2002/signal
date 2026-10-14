@@ -18,5 +18,5 @@
 .report-surface { display: block; margin-block-start: 1.5rem; }
 .report-controls a[data-available="false"] { opacity: 0.6; }
 @media print {
-  .admin:has(> .report-surface) > :not(.report-surface) { display: none !important; }
+  .admin:has(> .report-view .report-surface) > :not(.report-view) { display: none !important; }
 }

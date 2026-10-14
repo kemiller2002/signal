@@ -100,7 +100,8 @@ let ``the dataset moves through its lifecycle, read-only while not active, and v
     Assert.True(page.Flag "canManageLifecycle")
     Assert.Contains("state-active", targets page)
 
-    page.Event("datasetTransition", value = "state-active")
+    // As the browser sends it: the row's key, no value (GH-113).
+    page.Event("datasetTransition", key = "state-active")
     Assert.Equal("state-active", page.Text "datasetLifecycle")
     Assert.False(page.Flag "readOnly")
     Assert.True(page.Flag "canCreateGroup")
