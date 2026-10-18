@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-18T13:01:41.256Z",
+  "updatedAt": "2026-10-18T13:03:46.706Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3546,13 +3546,35 @@
     {
       "id": "PRAXIS-EXECUTIONS-COMPAT-20261018",
       "type": "mechanical",
-      "state": "active",
-      "semanticState": "active",
+      "state": "complete",
+      "semanticState": "complete",
       "evidence": [],
-      "updatedAt": "2026-10-18T13:01:41.256Z",
+      "updatedAt": "2026-10-18T13:03:46.706Z",
       "telemetryExecutionIds": [
         "EXE-20261018T130141732Z-25ecca7b"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "cb8f4c5f7f4bb6a14696a180",
+        "recordedAt": "2026-10-18T13:03:27.682Z",
+        "executionId": "EXE-20261018T130141732Z-25ecca7b",
+        "repository": "echelon-signal",
+        "branch": "codex/ingest-outstanding-requirements-20261018",
+        "commit": "edf18e2b992e9641bab615fd862aceed94971862",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/echelon-signal.git"
+        },
+        "remoteBranch": "codex/ingest-outstanding-requirements-20261018",
+        "remoteCommit": "edf18e2b992e9641bab615fd862aceed94971862",
+        "summary": "Aligned attribution policy with Praxis-managed execution state and verified pinned/current validators",
+        "nextAction": "Complete compatibility work and verify PR checks",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-10-18T13:03:46.706Z",
+      "conclusion": "Praxis-managed .ros/executions state is excluded from product attribution; pinned and current validator behavior was checked."
     }
   ]
 }
