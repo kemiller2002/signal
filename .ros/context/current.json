@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-18T12:59:02.094Z",
+  "updatedAt": "2026-10-18T13:01:41.256Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3542,6 +3542,17 @@
       },
       "completedAt": "2026-10-18T12:59:02.094Z",
       "conclusion": "All authorized source documents for this repository were canonically ingested; implementation requirements remain open."
+    },
+    {
+      "id": "PRAXIS-EXECUTIONS-COMPAT-20261018",
+      "type": "mechanical",
+      "state": "active",
+      "semanticState": "active",
+      "evidence": [],
+      "updatedAt": "2026-10-18T13:01:41.256Z",
+      "telemetryExecutionIds": [
+        "EXE-20261018T130141732Z-25ecca7b"
+      ]
     }
   ]
 }

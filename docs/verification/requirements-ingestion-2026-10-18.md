@@ -9,6 +9,7 @@ Work item: `INGEST-REQS-20261018`
 - `praxis provenance audit --json`: passed with no errors or warnings.
 - `praxis validate --json`: passed with no findings.
 - `git diff --check`: passed.
+- Attribution policy excludes Praxis-managed `.ros/executions/**` state, matching the current Praxis scaffold and pinned-validator expectations.
 - Final upstream sync reported no incoming commit or overlapping path.
 
 This verifies ingestion and provenance only. It is not implementation evidence
