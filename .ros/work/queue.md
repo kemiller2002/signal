@@ -7,9 +7,11 @@
 | GH-104 | Assess and adopt universal UI layout/action conformance (UI-LAYOUT-INTERACTION@1.0.0) | complete | ui-conformance, visual-engineering | high |
 | GH-113 | Follow-ups on signal#113: CI to green, signed-in administration views exercised against a test-only fake GitHub store, survey questions grouped in fieldsets | complete | ui-conformance, visual-engineering | high |
 | GH-5 | Prepare Signal implementation baseline | abandoned | readiness,bootstrap | high |
+| INGEST-REQS-20261018 | Ingest outstanding Praxis requirement sources | complete | requirements, ingestion | high |
 | LIMEN-0-7-0 | LIMEN-0-7-0 | complete |  |  |
 | LIMEN-0-7-0-FND | LIMEN-0-7-0-FND | complete |  |  |
 | LIMEN-0-7-0-VERIFIER | LIMEN-0-7-0-VERIFIER | complete |  |  |
+| PRAXIS-EXECUTIONS-COMPAT-20261018 | Exclude Praxis-managed execution state from attribution | complete | governance, compatibility | high |
 | ROS-INSTALL-1-2-1-main-16-1 | ROS-INSTALL-1-2-1-main-16-1 | complete |  |  |
 | SIGNAL-FRAMEWORK-2026-09-22 | Finalize Echelon Signal current ROS, Ordo SDE, and Limen baseline | complete | framework, migration, ros, ordo, limen | high |
 | SIGNAL-SCORING-SELECTORS-2026-09-22 | Complete scoring and selector requirements catalog | complete | requirements, scoring, selectors, web-components | high |
