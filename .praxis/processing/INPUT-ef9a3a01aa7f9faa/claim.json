@@ -1,0 +1,42 @@
+{
+  "schema": "praxis.inbox-claim/1",
+  "claimId": "INPUT-ef9a3a01aa7f9faa",
+  "state": "claimed",
+  "source": {
+    "path": ".praxis/inbox/documents/2026-10-14-SIGNAL-VIS-001.md",
+    "fileName": "2026-10-14-SIGNAL-VIS-001.md",
+    "sha256": "c0f4ae14393595b34d44ecfbd0317fb5ae67e6f1b0cb3824d97cee53218bfa21",
+    "size": 4527
+  },
+  "claimedAt": "2026-10-18T12:49:02.479Z",
+  "claimant": {
+    "kind": "agent",
+    "id": "openai/codex",
+    "provider": "openai",
+    "model": "unknown",
+    "runtime": "codex"
+  },
+  "executionId": "EXE-20261018T124842430Z-aa91caa1",
+  "derivations": [
+    {
+      "kind": "requirement",
+      "targetKind": "path",
+      "target": "docs/requirements/SIGNAL-VISUAL-INTENT.md",
+      "summary": "Signal visual-intent and semantic-color requirements",
+      "locator": "docs/requirements/SIGNAL-VISUAL-INTENT.md",
+      "recordedAt": "2026-10-18T12:53:10.198Z",
+      "actor": {
+        "kind": "agent",
+        "id": "openai/codex",
+        "provider": "openai",
+        "model": "unknown",
+        "runtime": "codex"
+      },
+      "executionId": "EXE-20261018T124842430Z-aa91caa1"
+    }
+  ],
+  "noDerivationReason": null,
+  "closedAt": null,
+  "releaseReason": null,
+  "rejectionReason": null
+}

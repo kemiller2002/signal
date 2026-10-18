@@ -2427,6 +2427,30 @@
       },
       "source": "github-pull-request",
       "sourceReference": "https://github.com/kemiller2002/signal/pull/113"
+    },
+    {
+      "id": "INGEST-REQS-20261018",
+      "title": "Ingest outstanding Praxis requirement sources",
+      "description": "Claim and derive canonical requirements from Signal visual-intent source; preserve provenance and keep implementation work separate.",
+      "tags": [
+        "requirements",
+        "ingestion"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-10-18T12:48:41.482Z",
+      "updatedAt": "2026-10-18T12:48:41.835Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "openai/codex",
+        "provider": "openai",
+        "model": "unknown",
+        "runtime": "codex"
+      },
+      "source": "user",
+      "sourceReference": "2026-10-18 ingestion request"
     }
   ]
 }
