@@ -104,6 +104,7 @@
     <Compile Include="LimenRoutingConformanceTests.fs" />
     <Compile Include="RoutesTests.fs" />
     <Compile Include="RouteSchemaTests.fs" />
+    <Compile Include="ArchitectureTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

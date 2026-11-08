@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "workItem": "WI-0100",
+  "observedAt": "2026-11-08",
+  "baselineCommit": "e19101f536e033acba8f67b479d4c767f85028f9",
+  "environment": { "kind": "claude-code-remote container", "os": "linux-x64", "dotnetSdk": "10.0.403", "node": "22", "playwright": "1.63.0", "praxis": "3.11.0", "ordo": "1.7.0", "conditor": "0.10.21" },
+  "results": [
+    { "id": "EV-BUILD", "command": "dotnet build Echelon.Signal.sln -c Release", "commit": "e19101f", "result": "passed", "detail": "0 warnings, 0 errors" },
+    { "id": "EV-TEST-DOTNET", "command": "dotnet test Echelon.Signal.sln --no-build -c Release", "commit": "e19101f", "result": "passed", "detail": "627/627. A first run before npm ci failed 7 tests on missing node_modules, an environment precondition." },
+    { "id": "EV-LIMEN", "command": "npx limen verify --strict", "commit": "e19101f", "result": "passed", "detail": "166 engine + 6 kernel files" },
+    { "id": "EV-UI-UNIT", "command": "npm run ui:conformance:unit", "commit": "e19101f", "result": "passed", "detail": "6/6" },
+    { "id": "EV-WASM", "command": "npm run build:wasm", "commit": "e19101f", "result": "passed", "detail": "unoptimized: wasm-tools workload not installed locally" },
+    { "id": "EV-BROWSER", "command": "npx playwright test --trace off", "commit": "e19101f", "result": "passed", "detail": "138/138 across chromium, ui-conformance, mobile and pages; 6.4 min" },
+    { "id": "EV-PRAXIS", "command": "./praxis validate", "commit": "e19101f", "result": "passed", "detail": "0 findings" },
+    { "id": "EV-CONDITOR-VERIFY", "command": "conditor verify --manifest conditor.json", "commit": "e19101f", "result": "passed", "artifact": "evidence/conditor-verify-2026-11-08.txt" },
+    { "id": "EV-CONDITOR-DRIFT", "command": "conditor drift --registry echelon-registry", "commit": "e19101f", "result": "warn", "detail": "ordo, praxis, forma, arca at warn; folio, limen at info", "artifact": "evidence/conditor-drift-2026-11-08.json" },
+    { "id": "EV-CONDITOR-UPGRADE-CHECK", "command": "conditor upgrade --current --check --stepwise (isolated --home)", "commit": "e19101f", "result": "plan produced, not applied", "artifact": "evidence/conditor-upgrade-check-2026-11-08.txt" },
+    { "id": "EV-DEPLOYED-SMOKE", "command": "node evidence/deployed-smoke.cjs", "target": "https://signal.echelonfoundry.com", "result": "passed (demo mode)", "detail": "3 pages, HTTP 200, 0 console errors; admin reports no data store configured", "artifact": "evidence/deployed-smoke-2026-11-08.json" },
+    { "id": "EV-CI-MAIN", "source": "GitHub Actions on main e19101f", "result": "passed", "detail": "Build 39153305780, Praxis 39153305951, Limen 39153305854, Foundations 39153306191, Pages 39153305842, Echelon Verification 39153305824, Cross-browser 41453063911" },
+    { "id": "EV-NPM-AUDIT", "command": "npm audit", "result": "passed", "detail": "0 vulnerabilities" },
+    { "id": "EV-NUGET-VULN", "command": "dotnet list package --vulnerable --include-transitive", "result": "passed", "detail": "no vulnerable packages" },
+    { "id": "EV-TRACEABILITY", "command": "named-test check against the baseline TRX", "result": "passed", "detail": "101/101 named tests exist and passed" },
+    { "id": "EV-INDEPENDENT", "command": "4 independent verifier agents", "result": "76 VERIFIED, 24 PARTIAL, 0 NOT_VERIFIED, 0 UNDETERMINABLE", "artifact": "evidence/independent-verification.json" },
+    { "id": "EV-ARCH", "command": "dotnet test --filter ArchitectureTests", "commit": "this branch", "result": "passed", "detail": "6/6; the planted-violation check fails as expected" },
+    { "id": "EV-GAP-TOTAL", "command": "dotnet test --filter GapAnalysisTests", "commit": "this branch", "result": "passed", "detail": "7/7; the new ledger-total test fails on the pre-WI-0100 file (97/67 stated vs 98/66 rows)" }
+  ],
+  "notRun": [
+    { "id": "real-provider admin journeys", "reason": "no production deployment configuration exists (owner-provided GitHub App and Fides exchange required)" },
+    { "id": "Dokimos gate", "reason": "Dokimos not installed (cohort C2)" },
+    { "id": "ordo assess against Ordo 1.20.0", "reason": "requires the C1 upgrade" },
+    { "id": "WebKit/Firefox locally", "reason": "OS libraries unavailable; covered by the scheduled cross-browser workflow (success 2026-11-02)" }
+  ]
+}

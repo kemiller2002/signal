@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-10-18T13:03:46.706Z",
+  "updatedAt": "2026-11-08T14:54:57.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3575,6 +3575,17 @@
       },
       "completedAt": "2026-10-18T13:03:46.706Z",
       "conclusion": "Praxis-managed .ros/executions state is excluded from product attribution; pinned and current validator behavior was checked."
+    },
+    {
+      "id": "WI-0100",
+      "type": "documentation",
+      "state": "active",
+      "semanticState": "active",
+      "evidence": [],
+      "updatedAt": "2026-11-08T14:54:57.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261108T145458294Z-238aa0d4"
+      ]
     }
   ]
 }

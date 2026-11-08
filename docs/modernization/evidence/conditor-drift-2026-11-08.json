@@ -1,0 +1,647 @@
+{
+    "schema": "conditor.drift-report/v1",
+    "target": "<repo>",
+    "observedAt": "2026-11-08T15:00:23Z",
+    "registry": {
+        "path": "<ext>/echelon-registry",
+        "channel": "echelon-current",
+        "channelSha256": "3cb3f1381f706e9c2617b1916efa935ca12121f4f81486fc5dbf21b9378324e9",
+        "platform": "linux-x64",
+        "profile": {
+            "id": "echelon-current",
+            "version": "1.37.0"
+        },
+        "resolvedSet": "channels/echelon-current/linux-x64.json",
+        "resolvedSetSha256": "bba3594ad1db8a4cee3550620c4a86dd5cbb5ce2f4bc183ea50951476b29ca91",
+        "catalogSnapshotSha256": "3c311674de285e3d8fb0fb210077c707647269878b03ac51bdad9ef563ebeca8"
+    },
+    "policy": {
+        "warnAfterMinorsBehind": 1,
+        "warnAfterMajorsBehind": 0,
+        "warnAfterReleasesBehind": null,
+        "warnAfterPinAgeDays": null,
+        "failBelowSupportedRange": true,
+        "sources": {
+            "warnAfterMinorsBehind": "default",
+            "warnAfterMajorsBehind": "default",
+            "warnAfterReleasesBehind": "default",
+            "warnAfterPinAgeDays": "default",
+            "failBelowSupportedRange": "default"
+        }
+    },
+    "level": "warn",
+    "components": [
+        {
+            "id": "aegis",
+            "declared": false,
+            "pins": [
+                {
+                    "source": "foundations",
+                    "path": ".echelon/foundations.json",
+                    "line": 7,
+                    "specifier": "1.0.0",
+                    "version": "1.0.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                },
+                {
+                    "source": "msbuild",
+                    "path": "Directory.Packages.props",
+                    "line": 14,
+                    "specifier": "EchelonFoundry.Aegis.Core 1.0.0",
+                    "version": "1.0.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                }
+            ],
+            "pinnedVersion": "1.0.0",
+            "consistent": true,
+            "channelSelected": "1.0.0",
+            "latestRegistered": "1.0.0",
+            "releasesBehind": 0,
+            "minorsBehind": 0,
+            "majorsBehind": 0,
+            "supportedRange": ">=1.0.0 <2.0.0",
+            "belowSupportedRange": false,
+            "pinAgeDays": 26,
+            "behindSince": null,
+            "level": "ok",
+            "reasons": [],
+            "nextStep": null
+        },
+        {
+            "id": "arca",
+            "declared": true,
+            "pins": [
+                {
+                    "source": "conditor.json",
+                    "path": "conditor.json",
+                    "line": 27,
+                    "specifier": "0.5.0",
+                    "version": "0.5.0",
+                    "pinnedSince": "2026-10-13T16:27:44Z"
+                },
+                {
+                    "source": "nuget-feed-lock",
+                    "path": "vendor/nuget/arca.lock",
+                    "line": 5,
+                    "specifier": "0.5.0",
+                    "version": "0.5.0",
+                    "pinnedSince": "2026-10-13T16:27:44Z"
+                },
+                {
+                    "source": "msbuild",
+                    "path": "Directory.Packages.props",
+                    "line": 21,
+                    "specifier": "EchelonFoundry.Arca.Core 0.5.0",
+                    "version": "0.5.0",
+                    "pinnedSince": "2026-10-13T16:27:44Z"
+                },
+                {
+                    "source": "msbuild",
+                    "path": "Directory.Packages.props",
+                    "line": 22,
+                    "specifier": "EchelonFoundry.Arca.GitHub 0.5.0",
+                    "version": "0.5.0",
+                    "pinnedSince": "2026-10-13T16:27:44Z"
+                },
+                {
+                    "source": "msbuild",
+                    "path": "Directory.Packages.props",
+                    "line": 35,
+                    "specifier": "EchelonFoundry.Arca.Limen 0.5.0",
+                    "version": "0.5.0",
+                    "pinnedSince": "2026-10-13T16:27:44Z"
+                }
+            ],
+            "pinnedVersion": "0.5.0",
+            "consistent": true,
+            "channelSelected": "0.7.0",
+            "latestRegistered": "0.7.0",
+            "releasesBehind": 2,
+            "minorsBehind": 2,
+            "majorsBehind": 0,
+            "supportedRange": ">=0.4.1 <1.0.0",
+            "belowSupportedRange": false,
+            "pinAgeDays": 25,
+            "behindSince": "2026-11-05T01:52:19Z",
+            "level": "warn",
+            "reasons": [
+                "2 registered minor lines behind (warn above 1).",
+                "2 registered release(s) newer than 0.5.0."
+            ],
+            "nextStep": {
+                "version": "0.6.0",
+                "crosses": [
+                    {
+                        "version": "0.6.0",
+                        "migrationNotes": "https://github.com/kemiller2002/arca/releases/tag/v0.6.0"
+                    }
+                ],
+                "pinUpdates": [
+                    {
+                        "source": "nuget-feed-lock",
+                        "path": "vendor/nuget/arca.lock",
+                        "line": 5,
+                        "from": "0.5.0",
+                        "to": "0.6.0"
+                    },
+                    {
+                        "source": "msbuild",
+                        "path": "Directory.Packages.props",
+                        "line": 21,
+                        "from": "EchelonFoundry.Arca.Core 0.5.0",
+                        "to": "EchelonFoundry.Arca.Core 0.6.0"
+                    },
+                    {
+                        "source": "msbuild",
+                        "path": "Directory.Packages.props",
+                        "line": 22,
+                        "from": "EchelonFoundry.Arca.GitHub 0.5.0",
+                        "to": "EchelonFoundry.Arca.GitHub 0.6.0"
+                    },
+                    {
+                        "source": "msbuild",
+                        "path": "Directory.Packages.props",
+                        "line": 35,
+                        "from": "EchelonFoundry.Arca.Limen 0.5.0",
+                        "to": "EchelonFoundry.Arca.Limen 0.6.0"
+                    }
+                ],
+                "command": "conditor upgrade --current --check --stepwise --registry \"<ext>/echelon-registry\" --channel echelon-current --resolved-set \"<ext>/echelon-registry/channels/echelon-current/linux-x64.json\" --resolved-set-sha256 bba3594ad1db8a4cee3550620c4a86dd5cbb5ce2f4bc183ea50951476b29ca91 --target \"<repo>\"",
+                "declare": null
+            }
+        },
+        {
+            "id": "fides",
+            "declared": true,
+            "pins": [
+                {
+                    "source": "conditor.json",
+                    "path": "conditor.json",
+                    "line": 32,
+                    "specifier": "0.2.0",
+                    "version": "0.2.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                },
+                {
+                    "source": "nuget-feed-lock",
+                    "path": "vendor/nuget/fides.lock",
+                    "line": 5,
+                    "specifier": "0.2.0",
+                    "version": "0.2.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                },
+                {
+                    "source": "msbuild",
+                    "path": "Directory.Packages.props",
+                    "line": 23,
+                    "specifier": "EchelonFoundry.Fides 0.2.0",
+                    "version": "0.2.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                },
+                {
+                    "source": "msbuild",
+                    "path": "Directory.Packages.props",
+                    "line": 24,
+                    "specifier": "EchelonFoundry.Fides.Client 0.2.0",
+                    "version": "0.2.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                },
+                {
+                    "source": "msbuild",
+                    "path": "Directory.Packages.props",
+                    "line": 25,
+                    "specifier": "EchelonFoundry.Fides.Arca 0.2.0",
+                    "version": "0.2.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                }
+            ],
+            "pinnedVersion": "0.2.0",
+            "consistent": true,
+            "channelSelected": "0.2.0",
+            "latestRegistered": "0.2.0",
+            "releasesBehind": 0,
+            "minorsBehind": 0,
+            "majorsBehind": 0,
+            "supportedRange": ">=0.1.0 <1.0.0",
+            "belowSupportedRange": false,
+            "pinAgeDays": 26,
+            "behindSince": null,
+            "level": "ok",
+            "reasons": [],
+            "nextStep": null
+        },
+        {
+            "id": "folio",
+            "declared": true,
+            "pins": [
+                {
+                    "source": "conditor.json",
+                    "path": "conditor.json",
+                    "line": 47,
+                    "specifier": "0.4.0",
+                    "version": "0.4.0",
+                    "pinnedSince": "2026-10-13T16:36:23Z"
+                },
+                {
+                    "source": "package.json",
+                    "path": "package.json",
+                    "line": 20,
+                    "specifier": "https://github.com/kemiller2002/folio/releases/download/v0.4.0/echelon-foundry-print-components-0.4.0.tgz",
+                    "version": "0.4.0",
+                    "pinnedSince": "2026-10-13T16:36:23Z"
+                },
+                {
+                    "source": "foundations",
+                    "path": ".echelon/foundations.json",
+                    "line": 16,
+                    "specifier": "0.4.0",
+                    "version": "0.4.0",
+                    "pinnedSince": "2026-10-13T16:36:23Z"
+                }
+            ],
+            "pinnedVersion": "0.4.0",
+            "consistent": true,
+            "channelSelected": "0.4.1",
+            "latestRegistered": "0.4.1",
+            "releasesBehind": 1,
+            "minorsBehind": 0,
+            "majorsBehind": 0,
+            "supportedRange": ">=0.3.0 <1.0.0",
+            "belowSupportedRange": false,
+            "pinAgeDays": 25,
+            "behindSince": "2026-11-05T01:52:19Z",
+            "level": "info",
+            "reasons": [
+                "1 registered release(s) newer than 0.4.0."
+            ],
+            "nextStep": {
+                "version": "0.4.1",
+                "crosses": [
+                    {
+                        "version": "0.4.1",
+                        "migrationNotes": "https://github.com/kemiller2002/folio/releases/tag/v0.4.1"
+                    }
+                ],
+                "pinUpdates": [
+                    {
+                        "source": "package.json",
+                        "path": "package.json",
+                        "line": 20,
+                        "from": "https://github.com/kemiller2002/folio/releases/download/v0.4.0/echelon-foundry-print-components-0.4.0.tgz",
+                        "to": "https://github.com/kemiller2002/folio/releases/download/v0.4.1/echelon-foundry-print-components-0.4.1.tgz"
+                    },
+                    {
+                        "source": "foundations",
+                        "path": ".echelon/foundations.json",
+                        "line": 16,
+                        "from": "0.4.0",
+                        "to": "0.4.1"
+                    }
+                ],
+                "command": "conditor upgrade --current --check --stepwise --registry \"<ext>/echelon-registry\" --channel echelon-current --resolved-set \"<ext>/echelon-registry/channels/echelon-current/linux-x64.json\" --resolved-set-sha256 bba3594ad1db8a4cee3550620c4a86dd5cbb5ce2f4bc183ea50951476b29ca91 --target \"<repo>\"",
+                "declare": null
+            }
+        },
+        {
+            "id": "forma",
+            "declared": true,
+            "pins": [
+                {
+                    "source": "conditor.json",
+                    "path": "conditor.json",
+                    "line": 42,
+                    "specifier": "0.6.1",
+                    "version": "0.6.1",
+                    "pinnedSince": "2026-10-13T16:36:23Z"
+                },
+                {
+                    "source": "package.json",
+                    "path": "package.json",
+                    "line": 18,
+                    "specifier": "https://github.com/kemiller2002/forma/releases/download/v0.6.1/echelon-foundry-design-system-0.6.1.tgz",
+                    "version": "0.6.1",
+                    "pinnedSince": "2026-10-13T16:36:23Z"
+                },
+                {
+                    "source": "foundations",
+                    "path": ".echelon/foundations.json",
+                    "line": 12,
+                    "specifier": "0.6.1",
+                    "version": "0.6.1",
+                    "pinnedSince": "2026-10-13T16:36:23Z"
+                }
+            ],
+            "pinnedVersion": "0.6.1",
+            "consistent": true,
+            "channelSelected": "0.13.0",
+            "latestRegistered": "0.13.0",
+            "releasesBehind": 5,
+            "minorsBehind": 5,
+            "majorsBehind": 0,
+            "supportedRange": ">=0.3.0 <1.0.0",
+            "belowSupportedRange": false,
+            "pinAgeDays": 25,
+            "behindSince": "2026-11-05T01:52:19Z",
+            "level": "warn",
+            "reasons": [
+                "5 registered minor lines behind (warn above 1).",
+                "5 registered release(s) newer than 0.6.1."
+            ],
+            "nextStep": {
+                "version": "0.9.0",
+                "crosses": [
+                    {
+                        "version": "0.9.0",
+                        "migrationNotes": "https://github.com/kemiller2002/forma/releases/tag/v0.9.0"
+                    }
+                ],
+                "pinUpdates": [
+                    {
+                        "source": "package.json",
+                        "path": "package.json",
+                        "line": 18,
+                        "from": "https://github.com/kemiller2002/forma/releases/download/v0.6.1/echelon-foundry-design-system-0.6.1.tgz",
+                        "to": "https://github.com/kemiller2002/forma/releases/download/v0.9.0/echelon-foundry-design-system-0.9.0.tgz"
+                    },
+                    {
+                        "source": "foundations",
+                        "path": ".echelon/foundations.json",
+                        "line": 12,
+                        "from": "0.6.1",
+                        "to": "0.9.0"
+                    }
+                ],
+                "command": "conditor upgrade --current --check --stepwise --registry \"<ext>/echelon-registry\" --channel echelon-current --resolved-set \"<ext>/echelon-registry/channels/echelon-current/linux-x64.json\" --resolved-set-sha256 bba3594ad1db8a4cee3550620c4a86dd5cbb5ce2f4bc183ea50951476b29ca91 --target \"<repo>\"",
+                "declare": null
+            }
+        },
+        {
+            "id": "limen",
+            "declared": false,
+            "pins": [
+                {
+                    "source": "package.json",
+                    "path": "package.json",
+                    "line": 19,
+                    "specifier": "0.9.0",
+                    "version": "0.9.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                },
+                {
+                    "source": "foundations",
+                    "path": ".echelon/foundations.json",
+                    "line": 20,
+                    "specifier": "0.9.0",
+                    "version": "0.9.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                }
+            ],
+            "pinnedVersion": "0.9.0",
+            "consistent": true,
+            "channelSelected": "0.9.1",
+            "latestRegistered": "0.9.1",
+            "releasesBehind": 1,
+            "minorsBehind": 0,
+            "majorsBehind": 0,
+            "supportedRange": ">=0.6.0 <1.0.0",
+            "belowSupportedRange": false,
+            "pinAgeDays": 26,
+            "behindSince": "2026-11-05T01:52:19Z",
+            "level": "info",
+            "reasons": [
+                "1 registered release(s) newer than 0.9.0."
+            ],
+            "nextStep": {
+                "version": "0.9.1",
+                "crosses": [
+                    {
+                        "version": "0.9.1",
+                        "migrationNotes": "https://github.com/kemiller2002/limen/releases/tag/v0.9.1"
+                    }
+                ],
+                "pinUpdates": [
+                    {
+                        "source": "package.json",
+                        "path": "package.json",
+                        "line": 19,
+                        "from": "0.9.0",
+                        "to": "0.9.1"
+                    },
+                    {
+                        "source": "foundations",
+                        "path": ".echelon/foundations.json",
+                        "line": 20,
+                        "from": "0.9.0",
+                        "to": "0.9.1"
+                    }
+                ],
+                "command": null,
+                "declare": "{ \"id\": \"limen\", \"version\": \"0.9.0\", \"required\": true }"
+            }
+        },
+        {
+            "id": "limen-fsharp",
+            "declared": true,
+            "pins": [
+                {
+                    "source": "conditor.json",
+                    "path": "conditor.json",
+                    "line": 37,
+                    "specifier": "0.9.0",
+                    "version": "0.9.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                },
+                {
+                    "source": "nuget-feed-lock",
+                    "path": "vendor/nuget/limen-fsharp.lock",
+                    "line": 5,
+                    "specifier": "0.9.0",
+                    "version": "0.9.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                },
+                {
+                    "source": "msbuild",
+                    "path": "Directory.Packages.props",
+                    "line": 29,
+                    "specifier": "EchelonFoundry.Limen.Routing 0.9.0",
+                    "version": "0.9.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                },
+                {
+                    "source": "msbuild",
+                    "path": "Directory.Packages.props",
+                    "line": 36,
+                    "specifier": "EchelonFoundry.Limen.Store 0.9.0",
+                    "version": "0.9.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                },
+                {
+                    "source": "msbuild",
+                    "path": "Directory.Packages.props",
+                    "line": 37,
+                    "specifier": "EchelonFoundry.Limen.Contract 0.9.0",
+                    "version": "0.9.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                }
+            ],
+            "pinnedVersion": "0.9.0",
+            "consistent": true,
+            "channelSelected": "0.9.0",
+            "latestRegistered": "0.9.0",
+            "releasesBehind": 0,
+            "minorsBehind": 0,
+            "majorsBehind": 0,
+            "supportedRange": ">=0.8.0 <1.0.0",
+            "belowSupportedRange": false,
+            "pinAgeDays": 26,
+            "behindSince": null,
+            "level": "ok",
+            "reasons": [],
+            "nextStep": null
+        },
+        {
+            "id": "ordo",
+            "declared": true,
+            "pins": [
+                {
+                    "source": "conditor.json",
+                    "path": "conditor.json",
+                    "line": 12,
+                    "specifier": "1.7.0",
+                    "version": "1.7.0",
+                    "pinnedSince": "2026-10-13T17:33:05Z"
+                },
+                {
+                    "source": "foundations",
+                    "path": ".echelon/foundations.json",
+                    "line": 24,
+                    "specifier": "1.7.0",
+                    "version": "1.7.0",
+                    "pinnedSince": "2026-10-13T17:33:05Z"
+                }
+            ],
+            "pinnedVersion": "1.7.0",
+            "consistent": true,
+            "channelSelected": "1.20.0",
+            "latestRegistered": "1.20.0",
+            "releasesBehind": 5,
+            "minorsBehind": 5,
+            "majorsBehind": 0,
+            "supportedRange": ">=1.0.0 <2.0.0",
+            "belowSupportedRange": false,
+            "pinAgeDays": 25,
+            "behindSince": "2026-11-05T01:52:19Z",
+            "level": "warn",
+            "reasons": [
+                "5 registered minor lines behind (warn above 1).",
+                "5 registered release(s) newer than 1.7.0."
+            ],
+            "nextStep": {
+                "version": "1.8.2",
+                "crosses": [
+                    {
+                        "version": "1.8.2",
+                        "migrationNotes": "https://github.com/kemiller2002/ordo/releases/tag/v1.8.2"
+                    }
+                ],
+                "pinUpdates": [
+                    {
+                        "source": "foundations",
+                        "path": ".echelon/foundations.json",
+                        "line": 24,
+                        "from": "1.7.0",
+                        "to": "1.8.2"
+                    }
+                ],
+                "command": "conditor upgrade --current --check --stepwise --registry \"<ext>/echelon-registry\" --channel echelon-current --resolved-set \"<ext>/echelon-registry/channels/echelon-current/linux-x64.json\" --resolved-set-sha256 bba3594ad1db8a4cee3550620c4a86dd5cbb5ce2f4bc183ea50951476b29ca91 --target \"<repo>\"",
+                "declare": null
+            }
+        },
+        {
+            "id": "praxis",
+            "declared": true,
+            "pins": [
+                {
+                    "source": "conditor.json",
+                    "path": "conditor.json",
+                    "line": 17,
+                    "specifier": "3.11.0",
+                    "version": "3.11.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                },
+                {
+                    "source": "foundations",
+                    "path": ".echelon/foundations.json",
+                    "line": 28,
+                    "specifier": "3.11.0",
+                    "version": "3.11.0",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                }
+            ],
+            "pinnedVersion": "3.11.0",
+            "consistent": true,
+            "channelSelected": "3.25.0",
+            "latestRegistered": "3.25.0",
+            "releasesBehind": 8,
+            "minorsBehind": 8,
+            "majorsBehind": 0,
+            "supportedRange": ">=3.0.0 <4.0.0",
+            "belowSupportedRange": false,
+            "pinAgeDays": 26,
+            "behindSince": "2026-11-05T01:52:19Z",
+            "level": "warn",
+            "reasons": [
+                "8 registered minor lines behind (warn above 1).",
+                "8 registered release(s) newer than 3.11.0."
+            ],
+            "nextStep": {
+                "version": "3.12.0",
+                "crosses": [
+                    {
+                        "version": "3.12.0",
+                        "migrationNotes": "https://github.com/kemiller2002/praxis/releases/tag/v3.12.0"
+                    }
+                ],
+                "pinUpdates": [
+                    {
+                        "source": "foundations",
+                        "path": ".echelon/foundations.json",
+                        "line": 28,
+                        "from": "3.11.0",
+                        "to": "3.12.0"
+                    }
+                ],
+                "command": "conditor upgrade --current --check --stepwise --registry \"<ext>/echelon-registry\" --channel echelon-current --resolved-set \"<ext>/echelon-registry/channels/echelon-current/linux-x64.json\" --resolved-set-sha256 bba3594ad1db8a4cee3550620c4a86dd5cbb5ce2f4bc183ea50951476b29ca91 --target \"<repo>\"",
+                "declare": null
+            }
+        },
+        {
+            "id": "visual-engineering",
+            "declared": true,
+            "pins": [
+                {
+                    "source": "conditor.json",
+                    "path": "conditor.json",
+                    "line": 22,
+                    "specifier": "1.0.1",
+                    "version": "1.0.1",
+                    "pinnedSince": "2026-10-13T09:38:34Z"
+                }
+            ],
+            "pinnedVersion": "1.0.1",
+            "consistent": true,
+            "channelSelected": "1.0.1",
+            "latestRegistered": "1.0.1",
+            "releasesBehind": 0,
+            "minorsBehind": 0,
+            "majorsBehind": 0,
+            "supportedRange": ">=1.0.0 <2.0.0",
+            "belowSupportedRange": false,
+            "pinAgeDays": 26,
+            "behindSince": null,
+            "level": "ok",
+            "reasons": [],
+            "nextStep": null
+        }
+    ]
+}
