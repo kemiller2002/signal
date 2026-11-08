@@ -18,7 +18,7 @@ Work item: WI-0100 · Date: 2026-11-08 · Baseline: main `e19101f`
 |---|---|---|
 | 1 | All mandatory in-scope requirements independently verified | ✗ 76/204 |
 | 2 | Operational readiness gates | ✗ (APPLICATION-READINESS) |
-| 3 | Current compatible Echelon systems integrated | ✗ on 1.22.0; channel is 1.37.0 (C1) |
+| 3 | Current compatible Echelon systems integrated | ◐ upgraded to 1.37.0 on this branch (WI-0102), but **not mergeable** until Forma fixes forma#179 or the owner accepts it; Dokimos not installed (C2) |
 | 4 | Four-tier F# architecture enforced | ✓ now enforced by `ArchitectureTests`; C# shim exception awaits owner approval |
 | 5 | Forma contracts | ✗ partial (FORMA-AUDIT FRM-01..06) |
 | 6 | Folio contracts | ✗ partial (FOLIO-AUDIT) |
@@ -40,19 +40,26 @@ Work item: WI-0100 · Date: 2026-11-08 · Baseline: main `e19101f`
 
 ## Owner decisions required
 
-1. SIGNAL-VIS-001.1: theme and brand policy (issue #125).
-2. Production resources: GitHub App, Fides exchange, data repository; hosting with security headers (MOD-OPS-001, MOD-SEC-001).
-3. Dokimos evidence-branch permissions (C2), and whether to adopt Tutela and Percepta, which the channel requires but no Signal requirement needs.
-4. Accept MOD-PLAT-001, MOD-DOK-001, MOD-OPS-001, MOD-OPS-002 and MOD-SEC-001 into Praxis as requirements.
-5. Approve the C# `[JSExport]` shim as a recorded structural exception.
-6. Authorize cross-repository work in Forma and Folio (FRM-02, FOL-03). This session's GitHub scope covers only `signal`, so nothing was filed there.
+1. Forma 0.13.0 header regression (forma#179): wait for a Forma release, or accept it temporarily so the upgrade can merge.
+2. SIGNAL-VIS-001.1: theme and brand policy (issue #125).
+3. Production resources: GitHub App, Fides exchange, data repository; hosting with security headers (MOD-OPS-001, MOD-SEC-001).
+4. Dokimos evidence-branch permissions (C2), and whether to adopt Tutela and Percepta, which the channel requires but no Signal requirement needs.
+5. Accept MOD-PLAT-001, MOD-DOK-001, MOD-OPS-001, MOD-OPS-002 and MOD-SEC-001 into Praxis as requirements.
+6. Approve the C# `[JSExport]` shim as a recorded structural exception.
+7. Authorize cross-repository work in Forma and Folio (FRM-02, FOL-03). This session's GitHub scope covers only `signal`, so nothing was filed there.
+
+## Checkpoint 2: platform upgrade (C1, WI-0102)
+
+Applied through Conditor: Praxis 3.25.0, Ordo 1.20.0, Arca 0.7.0, Forma 0.13.0, Folio 0.4.1, Limen 0.9.1. Build, 634/634 .NET tests and 139/139 browser tests pass, and `conditor verify`, `ordo verify`, `limen verify --strict` and `praxis validate` pass. Evidence: [`evidence/c1-upgrade-2026-11-08.md`](evidence/c1-upgrade-2026-11-08.md).
+
+**Merge blocker:** Forma 0.13.0 overlaps the record header's label and title on phone widths, on the public assessment page and the admin page. It was filed upstream as kemiller2002/forma#179 with a verified fix. Merging now would redeploy that regression to production. Owner decision: wait for a Forma release, or accept the regression temporarily.
 
 ## Next action
 
-C1: the Conditor-governed upgrade to echelon-current 1.37.0. C3 (SEC-01 first) can run in parallel. See [EXECUTION-PLAN.md](EXECUTION-PLAN.md).
+C3 (SEC-01 first) does not depend on the Forma fix. C2 (Dokimos) needs the owner's permission decision. See [EXECUTION-PLAN.md](EXECUTION-PLAN.md).
 
 ## Not done in this checkpoint (stated, not implied)
 
-- No feature implementation, platform upgrade or merge. The PR is a draft for review.
+- No feature implementation and no merge. The PR is a draft for review. The platform upgrade is applied on the branch (checkpoint 2).
 - WI-0081 (active under another executor) was left untouched.
 - Open PR #26 (A021 fixture, 2026-10-08) was not reviewed.

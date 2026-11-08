@@ -155,23 +155,59 @@ test("ULI-L05/L06: long titles, field labels and area names wrap instead of over
   }
 });
 
-// EXCEPTION (owned by Forma, upstream): a best-worst option whose text holds a
-// word longer than its column overflows the row at 320 CSS px. The option
-// cell of Forma's .ef-best-worst__row (design-system 0.6.1) has
-// minmax(0, 1fr) and no overflow-wrap, so the word escapes its 102 CSS px
-// cell (ULI-L05). Signal does not restyle Forma components (L03, and
-// FoundationsConformanceTests forbid it here). Owner: Forma; review: on the
-// next design-system upgrade. test.fail keeps the defect visible: this test
-// starts failing, and must be turned into an ordinary assertion, as soon as
-// the pinned Forma wraps the cell.
-test("EXCEPTION ULI-L05: a best-worst option with a very long word overflows Forma's row at 320 CSS px", async ({ page }) => {
-  test.fail(true, "Forma .ef-best-worst__row option cell does not wrap long words (upstream defect, recorded under GH-104)");
+// ULI-L05 (was an EXCEPTION owned by Forma under GH-104): with design-system
+// 0.6.1 a best-worst option holding a word longer than its column overflowed
+// .ef-best-worst__row at 320 CSS px. Forma 0.13.0 breaks long text inside its
+// containers, so the exception is retired (WI-0102) and the row is held to
+// the ordinary no-overflow assertion.
+test("ULI-L05: a best-worst option with a very long word stays inside Forma's row at 320 CSS px", async ({ page }) => {
   await open(page, links.compound, 320);
   await page.evaluate((text) => {
     for (const row of document.querySelectorAll("[data-row] > div:has(> label > input[data-event='pickedBest'])")) row.firstElementChild.textContent = text;
   }, LONG);
   await expectNoHorizontalOverflow(page, "survey best-worst with a long option @320");
 });
+
+// --- Record header: the type label sits above the title (ULI-L05) ---------
+
+// The gap from the bottom of the header's type label to the top of its title:
+// negative means the two overlap, or the label renders below the title.
+async function typeToTitleGap(page) {
+  return page.evaluate(() => {
+    const type = document.querySelector(".ef-record-header__type");
+    const title = type.parentElement.querySelector("h1, h2, h3, h4");
+    return title.getBoundingClientRect().top - type.getBoundingClientRect().bottom;
+  });
+}
+
+const HEADER_PAGES = ["/web/index.html", "/web/admin/index.html"];
+
+for (const width of [768, 1280]) {
+  test(`ULI-L05: the record header's type label sits above its title at ${width} CSS px`, async ({ page }) => {
+    for (const url of HEADER_PAGES) {
+      await open(page, url, width);
+      expect(await typeToTitleGap(page), url).toBeGreaterThanOrEqual(0);
+    }
+  });
+}
+
+// EXCEPTION (owned by Forma, upstream; found by WI-0102): with design-system
+// 0.13.0, below 24em the header's @container rule sets
+// .ef-record-header__title to grid-template-rows: none, but its first child
+// keeps grid-template-rows: subgrid with the type label on row 1 and the
+// title on row 2, so both collapse onto one line: the label overlaps the
+// title (0.6.1 stacked them correctly). Signal does not restyle Forma (L03).
+// test.fail keeps the defect visible; this test starts failing, and must
+// become an ordinary assertion, as soon as the pinned Forma stacks them.
+for (const width of [320, 390]) {
+  test(`EXCEPTION ULI-L05: the record header's type label overlaps its title at ${width} CSS px`, async ({ page }) => {
+    test.fail(true, "Forma 0.13.0 .ef-record-header__title subgrid collapses below 24em (upstream defect)");
+    for (const url of HEADER_PAGES) {
+      await open(page, url, width);
+      expect(await typeToTitleGap(page), url).toBeGreaterThanOrEqual(0);
+    }
+  });
+}
 
 // --- Keyboard (ULI-A08) and reduced motion (ULI-L08) ----------------------
 

@@ -1,0 +1,42 @@
+Current upgrade plan: echelon-current@1.37.0
+  target set: sha256:bba3594ad1db8a4cee3550620c4a86dd5cbb5ce2f4bc183ea50951476b29ca91
+  manifest:   sha256:efb9b04f417d9c7a13dcbdf3216444ad5c7c759b058b1c22d50fee277af185fc
+  version transitions:
+    ordo: 1.7.0 -> 1.20.0 [embedded-qualified-lifecycle]
+    praxis: 3.11.0 -> 3.25.0 [embedded-qualified-lifecycle]
+    arca: 0.5.0 -> 0.7.0 [nuget-feed]
+    forma: 0.6.1 -> 0.13.0 [web-package-binding]
+    folio: 0.4.0 -> 0.4.1 [web-package-binding]
+  workstation effects: 7 (nested plan sha256:282b5930885ed696958006abfc189aa0ae361de7f9ebdabb2c81d2a2430e93fe)
+     1. MODIFY       ~/.profile :: ~/.profile holds exactly one current conditor:workstation-path block
+     2. DOWNLOAD     ~/.conditor/cache/praxis/3.25.0/praxis-linux-x64.tar.gz :: file ~/.conditor/cache/praxis/3.25.0/praxis-linux-x64.tar.gz has sha256:98e2ecaccac3f0502d755569bf2dddef852947b43a7989c570fcfff25f82d0c8
+     3. CREATE       ~/.local/share/echelon/praxis/3.25.0 :: directory ~/.local/share/echelon/praxis/3.25.0 contains praxis
+     4. CREATE       ~/.local/bin/praxis :: `~/.local/bin/praxis --version` exits 0 and reports 3.25.0
+     5. DOWNLOAD     ~/.conditor/cache/ordo/1.20.0/ordo-linux-x64.tar.gz :: file ~/.conditor/cache/ordo/1.20.0/ordo-linux-x64.tar.gz has sha256:c5851a5bead4145d6bb5bb56bfab67927c9db06c84960136f677bc94fc84e3cf
+     6. CREATE       ~/.local/share/echelon/ordo/1.20.0 :: directory ~/.local/share/echelon/ordo/1.20.0 contains ordo
+     7. CREATE       ~/.local/bin/ordo :: `~/.local/bin/ordo --version` exits 0 and reports 1.20.0
+  repository lifecycle upgrades: none
+  qualified legacy lifecycle upgrades:
+    ordo: 1.7.0 -> 1.20.0 via ordo
+    praxis: 3.11.0 -> 3.25.0 via praxis
+  web-package bindings:
+    folio: 0.4.0 -> 0.4.1 [web-package-binding] @echelon-foundry/print-components@https://github.com/kemiller2002/folio/releases/download/v0.4.1/echelon-foundry-print-components-0.4.1.tgz (package sha256:57c6a0eccad41e6acef7c0b91a6e072276b0ebaddda27fbb3b36abd956aeea1b; qualified exact)
+      <repo>: npm install --save-exact --save-prod --ignore-scripts --no-audit --no-fund @echelon-foundry/print-components@https://github.com/kemiller2002/folio/releases/download/v0.4.1/echelon-foundry-print-components-0.4.1.tgz
+      .echelon/foundations.json: capability folio 0.4.0 -> 0.4.1 (sha256:51e2ae7e32fd0eb4ae43b37b2e3fa9959e8ee8f59695a7dbd5749609b7212acd)
+    forma: 0.6.1 -> 0.13.0 [web-package-binding] @echelon-foundry/design-system@https://github.com/kemiller2002/forma/releases/download/v0.13.0/echelon-foundry-design-system-0.13.0.tgz (package sha256:2f9ceeb6ea99a54f6cf4ffa03e3a69fd609dd60a89ddbd99680811cca2d43725; qualified exact)
+      <repo>: npm install --save-exact --save-prod --ignore-scripts --no-audit --no-fund @echelon-foundry/design-system@https://github.com/kemiller2002/forma/releases/download/v0.13.0/echelon-foundry-design-system-0.13.0.tgz
+      .echelon/foundations.json: capability forma 0.6.1 -> 0.13.0 (sha256:51e2ae7e32fd0eb4ae43b37b2e3fa9959e8ee8f59695a7dbd5749609b7212acd)
+  NuGet release-asset feeds (vendor/nuget):
+    arca: 0.5.0 -> 0.7.0 from kemiller2002/arca@v0.7.0
+      EchelonFoundry.Arca.Core 0.7.0 (sha256:931a1f29c1df1f815104a58daa85cca59d38f68fff6598bd20c0327edafd7622)
+      EchelonFoundry.Arca.GitHub 0.7.0 (sha256:9f8ef324119e25cba1c3d9dfcfac9c457db31b78ac7f30ddc2eef1499b20bc94)
+      EchelonFoundry.Arca.Limen 0.7.0 (sha256:966966a23dc85e02bbb69f8dd82525af23336e38daaf542305980f8d853c15e7)
+  foundations capabilities moved with their transitions:
+    .echelon/foundations.json: ordo 1.7.0 -> 1.20.0 (sha256:51e2ae7e32fd0eb4ae43b37b2e3fa9959e8ee8f59695a7dbd5749609b7212acd)
+    .echelon/foundations.json: praxis 3.11.0 -> 3.25.0 (sha256:51e2ae7e32fd0eb4ae43b37b2e3fa9959e8ee8f59695a7dbd5749609b7212acd)
+  final verification: pin consistency across every pin kind, complete repository verify, then authority + lock commit
+Plan digest: sha256:774d04cd57052c6418f0040184f0ba9e5b70a6d4cc0680302b2c690878f2547e
+Current upgrade completed: ordo, praxis, arca, forma, folio
+  authority: <repo>/.conditor/authority/resolved-release-set.json
+  lock:      <repo>/.conditor/lock.json
+  second-plan version drift: none

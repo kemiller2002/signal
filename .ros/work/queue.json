@@ -2520,6 +2520,27 @@
       },
       "source": "manual",
       "sourceReference": null
+    },
+    {
+      "id": "WI-0102",
+      "title": "C1: upgrade Signal to echelon-current 1.37.0 through Conditor (MOD-PLAT-001)",
+      "description": "Conditor upgrade --current: Praxis 3.11->3.25, Ordo 1.7->1.20, Forma 0.6.1->0.13.0, Arca 0.5->0.7, Folio 0.4.0->0.4.1; re-verify build, tests, browser suite, ui-conformance.",
+      "tags": [],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-08T16:06:33.000Z",
+      "updatedAt": "2026-11-08T16:06:33.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
     }
   ]
 }

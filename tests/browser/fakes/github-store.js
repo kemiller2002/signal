@@ -1,5 +1,5 @@
 // TEST-ONLY. A deterministic, in-memory stand-in for the GitHub REST API that
-// Arca's GitHub provider (EchelonFoundry.Arca.GitHub 0.5.0) uses as the
+// Arca's GitHub provider (EchelonFoundry.Arca.GitHub; written against 0.5.0, verified unchanged against 0.7.0 in WI-0102) uses as the
 // administrator's data store, installed at the network boundary with
 // Playwright route interception. Nothing here ships: the page, the WASM
 // engine, Fides' client and Arca's provider run unchanged and talk to

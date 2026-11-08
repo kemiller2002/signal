@@ -42,7 +42,7 @@ Work item: WI-0100 · Observed: 2026-11-08 · Signal commit: `e19101f` (main)
 
 The full table, with sources, is in [`evidence/platform-inventory-2026-11-08.md`](evidence/platform-inventory-2026-11-08.md). Conditor's own drift report is [`evidence/conditor-drift-2026-11-08.json`](evidence/conditor-drift-2026-11-08.json).
 
-Signal's resolved release set is **echelon-current 1.22.0**. The registry's current channel is **echelon-current 1.37.0**.
+Signal's resolved release set was **echelon-current 1.22.0** at audit time. The registry's current channel is **echelon-current 1.37.0**. **WI-0102 upgraded this branch to 1.37.0** ([evidence](evidence/c1-upgrade-2026-11-08.md)); the table below shows the pins as audited.
 
 | System | Signal pin | Channel 1.37.0 | Conditor drift | Signal requires it? |
 |---|---|---|---|---|

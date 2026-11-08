@@ -37,17 +37,38 @@ test("ULI-A02: signing in sets the dataset up in the store, opens it writable, r
   await expect(page.locator("#principal")).toHaveText("");
 });
 
-test("ULI-A07: a store that fails mid-write is reported as offline, keeps nothing, and works again after Refresh", async ({ page }) => {
+// Arca 0.7.0 (ARCA-OUT-001, WI-0102): a 5xx to the ref update is an unknown
+// outcome. Arca reconciles it by idempotency key against the provider and,
+// when the commit did not land, resends once. That is the inspected retry
+// the ADM-009 source requires; a blind retry stays forbidden. So a single
+// 503 must leave exactly one group and one landed commit, never two.
+test("ULI-A07: a single failed ref update is reconciled, lands exactly once and keeps changes available", async ({ page }) => {
   const store = await signInWithStore(page);
   expectConsoleError(page, /status of 503/);
-  // The publishing ref update fails once: GitHub answers 503.
+  store.failNext("PATCH", /\/git\/refs\/heads\/main$/);
+  const commitsBefore = store.commitCount;
+  const patchesBefore = store.requests.filter((r) => /^PATCH .*\/git\/refs\/heads\/main$/.test(r)).length;
+  const key = await createGroup(page);
+  expect(recordsOf(store, "signal.group")).toEqual([`prod/signal/datasets/ds_engagement/records/signal.group/${key}.json`]);
+  // One logical change landed once: the failed update and one resend, one new commit.
+  expect(store.requests.filter((r) => /^PATCH .*\/git\/refs\/heads\/main$/.test(r)).length - patchesBefore).toBe(2);
+  expect(store.commitCount - commitsBefore).toBe(1);
+  const status = page.getByRole("status").filter({ hasText: "Engagement" });
+  await expect(status).not.toContainText("Read-only.");
+});
+
+// When the resend fails too, the failure is reported honestly: read-only and
+// offline, nothing queued, nothing kept, and Refresh recovers.
+test("ULI-A07: a store that keeps failing mid-write is reported as offline, keeps nothing, and works again after Refresh", async ({ page }) => {
+  const store = await signInWithStore(page);
+  expectConsoleError(page, /status of 503/);
+  store.failNext("PATCH", /\/git\/refs\/heads\/main$/);
   store.failNext("PATCH", /\/git\/refs\/heads\/main$/);
   await area(page, "Groups");
   const form = page.locator("#new-group");
   await form.getByRole("spinbutton", { name: "Expected surveys" }).fill("2");
   await form.getByRole("spinbutton", { name: "Expected surveys" }).press("Tab");
   await form.getByRole("button", { name: "Create group" }).click();
-  // Honest: read-only and offline, nothing queued, no group anywhere.
   const status = page.getByRole("status").filter({ hasText: "Engagement" });
   await expect(status).toContainText("Changes are unavailable and nothing is queued.", { timeout: STORE_STEP_MS });
   await expect(status).toContainText("Read-only.");
@@ -56,10 +77,7 @@ test("ULI-A07: a store that fails mid-write is reported as offline, keeps nothin
   await expect(page.locator("#group-list tbody tr")).toHaveCount(0);
   await expect(page.locator("#group-key")).toHaveCount(0);
 
-  // Recovery: Refresh reaches the store again, and the same action succeeds once.
   await page.getByRole("button", { name: "Refresh" }).click();
-  // The credential line reads "changes can be saved" even while offline, so
-  // recovery is the offline and read-only lines going away.
   await expect(status).not.toContainText("Offline", { timeout: STORE_STEP_MS });
   await expect(status).not.toContainText("Read-only.");
   const key = await createGroup(page);

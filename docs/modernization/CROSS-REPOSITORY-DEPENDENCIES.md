@@ -10,7 +10,7 @@ Signal → {Limen, Forma, Folio, Aegis, Arca, Fides, Praxis, Ordo, Visual Engine
 
 ## Shared-platform obligations identified by this audit
 
-None of these has been filed yet. Filing a work item in another repository is an outward-facing action, and this session's GitHub scope covers only `kemiller2002/signal`. Each row is recorded here so the owner or a session scoped to that repository can file it.
+WI-0102 filed forma#179, the regression that blocks the upgrade. FRM-02 and FOL-03 are improvements rather than defects; they stay unfiled until the owner authorizes that platform work.
 
 | Signal requirement | Platform | Proposed shared requirement | Status | Signal fallback until released |
 |---|---|---|---|---|
@@ -18,11 +18,12 @@ None of these has been filed yet. Filing a work item in another repository is an
 | FOL-03 (print one region) | Folio | A print-region contract: print only a designated document surface | **not filed** | `.report-surface` rule in `admin.css` |
 | SIGNAL-VIS-001.1..6 | Forma (#159, #160), Ordo (#92), Visual Engineering (#49) | theme and brand policy; token-validity check; visual-intent governance | already filed upstream (per `SIGNAL-VISUAL-INTENT.md`) | none: blocked |
 | SVG/limen nested view lists (DF-SIGNAL-2026-0022) | Limen (#108) | nested view lists for visual selector variants | already filed upstream | visual variants deferred |
+| Forma 0.13.0 record-header regression (FRM-07) | Forma | `.ef-record-header__title` narrow-container subgrid fix | **filed: kemiller2002/forma#179** (fix verified in Signal by injection) | EXCEPTION test; the upgrade does not merge until it is fixed or accepted |
 | SEC-01 integrity on read | Arca | none needed: `Integrity.unchanged` exists; Signal must call it | — | fix in Signal (WI-0101) |
 
-## Pending upgrades
+## Upgrades (cohort C1)
 
-These are cohort C1, through Conditor.
+Applied on this branch through Conditor in WI-0102 ([evidence](evidence/c1-upgrade-2026-11-08.md)). Merging waits on forma#179.
 
 | From → to | Reason | Risk |
 |---|---|---|

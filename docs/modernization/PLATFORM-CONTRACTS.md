@@ -1,6 +1,6 @@
 # Platform contracts
 
-Work item: WI-0100. For each Echelon system Signal depends on: the integration contract, Signal's conformance and the migration to the current verified release. Source data: [`evidence/platform-inventory-2026-11-08.md`](evidence/platform-inventory-2026-11-08.md) and Conditor's [`upgrade check`](evidence/conditor-upgrade-check-2026-11-08.txt).
+Work item: WI-0100. For each Echelon system Signal depends on: the integration contract, Signal's conformance and the migration to the current verified release. **Status after WI-0102:** Praxis 3.25.0, Ordo 1.20.0, Arca 0.7.0, Forma 0.13.0, Folio 0.4.1 and Limen 0.9.1 are applied on this branch through Conditor ([`evidence/c1-upgrade-2026-11-08.md`](evidence/c1-upgrade-2026-11-08.md)). The table below is the pre-upgrade audit. Source data: [`evidence/platform-inventory-2026-11-08.md`](evidence/platform-inventory-2026-11-08.md) and Conditor's [`upgrade check`](evidence/conditor-upgrade-check-2026-11-08.txt).
 
 | System | Contract | Signal integration | Conformance today | Migration to the channel (1.37.0) |
 |---|---|---|---|---|
