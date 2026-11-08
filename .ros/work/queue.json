@@ -2482,10 +2482,10 @@
       "description": null,
       "tags": [],
       "priority": "medium",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-08T14:54:48.744Z",
-      "updatedAt": "2026-11-08T14:54:57.000Z",
+      "updatedAt": "2026-11-08T15:08:31.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
