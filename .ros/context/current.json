@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-08T16:06:34.000Z",
+  "updatedAt": "2026-11-08T16:33:10.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3621,13 +3621,44 @@
     {
       "id": "WI-0102",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-11-08T16:06:34.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "docs/modernization/evidence/c1-upgrade-2026-11-08.md"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/ui-conformance-layout.spec.js"
+        }
+      ],
+      "updatedAt": "2026-11-08T16:33:10.000Z",
       "telemetryExecutionIds": [
         "EXE-20261108T160634794Z-8f2bba39"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "12cade4c4d53a7b4abcc0f02",
+        "recordedAt": "2026-11-08T16:33:09.000Z",
+        "executionId": "EXE-20261108T160634794Z-8f2bba39",
+        "repository": "echelon-signal",
+        "branch": "claude/gifted-keller-7dy8ms",
+        "commit": "e7ec6caf4c6d1240c0fcccc71051d17275cd67c8",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "claude/gifted-keller-7dy8ms",
+        "remoteCommit": "e7ec6caf4c6d1240c0fcccc71051d17275cd67c8",
+        "summary": "Upgraded to echelon-current 1.37.0 via Conditor; all verification passes; Forma 0.13.0 header regression filed (forma#179) and recorded as EXCEPTION",
+        "nextAction": "Owner decides forma#179 wait vs accept before merge; then C3 SEC-01 (WI-0101)",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-08T16:33:10.000Z",
+      "conclusion": "Upgrade applied and verified; merge blocked on forma#179 or owner acceptance"
     }
   ]
 }

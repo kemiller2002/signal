@@ -13,10 +13,10 @@
         "survey"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-08-31T19:08:29.874Z",
-      "updatedAt": "2026-08-31T19:08:32.682Z",
+      "updatedAt": "2026-08-31T19:16:36.484Z",
       "createdBy": "unknown",
       "source": "manual",
       "sourceReference": null
@@ -2527,10 +2527,10 @@
       "description": "Conditor upgrade --current: Praxis 3.11->3.25, Ordo 1.7->1.20, Forma 0.6.1->0.13.0, Arca 0.5->0.7, Folio 0.4.0->0.4.1; re-verify build, tests, browser suite, ui-conformance.",
       "tags": [],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-08T16:06:33.000Z",
-      "updatedAt": "2026-11-08T16:06:33.000Z",
+      "updatedAt": "2026-11-08T16:33:10.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
