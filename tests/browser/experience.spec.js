@@ -79,8 +79,10 @@ test("the landing page works in a dark color scheme", async ({ page }) => {
   expect(text).not.toBe(surface);
 });
 
-test("the provisional mark is declared provisional, not approved", async ({ request }) => {
+test("the mark's approval is recorded, not assumed", async ({ request }) => {
   const identity = await (await request.get("/web/brand/identity.json")).json();
-  expect(identity.status).toBe("proposed");
-  expect(identity.approved).toBe(false);
+  expect(identity.status).toBe("approved");
+  expect(identity.approved).toBe(true);
+  expect(identity.approval.by).toBeTruthy();
+  expect(identity.approval.record).toContain("echelon-design-system");
 });
