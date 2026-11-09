@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 105,
+  "nextSeq": 106,
   "items": [
     {
       "id": "WI-0001",
@@ -2575,6 +2575,29 @@
       "attachments": [],
       "createdAt": "2026-11-09T10:42:02.059Z",
       "updatedAt": "2026-11-09T11:00:30.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0105",
+      "title": "Review follow-up to WI-0104 (PR #128): fail closed on an altered interrupted-batch record at finalize, correct the RecordIntegrity integrity claim and residual risks (rollback, envelope coverage), and add tamper tests for report state, storage manifest and import batch reads",
+      "description": null,
+      "tags": [
+        "modernization,security,integrity"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-09T11:16:11.876Z",
+      "updatedAt": "2026-11-09T11:16:12.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
