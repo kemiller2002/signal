@@ -2692,10 +2692,10 @@
         "forma"
       ],
       "priority": "medium",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-09T22:23:29.000Z",
-      "updatedAt": "2026-11-09T22:23:30.000Z",
+      "updatedAt": "2026-11-09T22:37:58.439Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
