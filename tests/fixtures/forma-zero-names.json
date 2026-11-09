@@ -1,0 +1,26 @@
+{
+  "description": "Deliberate Forma 0.x names (FORMA-NS-001) that Signal's guards must recognise. This is the only file in web, web-kernel, tests, tools and src that may hold them: the no-Forma-0.x guard (FoundationsConformanceTests) skips exactly this path, and the namespace codemod must be run with --exclude tests/fixtures/forma-zero-names.json (see HANDOFF.md, WI-0109). Never run the codemod in write mode over this file.",
+  "formaZero": [
+    "class=\"ef-question\"",
+    "<ef-alert>",
+    "</ef-data-grid>",
+    "document.querySelector(\".ef-startup\")",
+    "var(--ef-space-2)",
+    "data-ef-state",
+    "el.dataset.efState",
+    "el.dataset[\"efTone\"]",
+    "<ef-print-tabel>"
+  ],
+  "notFormaZero": [
+    "<ef-print-table>",
+    "</ef-print-section>",
+    "class=\"forma-question\"",
+    "var(--forma-space-2)",
+    "ref-count",
+    "chef-special"
+  ],
+  "verifyDeployed": {
+    "zeroStartupClass": "class=\"ef-startup\"",
+    "zeroTheme": "[data-ef-brand=\"echelon\"] { --ef-color-text-primary: #171a18; }"
+  }
+}

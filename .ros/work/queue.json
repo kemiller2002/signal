@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 109,
+  "nextSeq": 110,
   "items": [
     {
       "id": "WI-0001",
@@ -2682,6 +2682,30 @@
       },
       "source": "owner-directive",
       "sourceReference": "EDS-ADR-002"
+    },
+    {
+      "id": "WI-0109",
+      "title": "SIG-FORMA1-002: review follow-ups to WI-0108 (PR #131): true codemod --check record, wider and exact no-Forma-0.x guard, theme in deployment doc, test comment",
+      "description": null,
+      "tags": [
+        "signal",
+        "forma"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-09T22:23:29.000Z",
+      "updatedAt": "2026-11-09T22:37:58.439Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "review",
+      "sourceReference": "kemiller2002/signal#131"
     }
   ]
 }

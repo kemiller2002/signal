@@ -157,9 +157,10 @@ test("ULI-L05/L06: long titles, field labels and area names wrap instead of over
 
 // ULI-L05 (was an EXCEPTION owned by Forma under GH-104): with design-system
 // 0.6.1 a best-worst option holding a word longer than its column overflowed
-// .forma-best-worst__row at 320 CSS px. Forma 0.13.0 breaks long text inside its
-// containers, so the exception is retired (WI-0102) and the row is held to
-// the ordinary no-overflow assertion.
+// Forma's best-worst row at 320 CSS px (the row's class, under Forma's 0.x
+// prefix then, is `.forma-best-worst__row` since Forma 1.0). Forma 0.13.0
+// breaks long text inside its containers, so the exception is retired
+// (WI-0102) and the row is held to the ordinary no-overflow assertion.
 test("ULI-L05: a best-worst option with a very long word stays inside Forma's row at 320 CSS px", async ({ page }) => {
   await open(page, links.compound, 320);
   await page.evaluate((text) => {

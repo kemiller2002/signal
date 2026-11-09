@@ -121,33 +121,100 @@ let ``Signal keeps its own mark: the theme's Echelon Foundry logos are not used`
         Assert.Contains("brand/signal-mark.svg", html)
         Assert.DoesNotContain("logos/echelon-foundry/", html)
 
-/// A Forma 0.x name (FORMA-NS-001): an `ef-` class, tag or id, a `--ef-`
-/// property, a `data-ef-` attribute or an `efX` dataset key. Folio owns the
-/// `ef-print-*` print surface (Folio 0.4.1), so those names are not Forma's.
-let private formaZeroName =
-    Regex(@"(?<![A-Za-z0-9_$/@-])(?:--|data-)?ef-(?!print-)|dataset\??\.ef[A-Z]|dataset\[[""']ef[A-Z]")
+/// The Forma 0.x prefix (FORMA-NS-001). It is assembled here rather than
+/// written out, so this file holds no Forma 0.x name and the guard below can
+/// scan it like every other source.
+let private ns = "ef"
+
+/// The elements Folio 0.4.1 registers (its `src/components/register.js`).
+/// Folio still owns this print surface under the old prefix; these exact
+/// names, and no others, are not Forma's. Checked against the installed Folio
+/// below.
+let private folioElements =
+    set
+        [ "ef-print-document"; "ef-print-title-page"; "ef-print-section"; "ef-print-back-page"
+          "ef-print-header"; "ef-print-footer"; "ef-print-page-number"; "ef-print-columns"
+          "ef-print-sidebar"; "ef-print-layer"; "ef-print-break"; "ef-print-keep"
+          "ef-print-metric"; "ef-print-integrity"; "ef-print-finding"; "ef-print-callout"
+          "ef-print-figure"; "ef-print-table"; "ef-print-code"; "ef-print-toc"; "ef-print-note"
+          "ef-print-security-record"; "ef-print-security-posture"; "ef-print-security-invariant"
+          "ef-print-security-evidence"; "ef-print-security-unknown"; "ef-print-security-exception" ]
+
+/// A name in the Forma 0.x namespace (prefix `ns`): a class, tag (also a
+/// closing tag) or id, a custom property, a data attribute, or a DOM dataset
+/// key.
+let private zeroNamespace =
+    Regex($@"(?:(?<![A-Za-z0-9_$/@-])|(?<=</))(?:--|data-)?{ns}-[A-Za-z0-9_-]*|dataset\??\.{ns}[A-Z]|dataset\[[""']{ns}[A-Z]")
+
+/// The Forma 0.x names in a text: every name in that namespace except a
+/// Folio element on the allow-list.
+let private formaZeroNames (text: string) =
+    zeroNamespace.Matches text
+    |> Seq.map (fun m -> m.Value)
+    |> Seq.filter (fun name -> not (folioElements.Contains name))
+    |> Seq.toList
+
+/// The one file allowed to hold deliberate Forma 0.x names: the guards' own
+/// fixtures (see HANDOFF.md, WI-0109).
+let private fixtures = "tests/fixtures/forma-zero-names.json"
+
+let private skippedDirectories = set [ "bin"; "obj"; "node_modules" ]
+
+let rec private sourceFiles (dir: string) : string list =
+    let here =
+        Directory.EnumerateFiles dir
+        |> Seq.filter (fun f -> [ ".html"; ".css"; ".js"; ".mjs"; ".cjs"; ".fs"; ".fsx"; ".fsi"; ".json"; ".ts" ] |> List.contains (Path.GetExtension f))
+        |> Seq.toList
+
+    let nested =
+        Directory.EnumerateDirectories dir
+        |> Seq.filter (fun d -> not (skippedDirectories.Contains(Path.GetFileName d)))
+        |> Seq.toList
+        |> List.collect sourceFiles
+
+    here @ nested
 
 [<Fact>]
-let ``no Forma 0.x name remains in Signal's pages, stylesheets or kernel`` () =
-    let sources =
-        [ "web"; "web-kernel" ]
-        |> List.collect (fun dir ->
-            Directory.EnumerateFiles(repoFile dir, "*.*", SearchOption.AllDirectories)
-            |> Seq.filter (fun f -> [ ".html"; ".css"; ".js"; ".mjs" ] |> List.contains (Path.GetExtension f))
-            |> Seq.toList)
+let ``no Forma 0.x name remains in Signal's pages, kernel, tests, tools or sources`` () =
+    let relative (file: string) = Path.GetRelativePath(repositoryRoot, file).Replace('\\', '/')
 
-    Assert.NotEmpty sources
+    let sources =
+        [ "web"; "web-kernel"; "tests"; "tools"; "src" ]
+        |> List.collect (fun dir -> sourceFiles (repoFile dir))
+        |> List.filter (fun file -> relative file <> fixtures)
+
+    // The scan covers this file and the browser and Pages tests, not just the pages.
+    let scanned = sources |> List.map relative |> Set.ofList
+
+    for expected in
+        [ "web/index.html"
+          "web-kernel/limen-wasm.js"
+          "tests/Echelon.Signal.Tests/FoundationsConformanceTests.fs"
+          "tests/browser/assessment.spec.js"
+          "tools/pages/verify-deployed.test.mjs" ] do
+        Assert.True(scanned.Contains expected, $"the guard does not scan {expected}")
 
     for source in sources do
-        let hits = formaZeroName.Matches(File.ReadAllText source) |> Seq.map (fun m -> m.Value) |> Seq.toList
-        Assert.True(hits.IsEmpty, $"{source} still uses Forma 0.x names: {hits}")
+        let hits = formaZeroNames (File.ReadAllText source)
+        Assert.True(hits.IsEmpty, $"{relative source} still uses Forma 0.x names: {hits}")
 
-    // The guard recognises the 0.x forms and leaves Folio's names alone.
-    for zero in [ "class=\"ef-question\""; "<ef-alert>"; "var(--ef-space-2)"; "data-ef-state"; "el.dataset.efState" ] do
-        Assert.True(formaZeroName.IsMatch zero, zero)
+[<Fact>]
+let ``the Forma 0.x guard recognises every 0.x form and exempts only Folio's elements`` () =
+    let fixture = json fixtures
 
-    for kept in [ "<ef-print-table>"; "var(--ef-print-accent)"; "class=\"forma-question\""; "ref-count" ] do
-        Assert.False(formaZeroName.IsMatch kept, kept)
+    for zero in fixture.["formaZero"].AsArray() |> Seq.map str do
+        Assert.False((formaZeroNames zero).IsEmpty, $"not recognised as Forma 0.x: {zero}")
+
+    for kept in fixture.["notFormaZero"].AsArray() |> Seq.map str do
+        Assert.True((formaZeroNames kept).IsEmpty, $"wrongly reported as Forma 0.x: {kept}")
+
+    // The allow-list is exactly what the installed Folio registers.
+    let registered =
+        Regex.Matches(readRepoFile "node_modules/@echelon-foundry/print-components/src/components/register.js", $"\"({ns}-print-[a-z-]+)\"")
+        |> Seq.map (fun m -> m.Groups[1].Value)
+        |> Set.ofSeq
+
+    Assert.Equal<Set<string>>(registered, folioElements)
 
 [<Fact>]
 let ``the kernel registers Folio and starts Limen from the installed packages`` () =

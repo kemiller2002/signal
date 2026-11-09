@@ -15,6 +15,9 @@ import { pages, publishPage } from "./assemble-site.mjs";
 
 const repo = new URL("../../", import.meta.url).pathname;
 const site = JSON.parse(readFileSync(join(repo, "deploy/pages/site.json"), "utf8"));
+// Forma 0.x markup lives only in the guards' fixture file (WI-0109), so this
+// file holds no Forma 0.x name and the namespace guard scans it too.
+const zero = JSON.parse(readFileSync(join(repo, "tests/fixtures/forma-zero-names.json"), "utf8")).verifyDeployed;
 
 // The published pages, their stylesheets (Forma and the Echelon theme from
 // node_modules) and brand assets, as assemble-site lays them out.
@@ -95,7 +98,7 @@ const edit = (root, path, change) => {
 };
 
 test("an engine page still on Forma 0.x's start-up screen is reported", () =>
-  withSite((root) => edit(root, "web/admin/index.html", (html) => html.replace('class="forma-startup"', 'class="ef-startup"')), async (base) => {
+  withSite((root) => edit(root, "web/admin/index.html", (html) => html.replace('class="forma-startup"', zero.zeroStartupClass)), async (base) => {
     const problems = await verify(base);
     assert.ok(problems.includes("web/admin/: no pre-runtime start-up screen (#app-startup.forma-startup)"), problems.join("\n"));
   }));
@@ -140,8 +143,8 @@ test("the stylesheet and theme checks are pure", () => {
   assert.deepEqual(stylesheetProblems("s.css", { status: 200, body: `${theme}\n${forma}` }), ["s.css: imports the Echelon theme before Forma"]);
   assert.deepEqual(stylesheetProblems("s.css", { status: 404, body: "" }), ["s.css: HTTP 404"]);
   assert.deepEqual(themeProblems("t.css", { status: 200, body: '[data-forma-brand="echelon"] { --forma-color-text-primary: #171a18; }' }), []);
-  // A Forma 0.x theme (data-ef-brand, --ef-*) is not the theme for Forma 1.x.
-  assert.deepEqual(themeProblems("t.css", { status: 200, body: '[data-ef-brand="echelon"] { --ef-color-text-primary: #171a18; }' }), ["t.css: not the Echelon theme for Forma 1.x"]);
+  // A Forma 0.x theme (the old brand attribute and properties) is not the theme for Forma 1.x.
+  assert.deepEqual(themeProblems("t.css", { status: 200, body: zero.zeroTheme }), ["t.css: not the Echelon theme for Forma 1.x"]);
 });
 
 test("an unapproved mark is reported", () => {
