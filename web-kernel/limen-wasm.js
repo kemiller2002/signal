@@ -60,7 +60,29 @@ const diagnostics = {
 // The kernel's status is published on <html data-kernel> as soon as it
 // leaves "starting", so the page (and its browser tests) can tell "running"
 // from a failed start even while start-up effects are still completing.
+// The pre-runtime start-up screen (#app-startup, Forma .ef-startup) is in each
+// page's HTML. It is presentation only: hidden once the kernel runs, marked
+// failed when the kernel does not, and timed out when start-up outlives
+// STARTUP_DEADLINE_MS. Forma reveals its "still starting" note by itself.
+const STARTUP_DEADLINE_MS = 60_000;
+
+const startupOutcome = (status) =>
+  status === "running" ? "mounted" : status === "unstarted" || status === "starting" ? "pending" : "failed";
+
+const presentStartup = (screen, outcome) => {
+  if (!screen) return;
+  if (outcome === "mounted") {
+    screen.hidden = true;
+  } else if (outcome === "failed" || outcome === "timed-out") {
+    screen.dataset.efState = outcome;
+    if (outcome === "timed-out") {
+      screen.querySelector("#app-startup-problem-title")?.replaceChildren("Signal is taking too long to start.");
+    }
+  }
+};
+
 export async function startPage(exportName, capabilities = []) {
+  const screen = document.getElementById("app-startup");
   const kernel = new BrowserKernel(new WasmEngineTransport(exportName), document, diagnostics, {
     requireHandshake: true,
     capabilities
@@ -74,7 +96,18 @@ export async function startPage(exportName, capabilities = []) {
       clearInterval(watch);
     }
   }, 50);
-  await kernel.start();
-  clearInterval(watch);
-  publish();
+  const deadline = setTimeout(() => {
+    if (startupOutcome(kernel.status) === "pending") presentStartup(screen, "timed-out");
+  }, STARTUP_DEADLINE_MS);
+  try {
+    await kernel.start();
+  } catch (error) {
+    presentStartup(screen, "failed");
+    throw error;
+  } finally {
+    clearTimeout(deadline);
+    clearInterval(watch);
+    publish();
+  }
+  presentStartup(screen, startupOutcome(kernel.status));
 }

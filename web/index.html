@@ -4,10 +4,31 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Signal · Assessment</title>
-<link rel="icon" href="data:," />
+<link rel="icon" href="./brand/signal-mark.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
+<!-- Pre-runtime start-up (EDS-UX-WAIT-001, Forma .ef-startup): painted from
+     this HTML before the WebAssembly engine loads. web-kernel/limen-wasm.js
+     hides it once the kernel runs, or marks a failed or timed-out start. -->
+<div class="ef-startup" id="app-startup" data-ef-state="starting">
+  <span class="ef-app-identity" data-ef-size="64">
+    <span class="ef-app-identity__mark"><svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="6" fill="currentColor"/><path d="M5 17h4.5l3-7 4.5 13 3.5-9.5 1.5 3.5H27" fill="none" stroke="Canvas" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <span class="ef-app-identity__name">Signal</span>
+  </span>
+  <div class="ef-startup__status" role="status">
+    <p class="ef-spinner">
+      <span class="ef-spinner__indicator" aria-hidden="true"></span>
+      <span class="ef-spinner__label">Starting Signal: loading the assessment engine</span>
+    </p>
+    <p class="ef-startup__slow">Still starting. On a slow connection the engine can take up to a minute to download.</p>
+  </div>
+  <div class="ef-startup__problem" role="alert">
+    <p class="ef-startup__problem-title" id="app-startup-problem-title">Signal could not start.</p>
+    <p id="app-startup-problem-detail">The engine did not load. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.</p>
+  </div>
+  <p class="ef-startup__noscript">Signal needs JavaScript and WebAssembly. Turn them on in your browser settings, then reload this page.</p>
+</div>
 <!-- Structure and presentation only. Every value below is projected by the F#
      engine (src/Echelon.Signal.Engine) through Limen's data-* bindings, and
      every control sends a named event back to it. Forma owns presentation (its

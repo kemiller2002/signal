@@ -58,7 +58,7 @@ jobs:
         run: |
           set -euo pipefail
           site=dist-pages
-          for f in .nojekyll index.html web/index.html web/main.js web/pages.css \
+          for f in .nojekyll index.html web/index.html web/home/index.html web/brand/signal-mark.svg web/main.js web/pages.css \
                    web-kernel/limen-wasm.js build/wasm/wwwroot/_framework/dotnet.js \
                    node_modules/@echelon-foundry/limen/dist/kernel/browser-kernel.js \
                    node_modules/@echelon-foundry/design-system/dist/all.css; do
@@ -71,6 +71,8 @@ jobs:
           # Every published page carries the policy and the banner (WI-0068).
           grep -q 'http-equiv="Content-Security-Policy"' "$site/web/admin/index.html"
           grep -q 'data-pages-banner' "$site/web/admin/index.html"
+          grep -q 'http-equiv="Content-Security-Policy"' "$site/web/home/index.html"
+          grep -q 'data-pages-banner' "$site/web/home/index.html"
           echo "Site: $(find "$site" -type f | wc -l) files, $(du -sh "$site" | cut -f1)"
 
       - name: Upload the Pages artifact

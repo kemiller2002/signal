@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-labelledby="signal-mark-title">
+  <!-- PROVISIONAL. Not an approved Echelon application logo
+       (EDS-BRAND-APP-001). Replace with approved artwork before claiming
+       design-system compliance. See web/brand/identity.json. -->
+  <title id="signal-mark-title">Signal</title>
+  <rect width="32" height="32" rx="6" fill="#202421"/>
+  <path d="M5 17h4.5l3-7 4.5 13 3.5-9.5 1.5 3.5H27" fill="none" stroke="#f2efe7" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="12.5" cy="10" r="2.4" fill="#c9a07f"/>
+</svg>

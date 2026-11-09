@@ -38,6 +38,7 @@ export const copies = [
 // banner's stylesheet. Every one carries the policy and the banner (WI-0068).
 export const pages = [
   { path: "web/index.html", pagesCss: "./pages.css" },
+  { path: "web/home/index.html", pagesCss: "../pages.css" },
   { path: "web/admin/index.html", pagesCss: "../pages.css" },
   { path: "web/survey/index.html", pagesCss: "../pages.css" }
 ];
@@ -75,12 +76,12 @@ export const rootPage = (site) => `<!doctype html>
 <head>
 <meta charset="utf-8" />
 ${cspMeta(site.contentSecurityPolicy)}
-<meta http-equiv="refresh" content="0; url=web/" />
-<link rel="icon" href="data:," />
+<meta http-equiv="refresh" content="0; url=web/home/" />
+<link rel="icon" href="web/brand/signal-mark.svg" type="image/svg+xml" />
 <title>${escapeHtml(site.title)}</title>
 </head>
 <body>
-<p><a href="web/">Open ${escapeHtml(site.title)}</a></p>
+<p><a href="web/home/">Open ${escapeHtml(site.title)}</a></p>
 </body>
 </html>
 `;

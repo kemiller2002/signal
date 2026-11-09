@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Signal · Surveys whose answers live in the link</title>
+<meta name="description" content="Signal is a survey and assessment engine: published templates fix what each question means, respondents' answers live in their own link, and administrators get deterministic, traceable results." />
+<link rel="icon" href="../brand/signal-mark.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="./home.css" />
+</head>
+<body>
+<!-- Landing page (EDS-UX-LANDING-001): static HTML and Forma CSS only. It
+     explains Signal and leads to the administrator console; it shows no
+     sample records and seeds no data. Respondents never start here: they
+     open the survey link their administrator sends. -->
+<header class="home-header">
+  <a class="ef-app-identity" href="./">
+    <span class="ef-app-identity__mark"><svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="6" fill="currentColor"/><path d="M5 17h4.5l3-7 4.5 13 3.5-9.5 1.5 3.5H27" fill="none" stroke="Canvas" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <span class="ef-app-identity__name">Signal</span>
+  </a>
+</header>
+<main class="home ef-stack" id="main">
+  <section class="ef-stack" aria-labelledby="home-title">
+    <h1 id="home-title">Surveys whose answers live in the link</h1>
+    <p class="home-lead">Signal runs surveys and assessments from published, immutable templates. Each respondent's answers are carried in their own link, not stored on a server, and results are calculated the same way every time.</p>
+    <div class="ef-actions">
+      <a class="ef-button" href="../admin/">Open the administrator console</a>
+    </div>
+    <p>Answering a survey? Use the link your survey administrator sent you. Signal never asks you to sign in to answer.</p>
+  </section>
+
+  <section class="ef-stack" aria-labelledby="home-who">
+    <h2 id="home-who">Who it is for</h2>
+    <ul class="home-roles">
+      <li><strong>Survey authors</strong> publish a template whose questions, branching, validation and scoring cannot change after publication.</li>
+      <li><strong>Respondents</strong> answer from a link. The link always holds their current answers, so they can stop and continue later.</li>
+      <li><strong>Administrators</strong> import completed submissions and read results with the calculation behind every figure.</li>
+    </ul>
+  </section>
+
+  <section class="ef-stack" aria-labelledby="home-how">
+    <h2 id="home-how">How it works</h2>
+    <ol class="home-steps">
+      <li>An author publishes a template. Its version fixes the meaning of every answer.</li>
+      <li>Respondents answer in the browser. Finishing produces an anonymous submission with no personal information.</li>
+      <li>An administrator imports the submissions. Signal recalculates results deterministically and shows where each number came from.</li>
+    </ol>
+  </section>
+</main>
+</body>
+</html>
