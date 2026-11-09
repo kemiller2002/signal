@@ -2594,10 +2594,10 @@
         "modernization,security,integrity"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-09T11:16:11.876Z",
-      "updatedAt": "2026-11-09T11:16:12.000Z",
+      "updatedAt": "2026-11-09T11:32:29.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
