@@ -333,3 +333,86 @@ let ``a retained URL artifact and its exact template reconstruct the stored resu
     import [ anonymous 1uy Often ] plain |> ignore
     let reopenedPlain = GroupStore.openGroup resolve groupId at plain.Dataset |> run |> ok
     Assert.All(reopenedPlain.Contributions |> Map.toList, fun (_, c) -> Assert.Equal(Intake.NotRetained, Intake.reconstruct reopenedPlain.Definition c.Value.Contribution))
+
+// ---- SEC-01: a batch record edited by hand is never trusted, and never forgotten ----------------
+
+/// The stored batch records, by in-memory key.
+let private batchRecords (github: InMemoryStore) =
+    github.State.Objects |> Map.toList |> List.filter (fun (key, _) -> key.Contains "/records/signal.import-batch/")
+
+/// Rewrites a stored record outside Signal: one member of its body replaced,
+/// stored canonically again, as a person editing the repository would.
+let private editByHand (github: InMemoryStore) (location: DataLocation) (key: string, stored: StoredObject) (name: string) (value: Json) =
+    let record = Record.decode Record.DefaultMaxBytes stored.Content |> ok
+
+    let body =
+        match record.Body with
+        | Json.Object members -> members |> List.map (fun (k, v) -> k, (if k = name then value else v)) |> Json.objectOf
+        | other -> other
+
+    github.WriteExternally(location, key.Substring(key.IndexOf ':' + 1), Some({ record with Body = body } |> Record.encode Record.DefaultMaxBytes |> ok))
+
+let private alteredCodes (outcome: Result<'a, GroupStore.GroupFailure>) =
+    match outcome with
+    | Error(GroupStore.Unusable problems) -> problems |> List.map Problems.code
+    | other -> failwith $"expected the altered record to make the operation unusable, got %A{other}"
+
+[<Fact>]
+let ``an interrupted batch whose record was edited by hand blocks finalization instead of vanishing from its obligations (SEC-01)`` () =
+    let github = InMemoryStore()
+    let allowed = ref 100
+    let inner = backend github (fun () -> true)
+
+    let flaky: Store.Backend =
+        { inner with
+            Provider =
+                fun location ->
+                    let real = inner.Provider location
+
+                    { real with
+                        Commit =
+                            fun operation ->
+                                if allowed.Value > 0 then
+                                    allowed.Value <- allowed.Value - 1
+                                    real.Commit operation
+                                else
+                                    async.Return(Error(StorageFailure.ProviderFailed("AEGIS.NETWORK.UNAVAILABLE", true, "offline"))) } }
+
+    let openedNow () = Store.openDataset flaky config actor None "signal-test" "ds_engagement" at |> run |> ok
+    let fresh () = GroupStore.openGroup resolve groupId at (openedNow ()) |> run |> ok
+    let opened = openedNow ()
+    GroupStore.create actor (groupConfig AnonymousGroup 50 GroupRecord.NoneAfterImport) at opened |> run |> ok
+
+    // One chunk lands, then the connection drops: the batch is left unfinished.
+    allowed.Value <- 1
+    let stopped = GroupStore.importBatch actor resolve ResultRecord.ImportedTextFile [ for seed in 1uy .. 40uy -> anonymous seed Often ] at (fresh ()) |> run |> ok
+    Assert.Equal(Intake.Running, stopped.Summary.Status)
+    allowed.Value <- 100
+
+    GroupStore.rebuildIndex actor at (openedNow ()) |> run |> ok |> ignore
+    GroupAdmin.transition actor "close" at (fresh ()) |> run |> ok |> ignore
+
+    // Untouched, the unfinished batch is an obligation that blocks finalization.
+    match GroupAdmin.transition actor "finalize" at (fresh ()) |> run with
+    | Error(GroupStore.LifecycleRefused(GroupLifecycle.BlockedByObligations obligations)) ->
+        Assert.True(obligations |> List.exists (function GroupLifecycle.ReconcileUnknownImport _ -> true | _ -> false))
+    | other -> failwith $"%A{other}"
+
+    // Edited by hand to look cancelled, it must still block finalization, now as an altered record.
+    let batch = batchRecords github |> List.exactlyOne
+    editByHand github opened.Namespace.Location batch "cancelled" (Json.Bool true)
+
+    Assert.Contains("SIGNAL.STORAGE.ALTERED_RECORD", GroupAdmin.transition actor "finalize" at (fresh ()) |> run |> alteredCodes)
+
+[<Fact>]
+let ``a batch record edited by hand is refused when the batch is read again, never resumed from (SEC-01)`` () =
+    let github = InMemoryStore()
+    let group = setUp github (fun () -> true) AnonymousGroup GroupRecord.NoneAfterImport
+    let texts = [ anonymous 1uy Often; anonymous 2uy Never ]
+    Assert.Equal(Intake.Complete, (import texts group).Summary.Status)
+
+    editByHand github group.Dataset.Namespace.Location (batchRecords github |> List.exactlyOne) "cancelled" (Json.Bool true)
+
+    let opened = Store.openDataset (backend github (fun () -> true)) config actor None "signal-test" "ds_engagement" at |> run |> ok
+    let reopened = GroupStore.openGroup resolve groupId at opened |> run |> ok
+    Assert.Contains("SIGNAL.STORAGE.ALTERED_RECORD", GroupStore.importBatch actor resolve ResultRecord.MultiPaste texts at reopened |> run |> alteredCodes)

@@ -338,6 +338,31 @@ let ``a tampered or misplaced storage manifest is refused, never trusted`` () =
     Assert.Equal("SIGNAL.STORAGE.INVALID_RECORD", check (edited (fun text -> " " + text)))
 
 [<Fact>]
+let ``a canonical hand edit of the storage manifest is refused as altered, never trusted (SEC-01)`` () =
+    let _, state = initialized production
+    let ns, stored = manifestOf production state
+
+    let edited =
+        match stored with
+        | ReadOutcome.Found found ->
+            let record = Record.decode Record.DefaultMaxBytes found.Content |> ok
+
+            let body =
+                match record.Body with
+                | Json.Object members ->
+                    members
+                    |> List.map (fun (k, v) -> k, (if k = "createdFromApplicationVersion" then Json.String "signal-forged" else v))
+                    |> Json.objectOf
+                | other -> other
+
+            let content = { record with Body = body } |> Record.encode Record.DefaultMaxBytes |> ok
+            Assert.True(Json.isCanonical content)
+            ReadOutcome.Found { found with Content = content }
+        | ReadOutcome.Absent | ReadOutcome.Erased _ -> failwith "no manifest"
+
+    Assert.Equal("SIGNAL.STORAGE.ALTERED_RECORD", DatasetManifest.read DatasetManifest.current "ds_engagement" (root ns) edited |> codeOf)
+
+[<Fact>]
 let ``nothing that looks like a credential is written`` () =
     let binding = binding production |> ok
 

@@ -197,6 +197,23 @@ let ``a record stored without its body hash is refused, so removing the hash doe
     Assert.Equal<string list>([ "SIGNAL.STORAGE.ALTERED_RECORD" ], codesOf loaded)
 
 [<Fact>]
+let ``a record whose envelope was changed by hand, its body untouched, is refused as altered (SEC-01)`` () =
+    let original = object' (note "n1" [])
+
+    let rewrite (change: Record -> Record) (o: StoredObject) =
+        { o with Content = Record.decode Int64.MaxValue o.Content |> ok |> change |> Record.encode Int64.MaxValue |> ok }
+
+    // Declared immutable, or moved to another schema version this Signal reads:
+    // the body and its hash are as sealed, only the envelope differs.
+    for edited in
+        [ rewrite (fun r -> { r with Mutability = Mutability.Immutable }) original
+          rewrite (fun r -> { r with SchemaVersion = 2 }) original ] do
+        Assert.NotEqual<string>(original.Content, edited.Content)
+        let loaded = load [ edited ]
+        Assert.Empty(loaded.Records)
+        Assert.Equal<string list>([ "SIGNAL.STORAGE.ALTERED_RECORD" ], codesOf loaded)
+
+[<Fact>]
 let ``a record at another record's path, or of another dataset, is refused`` () =
     // n1's content stored at n2's path: moved or forged outside Signal.
     let moved = stored (pathOf [] "n2") (encoded 1 (note "n1" []))

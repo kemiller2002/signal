@@ -253,3 +253,29 @@ let ``below an anonymous group's minimum the report state holds only the counts`
     let reportable = ReportState.project policy (accumulate AnonymousGroup (responses AnonymousGroup 500 (answerSets 3)))
     Assert.True(reportable.Sections |> List.exists (fun s -> s.AggregateScore.IsSome))
     Assert.True(reportable.Coverage.IsSome)
+
+// ---- SEC-01: a stored report state edited by hand is refused ------------------------------------
+
+[<Fact>]
+let ``a canonical hand edit of a stored report state is refused as altered, never read (SEC-01)`` () =
+    let _, _, state = stateFor 5 AnonymousGroup
+    let path, text = ReportState.encodeRecord state |> ok
+    let id = ReportState.resultId state
+    let found content = Arca.ReadOutcome.Found { Arca.StoredObject.Path = path; Content = content; Revision = Arca.Revision "rev-1" }
+
+    Assert.Equal(ReportState.canonical state, ReportState.readRecord id (found text) |> ok |> ReportState.canonical)
+
+    // The expected count changed by hand and stored canonically again.
+    let record = Arca.Record.decode Arca.Record.DefaultMaxBytes text |> ok
+
+    let body =
+        match record.Body with
+        | Arca.Json.Object members -> members |> List.map (fun (k, v) -> k, (if k = "expected" then Arca.Json.Number 99m else v)) |> Arca.Json.objectOf
+        | other -> other
+
+    let edited = { record with Body = body } |> Arca.Record.encode Arca.Record.DefaultMaxBytes |> ok
+    Assert.True(Arca.Json.isCanonical edited)
+
+    match ReportState.readRecord id (found edited) with
+    | Error problem -> Assert.Equal("SIGNAL.STORAGE.ALTERED_RECORD", Problems.code problem)
+    | Ok _ -> failwith "a hand-edited report state was read"
