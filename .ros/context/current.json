@@ -3966,7 +3966,27 @@
       "updatedAt": "2026-11-09T22:23:30.000Z",
       "telemetryExecutionIds": [
         "EXE-20261109T222331298Z-2c6fe10a"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "f2aeb6975e05b67ffbd5d6f6",
+        "recordedAt": "2026-11-09T22:26:51.591Z",
+        "executionId": "EXE-20261109T222331298Z-2c6fe10a",
+        "repository": "echelon-signal",
+        "branch": "fix/wi0108-review-followups",
+        "commit": "9c6bb304dba0bc4c937616101b09325ce8ee0e20",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "fix/wi0108-review-followups",
+        "remoteCommit": "9c6bb304dba0bc4c937616101b09325ce8ee0e20",
+        "summary": "Review follow-ups implemented and pushed",
+        "nextAction": "Open the PR and get CI green",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
