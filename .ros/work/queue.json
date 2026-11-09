@@ -2643,10 +2643,10 @@
         "deployment"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-09T14:38:35.000Z",
-      "updatedAt": "2026-11-09T14:38:36.000Z",
+      "updatedAt": "2026-11-09T14:38:45.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

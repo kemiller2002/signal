@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-09T14:38:36.000Z",
+  "updatedAt": "2026-11-09T14:38:45.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3860,10 +3860,19 @@
     {
       "id": "WI-0107",
       "type": "feature",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-11-09T14:38:36.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "tools/pages/verify-deployed.mjs"
+        },
+        {
+          "type": "tests",
+          "path": "tools/pages/verify-deployed.test.mjs"
+        }
+      ],
+      "updatedAt": "2026-11-09T14:38:45.000Z",
       "telemetryExecutionIds": [
         "EXE-20261109T143837465Z-fb0b680f"
       ],
@@ -3886,7 +3895,9 @@
           "status": "verified",
           "mechanism": "git-remote-observation"
         }
-      }
+      },
+      "completedAt": "2026-11-09T14:38:45.000Z",
+      "conclusion": "Deployed-site verification added with adversarial unit tests (7/7 local). The live check runs on the next deploy from main."
     }
   ]
 }
