@@ -1,0 +1,14 @@
+{
+  "application": "Signal",
+  "status": "provisional",
+  "approved": false,
+  "standard": "EDS-BRAND-APP-001 (kemiller2002/echelon-design-system brand/application-logos.md, draft)",
+  "created": "2026-11-09",
+  "createdBy": "agent:anthropic/claude-code",
+  "note": "Provisional mark created at the owner's request (2026-11-09) because Signal had no logo assets. It must be replaced by approved artwork; Signal does not claim design-system compliance while this is provisional. Colors are the verified Forma/website palette (foundry-charcoal #202421, parchment #f2efe7, marketing bronze-light #c9a07f; echelon-design-system brand/AUDIT.md) and are not frozen tokens.",
+  "monogram": "S",
+  "assets": {
+    "favicon": "web/brand/signal-mark.svg",
+    "inlineMark": "web/index.html, web/survey/index.html, web/admin/index.html, web/home/index.html (inline SVG, currentColor)"
+  }
+}

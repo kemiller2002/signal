@@ -44,9 +44,9 @@ test("a page that already carries a policy keeps its own", () => {
   assert.match(published, /default-src 'none'/);
 });
 
-test("the root page sends the browser to web/ by a relative address, without script", () => {
+test("the root page sends the browser to the landing page by a relative address, without script", () => {
   const root = rootPage(site);
-  assert.match(root, /<meta http-equiv="refresh" content="0; url=web\/" \/>/);
+  assert.match(root, /<meta http-equiv="refresh" content="0; url=web\/home\/" \/>/);
   assert.doesNotMatch(root, /<script/);
 });
 
@@ -68,7 +68,9 @@ test("every HTML page in web/ is published, and each gets the policy and the ban
   pages.forEach(({ path, pagesCss }) => {
     const published = publishPage(readFileSync(new URL(`../../${path}`, import.meta.url), "utf8"), site, pagesCss);
     const policy = published.indexOf('http-equiv="Content-Security-Policy"');
-    assert.ok(policy > 0 && policy < published.indexOf("<link") && policy < published.indexOf("<script"), path);
+    // Before every link and script; a script-free page (web/home/) has none.
+    const first = (tag) => (published.includes(tag) ? published.indexOf(tag) : Infinity);
+    assert.ok(policy > 0 && policy < first("<link") && policy < first("<script"), path);
     assert.match(published, /data-pages-banner/, path);
     assert.ok(published.includes(`<link rel="stylesheet" href="${pagesCss}" />`), path);
   });
