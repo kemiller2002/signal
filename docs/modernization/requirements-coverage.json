@@ -3474,7 +3474,8 @@
         "WI-0039",
         "WI-0050",
         "WI-0101",
-        "WI-0104"
+        "WI-0104",
+        "WI-0105"
       ],
       "namedTests": [
         {
@@ -3492,6 +3493,12 @@
         {
           "module": "AdminStoreTests",
           "name": "a canonical hand edit that escalates an administrator is detected on load, never trusted (SEC-01)",
+          "existsInSource": true,
+          "outcome": "not-run-by-generator"
+        },
+        {
+          "module": "LoadingTests",
+          "name": "a record whose envelope was changed by hand, its body untouched, is refused as altered (SEC-01)",
           "existsInSource": true,
           "outcome": "not-run-by-generator"
         }
@@ -4003,7 +4010,8 @@
         "WI-0057",
         "WI-0073",
         "WI-0101",
-        "WI-0104"
+        "WI-0104",
+        "WI-0105"
       ],
       "namedTests": [
         {
@@ -4015,6 +4023,12 @@
         {
           "module": "LoadingTests",
           "name": "a record stored without its body hash is refused, so removing the hash does not bypass the check (SEC-01)",
+          "existsInSource": true,
+          "outcome": "not-run-by-generator"
+        },
+        {
+          "module": "DurableImportTests",
+          "name": "an interrupted batch whose record was edited by hand blocks finalization instead of vanishing from its obligations (SEC-01)",
           "existsInSource": true,
           "outcome": "not-run-by-generator"
         }

@@ -23,9 +23,9 @@ Work item: WI-0100 · Date: 2026-11-08 · Baseline: main `e19101f`
 | 5 | Forma contracts | ✗ partial (FORMA-AUDIT FRM-01..06) |
 | 6 | Folio contracts | ✗ partial (FOLIO-AUDIT) |
 | 7 | Critical workflows pass end-to-end | respondent ✓ (138/138); administrator only against in-memory providers ✗ |
-| 8 | Security and accessibility checks | ✗ SEC-01 integrity defect; ADM-017 and SCS-014 partial |
+| 8 | Security and accessibility checks | ✗ SEC-01 integrity defect (fix in PR #128, WI-0104/WI-0105: not yet merged, awaiting independent re-verification); ADM-017 and SCS-014 partial |
 | 9 | CI and deployment checks | ✓ CI green on main; Pages deploys (demo) |
-| 10 | No unresolved critical defects | ✗ SEC-01 (high) before production storage |
+| 10 | No unresolved critical defects | ✗ SEC-01 (high) before production storage; fix in PR #128 (WI-0104/WI-0105), not yet merged, awaiting independent re-verification |
 | 11 | Documentation and evidence complete | ✓ for this checkpoint (this directory) |
 | 12 | Owner decisions resolved | ✗ see below |
 

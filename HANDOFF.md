@@ -123,9 +123,15 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   outside Signal, or a record without the hash, is
   `SIGNAL.STORAGE.ALTERED_RECORD` and held aside; the roster, lifecycle and
   every other folder then open read-only.
+- WI-0105 (review follow-up): the hash covers the whole Arca envelope (id,
+  type, schema version, mutability) with the body, and an untrusted
+  import-batch record makes `GroupAdmin.unfinishedBatches`, and so
+  finalization, fail closed instead of dropping the record.
 - Records written before WI-0104 carry no hash and are refused; no production
-  dataset existed. The hash is unkeyed: it detects hand edits and corruption,
-  not an editor who recomputes it (that needs a keyed signature).
+  dataset existed. Residual risks: rollback to an earlier sealed version of a
+  mutable record is not detected (needs an outside anchor such as Arca commit
+  history), and the hash is unkeyed (an editor who recomputes it is not
+  detected; that needs a keyed signature).
 - Not in this item: ARP-005, ACR-008/AUT-004, SEC-04, manifest child hashes
   (ADM-025 SHOULD) and cross-object version compatibility (ADM-046). ADM-025
   and ADM-046 stay `partial` until independently re-verified.

@@ -38,35 +38,38 @@ let listGroups (now: DateTimeOffset) (opened: Store.Opened) : AsyncResult<Opaque
 
 /// The batches of a group that did not finish: interrupted, blocked or
 /// awaiting reconciliation. They must be resumed before finalization.
+///
+/// Every batch record is read as untrusted input (`Intake.reader`). A record
+/// that cannot be trusted (altered, unsealed, invalid, of another dataset) or
+/// a partial listing may hide an unfinished batch, so it is never dropped: the
+/// answer is `Unusable` with every problem, and finalization fails closed
+/// (SEC-01).
 let unfinishedBatches (now: DateTimeOffset) (group: OpenedGroup) : AsyncResult<Intake.Batch list, GroupFailure> =
     let opened = group.Dataset
 
+    let unfinished (batch: Intake.Batch) =
+        match (Intake.summarize batch).Status with
+        | Intake.Complete
+        | Intake.CompleteWithRejections
+        | Intake.CancelledBeforeProcessingRemainder -> false
+        | _ -> true
+
     asyncResult {
-        let! folder = RelativePath.parse ("records/" + RecordType.value Intake.recordType) |> Result.mapError (fun e -> Unusable [ InvalidDataLocation(LocationError.describe e) ]) |> lift
-        let! listing = call now (opened.Provider.List opened.Namespace folder)
+        let! listing = call now (opened.Provider.List opened.Namespace Intake.folder)
         let! objects = Loading.recordFiles listing |> List.map (fun path -> call now (opened.Provider.Read opened.Namespace path)) |> sequence
+        let loaded = Loading.load opened.Verified Intake.reader Intake.folder listing (objects |> List.choose Store.present)
 
-        let batches =
-            objects
-            |> List.choose (function
-                | ReadOutcome.Found stored ->
-                    // An unusable or altered batch record is not resumed (SEC-01).
-                    RecordIntegrity.decode Record.DefaultMaxBytes stored.Content
-                    |> Result.toOption
-                    |> Option.bind (fun record -> Intake.ofBody record.Body |> Result.toOption)
-                | ReadOutcome.Absent
-                | ReadOutcome.Erased _ -> None)
-            |> List.map _.Batch
-            |> List.filter (fun batch -> batch.Group = group.Config.Group)
+        let found =
+            match loaded.Problems with
+            | [] ->
+                loaded.Records
+                |> Map.toList
+                |> List.map (fun (_, stored) -> stored.Value.Batch)
+                |> List.filter (fun batch -> batch.Group = group.Config.Group && unfinished batch)
+                |> Ok
+            | problems -> Error(Unusable problems)
 
-        return
-            batches
-            |> List.filter (fun batch ->
-                match (Intake.summarize batch).Status with
-                | Intake.Complete
-                | Intake.CompleteWithRejections
-                | Intake.CancelledBeforeProcessingRemainder -> false
-                | _ -> true)
+        return! lift found
     }
 
 /// Applies a lifecycle transition (`close`, `reopen`, `finalize`, `seal`):

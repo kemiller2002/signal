@@ -436,3 +436,19 @@ let ofBody (value: Json) : Decoded<StoredBatch> =
         | _, _, Error e, _, _
         | _, _, _, Error e, _
         | _, _, _, _, Error e -> Error e)
+
+/// The folder of a dataset's batch records.
+let folder: RelativePath =
+    match RelativePath.parse (String.concat "/" [ Arca.Layout.RecordsFolder; RecordType.value recordType ]) with
+    | Ok found -> found
+    | Error error -> invalidOp ("internal: " + LocationError.describe error)
+
+/// How batch records are read as untrusted input (ADM-046, SEC-01).
+let reader: Loading.RecordReader<StoredBatch> =
+    { Type = recordType
+      Schema = schema
+      MaxBytes = Record.DefaultMaxBytes
+      Decode = ofBody
+      IdOf = _.Batch.BatchId
+      DatasetOf = fun stored -> Some stored.DatasetId
+      References = fun _ -> [] }
