@@ -122,4 +122,4 @@
 | WI-0103 | Adopt echelon-current 1.37.1 (Forma 0.13.1) and retire the record-header EXCEPTION (forma#179) | complete |  | medium |
 | WI-0104 | C3 part 1 of WI-0101: SEC-01 - verify every stored record's content hash on read so a canonical (still-valid JSON) edit of a record body is detected (ADM-025, ADM-046) | complete | modernization,security,integrity | high |
 | WI-0105 | Review follow-up to WI-0104 (PR #128): fail closed on an altered interrupted-batch record at finalize, correct the RecordIntegrity integrity claim and residual risks (rollback, envelope coverage), and add tamper tests for report state, storage manifest and import batch reads | complete | modernization,security,integrity | high |
-| WI-0106 | SIG-EXP-001: Forma 0.14.0 (echelon-current 1.37.2), approved Signal mark, landing page, pre-runtime start-up | ready | signal, forma, identity | high |
+| WI-0106 | SIG-EXP-001: Forma 0.14.0 (echelon-current 1.37.2), approved Signal mark, landing page, pre-runtime start-up | complete | signal, forma, identity | high |

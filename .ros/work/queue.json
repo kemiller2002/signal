@@ -2619,10 +2619,10 @@
         "identity"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-09T13:02:22.000Z",
-      "updatedAt": "2026-11-09T13:02:28.000Z",
+      "updatedAt": "2026-11-09T13:19:55.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
