@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 104,
+  "nextSeq": 106,
   "items": [
     {
       "id": "WI-0001",
@@ -2552,6 +2552,52 @@
       "attachments": [],
       "createdAt": "2026-11-09T02:13:09.039Z",
       "updatedAt": "2026-11-09T02:23:30.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0104",
+      "title": "C3 part 1 of WI-0101: SEC-01 - verify every stored record's content hash on read so a canonical (still-valid JSON) edit of a record body is detected (ADM-025, ADM-046)",
+      "description": null,
+      "tags": [
+        "modernization,security,integrity"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-09T10:42:02.059Z",
+      "updatedAt": "2026-11-09T11:00:30.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0105",
+      "title": "Review follow-up to WI-0104 (PR #128): fail closed on an altered interrupted-batch record at finalize, correct the RecordIntegrity integrity claim and residual risks (rollback, envelope coverage), and add tamper tests for report state, storage manifest and import batch reads",
+      "description": null,
+      "tags": [
+        "modernization,security,integrity"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-09T11:16:11.876Z",
+      "updatedAt": "2026-11-09T11:32:29.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

@@ -100,7 +100,7 @@ let encode (datasetId: string) (config: GroupConfig) : Result<string, Problem> =
           SchemaVersion = schema.Current
           Mutability = Mutability.Mutable
           Body = body datasetId config }
-        |> Record.encode Record.DefaultMaxBytes
+        |> RecordIntegrity.encode Record.DefaultMaxBytes
         |> Result.mapError (fun _ -> UnstorableRecord(groupKey config.Group, "the group record is too large")))
 
 /// A stored group: its dataset and configuration.

@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-09T02:23:30.000Z",
+  "updatedAt": "2026-11-09T11:32:29.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3700,6 +3700,116 @@
         }
       },
       "completedAt": "2026-11-09T02:23:30.000Z"
+    },
+    {
+      "id": "WI-0104",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/RecordIntegrity.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/LoadingTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/AdminStoreTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/ArchitectureTests.fs"
+        },
+        {
+          "type": "requirements",
+          "path": "docs/requirements/implementation-gap-analysis.md"
+        },
+        {
+          "type": "security",
+          "path": "docs/modernization/SECURITY-REVIEW.md"
+        }
+      ],
+      "updatedAt": "2026-11-09T11:00:30.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261109T104205882Z-a10a17cb"
+      ],
+      "latestCheckpoint": {
+        "id": "92d17561314812cb2ac30365",
+        "recordedAt": "2026-11-09T11:00:22.000Z",
+        "executionId": "EXE-20261109T104205882Z-a10a17cb",
+        "repository": "echelon-signal",
+        "branch": "claude/signal-sec-01-record-hash",
+        "commit": "ed41378fb16a4598dd0f7d36589e7f56ebc39445",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "claude/signal-sec-01-record-hash",
+        "remoteCommit": "ed41378fb16a4598dd0f7d36589e7f56ebc39445",
+        "summary": "SEC-01 fixed: RecordIntegrity seals record bodies on write and verifies them on every read; tests-first proved defect (4 failures on 639), fix green (639/639, browser 143/143); PR #128 open",
+        "nextAction": "Independent re-verification and coordinator merge of PR #128",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-09T11:00:30.000Z"
+    },
+    {
+      "id": "WI-0105",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/GroupAdmin.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/RecordIntegrity.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/DurableImportTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/LoadingTests.fs"
+        },
+        {
+          "type": "security",
+          "path": "docs/modernization/SECURITY-REVIEW.md"
+        }
+      ],
+      "updatedAt": "2026-11-09T11:32:29.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261109T111613404Z-fde5118a"
+      ],
+      "latestCheckpoint": {
+        "id": "711cbd83274015eecd442866",
+        "recordedAt": "2026-11-09T11:32:27.000Z",
+        "executionId": "EXE-20261109T111613404Z-fde5118a",
+        "repository": "echelon-signal",
+        "branch": "claude/signal-sec-01-record-hash",
+        "commit": "91bfd278dc33265171a3c65844b1cafcb76b254f",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "claude/signal-sec-01-record-hash",
+        "remoteCommit": "91bfd278dc33265171a3c65844b1cafcb76b254f",
+        "summary": "PR #128 review fixed: finalize fails closed on untrusted batch records; record hash covers the whole envelope; residual risks documented; tamper tests for report state, manifest and batch reads; CI 644/644, browser 143/143",
+        "nextAction": "Independent re-review and coordinator merge of PR #128",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-09T11:32:29.000Z"
     }
   ]
 }

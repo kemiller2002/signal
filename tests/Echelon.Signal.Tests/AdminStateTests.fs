@@ -58,7 +58,7 @@ let ``only legal transitions apply; a sealed group is never reopened`` () =
 let ``the lifecycle record round-trips`` () =
     let lifecycle = { initial (group 1uy) (Some(group 9uy)) with Status = Superseded(group 2uy); Revision = 3 }
     let text = encode "ds_engagement" lifecycle |> Result.defaultWith (fun e -> failwith $"{e}")
-    let record = Arca.Record.decode Arca.Record.DefaultMaxBytes text |> Result.defaultWith (fun e -> failwith $"{e}")
+    let record = RecordIntegrity.decode Arca.Record.DefaultMaxBytes text |> Result.defaultWith (fun e -> failwith $"%A{e}")
     let back = ofBody record.Body |> Result.defaultWith failwith
     Assert.Equal(sprintf "%A" lifecycle, sprintf "%A" back.Lifecycle)
 

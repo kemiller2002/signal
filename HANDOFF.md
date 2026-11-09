@@ -114,6 +114,28 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
 - Next: C1, the Conditor upgrade to echelon-current 1.37.0
   (`docs/modernization/EXECUTION-PLAN.md`).
 
+## SEC-01 record integrity (WI-0104, 2026-11-09)
+
+- C3 part 1 of WI-0101. `RecordIntegrity` (Admin) is now the only place a
+  record is encoded, decoded or validated (`ArchitectureTests`): every body
+  Signal writes carries `bodyHash`, the `sha256:` of the rest of the body
+  (Arca `Json.contentHash`), and every read verifies it. A canonical edit made
+  outside Signal, or a record without the hash, is
+  `SIGNAL.STORAGE.ALTERED_RECORD` and held aside; the roster, lifecycle and
+  every other folder then open read-only.
+- WI-0105 (review follow-up): the hash covers the whole Arca envelope (id,
+  type, schema version, mutability) with the body, and an untrusted
+  import-batch record makes `GroupAdmin.unfinishedBatches`, and so
+  finalization, fail closed instead of dropping the record.
+- Records written before WI-0104 carry no hash and are refused; no production
+  dataset existed. Residual risks: rollback to an earlier sealed version of a
+  mutable record is not detected (needs an outside anchor such as Arca commit
+  history), and the hash is unkeyed (an editor who recomputes it is not
+  detected; that needs a keyed signature).
+- Not in this item: ARP-005, ACR-008/AUT-004, SEC-04, manifest child hashes
+  (ADM-025 SHOULD) and cross-object version compatibility (ADM-046). ADM-025
+  and ADM-046 stay `partial` until independently re-verified.
+
 ## Current state (2026-10-07)
 
 - Requirement coverage is tracked per requirement group in

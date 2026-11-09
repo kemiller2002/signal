@@ -183,14 +183,13 @@ let private erase
                 match Layout.keyOf target.Path with
                 | Some key ->
                     return
-                        Integrity.validate key reader.Schema reader.MaxBytes stored
-                        |> Result.mapError (fun failure -> $"{where}: {Codec.describeIntegrity failure}")
-                        |> Result.bind (fun valid ->
+                        RecordIntegrity.validate key reader.Schema reader.MaxBytes stored
+                        |> Result.mapError (fun failure -> $"{where}: {RecordIntegrity.describeRead failure}")
+                        |> Result.bind (fun verified ->
                             // Only the record that was retired is erased.
-                            if valid.ContentHash <> target.ContentHash then
-                                Error $"{where} changed since it was retired"
-                            else
-                                Erasure.request target.Path valid now reason |> Result.mapError (fun e -> $"{where}: %A{e}"))
+                            match Integrity.unchanged target.ContentHash verified.Stored with
+                            | Error _ -> Error $"{where} changed since it was retired"
+                            | Ok _ -> Erasure.request target.Path verified.Stored now reason |> Result.mapError (fun e -> $"{where}: %A{e}"))
                 | None -> return Error $"{where} is not a record path"
             | Ok other -> return Error $"{where}: %A{other}"
             | Error failure -> return Error $"{where}: %A{failed now failure}"

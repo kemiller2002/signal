@@ -225,7 +225,7 @@ let encodeSaved (datasetId: string) (saved: Saved) : Result<RelativePath * strin
                       "name", Json.String saved.Name
                       "state", toJson saved.State
                       "revision", Json.Number(decimal saved.Revision) ] }
-            |> Record.encode Record.DefaultMaxBytes
+            |> RecordIntegrity.encode Record.DefaultMaxBytes
             |> Result.map (fun text -> path, text)
             |> Result.mapError (fun _ -> Problems.UnstorableRecord(saved.Id, "the saved analysis is too large"))
 

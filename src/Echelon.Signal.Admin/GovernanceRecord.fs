@@ -52,7 +52,7 @@ let private encodeWith (recordType: RecordType) (mutability: Mutability) (id: st
     match RecordId.create id with
     | Ok recordId ->
         { Id = recordId; Type = recordType; SchemaVersion = 1; Mutability = mutability; Body = body }
-        |> Record.encode Record.DefaultMaxBytes
+        |> RecordIntegrity.encode Record.DefaultMaxBytes
         |> Result.mapError (fun _ -> UnstorableRecord(id, "the record is too large"))
     | Error text -> Error(UnstorableRecord(text, "not a record id"))
 

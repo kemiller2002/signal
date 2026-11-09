@@ -255,10 +255,10 @@ let private readBatch now (opened: Store.Opened) (fresh: Intake.Batch) =
                 match RecordId.create fresh.BatchId with
                 | Error _ -> Error(Unusable [ UnstorableRecord(fresh.BatchId, "not a record id") ])
                 | Ok id ->
-                    Integrity.validate { Type = Intake.recordType; Partition = []; Id = id } Intake.schema Record.DefaultMaxBytes found
-                    |> Result.mapError (fun failure -> Unusable [ InvalidStoredRecord(RelativePath.render found.Path, Codec.describeIntegrity failure) ])
-                    |> Result.bind (fun valid ->
-                        Intake.ofBody valid.Record.Body
+                    RecordIntegrity.validate { Type = Intake.recordType; Partition = []; Id = id } Intake.schema Record.DefaultMaxBytes found
+                    |> Result.mapError (fun failure -> Unusable [ RecordIntegrity.problem (RelativePath.render found.Path) failure ])
+                    |> Result.bind (fun verified ->
+                        Intake.ofBody verified.Body
                         |> Result.mapError (fun detail -> Unusable [ InvalidStoredRecord(RelativePath.render found.Path, detail) ]))
                 |> lift
 

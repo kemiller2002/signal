@@ -117,7 +117,7 @@ let encode (manifest: StorageManifest) : Result<string, Problem> =
           SchemaVersion = schema.Current
           Mutability = Mutability.Mutable
           Body = body manifest }
-        |> Record.encode Record.DefaultMaxBytes
+        |> RecordIntegrity.encode Record.DefaultMaxBytes
         |> Result.mapError (fun _ -> UnstorableRecord(manifest.DatasetId, "the storage manifest is too large")))
 
 let private versionsOf (value: Json) : Decoded<FormatVersions> =
@@ -231,9 +231,9 @@ let read (supported: FormatVersions) (datasetId: string) (root: string) (stored:
 
         key datasetId
         |> Result.bind (fun expected ->
-            Integrity.validate expected schema Record.DefaultMaxBytes found
-            |> Result.mapError (fun failure -> InvalidStoredRecord(where, describeIntegrity failure))
-            |> Result.bind (fun valid -> ofBody valid.Record.Body |> Result.mapError (fun detail -> InvalidStoredRecord(where, detail))))
+            RecordIntegrity.validate expected schema Record.DefaultMaxBytes found
+            |> Result.mapError (RecordIntegrity.problem where)
+            |> Result.bind (fun verified -> ofBody verified.Body |> Result.mapError (fun detail -> InvalidStoredRecord(where, detail))))
         |> Result.bind (fun manifest ->
             if manifest.DatasetId <> datasetId then
                 Error(ManifestUnusable(datasetId, $"the manifest is for dataset '{manifest.DatasetId}'"))

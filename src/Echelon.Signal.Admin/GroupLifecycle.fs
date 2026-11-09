@@ -201,7 +201,7 @@ let encode (datasetId: string) (lifecycle: Lifecycle) : Result<string, Problem> 
                    | _ -> Json.Null)
                   "predecessor", (lifecycle.Predecessor |> Option.map (string >> Json.String) |> Option.defaultValue Json.Null)
                   "revision", Json.Number(decimal lifecycle.Revision) ] }
-        |> Record.encode Record.DefaultMaxBytes
+        |> RecordIntegrity.encode Record.DefaultMaxBytes
         |> Result.mapError (fun _ -> UnstorableRecord(GroupRecord.groupKey lifecycle.Group, "the lifecycle record is too large"))
 
 let private groupOf (value: Json) : Decoded<OpaqueId option> =

@@ -93,7 +93,7 @@ let private encoded (schemaVersion: int) (note: Note) =
       SchemaVersion = schemaVersion
       Mutability = Mutability.Mutable
       Body = Json.objectOf [ "id", Json.String note.Id; "dataset", Json.String note.Dataset; "refs", textArray note.Refs ] }
-    |> Record.encode Int64.MaxValue
+    |> RecordIntegrity.encode Int64.MaxValue
     |> ok
 
 let private stored (path: RelativePath) (content: string) : StoredObject =
@@ -149,6 +149,69 @@ let ``tampered, truncated, oversized and future records are held aside with type
         Assert.Empty(loaded.Records)
         Assert.Equal<string list>([ "SIGNAL.STORAGE.INVALID_RECORD" ], codesOf loaded)
         Assert.True(loaded.Unusable.ContainsKey(RelativePath.render case.Path))
+
+// ---- SEC-01: a record's body is checked against the hash stored with it -------------------------
+
+/// The stored object with one member of its record body replaced and the
+/// record stored canonically again: the edit a person makes by hand in the
+/// repository. Every check of the envelope still passes.
+let private canonicalEdit (name: string) (value: Json) (o: StoredObject) =
+    let record = Record.decode Int64.MaxValue o.Content |> ok
+
+    let body =
+        match record.Body with
+        | Json.Object members -> members |> List.map (fun (key, found) -> key, (if key = name then value else found)) |> Json.objectOf
+        | other -> other
+
+    { o with Content = { record with Body = body } |> Record.encode Int64.MaxValue |> ok }
+
+[<Fact>]
+let ``a canonical edit of a record's body is detected and the record held aside, never loaded as authentic (SEC-01)`` () =
+    let original = object' (note "n1" [])
+    let tampered = canonicalEdit "refs" (textArray [ "n2" ]) original
+
+    // Still a canonical record envelope: only the body's hash can tell.
+    Assert.True(Json.isCanonical tampered.Content)
+    Assert.NotEqual<string>(original.Content, tampered.Content)
+
+    let loaded = load [ tampered; object' (note "n2" []) ]
+
+    Assert.False(loaded.Records.ContainsKey "n1", "a canonically edited record loaded as authentic")
+    Assert.True(loaded.Unusable.ContainsKey(RelativePath.render tampered.Path))
+    Assert.Equal<string list>([ "SIGNAL.STORAGE.ALTERED_RECORD" ], codesOf loaded)
+    // The untouched record still loads.
+    Assert.True(loaded.Records.ContainsKey "n2")
+
+[<Fact>]
+let ``a record stored without its body hash is refused, so removing the hash does not bypass the check (SEC-01)`` () =
+    let bare: Record =
+        { Id = RecordId.create "n1" |> ok
+          Type = noteType
+          SchemaVersion = 1
+          Mutability = Mutability.Mutable
+          Body = Json.objectOf [ "id", Json.String "n1"; "dataset", Json.String "ds_engagement"; "refs", textArray [] ] }
+
+    let loaded = load [ stored (pathOf [] "n1") (bare |> Record.encode Int64.MaxValue |> ok) ]
+
+    Assert.Empty(loaded.Records)
+    Assert.Equal<string list>([ "SIGNAL.STORAGE.ALTERED_RECORD" ], codesOf loaded)
+
+[<Fact>]
+let ``a record whose envelope was changed by hand, its body untouched, is refused as altered (SEC-01)`` () =
+    let original = object' (note "n1" [])
+
+    let rewrite (change: Record -> Record) (o: StoredObject) =
+        { o with Content = Record.decode Int64.MaxValue o.Content |> ok |> change |> Record.encode Int64.MaxValue |> ok }
+
+    // Declared immutable, or moved to another schema version this Signal reads:
+    // the body and its hash are as sealed, only the envelope differs.
+    for edited in
+        [ rewrite (fun r -> { r with Mutability = Mutability.Immutable }) original
+          rewrite (fun r -> { r with SchemaVersion = 2 }) original ] do
+        Assert.NotEqual<string>(original.Content, edited.Content)
+        let loaded = load [ edited ]
+        Assert.Empty(loaded.Records)
+        Assert.Equal<string list>([ "SIGNAL.STORAGE.ALTERED_RECORD" ], codesOf loaded)
 
 [<Fact>]
 let ``a record at another record's path, or of another dataset, is refused`` () =

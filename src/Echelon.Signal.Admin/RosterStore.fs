@@ -137,8 +137,7 @@ let committed (after: Roster) (receipt: CommitReceipt) (stored: StoredRoster) : 
     let hashOf (membership: Membership) =
         encode after.DatasetId membership
         |> Result.toOption
-        |> Option.bind (Record.decode Record.DefaultMaxBytes >> Result.toOption)
-        |> Option.map Record.contentHash
+        |> Option.bind RecordIntegrity.storedHash
         |> Option.defaultValue ""
 
     let storedAs (principalId: string) (membership: Membership) : Loading.Stored<StoredMembership> option =

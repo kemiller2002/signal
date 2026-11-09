@@ -332,7 +332,7 @@ let encode (datasetId: string) (batch: Batch) : Result<string, Problem> =
                   "cancelled", Json.Bool batch.Cancelled
                   "status", Json.String(statusName (summarize batch).Status)
                   "revision", Json.Number(decimal batch.Revision) ] }
-        |> Record.encode Record.DefaultMaxBytes
+        |> RecordIntegrity.encode Record.DefaultMaxBytes
         |> Result.mapError (fun _ -> UnstorableRecord(batch.BatchId, "the batch record is too large"))
 
 /// The Arca changes that store a batch step: a `Create` for each accepted
@@ -436,3 +436,19 @@ let ofBody (value: Json) : Decoded<StoredBatch> =
         | _, _, Error e, _, _
         | _, _, _, Error e, _
         | _, _, _, _, Error e -> Error e)
+
+/// The folder of a dataset's batch records.
+let folder: RelativePath =
+    match RelativePath.parse (String.concat "/" [ Arca.Layout.RecordsFolder; RecordType.value recordType ]) with
+    | Ok found -> found
+    | Error error -> invalidOp ("internal: " + LocationError.describe error)
+
+/// How batch records are read as untrusted input (ADM-046, SEC-01).
+let reader: Loading.RecordReader<StoredBatch> =
+    { Type = recordType
+      Schema = schema
+      MaxBytes = Record.DefaultMaxBytes
+      Decode = ofBody
+      IdOf = _.Batch.BatchId
+      DatasetOf = fun stored -> Some stored.DatasetId
+      References = fun _ -> [] }

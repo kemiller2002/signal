@@ -80,7 +80,7 @@ let encode (datasetId: string) (membership: Membership) : Result<string, Problem
           SchemaVersion = schema.Current
           Mutability = Mutability.Mutable
           Body = body datasetId membership }
-        |> Record.encode Record.DefaultMaxBytes
+        |> RecordIntegrity.encode Record.DefaultMaxBytes
         |> Result.mapError (fun _ -> UnstorableRecord(membership.Principal.PrincipalId, "the membership record is too large")))
 
 /// A stored membership: its dataset and the membership.

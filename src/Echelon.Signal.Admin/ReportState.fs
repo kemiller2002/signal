@@ -344,7 +344,7 @@ let encodeRecord (state: AdminReportState) : Result<RelativePath * string, Probl
               SchemaVersion = schema.Current
               Mutability = Mutability.Immutable
               Body = toJson state }
-            |> Record.encode Record.DefaultMaxBytes
+            |> RecordIntegrity.encode Record.DefaultMaxBytes
             |> Result.map (fun text -> target, text)
             |> Result.mapError (fun _ -> Problems.UnstorableRecord(id, "the report state is too large")))
 
@@ -360,8 +360,8 @@ let readRecord (id: string) (stored: ReadOutcome) : Result<AdminReportState, Pro
         match RecordId.create id with
         | Error _ -> Error(Problems.InvalidStoredRecord(where, "not a result id"))
         | Ok recordId ->
-            Integrity.validate { Type = recordType; Partition = []; Id = recordId } schema Record.DefaultMaxBytes found
-            |> Result.mapError (fun failure -> Problems.InvalidStoredRecord(where, describeIntegrity failure))
-            |> Result.bind (fun valid -> ofJson valid.Record.Body |> Result.mapError (fun detail -> Problems.InvalidStoredRecord(where, detail)))
+            RecordIntegrity.validate { Type = recordType; Partition = []; Id = recordId } schema Record.DefaultMaxBytes found
+            |> Result.mapError (RecordIntegrity.problem where)
+            |> Result.bind (fun verified -> ofJson verified.Body |> Result.mapError (fun detail -> Problems.InvalidStoredRecord(where, detail)))
             |> Result.bind (fun state ->
                 if resultId state = id then Ok state else Error(Problems.InvalidStoredRecord(where, "the state does not hash to its id")))
