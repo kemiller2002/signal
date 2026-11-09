@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-09T13:19:55.000Z",
+  "updatedAt": "2026-11-09T14:38:45.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3856,6 +3856,48 @@
       },
       "completedAt": "2026-11-09T13:19:55.000Z",
       "conclusion": "SIG-EXP-001.1-.5 implemented: echelon-current 1.37.2 (Forma 0.14.0), approved mark, landing page, start-up screen with watchdog. Independent review findings fixed; CI is the evidence for WASM and .NET tests (NuGet blocked locally)."
+    },
+    {
+      "id": "WI-0107",
+      "type": "feature",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "tools/pages/verify-deployed.mjs"
+        },
+        {
+          "type": "tests",
+          "path": "tools/pages/verify-deployed.test.mjs"
+        }
+      ],
+      "updatedAt": "2026-11-09T14:38:45.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261109T143837465Z-fb0b680f"
+      ],
+      "latestCheckpoint": {
+        "id": "9e79c44a323abc2d555d312c",
+        "recordedAt": "2026-11-09T14:38:41.000Z",
+        "executionId": "EXE-20261109T143837465Z-fb0b680f",
+        "repository": "echelon-signal",
+        "branch": "claude/verify-deployed-site",
+        "commit": "40f5a3acacede93df77e91040db48efd8d9b74da",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "claude/verify-deployed-site",
+        "remoteCommit": "40f5a3acacede93df77e91040db48efd8d9b74da",
+        "summary": "Deployed-site checker, tests and workflow job added",
+        "nextAction": "Complete, PR, CI, merge, observe the post-deploy job on main",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-09T14:38:45.000Z",
+      "conclusion": "Deployed-site verification added with adversarial unit tests (7/7 local). The live check runs on the next deploy from main."
     }
   ]
 }

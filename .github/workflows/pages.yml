@@ -40,8 +40,8 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Test the site assembly
-        run: node --test tools/pages/assemble-site.test.mjs
+      - name: Test the site assembly and the deployed-site check
+        run: node --test tools/pages/assemble-site.test.mjs tools/pages/verify-deployed.test.mjs
 
       # The WebAssembly engine, published in Release by the repository's own
       # script, so the site is the same build the browser suite proves.
@@ -93,6 +93,8 @@ jobs:
       contents: read
       pages: write
       id-token: write
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -118,3 +120,34 @@ jobs:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # The deployed site, not the checkout (EDS-ADR-002, EDS-BRAND-APP-001):
+  # entry pages answer, carry Signal's favicon and start-up screen, the
+  # landing page carries the identity, and every brand asset resolves.
+  verify-deployed:
+    name: Verify the deployed site
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      # Pages can serve the previous deployment for a short while; retry
+      # before failing, and fail loudly if it never matches.
+      - name: Check the deployed URLs
+        env:
+          SITE_URL: ${{ needs.deploy.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5 6; do
+            if node tools/pages/verify-deployed.mjs "$SITE_URL"; then exit 0; fi
+            echo "attempt $attempt failed; retrying in 30 s"
+            sleep 30
+          done
+          exit 1
+
