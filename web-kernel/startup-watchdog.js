@@ -1,5 +1,5 @@
 // Start-up watchdog for the pre-runtime start-up screen (#app-startup, Forma
-// .ef-startup). A classic script, deliberately outside the module graph, so it
+// .forma-startup). A classic script, deliberately outside the module graph, so it
 // still runs when a module the page imports (main.js, the Limen kernel, Folio,
 // this repository's loader) fails to load: in that case startPage never runs
 // and only this script can end the start-up screen. It never decides anything
@@ -11,11 +11,11 @@
   const screen = document.getElementById("app-startup");
   if (!screen) return;
 
-  const pending = () => !screen.hidden && !["failed", "timed-out"].includes(screen.dataset.efState);
+  const pending = () => !screen.hidden && !["failed", "timed-out"].includes(screen.dataset.formaState);
 
   const present = (state, title) => {
     if (!pending()) return;
-    screen.dataset.efState = state;
+    screen.dataset.formaState = state;
     const heading = document.getElementById("app-startup-problem-title");
     if (heading && title) heading.textContent = title;
   };

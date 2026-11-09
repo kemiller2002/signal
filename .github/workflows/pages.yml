@@ -36,7 +36,7 @@ jobs:
         with:
           node-version: "24"
 
-      # The page loads Limen, Forma and Folio from node_modules.
+      # The page loads Limen, Forma, the Echelon theme and Folio from node_modules.
       - name: Install npm dependencies
         run: npm ci
 
@@ -61,7 +61,8 @@ jobs:
           for f in .nojekyll index.html web/index.html web/home/index.html web/brand/signal-mark.svg web/main.js web/pages.css \
                    web-kernel/limen-wasm.js web-kernel/startup-watchdog.js build/wasm/wwwroot/_framework/dotnet.js \
                    node_modules/@echelon-foundry/limen/dist/kernel/browser-kernel.js \
-                   node_modules/@echelon-foundry/design-system/dist/all.css; do
+                   node_modules/@echelon-foundry/design-system/dist/all.css \
+                   node_modules/@echelon-foundry/echelon-theme/dist/echelon.css; do
             test -e "$site/$f" || { echo "::error::the site is missing $f"; exit 1; }
           done
           ls "$site"/build/wasm/wwwroot/_framework/*.wasm > /dev/null

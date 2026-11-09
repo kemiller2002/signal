@@ -1,6 +1,8 @@
-/* The landing page (web/home/). Forma owns every component; this file only
-   lays the page out, as web-kernel/page.css does for the application pages. */
+/* The landing page (web/home/). Forma owns every component and the Echelon
+   theme (after Forma) its colours and fonts; this file only lays the page
+   out, as web-kernel/page.css does for the application pages. */
 @import "../../node_modules/@echelon-foundry/design-system/dist/all.css";
+@import "../../node_modules/@echelon-foundry/echelon-theme/dist/echelon.css";
 
 .home-header,
 .home {

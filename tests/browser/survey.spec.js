@@ -109,7 +109,7 @@ test("other answer kinds and a conditional question work on the page", async ({ 
 
   const toggle = (row) => page.locator(`[data-row="${row}"] input[type="checkbox"]`);
   // A person clicks the option's label: the design system hides the box itself
-  // (Forma's .ef-special-choice), and in Firefox the label text covers it.
+  // (Forma's .forma-special-choice), and in Firefox the label text covers it.
   const label = (row) => page.locator(`[data-row="${row}"] label:has(input[type="checkbox"])`);
   await label("3-t0").click();
   await expect(toggle("3-t0")).toBeChecked();

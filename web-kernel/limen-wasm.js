@@ -60,7 +60,7 @@ const diagnostics = {
 // The kernel's status is published on <html data-kernel> as soon as it
 // leaves "starting", so the page (and its browser tests) can tell "running"
 // from a failed start even while start-up effects are still completing.
-// The pre-runtime start-up screen (#app-startup, Forma .ef-startup) is in each
+// The pre-runtime start-up screen (#app-startup, Forma .forma-startup) is in each
 // page's HTML. It is presentation only: hidden as soon as the kernel reports
 // "running" (start-up effects may still be completing, and the application is
 // already usable), and marked failed when the kernel ends in any other state.
@@ -74,7 +74,7 @@ const presentStartup = (screen, outcome) => {
   if (outcome === "mounted") {
     screen.hidden = true;
   } else if (outcome === "failed") {
-    screen.dataset.efState = "failed";
+    screen.dataset.formaState = "failed";
   }
 };
 

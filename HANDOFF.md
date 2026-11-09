@@ -105,6 +105,14 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
 - Start-up: each engine page carries Forma `.ef-startup` in its HTML; `web-kernel/limen-wasm.js` hides it once the kernel runs, marks `failed` when start-up throws and `timed-out` after 60 s. It has no controls, so Limen strict verification is unaffected.
 - Tests: `tests/browser/experience.spec.js`; the Forma pin in `FoundationsConformanceTests` moved to 0.14.0.
 
+## Forma 1.x and the Echelon theme (WI-0108, SIG-FORMA1-001, 2026-11-09)
+
+- Platform: echelon-current 1.38.0 through Conditor 0.10.24 (`conditor upgrade --current`, linux-x64 set `sha256:b92b3be8…`, isolated `--home`, plan `sha256:5418b83d…`, which discloses the Forma 1.0 break); only Forma 0.14.0 -> 1.0.1 changed, and `echelon-theme` 1.0.0 was opted in. Second-plan drift: none. `conditor verify` passes.
+- Theme: `@echelon-foundry/echelon-theme` 1.0.0 is pinned at its GitHub release asset (package.json URL, lockfile sha512 matching the verified tarball) and declared in `conditor.json`. Every page stylesheet imports Forma's `all.css`, then the theme's `dist/echelon.css`; every page sets `data-forma-brand="echelon"` on `<html>`. The theme supplies colours and fonts only (it ships no font files, so Manrope/Newsreader render only where installed, as before); Signal keeps its own approved mark.
+- Namespace: Forma's codemod (`tools/NamespaceMigrator`, 1.0.1) rewrote 446 lines in 14 files under `web`, `web-kernel`, `tests`, `tools`. Folio 0.4.1 still owns `ef-print-*` (its print CSS selects those element names), so those names were restored by hand; `--check` therefore still lists exactly those Folio lines (54) and nothing else. Historical records (`research/`, `docs/modernization/`, `docs/verification/`, `input-documents/`, processed inputs, older HANDOFF sections) and the two canonical requirement documents in `docs/requirements/` keep the names they were written with.
+- Guards: `FoundationsConformanceTests` pins Forma 1.0.1 and the theme, checks import order, the brand attribute, Signal's own mark, and that no Forma 0.x name remains in `web/` or `web-kernel/`. `tools/pages/verify-deployed.mjs` also checks the brand attribute, that each page's stylesheet imports the theme after Forma, that the served theme is the Forma 1.x Echelon brand, `.forma-startup`, and no Echelon Foundry logo in place of Signal's.
+- Next: when Folio adopts a `forma-`-era namespace, migrate its `ef-print-*` names; other consumers (Forma Studio, Specula, …) migrate when next worked on.
+
 ## Modernization audit (WI-0100, 2026-11-08)
 
 - Reports and machine-readable coverage: `docs/modernization/` (start at

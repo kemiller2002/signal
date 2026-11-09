@@ -31,6 +31,8 @@ export const copies = [
   "build/wasm/wwwroot",
   "node_modules/@echelon-foundry/limen/dist",
   "node_modules/@echelon-foundry/design-system/dist",
+  // The Echelon theme's compiled CSS, imported after Forma by every page.
+  "node_modules/@echelon-foundry/echelon-theme/dist",
   "node_modules/@echelon-foundry/print-components/src"
 ];
 
