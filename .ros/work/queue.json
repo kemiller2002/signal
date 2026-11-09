@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 107,
+  "nextSeq": 108,
   "items": [
     {
       "id": "WI-0001",
@@ -2623,6 +2623,30 @@
       "attachments": [],
       "createdAt": "2026-11-09T13:02:22.000Z",
       "updatedAt": "2026-11-09T13:19:55.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0107",
+      "title": "SIG-DEPLOY-001: verify the deployed site (pages, favicon, start-up, identity, brand assets) after each Pages deploy",
+      "description": "Source: .praxis/inbox/documents/2026-11-09-SIG-DEPLOY-001-verify-deployed-site.md",
+      "tags": [
+        "signal",
+        "deployment"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-09T14:38:35.000Z",
+      "updatedAt": "2026-11-09T14:38:36.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
