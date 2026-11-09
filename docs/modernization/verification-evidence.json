@@ -173,6 +173,14 @@
       "result": "regression found",
       "detail": "record-header label overlaps the title below 24em (gap -65/-33 px); filed kemiller2002/forma#179 with a fix verified by injection",
       "artifact": "evidence/c1-upgrade-2026-11-08.md"
+    },
+    {
+      "id": "EV-C1-FORMA-0131",
+      "workItem": "WI-0103",
+      "command": "conditor upgrade --current (0.10.22, echelon-current 1.37.1); dotnet test; npx playwright test; conditor verify; praxis validate",
+      "result": "passed",
+      "detail": "Forma 0.13.0 -> 0.13.1 only; 634/634 .NET; 143/143 browser (record-header checks now ordinary at 320/390/768/1280); label-title gap 0 px at 320/390 on both header pages",
+      "artifact": "evidence/c1-upgrade-2026-11-08.md"
     }
   ],
   "notRun": [

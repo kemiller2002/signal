@@ -191,17 +191,13 @@ for (const width of [768, 1280]) {
   });
 }
 
-// EXCEPTION (owned by Forma, upstream; found by WI-0102): with design-system
-// 0.13.0, below 24em the header's @container rule sets
-// .ef-record-header__title to grid-template-rows: none, but its first child
-// keeps grid-template-rows: subgrid with the type label on row 1 and the
-// title on row 2, so both collapse onto one line: the label overlaps the
-// title (0.6.1 stacked them correctly). Signal does not restyle Forma (L03).
-// test.fail keeps the defect visible; this test starts failing, and must
-// become an ordinary assertion, as soon as the pinned Forma stacks them.
+// ULI-L05 (was an EXCEPTION owned by Forma, found by WI-0102): with
+// design-system 0.13.0, below 24em the header's identity block stayed a
+// subgrid after its title grid dropped its rows, so the type label collapsed
+// onto the title. Forma 0.13.1 fixes it (forma#179, forma#180), so the
+// exception is retired (WI-0103) and narrow widths get the ordinary assertion.
 for (const width of [320, 390]) {
-  test(`EXCEPTION ULI-L05: the record header's type label overlaps its title at ${width} CSS px`, async ({ page }) => {
-    test.fail(true, "Forma 0.13.0 .ef-record-header__title subgrid collapses below 24em (upstream defect)");
+  test(`ULI-L05: the record header's type label sits above its title at ${width} CSS px`, async ({ page }) => {
     for (const url of HEADER_PAGES) {
       await open(page, url, width);
       expect(await typeToTitleGap(page), url).toBeGreaterThanOrEqual(0);
