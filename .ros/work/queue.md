@@ -120,4 +120,4 @@
 | WI-0101 | Close the gaps independent verification found in groups claimed tested (WI-0100) | captured | modernization, verification | high |
 | WI-0102 | C1: upgrade Signal to echelon-current 1.37.0 through Conditor (MOD-PLAT-001) | complete |  | high |
 | WI-0103 | Adopt echelon-current 1.37.1 (Forma 0.13.1) and retire the record-header EXCEPTION (forma#179) | complete |  | medium |
-| WI-0104 | C3 part 1 of WI-0101: SEC-01 - verify every stored record's content hash on read so a canonical (still-valid JSON) edit of a record body is detected (ADM-025, ADM-046) | ready | modernization,security,integrity | high |
+| WI-0104 | C3 part 1 of WI-0101: SEC-01 - verify every stored record's content hash on read so a canonical (still-valid JSON) edit of a record body is detected (ADM-025, ADM-046) | complete | modernization,security,integrity | high |
