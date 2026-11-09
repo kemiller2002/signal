@@ -60,7 +60,26 @@ const diagnostics = {
 // The kernel's status is published on <html data-kernel> as soon as it
 // leaves "starting", so the page (and its browser tests) can tell "running"
 // from a failed start even while start-up effects are still completing.
+// The pre-runtime start-up screen (#app-startup, Forma .ef-startup) is in each
+// page's HTML. It is presentation only: hidden as soon as the kernel reports
+// "running" (start-up effects may still be completing, and the application is
+// already usable), and marked failed when the kernel ends in any other state.
+// web-kernel/startup-watchdog.js owns the time-out and module-load failures,
+// because this module cannot run when one of its own imports fails.
+const startupOutcome = (status) =>
+  status === "running" ? "mounted" : status === "unstarted" || status === "starting" ? "pending" : "failed";
+
+const presentStartup = (screen, outcome) => {
+  if (!screen || screen.hidden) return;
+  if (outcome === "mounted") {
+    screen.hidden = true;
+  } else if (outcome === "failed") {
+    screen.dataset.efState = "failed";
+  }
+};
+
 export async function startPage(exportName, capabilities = []) {
+  const screen = document.getElementById("app-startup");
   const kernel = new BrowserKernel(new WasmEngineTransport(exportName), document, diagnostics, {
     requireHandshake: true,
     capabilities
@@ -71,10 +90,18 @@ export async function startPage(exportName, capabilities = []) {
   const watch = setInterval(() => {
     if (kernel.status !== "unstarted" && kernel.status !== "starting") {
       publish();
+      presentStartup(screen, startupOutcome(kernel.status));
       clearInterval(watch);
     }
   }, 50);
-  await kernel.start();
-  clearInterval(watch);
-  publish();
+  try {
+    await kernel.start();
+  } catch (error) {
+    presentStartup(screen, "failed");
+    throw error;
+  } finally {
+    clearInterval(watch);
+    publish();
+  }
+  presentStartup(screen, startupOutcome(kernel.status));
 }

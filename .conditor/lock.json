@@ -1,14 +1,14 @@
 {
   "schemaVersion": 4,
   "project": "signal",
-  "manifestSha256": "fc76de1e9d1cad4bc903aa223a281068176160237f8be72095272a97196b950c",
+  "manifestSha256": "6bc90df0acfb216d1d9fa04223d1bb9cc52fd9ea43027348097091a036e80408",
   "manifest": {
     "schemaVersion": 1,
     "name": "signal",
     "registryAuthority": {
       "kind": "resolved-release-set",
       "path": ".conditor/authority/resolved-release-set.json",
-      "sha256": "98220b45709ad15edc5be2b820598eb8fc9e498a2cfa9af696f2a83fa5f944fd"
+      "sha256": "3902cb89380f0a63e6987607bb5a69a7309b69e4dfaf2792ef1614d371937d86"
     },
     "components": [
       {
@@ -43,7 +43,7 @@
       },
       {
         "id": "forma",
-        "version": "0.13.1",
+        "version": "0.14.0",
         "required": true
       },
       {
@@ -116,12 +116,12 @@
     },
     {
       "id": "forma",
-      "version": "0.13.1",
+      "version": "0.14.0",
       "distribution": "npm",
       "package": "@echelon-foundry/design-system",
-      "descriptorSha256": "a64c17a14fd7223717a366cb5e5ccc7ea38ff7c1c05a5ce35def120e89da3a33",
+      "descriptorSha256": "5ecc08f7f5aa812ddaee857d1d0053cb5adc624152f6166da62019022bd56242",
       "authority": "embedded-component-descriptor",
-      "sourceReference": "npm:@echelon-foundry/design-system@0.13.1"
+      "sourceReference": "npm:@echelon-foundry/design-system@0.14.0"
     },
     {
       "id": "folio",

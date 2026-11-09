@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 106,
+  "nextSeq": 107,
   "items": [
     {
       "id": "WI-0001",
@@ -2598,6 +2598,31 @@
       "attachments": [],
       "createdAt": "2026-11-09T11:16:11.876Z",
       "updatedAt": "2026-11-09T11:32:29.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0106",
+      "title": "SIG-EXP-001: Forma 0.14.0 (echelon-current 1.37.2), approved Signal mark, landing page, pre-runtime start-up",
+      "description": "Source: .praxis/inbox/documents/2026-11-09-SIG-EXP-001-identity-landing-startup.md",
+      "tags": [
+        "signal",
+        "forma",
+        "identity"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-09T13:02:22.000Z",
+      "updatedAt": "2026-11-09T13:19:55.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

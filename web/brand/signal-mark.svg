@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Signal">
+  <title>Signal</title>
+  <rect width="64" height="64" rx="12" fill="#202421"/>
+  <path d="M10 22V15L20 10V22Z" fill="#c9a07f"/>
+  <path d="M10 40H20L25 28L33 50L39 34L42 40H54" fill="none" stroke="#f2efe7" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

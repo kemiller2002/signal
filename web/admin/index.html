@@ -4,10 +4,31 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Signal · Administration</title>
-<link rel="icon" href="data:," />
+<link rel="icon" href="../brand/signal-mark.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="./admin.css" />
 </head>
 <body>
+<!-- Pre-runtime start-up (EDS-UX-WAIT-001, Forma .ef-startup): painted from
+     this HTML before the WebAssembly engine loads. web-kernel/limen-wasm.js
+     hides it once the kernel runs, or marks a failed or timed-out start. -->
+<div class="ef-startup" id="app-startup" data-ef-state="starting">
+  <span class="ef-app-identity" data-ef-size="64">
+    <span class="ef-app-identity__mark"><svg class="ef-app-identity__variant" data-ef-scheme="light" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="12" fill="#202421"/><path d="M10 22V15L20 10V22Z" fill="#c9a07f"/><path d="M10 40H20L25 28L33 50L39 34L42 40H54" fill="none" stroke="#f2efe7" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></svg><svg class="ef-app-identity__variant" data-ef-scheme="dark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="12" fill="#f2efe7"/><path d="M10 22V15L20 10V22Z" fill="#905831"/><path d="M10 40H20L25 28L33 50L39 34L42 40H54" fill="none" stroke="#202421" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></svg></span>
+    <span class="ef-app-identity__name">Signal</span>
+  </span>
+  <div class="ef-startup__status" role="status">
+    <p class="ef-spinner">
+      <span class="ef-spinner__indicator" aria-hidden="true"></span>
+      <span class="ef-spinner__label">Starting Signal: loading the administrator console</span>
+    </p>
+    <p class="ef-startup__slow">Still starting. On a slow connection the engine can take up to a minute to download.</p>
+  </div>
+  <div class="ef-startup__problem" role="alert">
+    <p class="ef-startup__problem-title" id="app-startup-problem-title">Signal could not start.</p>
+    <p id="app-startup-problem-detail">The administrator console did not start. Reload this page to try again.</p>
+  </div>
+  <p class="ef-startup__noscript">Signal needs JavaScript and WebAssembly. Turn them on in your browser settings, then reload this page.</p>
+</div>
 <!-- Structure and presentation only (ADM-035). Every value is projected by
      the F# engine (src/Echelon.Signal.Admin/AdminView.fs) through Limen's
      data-* bindings, every control sends a named event back to it, and every
@@ -951,5 +972,6 @@
   </template>
 </main>
 <script type="module" src="./admin.js"></script>
+<script src="../../web-kernel/startup-watchdog.js"></script>
 </body>
 </html>

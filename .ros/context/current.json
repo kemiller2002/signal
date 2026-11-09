@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-09T11:32:29.000Z",
+  "updatedAt": "2026-11-09T13:19:55.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3810,6 +3810,52 @@
         }
       },
       "completedAt": "2026-11-09T11:32:29.000Z"
+    },
+    {
+      "id": "WI-0106",
+      "type": "feature",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "web-kernel/startup-watchdog.js"
+        },
+        {
+          "type": "implementation",
+          "path": "web/home/index.html"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/experience.spec.js"
+        }
+      ],
+      "updatedAt": "2026-11-09T13:19:55.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261109T130229948Z-645f087a"
+      ],
+      "latestCheckpoint": {
+        "id": "7ee1e11ddbac9001f70c460e",
+        "recordedAt": "2026-11-09T13:19:45.000Z",
+        "executionId": "EXE-20261109T130229948Z-645f087a",
+        "repository": "echelon-signal",
+        "branch": "claude/signal-forma-0.14-identity",
+        "commit": "84a57a4053fb791a6a17896cfcfcb6a2e90e8887",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "claude/signal-forma-0.14-identity",
+        "remoteCommit": "84a57a4053fb791a6a17896cfcfcb6a2e90e8887",
+        "summary": "Signal on Forma 0.14.0 (1.37.2) with approved mark, landing page, start-up screen and watchdog; review findings fixed",
+        "nextAction": "Observe CI on PR #129, merge, complete WI-0106, verify Pages deploy",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-09T13:19:55.000Z",
+      "conclusion": "SIG-EXP-001.1-.5 implemented: echelon-current 1.37.2 (Forma 0.14.0), approved mark, landing page, start-up screen with watchdog. Independent review findings fixed; CI is the evidence for WASM and .NET tests (NuGet blocked locally)."
     }
   ]
 }
