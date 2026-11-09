@@ -2,8 +2,8 @@
   "schema": "echelon.resolved-release-set/v1",
   "profile": {
     "id": "echelon-current",
-    "version": "1.37.1",
-    "sha256": "928223d08074d0298ca613325a4e02d973305a364eec34eec2c81c594c29ae1d"
+    "version": "1.37.2",
+    "sha256": "f40993d5a6ff765427acb499383e03edf87c40a59f98458c5bdc1ad71efb4e8e"
   },
   "platform": "linux-x64",
   "resolver": {
@@ -11,7 +11,7 @@
     "version": "0.1.0"
   },
   "catalogSnapshot": {
-    "sha256": "0d58067176164ba305493ab893e3032ff42b0a5633e73104dc6c106e4104793c"
+    "sha256": "b407bff6ee2e5cb829d2c62ce2a51b70ff850b715ad6808a2cd07d287d040b08"
   },
   "components": [
     {
@@ -370,35 +370,35 @@
       "systemId": "forma",
       "role": "project-binding",
       "required": true,
-      "version": "0.13.1",
+      "version": "0.14.0",
       "repository": "kemiller2002/forma",
-      "tag": "v0.13.1",
-      "commit": "755df9a2449c8abdd04e5b10b13e3bd10c6b7aba",
+      "tag": "v0.14.0",
+      "commit": "7372886ed7e5ae101df26515279abc6b34d28a69",
       "releaseStage": "stable",
       "lifecycleState": "active",
       "distributionClass": "web-package",
       "executable": null,
       "releaseManifest": {
         "schema": "echelon.release/v2",
-        "sha256": "7c02efde81372b6112f783c2811d73a4585f01b23d5d335eaf7e2e67370e4cda"
+        "sha256": "18968771efdd5d080b7a77bc4b19de22146d362e59ae6e6d0ea9113556ab8b16"
       },
       "distribution": {
         "mechanism": "github-release",
         "package": "@echelon-foundry/design-system",
-        "url": "https://github.com/kemiller2002/forma/releases/tag/v0.13.1"
+        "url": "https://github.com/kemiller2002/forma/releases/tag/v0.14.0"
       },
       "artifacts": [
         {
-          "name": "echelon-foundry-design-system-0.13.1.tgz",
+          "name": "echelon-foundry-design-system-0.14.0.tgz",
           "purpose": "package",
           "platform": null,
-          "sha256": "f3ced7245567b69599dc01f6a11e4bd707a21a5ab98af05306f06694d0beb354"
+          "sha256": "01c0dcba663254ba1553afb67e66cf0fe21d6846de5672e9f5fbe7978738adfd"
         },
         {
           "name": "forma-marketing.sha256",
           "purpose": "checksums",
           "platform": null,
-          "sha256": "9947168c1cb8639955db7ab3fb70bb7a09b53bb1a11b8e54d7335633aec65e92"
+          "sha256": "fa503a54df222a46ed4c2c0717b4eb57b11a22a55b91832ff8793faa66cd58c9"
         }
       ]
     },

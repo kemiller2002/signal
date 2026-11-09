@@ -4,7 +4,7 @@
   "registryAuthority": {
     "kind": "resolved-release-set",
     "path": ".conditor/authority/resolved-release-set.json",
-    "sha256": "98220b45709ad15edc5be2b820598eb8fc9e498a2cfa9af696f2a83fa5f944fd"
+    "sha256": "3902cb89380f0a63e6987607bb5a69a7309b69e4dfaf2792ef1614d371937d86"
   },
   "components": [
     {
@@ -39,7 +39,7 @@
     },
     {
       "id": "forma",
-      "version": "0.13.1",
+      "version": "0.14.0",
       "required": true
     },
     {

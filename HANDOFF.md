@@ -97,6 +97,14 @@ foundations (Limen, Forma, Folio, Aegis, Ordo, Praxis).
   percentages) with the exploration in the address. A checkbox event that
   arrives unchecked carries an empty value (`AdminProtocol`).
 
+## Identity, landing page and start-up (WI-0106, 2026-11-09)
+
+- Platform: echelon-current 1.37.2 through Conditor 0.10.23 (`conditor upgrade --current`, isolated `--home`); only Forma 0.13.1 -> 0.14.0 changed (owner approved the channel, 2026-11-09).
+- Identity: the owner-approved Signal mark (source of truth `kemiller2002/echelon-design-system` `brand/logos/signal`, approval in its `catalog.json`) is the favicon of every page (`web/brand/signal-mark.svg`) and is inlined with light and dark variants (Forma `.ef-app-identity`). `web/brand/identity.json` records the approval.
+- Landing: `web/home/` is a static, script-free page (EDS-UX-LANDING-001); the site root now redirects there instead of to the assessment. Respondent links to `web/` are unchanged.
+- Start-up: each engine page carries Forma `.ef-startup` in its HTML; `web-kernel/limen-wasm.js` hides it once the kernel runs, marks `failed` when start-up throws and `timed-out` after 60 s. It has no controls, so Limen strict verification is unaffected.
+- Tests: `tests/browser/experience.spec.js`; the Forma pin in `FoundationsConformanceTests` moved to 0.14.0.
+
 ## Modernization audit (WI-0100, 2026-11-08)
 
 - Reports and machine-readable coverage: `docs/modernization/` (start at
