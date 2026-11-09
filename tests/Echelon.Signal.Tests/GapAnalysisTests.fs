@@ -173,3 +173,18 @@ let ``the citation check fails a row that cites nothing or a test that does not 
     | other -> failwith $"%A{other}"
 
     Assert.Equal(None, testSource "NoSuchTests")
+
+/// The bold "Ledger total" rows are the sums of the status rows (WI-0100: the
+/// current total once read 97 tested / 67 partial while the rows held 98 / 66,
+/// because only the per-corpus rows were checked).
+[<Fact>]
+let ``the ledger totals are the counts of the status rows`` () =
+    let totalIn (text: string) =
+        let m = Regex.Match(text, @"(?m)^\| \*\*Ledger total\*\* \| \*\*(\d+)\*\* \| \*\*(\d+)\*\* \| \*\*(\d+)\*\* \| \*\*(\d+)\*\* \| \*\*(\d+)\*\* \|")
+        Assert.True(m.Success, "ledger total row not found")
+        [ for i in 1..5 -> int m.Groups[i].Value ]
+
+    let all = [ "AST"; "ACR"; "ARP"; "CAN"; "LURL"; "RPT"; "ANS"; "ALG"; "AUT"; "URLC"; "ID"; "VER"; "ARX"; "ADM"; "SCS" ]
+    let expect column = let counts = countColumn column all in List.sum counts :: counts
+    Assert.Equal<int list>(expect (fun (_, baseline, _) -> baseline), totalIn analysis)
+    Assert.Equal<int list>(expect (fun (_, _, current) -> current), totalIn currentSection)

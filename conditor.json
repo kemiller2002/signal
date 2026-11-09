@@ -4,17 +4,17 @@
   "registryAuthority": {
     "kind": "resolved-release-set",
     "path": ".conditor/authority/resolved-release-set.json",
-    "sha256": "f969e5e92d6a3a208f35df7da4c74cd8159b3d80646de6a9d90ca77ed55fcd72"
+    "sha256": "98220b45709ad15edc5be2b820598eb8fc9e498a2cfa9af696f2a83fa5f944fd"
   },
   "components": [
     {
       "id": "ordo",
-      "version": "1.7.0",
+      "version": "1.20.0",
       "required": true
     },
     {
       "id": "praxis",
-      "version": "3.11.0",
+      "version": "3.25.0",
       "required": true
     },
     {
@@ -24,7 +24,7 @@
     },
     {
       "id": "arca",
-      "version": "0.5.0",
+      "version": "0.7.0",
       "required": true
     },
     {
@@ -39,12 +39,17 @@
     },
     {
       "id": "forma",
-      "version": "0.6.1",
+      "version": "0.13.1",
       "required": true
     },
     {
       "id": "folio",
-      "version": "0.4.0",
+      "version": "0.4.1",
+      "required": true
+    },
+    {
+      "id": "limen",
+      "version": "0.9.1",
       "required": true
     }
   ],

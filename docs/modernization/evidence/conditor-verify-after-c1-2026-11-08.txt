@@ -1,0 +1,10 @@
+Conditor plan for 'signal'
+ 1. ordo@1.20.0: ordo verify --integrity-only --json
+ 2. praxis@3.25.0: praxis verify --strict
+ 3. visual-engineering@1.0.1: npx --yes --package=@echelon-foundry/visual-engineering@1.0.1 visual-engineering verify --strict
+ 4. arca@0.7.0: verify nuget feed arca@0.7.0 in vendor/nuget
+ 5. fides@0.2.0: verify nuget feed fides@0.2.0 in vendor/nuget
+ 6. limen-fsharp@0.9.0: verify nuget feed limen-fsharp@0.9.0 in vendor/nuget
+Structural review signals (1; reported by integrity gates, not blocking):
+  ordo SDE-STRUCT-001 [strong-review] src/Echelon.Signal.Browser/bin/Release/net10.0/wwwroot/_framework/dotnet.js: 1204 lines
+Conditor completed successfully.

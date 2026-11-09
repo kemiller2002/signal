@@ -1,0 +1,30 @@
+{
+  "at": "2026-11-08T14:56:54.113Z",
+  "base": "https://signal.echelonfoundry.com",
+  "results": [
+    {
+      "path": "/web/",
+      "status": 200,
+      "ms": 7915,
+      "consoleErrors": [],
+      "demoBanner": true,
+      "text": "Demo — data stays in this browser; GitHub sign-in not configured SIGNAL Software Delivery Reality Assessment SDRA 0.1.0-draft Questions Answer for the last eight weeks. If you do not know, have not observed it, or it does not apply, say so: those answers are not counted as zero. This page's address contains your answers, so you can come back to them. Anyone you give the address to can see the"
+    },
+    {
+      "path": "/web/admin/",
+      "status": 200,
+      "ms": 6671,
+      "consoleErrors": [],
+      "demoBanner": true,
+      "text": "Demo — data stays in this browser; GitHub sign-in not configured SIGNAL Administration Copy link Overview Groups Compare Assessments Reports Administrators Storage No data store is configured This deployment configures no storage profile, so there is nothing to administer. Configure a profile, an identity exchange and a dataset in signal.deployment.json."
+    },
+    {
+      "path": "/web/survey/",
+      "status": 200,
+      "ms": 5978,
+      "consoleErrors": [],
+      "demoBanner": true,
+      "text": "Demo — data stays in this browser; GitHub sign-in not configured SIGNAL Survey unavailable ! This page needs a survey link. Open the link you were sent; it ends with #r= and a code."
+    }
+  ]
+}

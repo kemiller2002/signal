@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 100,
+  "nextSeq": 104,
   "items": [
     {
       "id": "WI-0001",
@@ -13,10 +13,10 @@
         "survey"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-08-31T19:08:29.874Z",
-      "updatedAt": "2026-08-31T19:08:32.682Z",
+      "updatedAt": "2026-08-31T19:16:36.484Z",
       "createdBy": "unknown",
       "source": "manual",
       "sourceReference": null
@@ -2475,6 +2475,93 @@
       },
       "source": "CI validation",
       "sourceReference": "percepta/actions/runs/39129621742"
+    },
+    {
+      "id": "WI-0100",
+      "title": "Modernization audit: system inventory, requirements coverage matrix, independent verification and two-dimensional acceptance verdict (docs/modernization/)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-08T14:54:48.744Z",
+      "updatedAt": "2026-11-08T15:08:31.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0101",
+      "title": "Close the gaps independent verification found in groups claimed tested (WI-0100)",
+      "description": "Independent verification (docs/modernization/evidence/independent-verification.json, 2026-11-08) found 24 groups that the gap analysis claimed tested to be only partial: ACR-008 ADM-017 ADM-025 ADM-041 ADM-046 ADM-054 ANS-003 ARP-005 ARX-002 ARX-008 ARX-009 ARX-012 ARX-013 AST-002 AUT-003 AUT-004 LURL-005 SCS-002 SCS-005 SCS-006 SCS-007 SCS-013 SCS-014 SCS-015. Each row in docs/requirements/implementation-gap-analysis.md names the specific gap. Highest risk: ADM-025/ADM-046 (record content hash never re-verified on load: canonical tampering undetected) and ARP-005 (imports into a complete group are not refused).",
+      "tags": [
+        "modernization",
+        "verification"
+      ],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-08T15:03:26.000Z",
+      "updatedAt": "2026-11-08T15:03:26.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0102",
+      "title": "C1: upgrade Signal to echelon-current 1.37.0 through Conditor (MOD-PLAT-001)",
+      "description": "Conditor upgrade --current: Praxis 3.11->3.25, Ordo 1.7->1.20, Forma 0.6.1->0.13.0, Arca 0.5->0.7, Folio 0.4.0->0.4.1; re-verify build, tests, browser suite, ui-conformance.",
+      "tags": [],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-08T16:06:33.000Z",
+      "updatedAt": "2026-11-08T16:33:10.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0103",
+      "title": "Adopt echelon-current 1.37.1 (Forma 0.13.1) and retire the record-header EXCEPTION (forma#179)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-09T02:13:09.039Z",
+      "updatedAt": "2026-11-09T02:23:30.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
     }
   ]
 }

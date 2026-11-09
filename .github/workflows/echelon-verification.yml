@@ -173,11 +173,16 @@ jobs:
 
           exit 0
 
-      - name: Limen 0.9.0 verification
+      # The Limen CLI version follows the repository's own pin (package.json,
+      # managed by Conditor), so an upgrade cannot leave this gate running a
+      # CLI older than the installation it verifies (WI-0102).
+      - name: Limen verification (pinned version)
         shell: bash
         run: |
           set +e
-          PKG="@echelon-foundry/limen@0.9.0"
+          LIMEN_VERSION="$(node -p "require('./package.json').dependencies['@echelon-foundry/limen']")"
+          PKG="@echelon-foundry/limen@${LIMEN_VERSION}"
+          echo "Limen CLI: $PKG"
 
           npx --yes --package="$PKG" limen --version > $EVIDENCE_DIR/limen-version.txt 2>&1
           echo "$?" > $EVIDENCE_DIR/limen-version.exit
@@ -316,9 +321,9 @@ jobs:
             echo "| Ordo (pinned) status | $(read_code ordo-status) |"
             echo "| Ordo (pinned) init dry-run | $(read_code ordo-init-plan) |"
             echo "| Ordo (pinned) verify strict | $(read_code ordo-verify) |"
-            echo "| Limen 0.9.0 status | $(read_code limen-status) |"
-            echo "| Limen 0.9.0 init dry-run | $(read_code limen-init-plan) |"
-            echo "| Limen 0.9.0 verify strict | $(read_code limen-verify) |"
+            echo "| Limen status | $(read_code limen-status) |"
+            echo "| Limen init dry-run | $(read_code limen-init-plan) |"
+            echo "| Limen verify strict | $(read_code limen-verify) |"
             echo "| .NET build | $(read_code dotnet-build) |"
             echo "| .NET test | $(read_code dotnet-test) |"
             echo "| Node install | $(read_code node-install) |"

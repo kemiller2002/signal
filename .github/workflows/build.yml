@@ -28,6 +28,13 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
+      # The requirements coverage matrix (docs/modernization, WI-0100) is
+      # derived from the gap analysis, the supplementary requirements and the
+      # independent verdicts. A cheap check that it is current runs before
+      # the expensive steps; it never upgrades a claim.
+      - name: Verify the requirements coverage matrix is current
+        run: dotnet fsi tools/modernization/coverage.fsx --check
+
       - name: Restore
         run: dotnet restore Echelon.Signal.sln
 
