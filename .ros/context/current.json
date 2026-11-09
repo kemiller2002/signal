@@ -3866,7 +3866,27 @@
       "updatedAt": "2026-11-09T14:38:36.000Z",
       "telemetryExecutionIds": [
         "EXE-20261109T143837465Z-fb0b680f"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "9e79c44a323abc2d555d312c",
+        "recordedAt": "2026-11-09T14:38:41.000Z",
+        "executionId": "EXE-20261109T143837465Z-fb0b680f",
+        "repository": "echelon-signal",
+        "branch": "claude/verify-deployed-site",
+        "commit": "40f5a3acacede93df77e91040db48efd8d9b74da",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "claude/verify-deployed-site",
+        "remoteCommit": "40f5a3acacede93df77e91040db48efd8d9b74da",
+        "summary": "Deployed-site checker, tests and workflow job added",
+        "nextAction": "Complete, PR, CI, merge, observe the post-deploy job on main",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
