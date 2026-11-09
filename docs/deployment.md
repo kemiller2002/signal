@@ -9,8 +9,9 @@ build and verify the site but never deploy it.
 - **Address:** <https://signal.echelonfoundry.com/web/> (the administrator
   page is at `web/admin/`). The older addresses,
   `https://kemiller2002.github.io/signal/` and `https://kevinmmiller.us/signal/`,
-  redirect there. The site root sends the browser to the assessment page
-  at `web/`.
+  redirect there. The site root sends the browser to the landing page at
+  `web/home/` (since #129); respondents' links to the assessment at `web/`
+  are unchanged.
 - **What is published:** the repository's layout (`web/`, `web-kernel/`,
   `build/wasm/wwwroot/` from `npm run build:wasm` in Release, and the
   `dist`/`src` folders of the Limen, Forma, Echelon theme and Folio
