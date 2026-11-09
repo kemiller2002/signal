@@ -13,7 +13,8 @@ build and verify the site but never deploy it.
   at `web/`.
 - **What is published:** the repository's layout (`web/`, `web-kernel/`,
   `build/wasm/wwwroot/` from `npm run build:wasm` in Release, and the
-  `dist`/`src` folders of the Limen, Forma and Folio packages), assembled by
+  `dist`/`src` folders of the Limen, Forma, Echelon theme and Folio
+  packages), assembled by
   `tools/pages/assemble-site.mjs`. Every address in the page is relative,
   so the site works under `/signal/` or at a domain's root alike; no
   `<base href>` is set. The administrator page's routes live in the
@@ -23,6 +24,16 @@ build and verify the site but never deploy it.
   (Playwright project `pages`). `.nojekyll` is added. The `.br`/`.gz`
   copies are left out: Pages compresses on its own and serves `.wasm` as
   `application/wasm`.
+- **The Echelon theme is served publicly.** Every page loads
+  `node_modules/@echelon-foundry/echelon-theme/dist/echelon.css` (Forma 1.x
+  is brand-neutral; the theme supplies Echelon colours and fonts,
+  EDS-ADR-002), so the Pages site publishes that package's `dist/` folder:
+  `echelon.css`, `echelon-marketing.css`, `asset-manifest.json` and
+  `checksums.txt`. The package is `UNLICENSED`: it is the owner's own
+  package (`kemiller2002/echelon-design-system`), published by the owner on
+  the owner's site, and it grants no licence to anyone else. Its Echelon
+  Foundry logos are not in `dist/` and are not published; Signal uses its
+  own mark (`web/brand/`).
 - **Demo mode.** Signal has no sign-in and no storage yet. The page is the
   assessment as it runs locally: answers are held by the engine in the
   browser tab and are gone on reload. Nothing is sent anywhere, and there
