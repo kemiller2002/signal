@@ -81,6 +81,6 @@ test("the landing page works in a dark color scheme", async ({ page }) => {
 
 test("the provisional mark is declared provisional, not approved", async ({ request }) => {
   const identity = await (await request.get("/web/brand/identity.json")).json();
-  expect(identity.status).toBe("provisional");
+  expect(identity.status).toBe("proposed");
   expect(identity.approved).toBe(false);
 });
