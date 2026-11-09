@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 110,
+  "nextSeq": 111,
   "items": [
     {
       "id": "WI-0001",
@@ -2706,6 +2706,31 @@
       },
       "source": "review",
       "sourceReference": "kemiller2002/signal#131"
+    },
+    {
+      "id": "WI-0110",
+      "title": "SIG-VIS-CAPTURE-001: visual review evidence capture (Playwright baseline of the built app in Actions, returned through git)",
+      "description": null,
+      "tags": [
+        "signal",
+        "visual",
+        "evidence"
+      ],
+      "priority": "medium",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-09T23:43:06.000Z",
+      "updatedAt": "2026-11-09T23:43:10.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "intake",
+      "sourceReference": ".praxis/inbox/documents/2026-11-09-SIG-VIS-CAPTURE-001-visual-review-evidence-capture.md"
     }
   ]
 }

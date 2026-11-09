@@ -126,3 +126,4 @@
 | WI-0107 | SIG-DEPLOY-001: verify the deployed site (pages, favicon, start-up, identity, brand assets) after each Pages deploy | complete | signal, deployment | high |
 | WI-0108 | SIG-FORMA1-001: Forma 1.0.1 (forma- namespace) and the Echelon theme 1.0.0 via echelon-current 1.38.0; keep Signal's own mark | complete | signal, forma, identity | high |
 | WI-0109 | SIG-FORMA1-002: review follow-ups to WI-0108 (PR #131): true codemod --check record, wider and exact no-Forma-0.x guard, theme in deployment doc, test comment | complete | signal, forma | medium |
+| WI-0110 | SIG-VIS-CAPTURE-001: visual review evidence capture (Playwright baseline of the built app in Actions, returned through git) | ready | signal, visual, evidence | medium |
