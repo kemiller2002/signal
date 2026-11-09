@@ -29,7 +29,7 @@
   </div>
   <div class="ef-startup__problem" role="alert">
     <p class="ef-startup__problem-title" id="app-startup-problem-title">Signal could not start.</p>
-    <p id="app-startup-problem-detail">The engine did not load. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.</p>
+    <p id="app-startup-problem-detail">The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.</p>
   </div>
   <p class="ef-startup__noscript">Signal needs JavaScript and WebAssembly. Turn them on in your browser settings, then reload this page.</p>
 </div>
@@ -192,5 +192,6 @@
   </template>
 </main>
 <script type="module" src="./main.js"></script>
+<script src="../../web-kernel/startup-watchdog.js"></script>
 </body>
 </html>

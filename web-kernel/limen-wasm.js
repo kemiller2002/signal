@@ -61,23 +61,20 @@ const diagnostics = {
 // leaves "starting", so the page (and its browser tests) can tell "running"
 // from a failed start even while start-up effects are still completing.
 // The pre-runtime start-up screen (#app-startup, Forma .ef-startup) is in each
-// page's HTML. It is presentation only: hidden once the kernel runs, marked
-// failed when the kernel does not, and timed out when start-up outlives
-// STARTUP_DEADLINE_MS. Forma reveals its "still starting" note by itself.
-const STARTUP_DEADLINE_MS = 60_000;
-
+// page's HTML. It is presentation only: hidden as soon as the kernel reports
+// "running" (start-up effects may still be completing, and the application is
+// already usable), and marked failed when the kernel ends in any other state.
+// web-kernel/startup-watchdog.js owns the time-out and module-load failures,
+// because this module cannot run when one of its own imports fails.
 const startupOutcome = (status) =>
   status === "running" ? "mounted" : status === "unstarted" || status === "starting" ? "pending" : "failed";
 
 const presentStartup = (screen, outcome) => {
-  if (!screen) return;
+  if (!screen || screen.hidden) return;
   if (outcome === "mounted") {
     screen.hidden = true;
-  } else if (outcome === "failed" || outcome === "timed-out") {
-    screen.dataset.efState = outcome;
-    if (outcome === "timed-out") {
-      screen.querySelector("#app-startup-problem-title")?.replaceChildren("Signal is taking too long to start.");
-    }
+  } else if (outcome === "failed") {
+    screen.dataset.efState = "failed";
   }
 };
 
@@ -93,19 +90,16 @@ export async function startPage(exportName, capabilities = []) {
   const watch = setInterval(() => {
     if (kernel.status !== "unstarted" && kernel.status !== "starting") {
       publish();
+      presentStartup(screen, startupOutcome(kernel.status));
       clearInterval(watch);
     }
   }, 50);
-  const deadline = setTimeout(() => {
-    if (startupOutcome(kernel.status) === "pending") presentStartup(screen, "timed-out");
-  }, STARTUP_DEADLINE_MS);
   try {
     await kernel.start();
   } catch (error) {
     presentStartup(screen, "failed");
     throw error;
   } finally {
-    clearTimeout(deadline);
     clearInterval(watch);
     publish();
   }

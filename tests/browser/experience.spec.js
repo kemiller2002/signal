@@ -34,6 +34,28 @@ for (const path of PAGES) {
     await expect(screen.locator(".ef-startup__status")).toBeHidden();
   });
 
+  test(`${path}: a page module that fails to load ends the start-up screen as failed`, async ({ page }) => {
+    await page.route("**/web-kernel/limen-wasm.js", (route) => route.fulfill({ status: 404, body: "" }));
+    await page.goto(path);
+    const screen = page.locator("#app-startup");
+    await expect(screen).toHaveAttribute("data-ef-state", "failed", { timeout: 15_000 });
+    await expect(screen.getByRole("alert")).toBeVisible();
+    await expect(screen.locator(".ef-startup__status")).toBeHidden();
+  });
+
+  test(`${path}: a start that never finishes times out after 60 seconds`, async ({ page }) => {
+    await page.clock.install();
+    await page.route(FRAMEWORK, () => new Promise(() => {}));
+    await page.goto(path);
+    const screen = page.locator("#app-startup");
+    await expect(screen).toHaveAttribute("data-ef-state", "starting");
+    await page.clock.runFor(59_000);
+    await expect(screen).toHaveAttribute("data-ef-state", "starting");
+    await page.clock.runFor(2_000);
+    await expect(screen).toHaveAttribute("data-ef-state", "timed-out");
+    await expect(screen.getByRole("alert")).toContainText("taking too long to start");
+  });
+
   test(`${path}: the favicon is Signal's mark, not an empty icon`, async ({ page, request }) => {
     await page.goto(path);
     const href = await page.locator('link[rel="icon"]').evaluate((link) => link.href);
