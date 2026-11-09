@@ -332,7 +332,7 @@ let encode (datasetId: string) (batch: Batch) : Result<string, Problem> =
                   "cancelled", Json.Bool batch.Cancelled
                   "status", Json.String(statusName (summarize batch).Status)
                   "revision", Json.Number(decimal batch.Revision) ] }
-        |> Record.encode Record.DefaultMaxBytes
+        |> RecordIntegrity.encode Record.DefaultMaxBytes
         |> Result.mapError (fun _ -> UnstorableRecord(batch.BatchId, "the batch record is too large"))
 
 /// The Arca changes that store a batch step: a `Create` for each accepted

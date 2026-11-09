@@ -276,7 +276,7 @@ let ``analysis state travels in the URL with integrity, and saved analyses are r
 
     let saved: AnalysisState.Saved = { Id = "an-1"; Name = "Weakest sections"; State = state; Revision = 1 }
     let _, text = AnalysisState.encodeSaved "ds_engagement" saved |> ok
-    let record = Record.decode Record.DefaultMaxBytes text |> ok
+    let record = RecordIntegrity.decode Record.DefaultMaxBytes text |> ok
     Assert.Equal(("ds_engagement", saved), AnalysisState.savedOfBody record.Body |> ok)
 
 [<Fact>]

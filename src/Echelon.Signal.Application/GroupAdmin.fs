@@ -50,7 +50,8 @@ let unfinishedBatches (now: DateTimeOffset) (group: OpenedGroup) : AsyncResult<I
             objects
             |> List.choose (function
                 | ReadOutcome.Found stored ->
-                    Record.decode Record.DefaultMaxBytes stored.Content
+                    // An unusable or altered batch record is not resumed (SEC-01).
+                    RecordIntegrity.decode Record.DefaultMaxBytes stored.Content
                     |> Result.toOption
                     |> Option.bind (fun record -> Intake.ofBody record.Body |> Result.toOption)
                 | ReadOutcome.Absent

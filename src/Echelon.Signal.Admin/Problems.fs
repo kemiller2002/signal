@@ -32,6 +32,9 @@ type Problem =
     | ManifestUnusable of datasetId: string * detail: string
     /// A stored object is not a valid record of the kind its path names (ADM-046).
     | InvalidStoredRecord of path: string * detail: string
+    /// A valid record whose body no longer hashes to the value recorded with
+    /// it: changed outside Signal, so it is never used (SEC-01; ADM-025, ADM-046).
+    | AlteredRecord of path: string * detail: string
     /// Arca refused to build an operation from these changes.
     | OperationRefused of detail: string
     /// A record cannot be encoded for storage.
@@ -70,6 +73,7 @@ let code =
     | DatasetNotInitialized _ -> "SIGNAL.STORAGE.DATASET_NOT_INITIALIZED"
     | ManifestUnusable _ -> "SIGNAL.STORAGE.MANIFEST_UNUSABLE"
     | InvalidStoredRecord _ -> "SIGNAL.STORAGE.INVALID_RECORD"
+    | AlteredRecord _ -> "SIGNAL.STORAGE.ALTERED_RECORD"
     | OperationRefused _ -> "SIGNAL.STORAGE.OPERATION_REFUSED"
     | UnstorableRecord _ -> "SIGNAL.STORAGE.UNSTORABLE_RECORD"
     | MisplacedRecord _ -> "SIGNAL.STORAGE.MISPLACED_RECORD"
@@ -97,6 +101,7 @@ let describe =
     | DatasetNotInitialized datasetId -> $"Dataset '{datasetId}' has not been set up."
     | ManifestUnusable(datasetId, detail) -> $"Dataset '{datasetId}' cannot be opened: {detail}."
     | InvalidStoredRecord(path, detail) -> $"'{path}' is not a valid record: {detail}."
+    | AlteredRecord(path, detail) -> $"'{path}' cannot be trusted: {detail}."
     | OperationRefused detail -> $"The change cannot be saved: {detail}."
     | UnstorableRecord(id, detail) -> $"'{id}' cannot be stored: {detail}."
     | MisplacedRecord path -> $"'{path}' is not where its id and type place it."

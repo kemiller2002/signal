@@ -93,7 +93,7 @@ let private encoded (schemaVersion: int) (note: Note) =
       SchemaVersion = schemaVersion
       Mutability = Mutability.Mutable
       Body = Json.objectOf [ "id", Json.String note.Id; "dataset", Json.String note.Dataset; "refs", textArray note.Refs ] }
-    |> Record.encode Int64.MaxValue
+    |> RecordIntegrity.encode Int64.MaxValue
     |> ok
 
 let private stored (path: RelativePath) (content: string) : StoredObject =

@@ -10,7 +10,9 @@
 /// 2. `load` takes a `VerifiedDataset`, so no record of a dataset is read
 ///    as domain data before its manifests are proven. Each object must be a
 ///    canonical record of the expected type at its own path, within the size
-///    limit, at a schema version this Signal reads, for this dataset; ids are
+///    limit, at a schema version this Signal reads, whose body still hashes
+///    to the value recorded with it (`RecordIntegrity`, SEC-01), for this
+///    dataset; ids are
 ///    unique; references resolve; references have no cycles; a partial
 ///    listing is reported. An unusable object is held aside with its revision
 ///    and never overwritten on a guess, and every failure has a typed code.
@@ -98,16 +100,17 @@ let private decodeOne (verified: VerifiedDataset) (reader: RecordReader<'a>) (st
 
     match Layout.keyOf stored.Path with
     | Some key when key.Type = reader.Type ->
-        Integrity.validate key reader.Schema reader.MaxBytes stored
-        |> Result.mapError (fun failure -> InvalidStoredRecord(where, describeIntegrity failure))
-        |> Result.bind (fun valid ->
-            reader.Decode valid.Record.Body
+        // SEC-01: the envelope, then the body against the hash recorded with it.
+        RecordIntegrity.validate key reader.Schema reader.MaxBytes stored
+        |> Result.mapError (RecordIntegrity.problem where)
+        |> Result.bind (fun verified ->
+            reader.Decode verified.Body
             |> Result.mapError (fun detail -> InvalidStoredRecord(where, detail))
             |> Result.map (fun value ->
                 { Value = value
                   Path = stored.Path
                   Revision = stored.Revision
-                  ContentHash = valid.ContentHash }))
+                  ContentHash = verified.Stored.ContentHash }))
         |> Result.bind (fun found ->
             if reader.IdOf found.Value <> RecordId.value key.Id then
                 Error(MisplacedRecord where)

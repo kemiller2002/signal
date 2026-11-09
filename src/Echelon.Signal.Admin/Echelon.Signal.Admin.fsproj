@@ -10,6 +10,7 @@
   <ItemGroup>
     <Compile Include="Problems.fs" />
     <Compile Include="Codec.fs" />
+    <Compile Include="RecordIntegrity.fs" />
     <Compile Include="Deployment.fs" />
     <Compile Include="DatasetManifest.fs" />
     <Compile Include="Storage.fs" />

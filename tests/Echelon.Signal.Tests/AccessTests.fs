@@ -98,7 +98,7 @@ let ``only a configured GitHub account number is a bootstrap administrator`` () 
 let ``a membership record round-trips and refuses what this version does not know`` () =
     let membership = roster.Members[octocat.PrincipalId]
     let text = AdministratorRecord.encode "ds_engagement" membership |> ok
-    let record = Record.decode Record.DefaultMaxBytes text |> ok
+    let record = RecordIntegrity.decode Record.DefaultMaxBytes text |> ok
     let back = AdministratorRecord.ofBody record.Body |> ok
 
     Assert.Equal(membership, back.Membership)

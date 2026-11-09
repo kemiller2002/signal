@@ -293,7 +293,7 @@ let ``the storage manifest holds no personal data`` () =
 
     match stored with
     | ReadOutcome.Found found ->
-        let body = (Record.decode Record.DefaultMaxBytes found.Content |> ok).Body
+        let body = (RecordIntegrity.decode Record.DefaultMaxBytes found.Content |> ok).Body
 
         let keys =
             match body with

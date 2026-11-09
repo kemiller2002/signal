@@ -104,7 +104,7 @@ let private withMember (value: Json) =
     | Json.Object members -> Json.Object(members @ [ "email", Json.String email ])
     | other -> other
 
-let private bodyOf (recordText: string) = (Record.decode Record.DefaultMaxBytes recordText |> ok).Body
+let private bodyOf (recordText: string) = (RecordIntegrity.decode Record.DefaultMaxBytes recordText |> ok).Body
 
 [<Fact>]
 let ``every stored record refuses a field for identity`` () =

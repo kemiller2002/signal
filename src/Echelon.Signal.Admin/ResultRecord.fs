@@ -178,7 +178,7 @@ let encode (datasetId: string) (contribution: Contribution) : Result<RelativePat
           SchemaVersion = schema.Current
           Mutability = Mutability.Immutable
           Body = body datasetId contribution }
-        |> Record.encode Record.DefaultMaxBytes
+        |> RecordIntegrity.encode Record.DefaultMaxBytes
         |> Result.map (fun text -> target, text)
         |> Result.mapError (fun _ -> UnstorableRecord(contribution.Result.Identity.Key, "the result record is too large")))
 
