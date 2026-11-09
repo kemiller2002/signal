@@ -3908,7 +3908,27 @@
       "updatedAt": "2026-11-09T21:33:27.000Z",
       "telemetryExecutionIds": [
         "EXE-20261109T213328288Z-c6dafbc5"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "276cc22c9cecf4bed1848ebe",
+        "recordedAt": "2026-11-09T21:52:12.000Z",
+        "executionId": "EXE-20261109T213328288Z-c6dafbc5",
+        "repository": "echelon-signal",
+        "branch": "feat/forma-1-echelon-theme",
+        "commit": "a6e1accbe065d54e9013f8c9e7c4f39b319925c3",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feat/forma-1-echelon-theme",
+        "remoteCommit": "a6e1accbe065d54e9013f8c9e7c4f39b319925c3",
+        "summary": "Forma 1.0.1 codemod and Folio manual fix, Echelon theme pin and brand wiring, Conditor upgrade to echelon-current 1.38.0, tests and verify-deployed updated; pushed a6e1acc",
+        "nextAction": "Open the PR and get CI green",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
