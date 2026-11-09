@@ -124,3 +124,4 @@
 | WI-0105 | Review follow-up to WI-0104 (PR #128): fail closed on an altered interrupted-batch record at finalize, correct the RecordIntegrity integrity claim and residual risks (rollback, envelope coverage), and add tamper tests for report state, storage manifest and import batch reads | complete | modernization,security,integrity | high |
 | WI-0106 | SIG-EXP-001: Forma 0.14.0 (echelon-current 1.37.2), approved Signal mark, landing page, pre-runtime start-up | complete | signal, forma, identity | high |
 | WI-0107 | SIG-DEPLOY-001: verify the deployed site (pages, favicon, start-up, identity, brand assets) after each Pages deploy | complete | signal, deployment | high |
+| WI-0108 | SIG-FORMA1-001: Forma 1.0.1 (forma- namespace) and the Echelon theme 1.0.0 via echelon-current 1.38.0; keep Signal's own mark | complete | signal, forma, identity | high |

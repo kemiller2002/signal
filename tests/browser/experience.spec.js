@@ -1,6 +1,6 @@
 // Application identity, landing page and pre-runtime start-up
-// (EDS-BRAND-APP-001, EDS-UX-LANDING-001, EDS-UX-WAIT-001; Forma .ef-app-identity
-// and .ef-startup). The start-up screen is painted from each page's HTML
+// (EDS-BRAND-APP-001, EDS-UX-LANDING-001, EDS-UX-WAIT-001; Forma .forma-app-identity
+// and .forma-startup). The start-up screen is painted from each page's HTML
 // before the WebAssembly engine loads; web-kernel/limen-wasm.js hides it once
 // the kernel runs and marks a failed start.
 import { test, expect } from "@playwright/test";
@@ -17,9 +17,9 @@ for (const path of PAGES) {
     const screen = page.locator("#app-startup");
     await expect(screen).toBeVisible();
     await expect(screen.getByRole("status")).toContainText("Starting Signal");
-    await expect(screen.locator(".ef-app-identity__name")).toHaveText("Signal");
-    await expect(screen.locator(".ef-spinner__indicator")).toBeVisible();
-    await expect(screen.locator(".ef-startup__problem")).toBeHidden();
+    await expect(screen.locator(".forma-app-identity__name")).toHaveText("Signal");
+    await expect(screen.locator(".forma-spinner__indicator")).toBeVisible();
+    await expect(screen.locator(".forma-startup__problem")).toBeHidden();
     release();
     await expect(page.locator("html")).toHaveAttribute("data-kernel", "running", { timeout: 30_000 });
     await expect(screen).toBeHidden();
@@ -29,18 +29,18 @@ for (const path of PAGES) {
     await page.route(FRAMEWORK, (route) => route.abort());
     await page.goto(path);
     const screen = page.locator("#app-startup");
-    await expect(screen).toHaveAttribute("data-ef-state", "failed", { timeout: 30_000 });
+    await expect(screen).toHaveAttribute("data-forma-state", "failed", { timeout: 30_000 });
     await expect(screen.getByRole("alert")).toContainText("Signal could not start.");
-    await expect(screen.locator(".ef-startup__status")).toBeHidden();
+    await expect(screen.locator(".forma-startup__status")).toBeHidden();
   });
 
   test(`${path}: a page module that fails to load ends the start-up screen as failed`, async ({ page }) => {
     await page.route("**/web-kernel/limen-wasm.js", (route) => route.fulfill({ status: 404, body: "" }));
     await page.goto(path);
     const screen = page.locator("#app-startup");
-    await expect(screen).toHaveAttribute("data-ef-state", "failed", { timeout: 15_000 });
+    await expect(screen).toHaveAttribute("data-forma-state", "failed", { timeout: 15_000 });
     await expect(screen.getByRole("alert")).toBeVisible();
-    await expect(screen.locator(".ef-startup__status")).toBeHidden();
+    await expect(screen.locator(".forma-startup__status")).toBeHidden();
   });
 
   test(`${path}: a start that never finishes times out after 60 seconds`, async ({ page }) => {
@@ -48,11 +48,11 @@ for (const path of PAGES) {
     await page.route(FRAMEWORK, () => new Promise(() => {}));
     await page.goto(path);
     const screen = page.locator("#app-startup");
-    await expect(screen).toHaveAttribute("data-ef-state", "starting");
+    await expect(screen).toHaveAttribute("data-forma-state", "starting");
     await page.clock.runFor(59_000);
-    await expect(screen).toHaveAttribute("data-ef-state", "starting");
+    await expect(screen).toHaveAttribute("data-forma-state", "starting");
     await page.clock.runFor(2_000);
-    await expect(screen).toHaveAttribute("data-ef-state", "timed-out");
+    await expect(screen).toHaveAttribute("data-forma-state", "timed-out");
     await expect(screen.getByRole("alert")).toContainText("taking too long to start");
   });
 
@@ -63,6 +63,29 @@ for (const path of PAGES) {
     const response = await request.get(href);
     expect(response.ok()).toBe(true);
     expect(await response.text()).toContain("<svg");
+  });
+}
+
+// Forma 1.x is brand-neutral; the Echelon theme (loaded after Forma, applied
+// by data-forma-brand on <html>) supplies Echelon colours and fonts
+// (EDS-ADR-002). Signal's own mark stays Signal's.
+for (const path of [...PAGES, "/web/home/index.html"]) {
+  test(`${path}: the Echelon theme brands the page over Forma's neutral palette`, async ({ page }) => {
+    await page.route(FRAMEWORK, () => new Promise(() => {}));
+    await page.goto(path);
+    await expect(page.locator("html")).toHaveAttribute("data-forma-brand", "echelon");
+    const look = () => page.evaluate(() => {
+      const body = getComputedStyle(document.body);
+      return { surface: body.backgroundColor, font: body.fontFamily };
+    });
+    const branded = await look();
+    await page.evaluate(() => document.documentElement.removeAttribute("data-forma-brand"));
+    const neutral = await look();
+    expect(branded.font).toMatch(/^Manrope\b/);
+    expect(neutral.font).not.toMatch(/Manrope/);
+    expect(branded.surface).not.toBe(neutral.surface);
+    await expect(page.locator(".forma-app-identity__name").first()).toHaveText("Signal");
+    await expect(page.locator('[src*="logos/echelon-foundry/"], [href*="logos/echelon-foundry/"]')).toHaveCount(0);
   });
 }
 

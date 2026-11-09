@@ -137,7 +137,7 @@ test("ULI-L05/L06: long titles, field labels and area names wrap instead of over
   // fixtures): a long translated title and long field labels.
   await page.evaluate((text) => {
     document.querySelector("h1").textContent = text;
-    for (const label of document.querySelectorAll("label > span:first-child:not(.ef-sr-only)")) label.textContent = text;
+    for (const label of document.querySelectorAll("label > span:first-child:not(.forma-sr-only)")) label.textContent = text;
   }, LONG);
   await expectNoHorizontalOverflow(page, "survey with long title and field labels @320");
   // The best-worst columns still line up below the longer content.
@@ -157,7 +157,7 @@ test("ULI-L05/L06: long titles, field labels and area names wrap instead of over
 
 // ULI-L05 (was an EXCEPTION owned by Forma under GH-104): with design-system
 // 0.6.1 a best-worst option holding a word longer than its column overflowed
-// .ef-best-worst__row at 320 CSS px. Forma 0.13.0 breaks long text inside its
+// .forma-best-worst__row at 320 CSS px. Forma 0.13.0 breaks long text inside its
 // containers, so the exception is retired (WI-0102) and the row is held to
 // the ordinary no-overflow assertion.
 test("ULI-L05: a best-worst option with a very long word stays inside Forma's row at 320 CSS px", async ({ page }) => {
@@ -174,7 +174,7 @@ test("ULI-L05: a best-worst option with a very long word stays inside Forma's ro
 // negative means the two overlap, or the label renders below the title.
 async function typeToTitleGap(page) {
   return page.evaluate(() => {
-    const type = document.querySelector(".ef-record-header__type");
+    const type = document.querySelector(".forma-record-header__type");
     const title = type.parentElement.querySelector("h1, h2, h3, h4");
     return title.getBoundingClientRect().top - type.getBoundingClientRect().bottom;
   });
@@ -234,7 +234,7 @@ test("ULI-L08: with reduced motion the scale does not animate, and still answers
   await page.emulateMedia({ reducedMotion: "reduce" });
   await open(page, "/web/index.html");
   const scope = question(page, FIRST_PROMPT);
-  const marker = scope.locator(".ef-ordinal-option__marker").first();
+  const marker = scope.locator(".forma-ordinal-option__marker").first();
   const seconds = await marker.evaluate((element) => Math.max(...getComputedStyle(element).transitionDuration.split(",").map((value) => parseFloat(value))));
   expect(seconds).toBeLessThanOrEqual(0.001);
   await scope.getByRole("radio", { name: "Rarely", exact: true }).check();

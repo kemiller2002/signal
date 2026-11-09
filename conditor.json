@@ -4,7 +4,7 @@
   "registryAuthority": {
     "kind": "resolved-release-set",
     "path": ".conditor/authority/resolved-release-set.json",
-    "sha256": "3902cb89380f0a63e6987607bb5a69a7309b69e4dfaf2792ef1614d371937d86"
+    "sha256": "b92b3be81d45ffb75d04b468e7402ec16c0c5e7da03ca659c3dddf9056750fa2"
   },
   "components": [
     {
@@ -39,7 +39,12 @@
     },
     {
       "id": "forma",
-      "version": "0.14.0",
+      "version": "1.0.1",
+      "required": true
+    },
+    {
+      "id": "echelon-theme",
+      "version": "1.0.0",
       "required": true
     },
     {

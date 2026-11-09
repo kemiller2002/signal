@@ -49,7 +49,7 @@ export const question = (page, prompt) => page.getByRole("group", { name: prompt
 
 // Answers every assessment question with the same visible choice, by label.
 export async function answerAll(page, choice) {
-  const groups = page.locator("fieldset.ef-ordinal-scale");
+  const groups = page.locator("fieldset.forma-ordinal-scale");
   const count = await groups.count();
   for (let i = 0; i < count; i++) await groups.nth(i).getByRole("radio", { name: choice, exact: true }).check();
   await expect(page.locator("#progress")).toHaveText(`${count} of ${count} answered`);

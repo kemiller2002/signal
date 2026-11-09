@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-09T14:38:45.000Z",
+  "updatedAt": "2026-11-09T22:01:23.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -3898,6 +3898,64 @@
       },
       "completedAt": "2026-11-09T14:38:45.000Z",
       "conclusion": "Deployed-site verification added with adversarial unit tests (7/7 local). The live check runs on the next deploy from main."
+    },
+    {
+      "id": "WI-0108",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "tools/pages/verify-deployed.mjs"
+        },
+        {
+          "type": "implementation",
+          "path": "web/styles.css"
+        },
+        {
+          "type": "implementation",
+          "path": "conditor.json"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/FoundationsConformanceTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tools/pages/verify-deployed.test.mjs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/experience.spec.js"
+        }
+      ],
+      "updatedAt": "2026-11-09T22:01:23.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261109T213328288Z-c6dafbc5"
+      ],
+      "latestCheckpoint": {
+        "id": "9c89830dc59f85c78635806c",
+        "recordedAt": "2026-11-09T22:01:17.000Z",
+        "executionId": "EXE-20261109T213328288Z-c6dafbc5",
+        "repository": "echelon-signal",
+        "branch": "feat/forma-1-echelon-theme",
+        "commit": "ca3f3e2fb353abc341388eb5a03cf7102182417f",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "feat/forma-1-echelon-theme",
+        "remoteCommit": "ca3f3e2fb353abc341388eb5a03cf7102182417f",
+        "summary": "PR #131 open at ca3f3e2; CI fully green (Build: 647 .NET, 170 Playwright; Pages; Echelon Verification; Echelon foundations; Limen; Praxis)",
+        "nextAction": "Complete WI-0108, build the registry, validate, push Praxis state; owner review and merge",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-09T22:01:23.000Z",
+      "conclusion": "Forma 1.0.1 and Echelon theme 1.0.0 via echelon-current 1.38.0; PR #131 CI green; not merged pending owner review"
     }
   ]
 }

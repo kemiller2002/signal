@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 108,
+  "nextSeq": 109,
   "items": [
     {
       "id": "WI-0001",
@@ -2657,6 +2657,31 @@
       },
       "source": "manual",
       "sourceReference": null
+    },
+    {
+      "id": "WI-0108",
+      "title": "SIG-FORMA1-001: Forma 1.0.1 (forma- namespace) and the Echelon theme 1.0.0 via echelon-current 1.38.0; keep Signal's own mark",
+      "description": "EDS-ADR-002 consumer migration, Signal first. Source: .praxis/inbox/documents/2026-11-09-SIG-FORMA1-001-forma-1-echelon-theme.md",
+      "tags": [
+        "signal",
+        "forma",
+        "identity"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-09T21:33:24.000Z",
+      "updatedAt": "2026-11-09T22:01:23.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "owner-directive",
+      "sourceReference": "EDS-ADR-002"
     }
   ]
 }

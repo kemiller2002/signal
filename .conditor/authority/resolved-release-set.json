@@ -2,8 +2,8 @@
   "schema": "echelon.resolved-release-set/v1",
   "profile": {
     "id": "echelon-current",
-    "version": "1.37.2",
-    "sha256": "f40993d5a6ff765427acb499383e03edf87c40a59f98458c5bdc1ad71efb4e8e"
+    "version": "1.38.0",
+    "sha256": "a70c463a68155dab7dbd23e94527e1958121867eb389e41e6a1b260c8e957e6c"
   },
   "platform": "linux-x64",
   "resolver": {
@@ -11,7 +11,7 @@
     "version": "0.1.0"
   },
   "catalogSnapshot": {
-    "sha256": "b407bff6ee2e5cb829d2c62ce2a51b70ff850b715ad6808a2cd07d287d040b08"
+    "sha256": "ddf74697c5b1e0c2a50548fedd827bea9bb104a1571662bb7254a210df1744e6"
   },
   "components": [
     {
@@ -370,35 +370,35 @@
       "systemId": "forma",
       "role": "project-binding",
       "required": true,
-      "version": "0.14.0",
+      "version": "1.0.1",
       "repository": "kemiller2002/forma",
-      "tag": "v0.14.0",
-      "commit": "7372886ed7e5ae101df26515279abc6b34d28a69",
+      "tag": "v1.0.1",
+      "commit": "0ddbfc968aeb79062513da97d06d1ea959dcf02a",
       "releaseStage": "stable",
       "lifecycleState": "active",
       "distributionClass": "web-package",
       "executable": null,
       "releaseManifest": {
         "schema": "echelon.release/v2",
-        "sha256": "18968771efdd5d080b7a77bc4b19de22146d362e59ae6e6d0ea9113556ab8b16"
+        "sha256": "9ba65daedb5171c3bd369ae34d01ef8e1b159e1d3f0f6a3db3e58db5abae5774"
       },
       "distribution": {
         "mechanism": "github-release",
         "package": "@echelon-foundry/design-system",
-        "url": "https://github.com/kemiller2002/forma/releases/tag/v0.14.0"
+        "url": "https://github.com/kemiller2002/forma/releases/tag/v1.0.1"
       },
       "artifacts": [
         {
-          "name": "echelon-foundry-design-system-0.14.0.tgz",
+          "name": "echelon-foundry-design-system-1.0.1.tgz",
           "purpose": "package",
           "platform": null,
-          "sha256": "01c0dcba663254ba1553afb67e66cf0fe21d6846de5672e9f5fbe7978738adfd"
+          "sha256": "db4a8bf7bcf6ba7826f1605c4265ea86c456464f2e2a3eef18d026f24c242056"
         },
         {
           "name": "forma-marketing.sha256",
           "purpose": "checksums",
           "platform": null,
-          "sha256": "fa503a54df222a46ed4c2c0717b4eb57b11a22a55b91832ff8793faa66cd58c9"
+          "sha256": "4fa7e5b24926e085543d0f6e00142256d255df367f9f236ccd38512109d1d6ca"
         }
       ]
     },
@@ -667,6 +667,42 @@
           "purpose": "checksums",
           "platform": null,
           "sha256": "91983b9587c4fdafc0aef079db8690ae0f31d9cde025fff0483b1c4515f44e35"
+        }
+      ]
+    },
+    {
+      "systemId": "echelon-theme",
+      "role": "project-binding",
+      "required": false,
+      "version": "1.0.0",
+      "repository": "kemiller2002/echelon-design-system",
+      "tag": "v1.0.0",
+      "commit": "296a03050068eaf8842b55eb31fc09a9f33399bc",
+      "releaseStage": "stable",
+      "lifecycleState": "active",
+      "distributionClass": "web-package",
+      "executable": null,
+      "releaseManifest": {
+        "schema": "echelon.release/v2",
+        "sha256": "986254788eed9a44c0e1b63cc4c5abb228593351af54167d6d2bc7d3e7840851"
+      },
+      "distribution": {
+        "mechanism": "github-release",
+        "package": "@echelon-foundry/echelon-theme",
+        "url": "https://github.com/kemiller2002/echelon-design-system/releases/tag/v1.0.0"
+      },
+      "artifacts": [
+        {
+          "name": "echelon-foundry-echelon-theme-1.0.0.tgz",
+          "purpose": "package",
+          "platform": null,
+          "sha256": "5d981420cfd4f7a835564a204938eb5db1f1d35350477a755df98daa37ec8394"
+        },
+        {
+          "name": "checksums.txt",
+          "purpose": "checksums",
+          "platform": null,
+          "sha256": "757e4816f40f9db2587f5e158600795d7e8460dec861ebfee6327e78b3a8a3d5"
         }
       ]
     }

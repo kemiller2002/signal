@@ -27,19 +27,19 @@ test("the page runs on Limen, Forma and Folio from the pinned packages", async (
     "../node_modules/@echelon-foundry/print-components/src/styles/print.css"
   ]));
   const token = await page.evaluate(() =>
-    getComputedStyle(document.documentElement).getPropertyValue("--ef-color-accent-primary").trim());
+    getComputedStyle(document.documentElement).getPropertyValue("--forma-color-accent-primary").trim());
   expect(token).not.toBe("");
   // A plain <span> is inline; Forma's question-number rule lays it out.
-  await expect(page.locator(".ef-question__number").first()).not.toHaveCSS("display", "inline");
+  await expect(page.locator(".forma-question__number").first()).not.toHaveCSS("display", "inline");
 
   // Folio: its print elements are registered (upgraded), not unknown tags.
   expect(await page.evaluate(() => ["ef-print-document", "ef-print-table", "ef-print-page-number"]
     .every((name) => customElements.get(name) !== undefined))).toBe(true);
 
   // Forma's authoring wrappers stay inert: never registered as elements.
-  expect(await page.evaluate(() => customElements.get("ef-data-grid"))).toBeUndefined();
+  expect(await page.evaluate(() => customElements.get("forma-data-grid"))).toBeUndefined();
 
-  await expect(page.locator("section.ef-question")).toHaveCount(15);
+  await expect(page.locator("section.forma-question")).toHaveCount(15);
   await expect(page.locator("#progress")).toHaveText("0 of 15 answered");
 });
 
@@ -71,7 +71,7 @@ test("answering every question shows scored results, and missing data is not zer
     ["Timebox Discipline", "Not scored", "2 of 5 numeric", "Needs at least 3 numeric answers; missing data is not counted as zero."]
   ]);
   await expect(page.locator("#scored-count")).toHaveText("2 of 3 dimensions scored");
-  await expect(page.locator('#results-body tr[data-dimension="D03"] .ef-status-lozenge')).toHaveAttribute("data-state", "unscored");
+  await expect(page.locator('#results-body tr[data-dimension="D03"] .forma-status-lozenge')).toHaveAttribute("data-state", "unscored");
 
   // Editing keeps the answers; starting over clears them.
   await page.click("#edit-answers");

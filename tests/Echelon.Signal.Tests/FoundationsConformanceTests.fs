@@ -16,7 +16,11 @@ let private json (relative: string) = JsonNode.Parse(readRepoFile relative)
 let private str (node: JsonNode) = node.GetValue<string>()
 
 let private formaRelease =
-    "https://github.com/kemiller2002/forma/releases/download/v0.14.0/echelon-foundry-design-system-0.14.0.tgz"
+    "https://github.com/kemiller2002/forma/releases/download/v1.0.1/echelon-foundry-design-system-1.0.1.tgz"
+
+/// The Echelon brand for Forma 1.x (EDS-ADR-002), from kemiller2002/echelon-design-system.
+let private themeRelease =
+    "https://github.com/kemiller2002/echelon-design-system/releases/download/v1.0.0/echelon-foundry-echelon-theme-1.0.0.tgz"
 
 let private folioRelease =
     "https://github.com/kemiller2002/folio/releases/download/v0.4.1/echelon-foundry-print-components-0.4.1.tgz"
@@ -25,7 +29,7 @@ let private folioRelease =
 let ``foundations.json requires every foundation, at the echelon-current versions`` () =
     let capabilities = (json ".echelon/foundations.json").["capabilities"]
 
-    for name, version in [ "aegis", "1.0.0"; "forma", "0.14.0"; "folio", "0.4.1"; "limen", "0.9.1" ] do
+    for name, version in [ "aegis", "1.0.0"; "forma", "1.0.1"; "folio", "0.4.1"; "limen", "0.9.1" ] do
         Assert.True(capabilities.[name].["required"].GetValue<bool>(), $"{name} must be required")
         Assert.Equal(version, str capabilities.[name].["version"])
 
@@ -35,13 +39,15 @@ let ``foundations.json requires every foundation, at the echelon-current version
 let ``the npm foundations are pinned to immutable releases and locked`` () =
     let dependencies = (json "package.json").["dependencies"]
     Assert.Equal(formaRelease, str dependencies.["@echelon-foundry/design-system"])
+    Assert.Equal(themeRelease, str dependencies.["@echelon-foundry/echelon-theme"])
     Assert.Equal(folioRelease, str dependencies.["@echelon-foundry/print-components"])
     Assert.Equal("0.9.1", str dependencies.["@echelon-foundry/limen"])
 
     let packages = (json "package-lock.json").["packages"]
 
     for name, version in
-        [ "@echelon-foundry/design-system", "0.14.0"
+        [ "@echelon-foundry/design-system", "1.0.1"
+          "@echelon-foundry/echelon-theme", "1.0.0"
           "@echelon-foundry/print-components", "0.4.1"
           "@echelon-foundry/limen", "0.9.1" ] do
         let locked = packages.[$"node_modules/{name}"]
@@ -59,6 +65,7 @@ let ``the page takes Forma and Folio from the installed packages`` () =
 
     Assert.Equal<string list>(
         [ "../node_modules/@echelon-foundry/design-system/dist/all.css"
+          "../node_modules/@echelon-foundry/echelon-theme/dist/echelon.css"
           "../node_modules/@echelon-foundry/print-components/src/styles/print.css"
           "../web-kernel/page.css" ],
         imports
@@ -75,6 +82,73 @@ let ``the page takes Forma and Folio from the installed packages`` () =
     Assert.Contains("<script type=\"module\" src=\"./main.js\"></script>", html)
     Assert.Contains("from \"../web-kernel/limen-wasm.js\"", readRepoFile "web/main.js")
 
+/// Every page and its stylesheet, as the Pages site publishes them.
+let private pages =
+    [ "web/index.html", "web/styles.css"
+      "web/survey/index.html", "web/styles.css"
+      "web/admin/index.html", "web/admin/admin.css"
+      "web/home/index.html", "web/home/home.css" ]
+
+[<Fact>]
+let ``every page is branded Echelon, loading the theme after Forma`` () =
+    for page, stylesheet in pages do
+        let html = readRepoFile page
+        Assert.True(Regex.IsMatch(html, "<html\\b[^>]*\\sdata-forma-brand=\"echelon\""), $"{page}: <html> lacks data-forma-brand=\"echelon\"")
+
+        let imports =
+            Regex.Matches(readRepoFile stylesheet, "@import \"([^\"]+)\"") |> Seq.map (fun m -> m.Groups[1].Value) |> Seq.toList
+
+        let position (suffix: string) = imports |> List.tryFindIndex (fun i -> i.EndsWith suffix)
+        let forma = position "/@echelon-foundry/design-system/dist/all.css"
+        let theme = position "/@echelon-foundry/echelon-theme/dist/echelon.css"
+        Assert.True(forma.IsSome, $"{stylesheet} does not import Forma")
+        Assert.True(theme.IsSome, $"{stylesheet} does not import the Echelon theme")
+        Assert.True(forma < theme, $"{stylesheet} imports the Echelon theme before Forma")
+
+        for imported in imports do
+            let dir = Path.GetDirectoryName(repoFile stylesheet)
+            Assert.True(File.Exists(Path.GetFullPath(Path.Combine(dir, imported))), $"{stylesheet}: {imported} is not installed")
+
+    // The installed theme is the Forma 1.x Echelon brand.
+    let theme = readRepoFile "node_modules/@echelon-foundry/echelon-theme/dist/echelon.css"
+    Assert.Contains("[data-forma-brand=\"echelon\"]", theme)
+
+[<Fact>]
+let ``Signal keeps its own mark: the theme's Echelon Foundry logos are not used`` () =
+    for page, _ in pages do
+        let html = readRepoFile page
+        Assert.Contains("class=\"forma-app-identity__name\">Signal<", html)
+        Assert.Contains("brand/signal-mark.svg", html)
+        Assert.DoesNotContain("logos/echelon-foundry/", html)
+
+/// A Forma 0.x name (FORMA-NS-001): an `ef-` class, tag or id, a `--ef-`
+/// property, a `data-ef-` attribute or an `efX` dataset key. Folio owns the
+/// `ef-print-*` print surface (Folio 0.4.1), so those names are not Forma's.
+let private formaZeroName =
+    Regex(@"(?<![A-Za-z0-9_$/@-])(?:--|data-)?ef-(?!print-)|dataset\??\.ef[A-Z]|dataset\[[""']ef[A-Z]")
+
+[<Fact>]
+let ``no Forma 0.x name remains in Signal's pages, stylesheets or kernel`` () =
+    let sources =
+        [ "web"; "web-kernel" ]
+        |> List.collect (fun dir ->
+            Directory.EnumerateFiles(repoFile dir, "*.*", SearchOption.AllDirectories)
+            |> Seq.filter (fun f -> [ ".html"; ".css"; ".js"; ".mjs" ] |> List.contains (Path.GetExtension f))
+            |> Seq.toList)
+
+    Assert.NotEmpty sources
+
+    for source in sources do
+        let hits = formaZeroName.Matches(File.ReadAllText source) |> Seq.map (fun m -> m.Value) |> Seq.toList
+        Assert.True(hits.IsEmpty, $"{source} still uses Forma 0.x names: {hits}")
+
+    // The guard recognises the 0.x forms and leaves Folio's names alone.
+    for zero in [ "class=\"ef-question\""; "<ef-alert>"; "var(--ef-space-2)"; "data-ef-state"; "el.dataset.efState" ] do
+        Assert.True(formaZeroName.IsMatch zero, zero)
+
+    for kept in [ "<ef-print-table>"; "var(--ef-print-accent)"; "class=\"forma-question\""; "ref-count" ] do
+        Assert.False(formaZeroName.IsMatch kept, kept)
+
 [<Fact>]
 let ``the kernel registers Folio and starts Limen from the installed packages`` () =
     let kernel = readRepoFile "web-kernel/limen-wasm.js"
@@ -90,16 +164,16 @@ let ``the page composes Forma's components and Folio's document primitives`` () 
     let html = readRepoFile "web/index.html"
 
     for marker in
-        [ "<ef-fault-inline class=\"ef-component-tag\">"
-          "class=\"ef-fault ef-fault--inline"
-          "<ef-alert class=\"ef-component-tag\">"
-          "<ef-data-grid class=\"ef-component-tag\">"
-          "class=\"ef-record-header"
-          "class=\"ef-survey-progress\""
-          "class=\"ef-question\""
-          "class=\"ef-ordinal-scale ef-ordinal-scale--5\""
-          "class=\"ef-special-choices\""
-          "class=\"ef-status-lozenge\""
+        [ "<forma-fault-inline class=\"forma-component-tag\">"
+          "class=\"forma-fault forma-fault--inline"
+          "<forma-alert class=\"forma-component-tag\">"
+          "<forma-data-grid class=\"forma-component-tag\">"
+          "class=\"forma-record-header"
+          "class=\"forma-survey-progress\""
+          "class=\"forma-question\""
+          "class=\"forma-ordinal-scale forma-ordinal-scale--5\""
+          "class=\"forma-special-choices\""
+          "class=\"forma-status-lozenge\""
           "<ef-print-document"
           "<ef-print-table>"
           "<ef-print-page-number>" ] do
@@ -112,8 +186,8 @@ let ``nothing forks Forma or bypasses Limen's binding rules`` () =
     for source in sources do
         let text = readRepoFile source
         // No local design tokens and no restyled Forma components.
-        Assert.False(Regex.IsMatch(text, @"--ef-[\w-]+\s*:"), $"{source} defines a Forma token")
-        Assert.False(Regex.IsMatch(text, @"(^|[\s,}])\.ef-[\w-]+[^{;]*\{", RegexOptions.Multiline), $"{source} restyles a Forma component")
+        Assert.False(Regex.IsMatch(text, @"--forma-[\w-]+\s*:"), $"{source} defines a Forma token")
+        Assert.False(Regex.IsMatch(text, @"(^|[\s,}])\.forma-[\w-]+[^{;]*\{", RegexOptions.Multiline), $"{source} restyles a Forma component")
         // Forma's wrappers are inert; only Folio registers elements.
         Assert.DoesNotContain("customElements.define", text)
         // State cues are data-* attributes plus CSS: never inline or bound styles.
