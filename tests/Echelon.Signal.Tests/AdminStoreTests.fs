@@ -126,6 +126,49 @@ let ``a configured administrator sets the dataset up in two commits and administ
     Assert.Equal(2, commits github)
     Assert.Equal(opened.Roster.Roster, again.Roster.Roster)
 
+// ---- SEC-01: a stored record edited by hand is not trusted ------------------------------------
+
+/// The stored text with one member of its record body replaced, stored
+/// canonically again: the edit a person makes by hand in the repository.
+let private editBody (name: string) (value: Json) (content: string) =
+    let record = Record.decode Record.DefaultMaxBytes content |> ok
+
+    let body =
+        match record.Body with
+        | Json.Object members -> members |> List.map (fun (key, found) -> key, (if key = name then value else found)) |> Json.objectOf
+        | other -> other
+
+    { record with Body = body } |> Record.encode Record.DefaultMaxBytes |> ok
+
+[<Fact>]
+let ``a canonical hand edit that escalates an administrator is detected on load, never trusted (SEC-01)`` () =
+    let github = InMemoryStore()
+    let opened = openAs github (fun () -> writable) octocat None |> ok
+    Store.changeRoster (actor octocat) (Admit(hubot, Grants.analyst)) at opened |> run |> ok |> ignore
+
+    let storedAs (file: string) =
+        github.State.Objects
+        |> Map.toList
+        |> List.find (fun (key, _) -> key.EndsWith("/signal.administrator/" + file, StringComparison.Ordinal))
+
+    let hubotKey, hubotRecord = storedAs "github_3a9919.json"
+    let _, octocatRecord = storedAs "github_3a583231.json"
+
+    // hubot's analyst membership, edited outside Signal to hold every capability octocat holds.
+    let everything = (Record.decode Record.DefaultMaxBytes octocatRecord.Content |> ok).Body |> Json.field "capabilities" |> Option.get
+    let forged = editBody "capabilities" everything hubotRecord.Content
+    Assert.True(Json.isCanonical forged)
+    github.WriteExternally(opened.Namespace.Location, hubotKey.Substring(hubotKey.IndexOf ':' + 1), Some forged)
+
+    let again = openAs github (fun () -> writable) octocat (Some "R_1") |> ok
+
+    Assert.False(permits again.Roster.Roster hubot.PrincipalId ManageAdministrators, "a hand-edited membership was trusted")
+    Assert.False(again.Roster.Roster.Members.ContainsKey hubot.PrincipalId)
+    Assert.Contains("SIGNAL.STORAGE.ALTERED_RECORD", again.ReadOnlyReasons |> List.map Problems.code)
+    Assert.True(again.Grant.IsNone)
+    // octocat's own membership is untouched and still loads.
+    Assert.True(permits again.Roster.Roster octocat.PrincipalId ManageAdministrators)
+
 [<Fact>]
 let ``no one else sets a dataset up, and nothing is written for them`` () =
     let github = InMemoryStore()

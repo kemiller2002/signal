@@ -91,3 +91,28 @@ let ``every WASM export forwards to Application.Runtime and decides nothing`` ()
         let body = Regex.Replace(m.Groups[3].Value, @"\s+", "")
         Assert.Matches(@"^Echelon\.Signal\.Application\.Runtime\.dispatch\w*\(" + m.Groups[2].Value + @"\)$", body))
     Assert.Equal(1, Directory.EnumerateFiles(repoFile "src/Echelon.Signal.Browser", "*.cs") |> Seq.length)
+
+/// SEC-01 (ADM-025, ADM-046): every record Signal stores carries the hash of
+/// its body, and every record Signal reads is checked against it. Both happen
+/// in `RecordIntegrity` alone, so no other source encodes, decodes or
+/// validates an Arca record directly and skips the check.
+let private rawRecordAccess = @"\bRecord\.(encode|decode)\b|\bIntegrity\.validate\b"
+
+let private rawRecordViolations () =
+    [ "Echelon.Signal.Admin"; "Echelon.Signal.Application" ]
+    |> List.collect sourcesOf
+    |> List.filter (fun file -> Path.GetFileName file <> "RecordIntegrity.fs")
+    |> List.collect (fun file ->
+        Regex.Matches(stripComments (File.ReadAllText file), rawRecordAccess)
+        |> Seq.map (fun m -> $"{Path.GetFileName file}: {m.Value}")
+        |> List.ofSeq)
+
+[<Fact>]
+let ``records are stored and read only through RecordIntegrity, which seals and verifies their bodies (SEC-01)`` () =
+    Assert.Equal<string list>([], rawRecordViolations ())
+
+[<Fact>]
+let ``the raw record scan finds a planted decode`` () =
+    // The scan must not pass vacuously, nor flag a domain module's own encoder.
+    Assert.Matches(rawRecordAccess, stripComments "let r = Arca.Record.decode Record.DefaultMaxBytes text")
+    Assert.DoesNotMatch(rawRecordAccess, "GovernanceRecord.encodeAudit id key r |> Result.map ignore")
