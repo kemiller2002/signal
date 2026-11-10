@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T07:27:58.000Z",
+  "updatedAt": "2026-11-10T07:38:07.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4502,6 +4502,17 @@
       },
       "completedAt": "2026-11-10T07:27:58.000Z",
       "conclusion": "Admin shell and dashboard in the foundry ledger direction with the #134/#135 review follow-ups; CI green on d2ab83d; capture audit clean on all 85 screens. WI-0119 record notes: its completion event recorded paths [node_modules] (untracked symlink) and commit 3c2cb37 says checkpoint though none exists."
+    },
+    {
+      "id": "WI-0125",
+      "type": "task",
+      "state": "active",
+      "semanticState": "active",
+      "evidence": [],
+      "updatedAt": "2026-11-10T07:38:07.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T073808571Z-d06c19eb"
+      ]
     }
   ]
 }
