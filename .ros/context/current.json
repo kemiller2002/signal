@@ -4894,7 +4894,27 @@
       "updatedAt": "2026-11-10T16:18:56.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T161857233Z-24826fde"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "f342e88f77526892b5bfc5ab",
+        "recordedAt": "2026-11-10T16:36:19.000Z",
+        "executionId": "EXE-20261110T161857233Z-24826fde",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-results",
+        "commit": "567d526994a8210cc0a3a584d111f7f141e4bb2b",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-results",
+        "remoteCommit": "567d526994a8210cc0a3a584d111f7f141e4bb2b",
+        "summary": "Results, scoring and report done on main 8454ff5; CI green at 2d465b16 (704 .NET, 199 Playwright); visual-evidence/baseline-2d465b1 (87 screens, none unreached, no audit finding on any screen)",
+        "nextAction": "merge main once signal#139 merges (results-header conflict: keep #139's Signal-owned container), re-run CI and capture, complete WI-0123",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
