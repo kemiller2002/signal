@@ -4894,7 +4894,27 @@
       "updatedAt": "2026-11-10T12:26:49.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T122650408Z-18e0c750"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "6e31869390f97885a5f2e2bb",
+        "recordedAt": "2026-11-10T14:51:29.000Z",
+        "executionId": "EXE-20261110T122650408Z-18e0c750",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-respondent",
+        "commit": "04c06fd34c2ed6f89006f43cf196838c314302e5",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-respondent",
+        "remoteCommit": "04c06fd34c2ed6f89006f43cf196838c314302e5",
+        "summary": "Respondent page done; CI green at 73749f54 (704 .NET, 203 Playwright); visual-evidence/baseline-73749f5 (88 screens, none unreached, no finding on any survey screen)",
+        "nextAction": "complete WI-0122, update the signal#139 PR body and report",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
