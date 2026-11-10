@@ -63,7 +63,13 @@ test("SIG-ECHELON-APP-002 (WI-0123): a group's results, scoring and report keep 
   await expect(rows.locator(".admin-means__name")).toHaveText(["Plan Commitment", "Change Responsiveness", "Timebox Discipline"]);
   await expect(exploration).not.toContainText(/\bD0[1-3]\b/);
   await expect(exploration).not.toContainText(/overall/i);
-  await expect(page.locator("#section-chart-caption")).toContainText("Plan Commitment");
+  // createGroup imports nothing: the group has no accepted responses, so the
+  // engine shows no value, and each row says why instead of drawing a bar
+  // (never zero). With imported responses the caption names the highest and
+  // lowest section (ResultsProjectionTests; the capture's admin-group-results).
+  await expect(page.locator("#section-chart-caption")).toHaveText("Section means: no values can be shown.");
+  await expect(rows.locator("meter:visible")).toHaveCount(0);
+  for (const value of await rows.locator(".admin-means__value").allInnerTexts()) expect(value.trim()).not.toBe("");
   // The figure fills its panel: no default <figure> inset.
   const inset = await page.locator("#section-chart").evaluate((figure) => {
     const body = figure.parentElement.getBoundingClientRect();
