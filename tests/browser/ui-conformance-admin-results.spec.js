@@ -6,7 +6,7 @@
 // 390 px and at 320 px with 200% text). Scoring says how its figures were
 // derived; the report view has one primary action.
 import { test, expect } from "./support.js";
-import { createGroup, signInWithStore } from "./ui-conformance-fixtures.mjs";
+import { STORE_STEP_MS, answerAll, createGroup, open, signInWithStore } from "./ui-conformance-fixtures.mjs";
 
 test.describe.configure({ timeout: 300_000 });
 
@@ -101,16 +101,59 @@ test("SIG-ECHELON-APP-002 (WI-0123): a group's results, scoring and report keep 
   await expect(page.getByRole("button", { name: "Take a snapshot", exact: true })).toHaveAttribute("data-echelon-emphasis", "primary");
   // The report's figures as a definition grid, not a run of lines.
   await expect(page.locator("#report-counts")).toHaveCSS("display", "grid");
-  const sections = page.locator(".report-table").filter({ has: page.locator("#report-sections") });
-  if (await sections.count()) {
-    await expectScrollRegion(sections, await page.locator("#report-section-results-title").innerText());
-    // At 390 px each row is a card naming its figures: nothing scrolls
-    // sideways inside the region, and no heading is cut off.
-    await page.setViewportSize({ width: 390, height: 900 });
-    expect(await sections.evaluate((region) => region.scrollWidth - region.clientWidth)).toBeLessThanOrEqual(0);
-    const first = sections.locator("tbody tr").first();
-    await expect(first.locator("td").first()).toHaveAttribute("data-label", /\S/);
-    await page.setViewportSize({ width: 1280, height: 900 });
-  }
+  // An empty group has no section rows to show: said explicitly, so the
+  // cards below are checked on a group with data, never skipped.
+  await expect(page.locator("#report-sections tbody tr")).toHaveCount(0);
   await expectWholeWords(page, "report");
+});
+
+// With one imported response (an invitation answered and submitted): the
+// section means are drawn by name, and on a narrow screen the report's rows
+// are cards that name their figures, with nothing scrolling sideways.
+test("SIG-ECHELON-APP-002 (WI-0123): with an imported response, the means are drawn by name and the report's rows are named cards at 390 px", async ({ page, context }) => {
+  await signInWithStore(page);
+  await createGroup(page, { expected: "2" });
+  await page.getByRole("link", { name: "Imported surveys" }).click();
+  const invitations = page.locator("#invitations");
+  await invitations.getByRole("spinbutton", { name: "How many links" }).fill("1");
+  await invitations.getByRole("spinbutton", { name: "How many links" }).press("Tab");
+  await invitations.getByRole("button", { name: "Create links" }).click();
+  await expect(page.locator("#invitation-summary")).toHaveText(/1 link\(s\) issued/, { timeout: STORE_STEP_MS });
+  const [link] = await page.locator("#invitation-links code").allTextContents();
+  const respondent = await context.newPage();
+  await open(respondent, link);
+  await answerAll(respondent, "Often");
+  await respondent.getByRole("button", { name: "See results" }).click();
+  await respondent.getByRole("button", { name: "Submit answers" }).click();
+  const submission = await respondent.getByRole("textbox", { name: "Submission link" }).inputValue();
+  await respondent.close();
+  const imports = page.locator("#import");
+  await imports.getByRole("textbox", { name: "Completed survey links, one per line" }).fill(submission);
+  await imports.getByRole("button", { name: "Import" }).click();
+  await expect(page.locator("#importAccepted li")).toHaveCount(1, { timeout: STORE_STEP_MS });
+
+  await groupTab(page, "Results");
+  const rows = page.locator("#section-chart .admin-means__row");
+  await expect(rows.locator(".admin-means__name")).toHaveText(["Plan Commitment", "Change Responsiveness", "Timebox Discipline"]);
+  await expect(rows.locator("meter:visible")).toHaveCount(3);
+  await expect(rows.locator(".admin-means__value")).toHaveText(["75.0", "75.0", "75.0"]);
+  await expect(page.locator("#section-chart-caption")).toContainText("Plan Commitment");
+
+  await groupTab(page, "Report");
+  const sections = page.locator(".report-table").filter({ has: page.locator("#report-sections") });
+  await expectScrollRegion(sections, await page.locator("#report-section-results-title").innerText());
+  const body = sections.locator("tbody tr");
+  await expect(body).toHaveCount(3);
+  await page.setViewportSize({ width: 390, height: 900 });
+  expect(await sections.evaluate((region) => region.scrollWidth - region.clientWidth)).toBeLessThanOrEqual(0);
+  // Every figure in every row names its column, in the report's language.
+  for (const row of await body.all()) {
+    const labels = await row.locator("td").evaluateAll((cells) => cells.map((cell) => cell.getAttribute("data-label")));
+    expect(labels).toEqual(["Mean", "Median", "Range", "Scored", "Not scored"]);
+  }
+  // The column headings are not shown as a row to be cut off; each card's
+  // section name is its heading.
+  await expect(sections.locator("thead")).toHaveCSS("position", "absolute");
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await expect(sections.locator("thead")).not.toHaveCSS("position", "absolute");
 });
