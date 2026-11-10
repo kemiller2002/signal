@@ -547,7 +547,11 @@
   .admin .report-facts dt { color: var(--echelon-text-secondary); font-size: 0.875rem; }
   .admin .report-facts dd { margin: 0; font: 500 1.5rem/1.2 var(--forma-primitive-font-family-display); color: var(--forma-color-text-heading); }
   .admin .report-prose { max-inline-size: 70ch; line-height: 1.6; }
-  .admin ul.report-prose { padding-inline-start: 1.25rem; display: grid; gap: 0.5rem; }
+  /* Its one track never grows to its longest word: at 320 px with 200%
+     text a method's "Responsiveness:" is wider than the column and wraps
+     inside it instead of pushing the page sideways. */
+  .admin ul.report-prose { padding-inline-start: 1.25rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+  .admin .report-prose { overflow-wrap: break-word; }
   .admin .report-table { overflow-x: auto; }
   .admin .report-cards { border-collapse: collapse; min-inline-size: 100%; }
   .admin .report-cards :is(th, td) {
