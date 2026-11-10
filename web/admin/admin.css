@@ -311,7 +311,8 @@
    One template header with the action group, its outcome and the editor's
    parts to move to; panels two to a row on a wide screen (in reading order,
    left then right), the wide ones across both; fields full width in their
-   column up to a readable measure; question rows as structured rows. */
+   column up to a readable measure; question rows as structured rows.
+   Two to a row from 50rem, so a tablet (834 px) gets them too. */
 .draft-head {
   display: grid;
   gap: 0.75rem 1.5rem;
@@ -346,7 +347,7 @@
 }
 .draft-editor .echelon-panel__header h3:focus { outline-offset: 4px; }
 
-@media (min-width: 64rem) {
+@media (min-width: 50rem) {
   .draft-editor {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -395,7 +396,7 @@
 #draft-questions { list-style: none; padding: 0; margin: 0; }
 /* A wide panel's fields flow in columns on a wide screen, in reading order;
    its lists, headings, notes, tables and sub-sections take the whole row. */
-@media (min-width: 64rem) {
+@media (min-width: 50rem) {
   .draft-panel--wide > .echelon-panel__body,
   .draft-panel--wide #scoring-authoring {
     display: grid;
@@ -423,4 +424,11 @@
   .draft-parts__list { flex-wrap: nowrap; overflow-x: auto; }
   .draft-parts__list > li { flex: 0 0 auto; }
   .admin .draft-parts__link { white-space: nowrap; overflow-wrap: normal; }
+}
+/* A phone (and 320 px with 200% text): Remove goes under the question, so
+   the question keeps the row's width (the audit found it set four letters a
+   line beside the button). */
+@media (max-width: 30rem) {
+  .draft-question { grid-template-columns: minmax(0, 1fr); }
+  .draft-question > .forma-button { grid-column: 1; grid-row: auto; justify-self: start; }
 }

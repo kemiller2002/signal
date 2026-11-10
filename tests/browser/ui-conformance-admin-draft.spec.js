@@ -218,6 +218,34 @@ test("SIG-ECHELON-APP-002 (WI-0130): the draft's actions are one group in its he
   await page.keyboard.press("Enter");
   await expect(draft.getByRole("heading", { level: 3, name: "Conditions", exact: true })).toBeFocused();
 
+  // A question row keeps whole words at 320 px with 200% text: Remove goes
+  // under the question (the audit found the question four letters a line).
+  await draft.getByRole("textbox", { name: "New section title", exact: true }).fill("Delivery");
+  await draft.getByRole("textbox", { name: "New section title", exact: true }).press("Tab");
+  await draft.getByRole("button", { name: "Add section" }).click();
+  await draft.getByRole("textbox", { name: "New question", exact: true }).fill("We ship every week.");
+  await draft.getByRole("textbox", { name: "New question", exact: true }).press("Tab");
+  await draft.getByRole("button", { name: "Add the question below here" }).click();
+  await expect(page.locator("#draft-questions li")).toHaveCount(1);
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
+  const collapsed = await page.locator("#draft-questions").evaluate((list) => {
+    const found = [];
+    const walker = document.createTreeWalker(list, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const text = node.textContent.trim();
+      const parent = node.parentElement;
+      if (!text || parent.closest("code, .forma-visually-hidden") || parent.getClientRects().length === 0) continue;
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      const lines = new Set([...range.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top))).size;
+      if (lines >= 3 && text.replace(/\s/g, "").length / lines < 4) found.push(`${text} (${lines} lines)`);
+    }
+    return found;
+  });
+  expect(collapsed).toEqual([]);
+  await page.evaluate(() => { document.documentElement.style.removeProperty("font-size"); });
+
   // Fields fill their column, up to a 40rem measure (Title was about 155 px).
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
