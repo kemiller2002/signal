@@ -100,6 +100,13 @@
   overflow-wrap: break-word;
 }
 .respondent-card .survey-section { margin: 0; }
+/* The prompt is in the display face; its optional mark and guidance after
+   it stay in the body face, the guidance on its own line. */
+.respondent-card .survey-question > :is(.survey-optional, span:last-child) {
+  font-family: var(--forma-primitive-font-family-sans);
+  font-weight: normal;
+}
+.respondent-card .survey-question > span:last-child:not(:empty) { display: block; margin-block-start: 0.35rem; }
 .respondent-progress #progress { color: var(--echelon-text-secondary); }
 
 /* A best-worst row on a phone (and at 320 px with 200% text): the option
