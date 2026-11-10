@@ -39,3 +39,15 @@ test("focus stops without an indicator or out of document order are findings", (
   assert.deepEqual(found.withoutIndicator, ['button "Two"']);
   assert.deepEqual(found.outOfDocumentOrder, ['a "Three"']);
 });
+
+test("opacity fades text toward its background, and every ratio is summarised", () => {
+  const rows = [
+    { element: "p", text: "faded", fg: [23, 26, 24, 1], bg: [[242, 239, 231, 1]], px: 16, weight: 400, exempt: false, opacity: 0.3 },
+    { element: "p", text: "solid", fg: [23, 26, 24, 1], bg: [[242, 239, 231, 1]], px: 16, weight: 400, exempt: false, opacity: 1 }
+  ];
+  const found = contrastFindings(rows);
+  assert.deepEqual(found.failures.map((f) => f.text), ["faded"]);
+  assert.equal(found.lowest[0].text, "faded");
+  assert.equal(found.bands["7plus"], 1);
+  assert.equal((found.bands.below3 ?? 0) + (found.bands["3to4.5"] ?? 0), 1);
+});

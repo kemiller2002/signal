@@ -186,3 +186,9 @@
   justify-self: start;
   align-self: flex-start;
 }
+
+/* Identifiers in code (a group's key, the report state, lineage): Forma
+   styles code only inside .forma-site, so the theme's mono face is set here
+   rather than left to the browser's default monospace. */
+.admin code,
+.admin-bar code { font-family: var(--forma-primitive-font-family-mono); font-size: 0.9em; }
