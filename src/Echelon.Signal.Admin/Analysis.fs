@@ -32,8 +32,11 @@ type Unavailable =
     | UnknownSection of section: string
     /// The group has no accepted response yet.
     | NoAcceptedResponses
-    /// Responses were accepted, but none had enough numeric answers to score
-    /// the section (all "don't know" or "not applicable", or too few).
+    /// Responses are accepted, but an anonymous group shows none of them
+    /// until a release covers them (Releases.shown).
+    | HeldBack
+    /// Responses are shown, but none scored the section: too few numeric
+    /// answers, skipped by a condition, or a formula with no finite value.
     | NotScored
 
 /// A calculated value, or why there is none.
@@ -41,15 +44,17 @@ type Metric =
     | Value of float
     | Unavailable of Unavailable
 
-/// A section's score as the report state holds it, or the engine's reason
-/// for none (signal#142 review): no accepted response yet; withheld because
-/// an anonymous group is below its minimum (the engine's own Suppressed
-/// flag); otherwise no response scored it. Never anonymity for a section
-/// that simply had no numeric answers.
-let sectionScore (minimum: int) (state: ReportState.AdminReportState) (section: ReportState.SectionSummary) : Metric =
+/// A section's score as the shown report state holds it, or the reason for
+/// none (signal#142 review): no response accepted at all (the live count);
+/// accepted but none shown yet, held back for a release; withheld because an
+/// anonymous group is below its minimum (the engine's own Suppressed flag);
+/// otherwise no shown response scored it. Never anonymity for a section that
+/// simply went unscored.
+let sectionScore (minimum: int) (accepted: int) (state: ReportState.AdminReportState) (section: ReportState.SectionSummary) : Metric =
     match section.AggregateScore with
     | Some score -> Value score
-    | None when state.AcceptedSurveyCount = 0 -> Unavailable NoAcceptedResponses
+    | None when accepted = 0 -> Unavailable NoAcceptedResponses
+    | None when state.AcceptedSurveyCount = 0 -> Unavailable HeldBack
     | None when section.Suppressed -> Unavailable(Suppressed(minimum, state.AcceptedSurveyCount))
     | None -> Unavailable NotScored
 

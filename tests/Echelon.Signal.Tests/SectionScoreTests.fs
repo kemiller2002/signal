@@ -1,6 +1,7 @@
 /// Why a section has no score, as the engine says it (signal#142 review):
-/// anonymity withholding only where the engine suppressed the section; "no
-/// accepted responses yet" for an empty group; otherwise not scored.
+/// "no accepted responses yet" only when nothing is accepted; held back when
+/// accepted responses await a release; anonymity withholding only where the
+/// engine suppressed the section; otherwise not scored.
 module Echelon.Signal.Tests.SectionScoreTests
 
 open System
@@ -33,8 +34,11 @@ let private stateOf mode (answers: Answer list) : ReportState.AdminReportState =
     | Ok accumulator -> ReportState.project policy accumulator
     | Error e -> failwith $"%A{e}"
 
-let private scores (state: ReportState.AdminReportState) =
-    state.Sections |> List.map (Analysis.sectionScore policy.MinimumReportableCount state)
+/// Scores as the page shows them: `accepted` is the live count, the state the shown one.
+let private scoresWith (accepted: int) (state: ReportState.AdminReportState) =
+    state.Sections |> List.map (Analysis.sectionScore policy.MinimumReportableCount accepted state)
+
+let private scores (state: ReportState.AdminReportState) = scoresWith state.AcceptedSurveyCount state
 
 [<Fact>]
 let ``an anonymous group below its minimum is withheld to protect anonymity`` () =
@@ -50,7 +54,7 @@ let ``an identified group whose only answers are not applicable is not scored, n
     Assert.All(state.Sections, fun (s: ReportState.SectionSummary) -> Assert.False(s.Suppressed))
     Assert.All(scores state, fun s -> Assert.Equal(Analysis.Unavailable Analysis.NotScored, s))
     let text = Visualization.unavailableText Analysis.NotScored
-    Assert.Equal("Not scored: no response had enough numeric answers", text)
+    Assert.Equal("Not scored: no response scored this section", text)
     Assert.DoesNotContain("anonymity", text)
 
 [<Fact>]
@@ -62,6 +66,19 @@ let ``a group with no accepted response says so, in either mode`` () =
         Assert.All(scores state, fun s -> Assert.Equal(Analysis.Unavailable Analysis.NoAcceptedResponses, s))
 
     Assert.Equal("No accepted responses yet", Visualization.unavailableText Analysis.NoAcceptedResponses)
+
+[<Fact>]
+let ``accepted responses an anonymous group has not released are held back, not absent`` () =
+    // signal#142 round 2: five accepted at a minimum of five, but no release
+    // covers them (none recorded yet, or the release write failed): the shown
+    // state is the empty one Releases.shown gives, while the live count is five.
+    let shown = stateOf AnonymousGroup []
+    Assert.Equal(0, shown.AcceptedSurveyCount)
+    Assert.All(scoresWith 5 shown, fun s -> Assert.Equal(Analysis.Unavailable Analysis.HeldBack, s))
+    Assert.Equal("Held back until the next release", Visualization.unavailableText Analysis.HeldBack)
+    // Once released, the same five are scored.
+    let released = stateOf AnonymousGroup (List.replicate 5 (Rated Often))
+    Assert.All(scoresWith 5 released, fun s -> Assert.Equal(Analysis.Value 75.0, s))
 
 [<Fact>]
 let ``a scored section keeps its mean`` () =

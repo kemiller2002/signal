@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 145,
+  "nextSeq": 146,
   "items": [
     {
       "id": "WI-0001",
@@ -3436,6 +3436,27 @@
       "attachments": [],
       "createdAt": "2026-11-10T19:36:44.639Z",
       "updatedAt": "2026-11-10T19:56:22.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0145",
+      "title": "signal#142 round 2: held-back and not-scored reasons true to the engine",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-10T20:11:12.263Z",
+      "updatedAt": "2026-11-10T20:11:12.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

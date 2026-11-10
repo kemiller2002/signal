@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T19:56:22.000Z",
+  "updatedAt": "2026-11-10T20:11:12.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -5204,6 +5204,17 @@
       ],
       "completedAt": "2026-11-10T19:56:22.000Z",
       "conclusion": "Engine reasons for unscored sections, long titles wrap, spread headers; CI green at 4727a01; capture visual-evidence/baseline-4727a01"
+    },
+    {
+      "id": "WI-0145",
+      "type": "task",
+      "state": "active",
+      "semanticState": "active",
+      "evidence": [],
+      "updatedAt": "2026-11-10T20:11:12.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T201114040Z-417d7720"
+      ]
     }
   ]
 }

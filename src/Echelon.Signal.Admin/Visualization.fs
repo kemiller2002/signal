@@ -218,6 +218,7 @@ let unavailableText =
     // The report's own words for it (ReportLabels "suppressed"), with the minimum.
     | Suppressed(minimum, _) -> suppressedText minimum
     | NoAcceptedResponses -> ReportLabels.label "en" "noAcceptedResponses"
+    | HeldBack -> ReportLabels.label "en" "heldBack"
     | NotScored -> ReportLabels.label "en" "notScored"
     | InsufficientSample(required, found) -> $"needs {required}, has {found}"
     | NotRetained _ -> "not retained"
