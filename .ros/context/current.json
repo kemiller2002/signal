@@ -4829,7 +4829,7 @@
         }
       },
       "completedAt": "2026-11-10T12:24:14.000Z",
-      "conclusion": "signal#137 visual-gate review done. The draft has a template header (title, lifecycle chip, one action group: Delete draft\u2026 danger, Submit for review and Approve as reviewed tertiary, Save draft, Publish primary) with the acknowledgement, delete confirmation and outcome copy under it; draft parts (Questions \u2026 Review) move focus to their headings without changing the route; fields fill their column up to 40rem; question rows show the question, section and kind tags and a tertiary Remove named for the question; panels two to a row from 50rem. Heights (capture, admin-draft-edited): desktop 10805 -> 7256 px, tablet 10836 -> 7950 px, phone 11900 -> 12118 px (follow-up WI-0131). Audit: no finding on any draft screen. CI green at 6bbf9166: 702/702 .NET, 195/195 Playwright; visual-evidence/baseline-6bbf916 (87 screens, 576 shots, none unreached). Follow-ups WI-0131, WI-0132."
+      "conclusion": "signal#137 visual-gate review done. The draft has a template header (title, lifecycle chip, one action group: Delete draft… danger, Submit for review and Approve as reviewed tertiary, Save draft, Publish primary) with the acknowledgement, delete confirmation and outcome copy under it; draft parts (Questions … Review) move focus to their headings without changing the route; fields fill their column up to 40rem; question rows show the question, section and kind tags and a tertiary Remove named for the question; panels two to a row from 50rem. Heights (capture, admin-draft-edited): desktop 10805 -> 7256 px, tablet 10836 -> 7950 px, phone 11900 -> 12118 px (follow-up WI-0131). Audit: no finding on any draft screen. CI green at 6bbf9166: 702/702 .NET, 195/195 Playwright; visual-evidence/baseline-6bbf916 (87 screens, 576 shots, none unreached). Follow-ups WI-0131, WI-0132."
     },
     {
       "id": "WI-0133",
@@ -5070,20 +5070,20 @@
         "EXE-20261110T161857233Z-24826fde"
       ],
       "latestCheckpoint": {
-        "id": "f342e88f77526892b5bfc5ab",
-        "recordedAt": "2026-11-10T16:36:19.000Z",
+        "id": "034807ae260fe9193177ba19",
+        "recordedAt": "2026-11-10T18:26:06.000Z",
         "executionId": "EXE-20261110T161857233Z-24826fde",
         "repository": "echelon-signal",
         "branch": "feat/echelon-results",
-        "commit": "567d526994a8210cc0a3a584d111f7f141e4bb2b",
+        "commit": "f113ed25a95c2a60c8a8395d0dc3948eb7a64af2",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal.git"
         },
         "remoteBranch": "feat/echelon-results",
-        "remoteCommit": "567d526994a8210cc0a3a584d111f7f141e4bb2b",
-        "summary": "Results, scoring and report done on main 8454ff5; CI green at 2d465b16 (704 .NET, 199 Playwright); visual-evidence/baseline-2d465b1 (87 screens, none unreached, no audit finding on any screen)",
-        "nextAction": "merge main once signal#139 merges (results-header conflict: keep #139's Signal-owned container), re-run CI and capture, complete WI-0123",
+        "remoteCommit": "f113ed25a95c2a60c8a8395d0dc3948eb7a64af2",
+        "summary": "signal#140 visual gate and signal#141 follow-ups done: section means by name with bars, report tabs, figure grid, prose and narrow-screen cards, measure labels, respondent bar on the assessment page; guard holes, numeric scale markers, draft scoring sub-sections, unique ids. CI green at 95821132 (717 .NET, 214 Playwright); visual-evidence/baseline-9582113 (88 screens, none unreached; only the best-worst EXCEPTION in the audit)",
+        "nextAction": "complete WI-0123, update the signal#140 PR body, report for re-review",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
