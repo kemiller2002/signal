@@ -31,6 +31,7 @@
     <Compile Include="AdminGroupWork.fs" />
     <Compile Include="AuthoringWork.fs" />
     <Compile Include="RetentionWork.fs" />
+    <Compile Include="AdminWireState.fs" />
     <Compile Include="AdminWire.fs" />
     <Compile Include="Runtime.fs" />
   </ItemGroup>

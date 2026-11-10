@@ -216,7 +216,8 @@ test("retire keeps its confirmation, busy, until it is answered; then focus goes
   const retention = page.locator("#group-retention");
   await retention.getByRole("button", { name: "Retire accepted results…", exact: true }).click();
 
-  const hold = store.holdNext("PATCH", REF_UPDATE);
+  // The retirement's first store read, held: it happens whatever the outcome.
+  const hold = store.holdNext("GET", /./);
   await retention.getByRole("button", { name: "Retire accepted results", exact: true }).click();
   await hold.reached;
   const retiring = retention.getByRole("button", { name: "Retiring accepted results", exact: true });

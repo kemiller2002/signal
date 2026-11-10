@@ -132,10 +132,7 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
     let reachable () = reachable () && not offlineNow.Value
 
     let unknownPending () : PendingReconciliation =
-        { IdempotencyKey = (match IdempotencyKey.create "op-still-unknown-0001" with Ok key -> key | Error e -> failwith $"%A{e}")
-          Base = ChangeToken "still-unknown"
-          Candidate = None
-          Revisions = Map.empty }
+        { IdempotencyKey = (match IdempotencyKey.create "op-still-unknown-0001" with Ok key -> key | Error e -> failwith $"%A{e}"); Base = ChangeToken "still-unknown"; Candidate = None; Revisions = Map.empty }
 
     let backend: Store.Backend =
         let offline () = async.Return(Error(StorageFailure.ProviderFailed("AEGIS.NETWORK.UNAVAILABLE", true, "offline")))
@@ -156,14 +153,9 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
                             else
                                 async {
                                     let! result = real.Commit o
-
-                                    match afterCommit.Value with
-                                    | 1, landed ->
-                                        afterCommit.Value <- (0, (fun () -> ()))
-                                        landed ()
-                                    | n, landed when n > 1 -> afterCommit.Value <- (n - 1, landed)
-                                    | _ -> ()
-
+                                    let count, landed = afterCommit.Value
+                                    afterCommit.Value <- (max 0 (count - 1), landed)
+                                    if count = 1 then landed ()
                                     return result
                                 }
                     Reconcile = fun ns pending -> if stillUnknown.Value then async.Return(Ok(ReconcileOutcome.StillUnknown pending)) else real.Reconcile ns pending
@@ -242,14 +234,11 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
     /// The engine's model as the wire holds it now, for pure update tests
     /// that start from a real signed-in page (OperationsTests).
     member _.Model = state.Model
-    /// The store answers nothing from now on (offline), or again.
+    // Arranged faults: offline from now on; `action` once the `count`th commit
+    // from now landed; the next write throws; commits stay unknown.
     member _.GoOffline() = offlineNow.Value <- true
-    member _.GoOnline() = offlineNow.Value <- false
-    /// Runs `action` once the `count`th commit from now has landed.
     member _.AfterCommits(count: int, action: unit -> unit) = afterCommit.Value <- (count, action)
-    /// The next write's work throws before it commits.
     member _.FaultNextWrite() = faultNextWrite.Value <- true
-    /// Commits report an unknown outcome that reconciliation cannot settle.
     member _.CommitsStayUnknown(on: bool) = stillUnknown.Value <- on
 
 let openPage (configuration: string option) =
