@@ -387,10 +387,11 @@ let ``delete draft keeps its confirmation busy until answered, then closes it an
     let refused, effects = AdminUpdate.update (AdminApp.Failed refusal) deleting
     Assert.Equal(View.Value(View.Flag false), value "confirmingDeleteDraft" refused)
     Assert.Contains(AdminApp.Focus "activity", effects)
-    // Deleted: closed, focus to the status, the editor gone.
+    // Deleted: closed, focus to the status, the editor closed. (The listing
+    // drops the draft with the catalog reread that precedes this message.)
     let deleted, effects = AdminUpdate.update (AdminApp.DraftDeleted "PULSE") deleting
     Assert.Equal(View.Value(View.Flag false), value "confirmingDeleteDraft" deleted)
-    Assert.Equal(View.Value(View.Flag false), value "hasDraft" deleted)
+    Assert.True(deleted.Authoring.Editor.IsNone)
     Assert.Contains(AdminApp.Focus "activity", effects)
 
 [<Fact>]
