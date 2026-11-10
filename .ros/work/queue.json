@@ -3432,10 +3432,10 @@
       "description": null,
       "tags": [],
       "priority": "medium",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-10T19:36:44.639Z",
-      "updatedAt": "2026-11-10T19:36:53.000Z",
+      "updatedAt": "2026-11-10T19:56:22.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
