@@ -74,7 +74,10 @@ let ``a scale question is Forma's ordinal scale on its own row, answered by its 
     Assert.False(scale.["hideScale"].GetValue<bool>())
     Assert.Equal("forma-ordinal-scale forma-ordinal-scale--5", scale.["scaleClass"].GetValue<string>())
     Assert.Equal("Often", scale.["s3Label"].GetValue<string>())
-    Assert.Equal("4", scale.["s3Marker"].GetValue<string>())
+    // The marker is the stored value (point 3 is stored as 3), beside its label.
+    Assert.Equal("3", scale.["s3Marker"].GetValue<string>())
+    Assert.Equal("true", scale.["s3MarkerHidden"].GetValue<string>())
+    Assert.False(scale.["hideS3Label"].GetValue<bool>())
     Assert.True(scale.["s3Checked"].GetValue<bool>())
     Assert.False(scale.["hideS4"].GetValue<bool>())
     Assert.True(scale.["hideS5"].GetValue<bool>())
@@ -138,3 +141,14 @@ let ``focus moves to the submitted heading where the kernel offers the focus pac
     let _, plain = run ([ initialize (invitation ()); httpResult "fetch-1" found ] @ answers @ submit)
     Assert.True(flag "submitted" plain)
     Assert.DoesNotContain(effects plain, fun e -> e.["kind"].GetValue<string>() = "Capability")
+
+[<Fact>]
+let ``a point's marker is its stored value, and a label that only repeats it is shown once`` () =
+    // A worded point: the stored value as its marker, the words beside it.
+    Assert.Equal(("0", false), GenericSessionView.pointShown 0 "Never or almost never")
+    Assert.Equal(("4", false), GenericSessionView.pointShown 4 "Almost always")
+    // A 0 to 10 rating whose labels are its numbers: the number once.
+    Assert.Equal(("7", true), GenericSessionView.pointShown 7 "7")
+    Assert.Equal(("10", true), GenericSessionView.pointShown 10 " 10 ")
+    // A numeric label that is not the stored value stays beside it.
+    Assert.Equal(("0", false), GenericSessionView.pointShown 0 "1")

@@ -169,17 +169,22 @@
   background: var(--echelon-surface-raised);
 }
 
-/* The group filters: the state and identity choices as one wrapping row,
-   the survey choice on its own line beneath them. */
-.admin #group-filters {
+/* The group filters: Signal's own fieldset (not Forma's choice group, a
+   column it would restyle), the state and identity choices as one wrapping
+   row, the survey choice on its own line beneath them. */
+.admin .admin-filters {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem 1.25rem;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
-.admin #group-filters > legend { flex-basis: 100%; }
-.admin #group-filters > label:has(select) { flex-basis: 100%; max-inline-size: 28rem; }
+.admin .admin-filters > legend { flex-basis: 100%; }
+.admin .admin-filters > label:has(select) { flex-basis: 100%; max-inline-size: 28rem; }
 
 /* Group tabs bind the engine's view flags, so the current one carries
    aria-current="true" rather than "page"; it is marked the same way. */
@@ -211,6 +216,7 @@
    list) break anywhere, and button labels wrap rather than push the page. */
 .admin .echelon-panel__body > *,
 .admin .echelon-panel__body .forma-stack > *,
+.admin .draft-fields > *,
 .admin .admin-confirm > * { min-inline-size: 0; max-inline-size: 100%; }
 .admin code { overflow-wrap: anywhere; }
 .admin .echelon-panel .forma-button,
@@ -241,15 +247,15 @@
    while there is room and wrap below one another when there is not; each
    keeps a readable width (the detail collapsed into a column of letters at
    834 px when the alert's columns were left to Forma's default). */
-.admin #notice {
+.admin .admin-notice__body {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 0.5rem 1rem;
+  min-inline-size: 0;
 }
-.admin #notice > #notice-message { flex: 1 1 18rem; margin: 0; min-inline-size: 0; }
-.admin #notice > details { flex: 1 1 12rem; min-inline-size: 0; }
-.admin #notice > .forma-button { flex: 0 0 auto; }
+.admin .admin-notice__body > #notice-message { flex: 1 1 18rem; margin: 0; min-inline-size: 0; }
+.admin .admin-notice__body > details { flex: 1 1 12rem; min-inline-size: 0; }
 
 /* A long view's outcome beside its actions (signal#136 review round 2): a
    quiet copy of the persistence line and the notice's sentence, ruled like
@@ -365,6 +371,7 @@
   .draft-editor > :is(.draft-head, .draft-panel--wide) { grid-column: 1 / -1; }
 }
 .draft-editor .echelon-panel__body > label:not(:has(> input[type="checkbox"], > input[type="radio"])),
+.draft-editor .draft-fields > label:not(:has(> input[type="checkbox"], > input[type="radio"])),
 .draft-editor .echelon-panel__body > .forma-stack > label:not(:has(> input[type="checkbox"], > input[type="radio"])),
 .draft-editor #scoring-authoring > label:not(:has(> input[type="checkbox"], > input[type="radio"])) {
   display: grid;
@@ -402,26 +409,28 @@
 }
 @media (forced-colors: active) { .draft-tag { border: 1px solid CanvasText; } }
 #draft-questions { list-style: none; padding: 0; margin: 0; }
-/* A wide panel's fields flow in columns on a wide screen, in reading order;
-   its lists, headings, notes, tables and sub-sections take the whole row. */
+/* A draft panel's body is the theme's panel body, unrestyled (a grid whose
+   one track fills the panel, so fields take its width up to the measure).
+   A wide panel's fields are Signal's own column inside it (.draft-fields),
+   as scoring's authoring is (.draft-scoring): one track on a narrow screen,
+   and on a wide one the fields flow in columns, in reading order, while
+   lists, headings, notes, tables and sub-sections take the whole row. */
+.draft-editor :is(.draft-fields, .draft-scoring) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+  min-inline-size: 0;
+}
+.draft-editor :is(.draft-fields, .draft-scoring) > :is(p, ul, ol, fieldset, h3, h4) { margin: 0; }
+.draft-editor :is(.draft-fields, .draft-scoring) > .forma-button { justify-self: start; }
 @media (min-width: 50rem) {
-  .draft-panel--wide > .echelon-panel__body,
-  .draft-panel--wide #scoring-authoring {
-    display: grid;
+  .draft-panel--wide :is(.draft-fields, .draft-scoring) {
     grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
     gap: 0.75rem 1.25rem;
     align-items: end;
   }
-  .draft-panel--wide > .echelon-panel__body > :not(label, button, template),
-  .draft-panel--wide #scoring-authoring > :not(label, button, template) { grid-column: 1 / -1; }
-  .draft-panel--wide :is(.echelon-panel__body, #scoring-authoring) > button { justify-self: start; }
+  .draft-panel--wide :is(.draft-fields, .draft-scoring) > :not(label, button, template) { grid-column: 1 / -1; }
 }
-/* The editor's panels are dense on a phone: tighter rhythm, same order. */
-/* Forma's stack aligns a grid's tracks to the start, which sized the panel
-   body's one column to its widest field (Title was 155-220 px): the track
-   fills the panel, so fields take its width up to the measure. */
-.draft-editor .draft-panel > .echelon-panel__body,
-.draft-editor #scoring-authoring { gap: 0.75rem; justify-content: stretch; }
 @media (max-width: 30rem) {
   .draft-editor .draft-panel > :is(.echelon-panel__header, .echelon-panel__body) { padding-inline: 0.875rem; }
   .draft-editor { gap: 1rem; }

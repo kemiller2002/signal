@@ -95,6 +95,8 @@ let private defaults =
           [ for n in 0 .. ScaleSlots - 1 do
                 yield $"s{n}Label", text ""
                 yield $"s{n}Marker", text ""
+                yield $"s{n}MarkerHidden", text "true"
+                yield $"hideS{n}Label", flag false
                 yield $"s{n}Checked", flag false
                 yield $"hideS{n}", flag true ]
       yield!
@@ -155,12 +157,13 @@ let private choiceRows (qi: int) (q: Question) (answer: AnswerState option) (hel
            // A scale's choices are on its question's row (`scaleFields`).
            row $"{qi}-{ci}" "option" (common label @ [ "checked", flag (answer = Some state); "hideRow", flag (scalePoints q).IsSome ])))
 
-/// A point's marker: its position on the scale, or its label when the label
-/// is itself a number (a 0 to 10 rating), so the two never disagree.
-let private marker (n: int) (label: string) =
-    match Int32.TryParse label with
-    | true, _ -> label
-    | _ -> string (n + 1)
+/// A point as the scale shows it: its marker is the value stored for it
+/// (point n is stored as n, as the console and the export show it), and its
+/// label is shown beside the marker unless it only repeats that number (a 0
+/// to 10 rating), when the marker alone names it.
+let pointShown (n: int) (label: string) =
+    let stored = string n
+    stored, label.Trim() = stored
 
 /// A scale question's row as Forma's ordinal scale: one slot per point,
 /// numbered, then its special answers, all one radio group. Each input's
@@ -179,8 +182,14 @@ let private scaleFields (qi: int) (q: Question) (answer: AnswerState option) =
         @ (options
            |> List.take points
            |> List.mapi (fun n (state, label) ->
+               let marker, repeats = pointShown n label
+
                [ $"s{n}Label", text label
-                 $"s{n}Marker", text (marker n label)
+                 $"s{n}Marker", text marker
+                 // The marker is decorative beside its label, and the point's
+                 // name when the label only repeats it.
+                 $"s{n}MarkerHidden", text (if repeats then "false" else "true")
+                 $"hideS{n}Label", flag repeats
                  $"s{n}Checked", flag (answer = Some state)
                  $"hideS{n}", flag false ])
            |> List.concat)
