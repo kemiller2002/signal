@@ -60,7 +60,7 @@
 
 /* The survey's name beside Signal's mark, as in the mockup (decorative: the
    page's h1 names it to assistive technology). */
-.respondent-bar .forma-app-identity { flex: none; }
+.respondent-bar__mark { flex: none; display: flex; }
 .respondent-bar__survey {
   flex: 1 1 10rem;
   min-inline-size: 0;
