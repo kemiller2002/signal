@@ -160,6 +160,14 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - Evidence: CI on `ddc929e` green (Build: 692/692 .NET, 185/185 Playwright); `visual-evidence/baseline-ddc929e` (85 screens, 540 shots, none unreached; 70 audited, no finding). Start-up screens (fresh contexts) are not audited; the Tab walk starts where focus last was.
 - Next: the staged PR 2 series (landing, admin shell, authoring, respondent, results), stacked on this branch.
 
+### Landing page (WI-0119, SIG-ECHELON-APP-002 (a), 2026-11-10)
+
+- `web/home/` ported from the approved landing mockup: eyebrow, `.echelon-display` h1 (same text), `.echelon-lead`, one primary action (the console), the respondent guidance in an accent panel, the three roles on panels, numbered steps, footer. Signal's own mark. The mockup's sample link and invented "4 of 6 sections answered" are left out.
+- Composition only in `web/home/home.css`. New test in `experience.spec.js` (one primary action; no form, field, figure or chip).
+- The capture audit's Tab walk now starts at the top of the page.
+- Evidence: CI on `cac77d0` green (692 .NET, 186 Playwright); `visual-evidence/baseline-cac77d0` (85 screens, 540 shots; 70 audited, no finding; 944 focus stops all visible).
+- Continuity gap: WI-0119 completed without a durable checkpoint. `work checkpoint` was refused because the executor's worktree had an untracked `node_modules` symlink (the `.gitignore` pattern `node_modules/` matches directories only), and the refusal was missed before `work complete`. All work was committed and pushed before completion (`3c2cb37`).
+
 ## Modernization audit (WI-0100, 2026-11-08)
 
 - Reports and machine-readable coverage: `docs/modernization/` (start at

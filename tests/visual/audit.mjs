@@ -8,7 +8,7 @@
 //   background, in light and dark, against WCAG 2.x AA (4.5:1, or 3:1 for
 //   large text). Text on an image or gradient, disabled controls and visually
 //   hidden text are counted as not measurable, not as passing.
-// - keyboard: the first focus stops reached with Tab, whether each draws a
+// - keyboard: the first 30 focus stops reached with Tab from the top of the page, whether each draws a
 //   visible indicator (outline or box-shadow) and whether the order follows
 //   the document.
 // - text200: 200% text at 320 CSS px (the root font size doubled through the
@@ -160,7 +160,18 @@ export const auditPage = async (page, { screenshot }) => {
   await page.emulateMedia({ colorScheme: "light" });
 
   const stops = [];
-  await page.evaluate(() => { document.activeElement?.blur?.(); window.scrollTo(0, 0); });
+  // Start the walk at the top of the page, not where focus last was: a
+  // temporary anchor first in <body> (tabindex -1, so never a stop itself)
+  // takes focus and is removed; the next Tab reaches the page's first stop.
+  await page.evaluate(() => {
+    document.activeElement?.blur?.();
+    window.scrollTo(0, 0);
+    const anchor = document.createElement("span");
+    anchor.tabIndex = -1;
+    document.body.prepend(anchor);
+    anchor.focus();
+    anchor.remove();
+  });
   await page.keyboard.press("Tab").catch(() => {});
   for (let i = 0; i < 30; i += 1) {
     const state = await page.evaluate(focusState);

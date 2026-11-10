@@ -147,6 +147,21 @@ test("the landing page shows no sample records and runs no script", async ({ pag
   await expect(page.locator("table, [data-each]")).toHaveCount(0);
 });
 
+// The "foundry ledger" landing page (SIG-ECHELON-APP-002): it explains Signal
+// and demonstrates no administrator feature (no form, field or figure), with
+// one primary action, to the console, and Signal's own mark.
+test("the landing page offers one primary action and demonstrates no administrator feature", async ({ page }) => {
+  await page.goto("/web/home/index.html");
+  const primary = page.locator('[data-echelon-emphasis="primary"]');
+  await expect(primary).toHaveCount(1);
+  await expect(primary).toHaveText("Open the administrator console");
+  await expect(primary).toHaveAttribute("href", "../admin/");
+  await expect(page.locator("form, input, select, textarea, button, .echelon-figure, .echelon-chip")).toHaveCount(0);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveClass(/\bechelon-display\b/);
+  await expect(page.getByRole("complementary", { name: "Answering a survey?" })).toContainText("Signal never asks you to sign in to answer.");
+  await expect(page.locator("header .forma-app-identity .forma-app-identity__name")).toHaveText("Signal");
+});
+
 for (const width of [320, 390, 768, 1280]) {
   test(`the landing page does not scroll sideways at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
