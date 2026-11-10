@@ -196,7 +196,7 @@ let ``no Signal id selector sets what Forma sets on that element`` () =
 /// signal#141 review: the first rule after a sheet's `@import` lines is
 /// checked like any other (its selector is its own, with no ".css" class).
 [<Fact>]
-let ``the guards read the first rule after @import lines as its own selector`` () =
+let ``the guards read the first rule after a sheet's import lines as its own selector`` () =
     let rules = rulesOf "@import \"../node_modules/x/dist/all.css\";\n@import \"./page.css\" print;\n.first-rule { padding: 0; }\n.second { gap: 1rem; }"
     let first, classes, properties = rules.Head
     Assert.Equal(".first-rule", first)
