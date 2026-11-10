@@ -138,7 +138,7 @@
 | WI-0120 | SIG-ECHELON-APP-002 (b): administrator shell and dashboard (app bar, route tabs, panels) | complete |  | medium |
 | WI-0121 | SIG-ECHELON-APP-002 (c): authoring in the foundry ledger direction | complete |  | medium |
 | WI-0122 | SIG-ECHELON-APP-002 (d): respondent page (no admin chrome, one primary action, truthful progress) | complete |  | medium |
-| WI-0123 | SIG-ECHELON-APP-002 (e): results (score figures, How this was calculated panel) | ready |  | medium |
+| WI-0123 | SIG-ECHELON-APP-002 (e): results (score figures, How this was calculated panel) | complete |  | medium |
 | WI-0124 | Remove administrator acts without a confirmation: the Administrators area's Remove button removes the account at once (follow-up from the signal#136 review; not fixed there) | captured |  | medium |
 | WI-0125 | SIG-ECHELON-APP-002 (b) review fixes on signal#136: notice layout, retention note, per-group obligations with paths, shell order, danger on destructive lifecycle targets, filter labels, audit collapse check | complete |  | medium |
 | WI-0126 | Derive unreconciled imports from stored batch records when a dataset is opened or refreshed: today DatasetReady and RosterChanged summarise groups with GroupAdmin.summary 0 None, so interrupted imports from before the page opened are not listed under Unresolved work (follow-up from the signal#136 review) | captured |  | medium |
