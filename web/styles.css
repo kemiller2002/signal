@@ -78,6 +78,8 @@
   font-weight: var(--echelon-weight-label);
   overflow-wrap: anywhere;
 }
+/* The assessment page prints its report only (Folio), not the bar. */
+@media print { .respondent-bar { display: none; } }
 .respondent-bar__survey:not(:empty)::before { content: "· "; color: var(--echelon-text-secondary); }
 
 /* A page's one live region (#activity, on the assessment and survey pages):

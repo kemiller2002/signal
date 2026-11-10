@@ -75,6 +75,7 @@
     <Compile Include="ReportStateTests.fs" />
     <Compile Include="AdminStateTests.fs" />
     <Compile Include="AdminPageTests.fs" />
+    <Compile Include="ResultsProjectionTests.fs" />
     <Compile Include="AdminLinkTests.fs" />
     <Compile Include="RetentionPageTests.fs" />
     <Compile Include="ReportViewTests.fs" />

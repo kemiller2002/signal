@@ -50,21 +50,39 @@ async function expectScrollRegion(region, name) {
   await expect(region).toHaveAccessibleName(name);
 }
 
-test("SIG-ECHELON-APP-002 (WI-0123): a group's results, scoring and report keep whole words in labelled table regions", async ({ page }) => {
+test("SIG-ECHELON-APP-002 (WI-0123): a group's results, scoring and report keep whole words, by name, in the foundry ledger's composition", async ({ page }) => {
   await signInWithStore(page);
   await createGroup(page);
 
   await groupTab(page, "Results");
   const exploration = page.locator("#exploration");
-  await expect(exploration.getByRole("heading", { level: 3, name: "Exploration" })).toBeVisible();
-  const sectionChart = exploration.locator("#section-chart .admin-table-scroll");
-  await expectScrollRegion(sectionChart, await page.locator("#section-chart-caption").innerText());
-  await expect(sectionChart.locator("table")).toHaveClass(/admin-table--figures/);
+  await expect(exploration.getByRole("heading", { level: 3, name: "Section means" })).toBeVisible();
+  // Each section by its template name (signal#140 review), with a bar for the
+  // engine's value and the value as text; no section ids, no overall score.
+  const rows = exploration.locator("#section-chart .admin-means__row");
+  await expect(rows.locator(".admin-means__name")).toHaveText(["Plan Commitment", "Change Responsiveness", "Timebox Discipline"]);
+  await expect(exploration).not.toContainText(/\bD0[1-3]\b/);
+  await expect(exploration).not.toContainText(/overall/i);
+  await expect(page.locator("#section-chart-caption")).toContainText("Plan Commitment");
+  // The figure fills its panel: no default <figure> inset.
+  const inset = await page.locator("#section-chart").evaluate((figure) => {
+    const body = figure.parentElement.getBoundingClientRect();
+    const box = figure.getBoundingClientRect();
+    const style = getComputedStyle(figure.parentElement);
+    return Math.abs(box.width - (body.width - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight)));
+  });
+  expect(inset, "the figure is as wide as its panel's body").toBeLessThanOrEqual(1);
   await expectWholeWords(page, "results");
 
   await groupTab(page, "Scoring");
   const scoring = page.getByRole("region", { name: "Scoring" });
   await expectScrollRegion(scoring.locator(".admin-table-scroll"), "Measures");
+  // Measures and sections by their labels; no engine identifier is shown.
+  const measures = scoring.locator("#scoring-measures tbody");
+  await expect(measures).toContainText("Standard deviation");
+  await expect(measures).toContainText("95% confidence interval, lower bound");
+  await expect(scoring).not.toContainText(/StandardDeviation|InterquartileRange|ConfidenceLower95|ConfidenceUpper95/);
+  await expect(scoring.locator("#scoring-sections")).toContainText("Plan Commitment");
   // How the figures were derived: the engine's own statement and lineage.
   const derivation = scoring.locator('[data-echelon-surface="accent"]');
   await expect(derivation.getByRole("heading", { name: "How this was calculated" })).toBeVisible();
@@ -75,7 +93,18 @@ test("SIG-ECHELON-APP-002 (WI-0123): a group's results, scoring and report keep 
   await groupTab(page, "Report");
   await expect(page.locator('[data-echelon-emphasis="primary"]:visible')).toHaveCount(1);
   await expect(page.getByRole("button", { name: "Take a snapshot", exact: true })).toHaveAttribute("data-echelon-emphasis", "primary");
-  const sections = page.locator("#report-sections").locator("xpath=..");
-  if (await sections.count()) await expectScrollRegion(sections, await page.locator("#report-section-results-title").innerText());
+  // The report's figures as a definition grid, not a run of lines.
+  await expect(page.locator("#report-counts")).toHaveCSS("display", "grid");
+  const sections = page.locator(".report-table").filter({ has: page.locator("#report-sections") });
+  if (await sections.count()) {
+    await expectScrollRegion(sections, await page.locator("#report-section-results-title").innerText());
+    // At 390 px each row is a card naming its figures: nothing scrolls
+    // sideways inside the region, and no heading is cut off.
+    await page.setViewportSize({ width: 390, height: 900 });
+    expect(await sections.evaluate((region) => region.scrollWidth - region.clientWidth)).toBeLessThanOrEqual(0);
+    const first = sections.locator("tbody tr").first();
+    await expect(first.locator("td").first()).toHaveAttribute("data-label", /\S/);
+    await page.setViewportSize({ width: 1280, height: 900 });
+  }
   await expectWholeWords(page, "report");
 });

@@ -171,42 +171,29 @@ test("ULI-L05: a best-worst option with a very long word stays inside Forma's ro
   await expectNoHorizontalOverflow(page, "survey best-worst with a long option @320");
 });
 
-// --- Record header: the type label sits above the title (ULI-L05) ---------
+// --- The assessment's head (ULI-L05) -------------------------------------
 
-// The gap from the bottom of the header's type label to the top of its title:
-// negative means the two overlap, or the label renders below the title.
-async function typeToTitleGap(page) {
-  return page.evaluate(() => {
-    const type = document.querySelector(".forma-record-header__type");
-    const title = type.parentElement.querySelector("h1, h2, h3, h4");
-    return title.getBoundingClientRect().top - type.getBoundingClientRect().bottom;
-  });
-}
-
-// The administrator page's header became the Echelon application bar
-// (SIG-ECHELON-APP-002), tested below; the assessment page keeps its record header.
-const HEADER_PAGES = ["/web/index.html"];
-
-for (const width of [768, 1280]) {
-  test(`ULI-L05: the record header's type label sits above its title at ${width} CSS px`, async ({ page }) => {
-    for (const url of HEADER_PAGES) {
-      await open(page, url, width);
-      expect(await typeToTitleGap(page), url).toBeGreaterThanOrEqual(0);
-    }
-  });
-}
-
-// ULI-L05 (was an EXCEPTION owned by Forma, found by WI-0102): with
-// design-system 0.13.0, below 24em the header's identity block stayed a
-// subgrid after its title grid dropped its rows, so the type label collapsed
-// onto the title. Forma 0.13.1 fixes it (forma#179, forma#180), so the
-// exception is retired (WI-0103) and narrow widths get the ordinary assertion.
-for (const width of [320, 390]) {
-  test(`ULI-L05: the record header's type label sits above its title at ${width} CSS px`, async ({ page }) => {
-    for (const url of HEADER_PAGES) {
-      await open(page, url, width);
-      expect(await typeToTitleGap(page), url).toBeGreaterThanOrEqual(0);
-    }
+// The assessment page's record header (whose type label once collapsed onto
+// its title, WI-0102/WI-0103) became the respondent bar and head the survey
+// page has (signal#140 review): Signal's mark and the assessment's name in a
+// quiet bar, then the page's one h1 and its version, above the questions, and
+// nothing pushes the page sideways. No page has the record header now, so
+// the type-label tests that held it are retired with it.
+for (const width of [320, 390, 768, 1280]) {
+  test(`ULI-L05: the assessment's bar and head sit above its questions at ${width} CSS px`, async ({ page }) => {
+    await open(page, "/web/index.html", width);
+    await expect(page.locator(".forma-record-header")).toHaveCount(0);
+    const bar = page.locator(".respondent-bar");
+    await expect(bar.locator(".forma-app-identity__name")).toHaveText("Signal");
+    const heading = page.getByRole("heading", { level: 1 });
+    await expect(heading).toHaveCount(1);
+    await expect(heading).not.toBeEmpty();
+    const barBox = await bar.boundingBox();
+    const headingBox = await heading.boundingBox();
+    const version = await page.locator("#assessment-version").boundingBox();
+    expect(headingBox.y, "the head starts below the bar").toBeGreaterThanOrEqual(barBox.y + barBox.height - 0.5);
+    expect(version.y, "the version sits below the title").toBeGreaterThanOrEqual(headingBox.y + headingBox.height - 0.5);
+    await expectNoHorizontalOverflow(page, `assessment: bar and head @${width}`);
   });
 }
 

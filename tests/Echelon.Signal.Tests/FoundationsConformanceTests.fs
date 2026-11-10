@@ -297,7 +297,8 @@ let ``the page composes Forma's components and Folio's document primitives`` () 
           "class=\"forma-fault forma-fault--inline"
           "<forma-alert class=\"forma-component-tag\">"
           "<forma-data-grid class=\"forma-component-tag\">"
-          "class=\"forma-record-header"
+          // Signal's mark, as on the survey page (the record header gave way to it, signal#140).
+          "class=\"forma-app-identity\""
           "class=\"forma-survey-progress\""
           "class=\"forma-question\""
           "class=\"forma-ordinal-scale forma-ordinal-scale--5\""

@@ -92,6 +92,31 @@ let measureName (measure: Measure) =
     | Percentile p -> $"Percentile{p}"
     | other -> $"%A{other}"
 
+/// A measure's name as the page shows it (its identifier, `measureName`, is
+/// what records and definitions store).
+let measureLabel (measure: Measure) =
+    match measure with
+    | AcceptedCount -> "Accepted responses"
+    | CompletionRate -> "Completion rate"
+    | Coverage -> "Coverage"
+    | Mean -> "Mean"
+    | Median -> "Median"
+    | Minimum -> "Minimum"
+    | Maximum -> "Maximum"
+    | StandardDeviation -> "Standard deviation"
+    | Percentile p -> $"{p}th percentile"
+    | InterquartileRange -> "Interquartile range"
+    | MedianAbsoluteDeviation -> "Median absolute deviation"
+    | ConfidenceLower95 -> "95% confidence interval, lower bound"
+    | ConfidenceUpper95 -> "95% confidence interval, upper bound"
+    | CeilingShare -> "Share at the top of the scale"
+    | FloorShare -> "Share at the bottom of the scale"
+    | DontKnowRate -> "Don't know rate"
+    | NotApplicableRate -> "Not applicable rate"
+    | MissingRate -> "Missing rate"
+    | CronbachAlpha -> "Cronbach's alpha"
+    | RecommendationFrequency -> "Recommendation frequency"
+
 /// What a measure needs and what it is (ADM-013).
 type Prerequisites =
     { MinimumSample: int

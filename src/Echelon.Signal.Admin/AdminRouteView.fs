@@ -243,11 +243,25 @@ let project (model: Model) (group: GroupSummary option) : View =
       "surveyFilters",
       Items(([ "" ] @ (model.Catalog |> List.map _.SurveyIdentifier |> List.distinct)) |> List.map (fun s -> [ "value", Text s; "label", Text(if s = "" then "Any survey" else s); "selected", Flag(filter.Survey = (if s = "" then None else Some s)) ]))
       "scoringSections",
-      Items(group |> Option.map (fun g -> g.Sections |> List.map (fun (id, _) -> [ "id", Text id; "href", Text(href (Scoring(key, Some id))); "current", Text(if Some id = scoringSection then "page" else "false") ])) |> Option.defaultValue [])
+      // Each section by its name from the template, not its id.
+      Items(
+          group
+          |> Option.map (fun g ->
+              g.Sections
+              |> List.map (fun (id, _) ->
+                  [ "id", Text id
+                    "label", Text(AdminTypes.sectionTitle g id)
+                    "href", Text(href (Scoring(key, Some id)))
+                    "current", Text(if Some id = scoringSection then "page" else "false") ]))
+          |> Option.defaultValue []
+      )
       "scoringMeasures",
       Items(
           group
-          |> Option.map (fun g -> g.Analysis |> List.filter (fun (s, _, _) -> scoringSection |> Option.forall ((=) s)) |> List.map (fun (s, m, v) -> [ "key", Text $"{s}/{m}"; "section", Text s; "measure", Text m; "value", Text v ]))
+          |> Option.map (fun g ->
+              g.Analysis
+              |> List.filter (fun (s, _, _) -> scoringSection |> Option.forall ((=) s))
+              |> List.map (fun (s, m, v) -> [ "key", Text $"{s}/{m}"; "section", Text(AdminTypes.sectionTitle g s); "measure", Text m; "value", Text v ]))
           |> Option.defaultValue []
       )
       yield! assessments model

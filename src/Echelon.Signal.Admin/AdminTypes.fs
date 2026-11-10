@@ -98,3 +98,8 @@ type SnapshotSummary =
       TakenAt: string
       /// Its data and id still match (a stored snapshot is verified on read).
       Intact: bool }
+
+/// A section's name as the group's template gives it, for the page to show
+/// in place of its id; the id when the template names no such section.
+let sectionTitle (g: GroupSummary) (id: string) =
+    g.Content.Sections |> List.tryFind (fun s -> s.Id = id) |> Option.map _.Title |> Option.defaultValue id

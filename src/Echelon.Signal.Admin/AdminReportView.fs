@@ -192,7 +192,15 @@ let project (model: Model) (group: GroupSummary option) : View =
                     "median", Text(valueText tag decimals row.Median)
                     "range", Text(range tag decimals row)
                     "scored", Text(n row.Scored)
-                    "unscored", Text(n row.Unscored) ]))
+                    "unscored", Text(n row.Unscored)
+                    // Each cell's column name, in the report's language, so a
+                    // narrow screen can show a row as a card that names its
+                    // figures (signal#140 review).
+                    "meanLabel", Text(l "mean")
+                    "medianLabel", Text(l "median")
+                    "rangeLabel", Text(l "range")
+                    "scoredLabel", Text(l "scored")
+                    "unscoredLabel", Text(l "unscored") ]))
           |> Option.defaultValue []
       )
       "reportStrengths", items (data |> Option.map (fun r -> r.Strengths |> List.map (fun s -> [ "key", Text s; "text", Text s ])) |> Option.defaultValue [])

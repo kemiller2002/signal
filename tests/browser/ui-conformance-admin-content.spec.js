@@ -26,20 +26,30 @@ test("ULI-A02: results exploration, scoring and report options change the view a
   await expect.poll(() => new URL(page.url()).hash).toBe(`#/groups/${key}/results`);
   await page.getByRole("checkbox", { name: "Sort by value" }).check();
   await expect.poll(() => new URL(page.url()).hash).toContain("sort=value");
-  await page.getByRole("checkbox", { name: "Distribution as percentages" }).check();
+  // A section, chosen by its name, opens its distribution (signal#140
+  // review: the options sit beside the heading, quiet).
+  await page.getByRole("combobox", { name: "Distribution" }).selectOption({ label: "Plan Commitment" });
+  await expect.poll(() => new URL(page.url()).hash).toContain("section=D01");
+  await expect(page.locator("#distribution-title")).toHaveText("Distribution: Plan Commitment");
+  await page.getByRole("checkbox", { name: "As percentages" }).check();
   await expect.poll(() => new URL(page.url()).hash).toContain("display=percent");
   await page.getByRole("button", { name: "All sections" }).click();
   await expect.poll(() => new URL(page.url()).hash).not.toContain("section=");
+  await expect(page.locator("#distribution-chart")).toHaveCount(0);
   // Too few responses: marked, never drawn as zero.
   await expect(page.locator("#section-chart")).toContainText("cannot be shown and are marked, not drawn as zero");
 
   await groupTab(page, "Scoring");
   await expect(page.getByRole("region", { name: "Scoring" })).toContainText("Calculated measures, not the canonical result.");
-  await page.locator("#scoring-sections").getByRole("link", { name: "D02" }).click();
+  // Sections by their names; the address still names the section by its id.
+  await page.locator("#scoring-sections").getByRole("link", { name: "Change Responsiveness", exact: true }).click();
   await expect.poll(() => new URL(page.url()).hash).toContain("section=D02");
 
   await groupTab(page, "Report");
   const families = page.getByRole("navigation", { name: "Report family" });
+  // The pickers are the theme's tabs, not bulleted link lists (signal#140 review).
+  await expect(families.locator("ul")).toHaveClass(/(^|\s)echelon-nav-tabs(\s|$)/);
+  await expect(page.getByRole("navigation", { name: "Report language" }).locator("ul")).toHaveClass(/(^|\s)echelon-nav-tabs(\s|$)/);
   const languages = page.getByRole("navigation", { name: "Report language" });
   await families.getByRole("link", { name: "Audit" }).click();
   await expect(families.getByRole("link", { name: "Audit" })).toHaveAttribute("aria-current", "page");

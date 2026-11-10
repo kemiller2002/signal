@@ -143,7 +143,11 @@ let private onNamedEvent (model: Model) (name: string) (key: string option) (val
                 match name with
                 | "exploreSort" -> { view with Sort = (if value = "value" then ByValue else ByOrder) }
                 | "exploreDisplay" -> { view with Display = (if value = "percent" then Percentages else Counts) }
-                | _ -> { view with Section = (match key with Some "all" | None -> None | Some section -> Some section) }
+                // A section's row sends its id as the key; the section picker
+                // sends it as its value (empty: no section).
+                | _ ->
+                    let picked = key |> Option.orElse (if value = "" then None else Some value)
+                    { view with Section = (match picked with Some "all" | None -> None | Some section -> Some section) }
 
             go (refine place (Results(g, next))) model
         | _ -> model, []
