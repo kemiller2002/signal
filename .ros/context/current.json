@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T11:20:02.000Z",
+  "updatedAt": "2026-11-10T11:37:41.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4680,10 +4680,27 @@
     {
       "id": "WI-0129",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-11-10T11:20:02.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/AdminState.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/AdminWork.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/ShellProjectionTests.fs"
+        },
+        {
+          "type": "docs",
+          "path": "HANDOFF.md"
+        }
+      ],
+      "updatedAt": "2026-11-10T11:37:41.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T112002759Z-fb458ce3"
       ],
@@ -4706,7 +4723,9 @@
           "status": "verified",
           "mechanism": "git-remote-observation"
         }
-      }
+      },
+      "completedAt": "2026-11-10T11:37:41.000Z",
+      "conclusion": "signal#136 second re-review fixed: the unfinished-import obligation says 'did not finish or could not be confirmed: import the same links again' (overview and finalize's refusal); the empty state says such an import is not always listed, and when it is only until a refresh or reopen; the release record has its own unknown-outcome sentence, the import's notice shown last. CI green at 96f4faf1: 702/702 .NET, 192/192 Playwright; visual-evidence/baseline-96f4faf (87 screens, 576 shots, none unreached)."
     }
   ]
 }

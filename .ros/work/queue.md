@@ -144,4 +144,4 @@
 | WI-0126 | Derive unreconciled imports from stored batch records when a dataset is opened or refreshed: today DatasetReady and RosterChanged summarise groups with GroupAdmin.summary 0 None, so interrupted imports from before the page opened are not listed under Unresolved work (follow-up from the signal#136 review) | captured |  | medium |
 | WI-0127 | SIG-ECHELON-APP-002 (b) review round 2 on signal#136: outcome beside the actions on long views, truthful unresolved-work wording and resume guidance, obligation page-flow test and capture | complete |  | medium |
 | WI-0128 | SIG-ECHELON-APP-002 (b) signal#136 re-review wording: finalizing does not wait for an unknown import, empty-state scope until refresh, import notice resume wording, outcome group name | complete |  | medium |
-| WI-0129 | SIG-ECHELON-APP-002 (b) signal#136 second re-review: unfinished-import obligation wording, empty-state reach, release record's own unknown-outcome sentence | ready |  | medium |
+| WI-0129 | SIG-ECHELON-APP-002 (b) signal#136 second re-review: unfinished-import obligation wording, empty-state reach, release record's own unknown-outcome sentence | complete |  | medium |
