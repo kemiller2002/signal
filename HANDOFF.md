@@ -143,6 +143,15 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - Chips: plain phase labels (`StateTones.phaseLabel`), the id in `data-phase`; " · " separates a chip from the text beside it.
 - Test knobs on the in-memory `Page` (AdminPageTests): `GoOffline`, `AfterCommits`, `FaultNextWrite`, `CommitsStayUnknown`.
 
+### Second review round (WI-0117, SIG-VIS-PENDING-003, 2026-11-10)
+
+- Faults belong to their operation: `Bridge.StartOperation` runs the engine operation's own work and `Bridge.Start` background work (identity, sign-in, sign-out, the cross-tab receive, local answers); `Drain` tags each failure (`Bridge.Work`). `AdminWire.settle` presents every failure through Aegis but raises `OperationFaulted` only for an operation's, so a failed receive never settles a running save or opens its guard.
+- Defects (WI-0114): `AdminWire.handle` returns `Handled { State; Reply; Defect }`. A programming defect inside an operation is still re-raised, by the caller, after it kept the settled state (`Runtime.dispatchAdmin`), so the page is never left running an operation that ended; the kernel sees the corrected view on its next message.
+- Focus beside the change (`AdminUpdate.focusAfter`, by operation and outcome): a retire that worked -> `#sources-retired`, otherwise -> the "Retire accepted results…" button (`#retire-sources`; also when there was nothing to retire); group transitions -> `#group-phase`; dataset lifecycle -> `#dataset-lifecycle-heading`; delete draft and hide version -> `#activity`, which otherwise only announces.
+- `web/admin/admin.css`: `[data-focus-target]:focus` draws a solid outline of `--forma-color-focus-ring` at `--forma-focus-ring-width`/`-offset` (also for programmatic focus after a pointer click, where `:focus-visible` may not match). Echelon theme: #171a18 on #f2efe7 (light) and #f2efe7 on #171a18 (dark), about 15:1.
+- `ReportBuilder.saved` also compares the template pin.
+- Test knobs added: `Browser.HoldWakes`/`HeldWakes`, `Page.HoldNextCommit(after)`, `Page.ReceiveThrows()`.
+
 ## Modernization audit (WI-0100, 2026-11-08)
 
 - Reports and machine-readable coverage: `docs/modernization/` (start at

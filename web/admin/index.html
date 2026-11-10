@@ -637,7 +637,7 @@
         <template data-if="hasGroup">
             <section id="group" class="forma-stack">
               <h2>Group <code id="group-key" data-text="groupKey"></code></h2>
-              <p><span data-text="groupProgress"></span> · <span id="group-phase" class="echelon-chip" data-bind-data-echelon-tone="groupPhaseTone" data-bind-data-phase="groupPhase" data-text="groupPhaseLabel"></span></p>
+              <p><span data-text="groupProgress"></span> · <span id="group-phase" class="echelon-chip" tabindex="-1" data-focus-target="group-phase" data-bind-data-echelon-tone="groupPhaseTone" data-bind-data-phase="groupPhase" data-text="groupPhaseLabel"></span></p>
               <template data-if="hasWithheld"><p id="withheld" class="forma-alert" role="status" data-tone="attention" data-text="withheldNotice"></p></template>
               <nav aria-label="Group" id="group-tabs">
                 <ul class="areas">
@@ -666,8 +666,8 @@
                    notice makes is only what the store proved. -->
               <section id="group-retention" class="forma-stack" aria-labelledby="group-retention-heading">
                 <h3 id="group-retention-heading">Retention</h3>
-                <template data-if="sourcesRetired"><p id="sources-retired">Accepted results retired. <span data-text="sourcesRetiredText"></span></p></template>
-                <template data-if="canRetireSources"><button type="button" class="forma-button" data-event="retireSources" data-bind-disabled="busy">Retire accepted results…</button></template>
+                <template data-if="sourcesRetired"><p id="sources-retired" tabindex="-1" data-focus-target="sources-retired">Accepted results retired. <span data-text="sourcesRetiredText"></span></p></template>
+                <template data-if="canRetireSources"><button type="button" id="retire-sources" class="forma-button" data-event="retireSources" data-bind-disabled="busy" data-focus-target="retire-sources">Retire accepted results…</button></template>
                 <template data-if="confirmingRetire">
                   <div id="retire-confirm" class="forma-stack" role="alertdialog" aria-labelledby="retire-confirm-text">
                     <p id="retire-confirm-text" data-text="retireWarning"></p>
@@ -856,7 +856,7 @@
           <template data-if="canRepairIndex"><button type="button" class="forma-button" data-event="rebuildIndex" data-bind-disabled="rebuildIndexDisabled" data-bind-aria-busy="rebuildIndexBusy" data-bind-aria-disabled="rebuildIndexBusy" data-text="rebuildIndexLabel">Rebuild the contribution index</button></template>
           <!-- The dataset's lifecycle (ADM-045, WI-0077). -->
           <section id="dataset-lifecycle" class="forma-stack" aria-labelledby="dataset-lifecycle-heading">
-            <h3 id="dataset-lifecycle-heading">Lifecycle</h3>
+            <h3 id="dataset-lifecycle-heading" tabindex="-1" data-focus-target="dataset-lifecycle">Lifecycle</h3>
             <p>State: <code id="dataset-lifecycle-state" data-text="datasetLifecycle"></code>. <span data-text="datasetLifecycleText"></span></p>
             <template data-if="canManageLifecycle">
               <ul class="forma-stack" id="lifecycle-targets">

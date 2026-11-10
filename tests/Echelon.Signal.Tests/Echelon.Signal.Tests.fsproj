@@ -90,6 +90,7 @@
     <Compile Include="AuthoringScreenTests.fs" />
     <Compile Include="OperationsTests.fs" />
     <Compile Include="OperationsFollowUpTests.fs" />
+    <Compile Include="OperationsGuardTests.fs" />
     <Compile Include="StateToneTests.fs" />
     <Compile Include="DraftPreviewTests.fs" />
     <Compile Include="RuleAuthoringTests.fs" />

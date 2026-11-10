@@ -2790,10 +2790,10 @@
         "visual"
       ],
       "priority": "medium",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-11-10T03:05:30.327Z",
-      "updatedAt": "2026-11-10T03:05:30.327Z",
+      "updatedAt": "2026-11-10T04:39:00Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -2852,6 +2852,30 @@
       },
       "source": "manual",
       "sourceReference": null
+    },
+    {
+      "id": "WI-0117",
+      "title": "SIG-VIS-PENDING-003: second review round on PR #133: faults tied to the running operation, focus beside the change, visible :focus ring, defect keeps settled state (WI-0114), pin edits during save, definite retire test",
+      "description": null,
+      "tags": [
+        "signal",
+        "accessibility"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-10T04:39:00Z",
+      "updatedAt": "2026-11-10T04:39:00Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "review",
+      "sourceReference": "kemiller2002/signal#133@771c98f"
     }
   ]
 }

@@ -153,7 +153,7 @@ let ``delete draft keeps its confirmation busy until answered, then closes it an
     Assert.Contains(AdminApp.Focus "activity", effects)
 
 [<Fact>]
-let ``retire keeps its confirmation busy until answered, then closes it and moves focus to the status`` () =
+let ``retire keeps its confirmation busy until answered, then closes it and moves focus back to its button when refused`` () =
     let _, _, page = signedIn ()
     page.Event("navigate", key = "groups")
     page.Event("newGroupExpected", value = "2")
@@ -183,7 +183,10 @@ let ``retire keeps its confirmation busy until answered, then closes it and move
     let refusal: AdminApp.Notice = { Code = "SIGNAL.RETENTION.NOT_DUE"; Message = "The retention period has not passed."; Infrastructure = false }
     let refused, effects = AdminUpdate.update (AdminApp.Failed refusal) retiring
     Assert.Equal(View.Value(View.Flag false), value "confirmingRetire" refused)
-    Assert.Contains(AdminApp.Focus "activity", effects)
+    // Beside where it was made, not the distant status region (round 2, B).
+    Assert.Contains(AdminApp.Focus "retire-sources", effects)
+    Assert.DoesNotContain(AdminApp.Focus "activity", effects)
+    Assert.Equal(View.Value(View.Flag true), value "canRetireSources" refused)
 
 [<Fact>]
 let ``edits made while a draft saves stay in the editor and stay unsaved`` () =
@@ -255,17 +258,18 @@ let ``a created group that cannot be read back is confirmed, and one notice keep
     Assert.Contains("Refresh to open it.", page.Text "notice")
 
 [<Fact>]
-let ``a dataset lifecycle change whose reread fails is still confirmed first, and focus moves to the status`` () =
+let ``a dataset lifecycle change whose reread fails is still confirmed first, and focus moves to the lifecycle heading`` () =
     let browser, _, page = signedIn ()
     page.Event("navigate", key = "storage")
     page.AfterCommits(1, (fun () -> page.GoOffline()))
     page.Event("datasetTransition", value = "state-archived")
     Assert.Equal("saved", page.Text "persistenceState")
     Assert.Contains("dataset's new state is saved", page.Text "persistenceText")
-    // The target button no longer applies: focus goes to the activity status (limen.focus).
+    // The target button no longer applies: focus goes to the dataset's
+    // lifecycle heading beside it (limen.focus), not the status region.
     let focusRequests = browser.Requests |> Seq.filter (fun r -> r.Contains "\"capability\":\"limen.focus\"") |> List.ofSeq
     Assert.Single(focusRequests) |> ignore
-    Assert.Contains("\"name\":\"activity\"", focusRequests.Head)
+    Assert.Contains("\"name\":\"dataset-lifecycle\"", focusRequests.Head)
 
 [<Fact>]
 let ``the engine selects the focus pack at the installed contract's fingerprint`` () =

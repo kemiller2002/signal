@@ -11,7 +11,7 @@
 import { readFileSync } from "node:fs";
 import { test, expect, expectConsoleError } from "./support.js";
 import { FakeGitHubStore } from "./fakes/github-store.js";
-import { signInWithStore, routeSignIn, createGroup, open, origin, STORE_STEP_MS, KERNEL_START_MS } from "./ui-conformance-fixtures.mjs";
+import { signInWithStore, routeSignIn, createGroup, open, answerAll, origin, STORE_STEP_MS, KERNEL_START_MS } from "./ui-conformance-fixtures.mjs";
 
 test.describe.configure({ timeout: 300_000 });
 
@@ -55,6 +55,51 @@ async function expectRunning(page, label) {
   await expect(pending).toHaveClass(/(^|\s)echelon-loading(\s|$)/);
   await expect(pending.locator(".forma-spinner .forma-spinner__indicator")).toHaveCount(1);
   await expect(pending.locator(".forma-spinner__label")).toHaveText(label);
+}
+
+// Focus moved by the page after an operation: on the element named, which
+// is on screen (not 1,200px away), with a visible outline of the Forma
+// focus-ring colour (SIG-VIS-PENDING-002, round 2).
+async function expectFocusedHere(target) {
+  await expect(target).toBeFocused({ timeout: STORE_STEP_MS });
+  await expect(target).toBeInViewport();
+  const ring = await target.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const probe = document.createElement("span");
+    probe.style.color = "var(--forma-color-focus-ring)";
+    document.body.append(probe);
+    const token = getComputedStyle(probe).color;
+    probe.remove();
+    return { style: style.outlineStyle, width: parseFloat(style.outlineWidth), color: style.outlineColor, token };
+  });
+  expect(ring.style).toBe("solid");
+  expect(ring.width).toBeGreaterThanOrEqual(2);
+  expect(ring.color).toBe(ring.token);
+}
+
+// One accepted result in a new group: a respondent answers an invitation
+// and its submission link is imported.
+async function groupWithOneResult(page, context) {
+  const key = await createGroup(page);
+  await page.getByRole("link", { name: "Imported surveys" }).click();
+  const invitations = page.locator("#invitations");
+  await invitations.getByRole("spinbutton", { name: "How many links" }).fill("1");
+  await invitations.getByRole("spinbutton", { name: "How many links" }).press("Tab");
+  await invitations.getByRole("button", { name: "Create links" }).click();
+  await expect(page.locator("#invitation-summary")).toHaveText(/1 link\(s\) issued/, { timeout: STORE_STEP_MS });
+  const [issued] = await page.locator("#invitation-links code").allTextContents();
+  const respondent = await context.newPage();
+  await open(respondent, issued);
+  await answerAll(respondent, "Often");
+  await respondent.getByRole("button", { name: "See results" }).click();
+  await respondent.getByRole("button", { name: "Submit answers" }).click();
+  const submission = await respondent.getByRole("textbox", { name: "Submission link" }).inputValue();
+  await respondent.close();
+  const imports = page.locator("#import");
+  await imports.getByRole("textbox", { name: "Completed survey links, one per line" }).fill(submission);
+  await imports.getByRole("button", { name: "Import" }).click();
+  await expect(page.locator("#importAccepted li")).toHaveCount(1, { timeout: STORE_STEP_MS });
+  return key;
 }
 
 async function startDraft(page) {
@@ -152,7 +197,7 @@ test("edits made while a draft saves stay unsaved", async ({ page }) => {
   await expect(draft).toContainText("Unsaved changes");
 });
 
-test("a group transition in flight: only its own button is busy, the others follow the guard, and focus goes to the status", async ({ page }) => {
+test("a group transition in flight: only its own button is busy, the others follow the guard, and focus goes to the new phase", async ({ page }) => {
   const store = await signInWithStore(page);
   await createGroup(page);
   const lifecycle = page.locator("#lifecycle");
@@ -174,8 +219,10 @@ test("a group transition in flight: only its own button is busy, the others foll
   await expect(phase).toHaveAttribute("data-phase", "ClosedIncomplete");
   await expect(phase).toHaveAttribute("data-echelon-tone", "closed");
   await expect(activity(page).locator("#persistence")).toHaveAttribute("data-persistence", "saved");
-  // Its button went away; focus is on the status, not lost to the page.
-  await expect(activity(page)).toBeFocused();
+  // Its button went away; focus is on the phase it changed, beside it, not
+  // on the status region at the top of the page.
+  await expectFocusedHere(phase);
+  await expect(activity(page)).not.toBeFocused();
 });
 
 test("delete draft keeps its confirmation, busy, until it is answered; then focus goes to the status", async ({ page }) => {
@@ -197,18 +244,19 @@ test("delete draft keeps its confirmation, busy, until it is answered; then focu
   hold.release();
   await expect(draft.getByRole("button", { name: "Deleting draft", exact: true })).toHaveCount(0, { timeout: STORE_STEP_MS });
   await expect(activity(page).locator("#persistence")).toHaveText("The draft is deleted: the store confirmed it.");
-  await expect(activity(page)).toBeFocused();
+  // Nothing is left beside it: focus goes to the status region, on screen.
+  await expectFocusedHere(activity(page));
 });
 
-test("retire keeps its confirmation, busy, until it is answered; then focus goes to the status", async ({ page }) => {
+test("retire keeps its confirmation, busy, until its commit is answered; then the results are retired and focus is on them", async ({ page, context }) => {
   const store = await signInWithStore(page);
-  const key = await createGroup(page);
+  const key = await groupWithOneResult(page, context);
   await area(page, "Storage");
   await page.getByRole("button", { name: "Rebuild the contribution index", exact: true }).click();
   await expect(notice(page)).toContainText("The contribution index was rebuilt", { timeout: STORE_STEP_MS });
   await area(page, "Groups");
   await page.locator("#group-list").getByRole("link", { name: key }).click();
-  // An incomplete group is closed before it is finalized.
+  // An incomplete group (1 of 2) is closed before it is finalized.
   await page.locator("#lifecycle").getByRole("button", { name: "Close incomplete", exact: true }).click();
   await expect(page.locator("#group-phase")).toHaveAttribute("data-phase", "ClosedIncomplete", { timeout: STORE_STEP_MS });
   await page.locator("#lifecycle").getByRole("button", { name: "Finalize", exact: true }).click();
@@ -216,8 +264,10 @@ test("retire keeps its confirmation, busy, until it is answered; then focus goes
   const retention = page.locator("#group-retention");
   await retention.getByRole("button", { name: "Retire accepted results…", exact: true }).click();
 
-  // The retirement's first store read, held: it happens whatever the outcome.
-  const hold = store.holdNext("GET", /./);
+  // The retirement's own commit (its branch update), held: with a result to
+  // retire it is always made, so the outcome below is the only one.
+  const commits = refUpdates(store);
+  const hold = store.holdNext("PATCH", REF_UPDATE);
   await retention.getByRole("button", { name: "Retire accepted results", exact: true }).click();
   await hold.reached;
   const retiring = retention.getByRole("button", { name: "Retiring accepted results", exact: true });
@@ -229,8 +279,23 @@ test("retire keeps its confirmation, busy, until it is answered; then focus goes
 
   hold.release();
   await expect(page.locator("#retire-confirm")).toHaveCount(0, { timeout: STORE_STEP_MS });
-  await expect(activity(page).locator("#persistence")).toHaveAttribute("data-persistence", /^(saved|failed)$/);
-  await expect(activity(page)).toBeFocused();
+  await expect(activity(page).locator("#persistence")).toHaveAttribute("data-persistence", "saved");
+  expect(refUpdates(store)).toBeGreaterThan(commits);
+  const retired = retention.locator("#sources-retired");
+  await expect(retired).toContainText("Accepted results retired.");
+  await expectFocusedHere(retired);
+  await expect(activity(page)).not.toBeFocused();
+});
+
+test("a dataset lifecycle change moves focus to its lifecycle heading", async ({ page }) => {
+  const store = await signInWithStore(page);
+  await area(page, "Storage");
+  const hold = store.holdNext("PATCH", REF_UPDATE);
+  await page.locator("#lifecycle-targets").getByRole("button", { name: "Archive", exact: true }).click();
+  await hold.reached;
+  hold.release();
+  await expect(page.locator("#dataset-lifecycle-state")).toHaveText("state-archived", { timeout: STORE_STEP_MS });
+  await expectFocusedHere(page.locator("#dataset-lifecycle-heading"));
 });
 
 test("a change the store refuses is reported failed: not done, never saved", async ({ page }) => {
@@ -371,7 +436,7 @@ test("chips carry the authoritative state as a tone and a plain label, apart fro
   hold.release();
   await expect(version.locator(".echelon-chip")).toHaveText("Hidden", { timeout: STORE_STEP_MS });
   await expect(version.locator(".echelon-chip")).toHaveAttribute("data-echelon-tone", "closed");
-  await expect(activity(page)).toBeFocused();
+  await expectFocusedHere(activity(page));
 });
 
 test("an export in flight: its own button is busy, the other exports wait, and the file arrives", async ({ page }) => {

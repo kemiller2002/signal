@@ -7,6 +7,7 @@
 module Echelon.Signal.Application.AdminWire
 
 open System
+open System.Runtime.ExceptionServices
 open System.Text.Json.Nodes
 open Aegis
 open Fides.Client
@@ -25,7 +26,10 @@ let initial = AdminWireState.initial
 /// `Outcome`s through the bridge. Effects the kernel performs directly
 /// become Limen requests.
 let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State * Request list =
+    // Background work (identity, sign-in, sign-out, local answers) versus the
+    // running operation's own work, whose failure alone settles it.
     let start (work: Async<Outcome list>) = env.Bridge.Start work
+    let operate (work: Async<Outcome list>) = env.Bridge.StartOperation work
     let model = state.Model |> Option.defaultValue (AdminApp.initial env.Catalog)
     let now = env.Now()
     let mint purpose (state: State) =
@@ -35,13 +39,13 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
 
     let withDataset (work: Store.Actor -> Store.Opened -> Async<Outcome list>) =
         match actorOf env model, state.Opened with
-        | Some actor, Some opened -> start (work actor opened)
-        | _ -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NO_DATASET" "Open a dataset first." false)) ])
+        | Some actor, Some opened -> operate (work actor opened)
+        | _ -> operate (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NO_DATASET" "Open a dataset first." false)) ])
 
     let withGroup (key: string) (work: Store.Actor -> GroupStore.OpenedGroup -> Async<Outcome list>) =
         match actorOf env model, state.Groups.TryFind key with
-        | Some actor, Some group -> start (work actor group)
-        | _ -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NO_GROUP" "That group is not open." false)) ])
+        | Some actor, Some group -> operate (work actor group)
+        | _ -> operate (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NO_GROUP" "That group is not open." false)) ])
 
     match effect with
     | AdminApp.ReadConfiguration when List.contains "Http" state.Effects ->
@@ -89,8 +93,8 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
         | Some config, Some actor, Some client ->
             let backend = env.Backend (fun () -> Some(Identity.tokens client)) (fun () -> client.ReportUnauthorized())
             let pinned = state.Opened |> Option.filter (fun o -> o.DatasetId = datasetId) |> Option.map _.RepositoryId
-            start (AdminGroupWork.openDataset env state.Catalog backend config actor pinned datasetId now)
-        | _ -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NOT_SIGNED_IN" "Sign in first." false)) ])
+            operate (AdminGroupWork.openDataset env state.Catalog backend config actor pinned datasetId now)
+        | _ -> operate (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NOT_SIGNED_IN" "Sign in first." false)) ])
 
         state, []
     | AdminApp.CreateGroup(templateHash, mode, expected, minimum) ->
@@ -112,8 +116,8 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
         match model.Deployment, actorOf env model, state.Client, state.Opened with
         | Some config, Some actor, Some client, Some opened ->
             let backend = env.Backend (fun () -> Some(Identity.tokens client)) (fun () -> client.ReportUnauthorized())
-            start (RetentionWork.transition env state.Catalog backend config actor opened target now)
-        | _ -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NOT_SIGNED_IN" "Sign in and open the dataset first." false)) ])
+            operate (RetentionWork.transition env state.Catalog backend config actor opened target now)
+        | _ -> operate (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NOT_SIGNED_IN" "Sign in and open the dataset first." false)) ])
 
         state, []
     | AdminApp.RetireSources key ->
@@ -143,7 +147,7 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
     | AdminApp.ExportSnapshot(id, file) ->
         match state.Snapshots |> List.tryFind (fun s -> s.SnapshotId = id) with
         | Some snapshot -> withDataset (fun actor opened -> ReportWork.export actor opened snapshot file now)
-        | None -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.REPORT.NO_SUCH_SNAPSHOT" "That snapshot is not in this dataset." false)) ])
+        | None -> operate (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.REPORT.NO_SUCH_SNAPSHOT" "That snapshot is not in this dataset." false)) ])
 
         state, []
     | AdminApp.SaveReportDefinition(definition, pins) ->
@@ -297,13 +301,16 @@ and private settle (env: Env) (state: State) (sent: Request list) =
                     messages |> List.fold (fun (state, sent) msg -> advance env state msg sent) (state, sent))
                 (state, sent)
 
-        // An operation that ended in an exception is settled as unknown (it
-        // may have written before it failed), after every other operation's
-        // messages of this drain were applied; `handle` presents the fault
-        // through Aegis (SIG-VIS-PENDING-002).
-        match failed with
-        | [] -> state, sent
-        | _ -> advance env { state with Faults = state.Faults @ failed } AdminApp.OperationFaulted sent
+        // Every failure is presented through Aegis by `handle`. Only the
+        // running operation's own work settles it, as unknown (it may have
+        // written before it failed), after every other message of this drain
+        // was applied; a failed sign-out or cross-tab receive leaves the
+        // operation running and the guard in place (SIG-VIS-PENDING-002).
+        let state = { state with Faults = state.Faults @ (failed |> List.map _.Error) }
+
+        match failed |> List.exists (fun failure -> failure.Work = Bridge.Work.Operation) with
+        | false -> state, sent
+        | true -> advance env state AdminApp.OperationFaulted sent
 
 let private take (id: string) (state: State) =
     match state.Pending.TryFind id with
@@ -430,25 +437,38 @@ let step (env: Env) (state: State) (inbound: Inbound) =
     let next, sent, handshake = run env state inbound
     next, encode (view next) sent handshake
 
+/// What handling one kernel message gave: the state to keep, the reply, and
+/// a programming defect to re-raise once that state is kept.
+type Handled =
+    { State: State
+      Reply: string
+      Defect: ExceptionDispatchInfo option }
+
 /// Handles one kernel message under the Aegis boundary. A fault in handling
 /// the message leaves the state as it was and is shown until the next
 /// message. A fault inside an operation keeps everything else the message
 /// did: the operation was already settled as unknown, and the fault is
-/// presented through Aegis here.
-let handle (aegis: AegisConfig) (env: Env) (state: State) (messageJson: string) =
+/// presented through Aegis here. A programming defect inside an operation is
+/// still re-raised (Aegis fails loud), but as `Defect`, after the settled
+/// state: the caller keeps that state first, so the page is never left
+/// running an operation that already ended (WI-0114).
+let handle (aegis: AegisConfig) (env: Env) (state: State) (messageJson: string) : Handled =
     let cleared = { state with Fault = None; Faults = [] }
 
     match capture aegis "Signal.Admin.dispatch" (fun () -> run env cleared (decode messageJson)) with
     | Ok(next, sent, handshake) ->
-        let next =
+        let next, defect =
             match next.Faults with
-            | [] -> next
+            | [] -> next, None
             | error :: _ ->
-                match capture aegis "Signal.Admin.operation" (fun () -> (raise error: unit)) with
-                | Result.Error fault -> { next with Fault = Some fault; Faults = [] }
-                | Ok() -> { next with Faults = [] }
+                try
+                    match capture aegis "Signal.Admin.operation" (fun () -> (raise error: unit)) with
+                    | Result.Error fault -> { next with Fault = Some fault; Faults = [] }, None
+                    | Ok() -> { next with Faults = [] }, None
+                with defect ->
+                    { next with Faults = [] }, Some(ExceptionDispatchInfo.Capture defect)
 
-        next, encode (view next) sent handshake
+        { State = next; Reply = encode (view next) sent handshake; Defect = defect }
     | Result.Error fault ->
         let faulted = { state with Fault = Some fault }
-        faulted, encode (view faulted) [] None
+        { State = faulted; Reply = encode (view faulted) [] None; Defect = None }

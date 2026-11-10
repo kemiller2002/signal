@@ -51,6 +51,9 @@ type Browser(configuration: string option) =
     member val Navigations = List<string>()
     /// Files handed over to save: name, media type and text.
     member val Downloads = List<string * string * string>()
+    /// While set, timer wakes are held, unanswered, in `HeldWakes` (a held operation).
+    member val HoldWakes = false with get, set
+    member val HeldWakes = List<string>()
 
     member this.Exchange (url: string) (body: string) =
         let at (offset: TimeSpan) = start.UtcDateTime.Add(offset).ToString("yyyy-MM-ddTHH:mm:ssZ")
@@ -106,7 +109,8 @@ type Browser(configuration: string option) =
                 | "limen.files", "download" -> this.Downloads.Add((arg "fileName", arg "mimeType", arg "data")); """{"kind":"Downloaded"}"""
                 | _, _ -> """{"kind":"Done"}"""
 
-            Some $"""{{"kind":"EffectResult","result":{{"kind":"CapabilityResult","correlationId":"{id}","capability":"{field "capability"}","version":1,"outcome":{{"kind":"Completed","result":{result}}}}}}}"""
+            let reply = $"""{{"kind":"EffectResult","result":{{"kind":"CapabilityResult","correlationId":"{id}","capability":"{field "capability"}","version":1,"outcome":{{"kind":"Completed","result":{result}}}}}}}"""
+            if field "capability" = "limen.schedule" && this.HoldWakes then (this.HeldWakes.Add reply; None) else Some reply
         | "Clipboard" ->
             this.Copied.Add(field "text")
             Some $"""{{"kind":"EffectResult","result":{{"kind":"ClipboardResult","correlationId":"{id}","outcome":{{"kind":"Success"}}}}}}"""
@@ -124,12 +128,16 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
     let bridge = Bridge.Bridge<AdminWork.Outcome>()
     // Faults a test arranges (SIG-VIS-PENDING-002): the store unreachable from
     // a point on, an action once the next commit landed, an exception inside
-    // the next write, and commits whose outcome stays unknown.
+    // the next write, commits whose outcome stays unknown, the next commit
+    // held on a timer wake (then an action), and a cross-tab receive that throws.
     let offlineNow = ref false
     let afterCommit = ref (0, (fun () -> ()))
     let faultNextWrite = ref false
     let stillUnknown = ref false
+    let holdNextCommit: (unit -> unit) option ref = ref None
+    let receiveThrows = ref false
     let reachable () = reachable () && not offlineNow.Value
+    let held () = match holdNextCommit.Value with Some after -> (holdNextCommit.Value <- None; async.Bind(bridge.Call(Bridge.Sleep 1), fun _ -> async.Return(after ()))) | None -> async.Return()
 
     let unknownPending () : PendingReconciliation =
         { IdempotencyKey = (match IdempotencyKey.create "op-still-unknown-0001" with Ok key -> key | Error e -> failwith $"%A{e}"); Base = ChangeToken "still-unknown"; Candidate = None; Revisions = Map.empty }
@@ -152,6 +160,7 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
                                 async.Return(Error(StorageFailure.OutcomeUnknown(unknownPending ())))
                             else
                                 async {
+                                    do! held ()
                                     let! result = real.Commit o
                                     let count, landed = afterCommit.Value
                                     afterCommit.Value <- (max 0 (count - 1), landed)
@@ -164,17 +173,8 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
           Resolve =
             fun location ->
                 if reachable () then
-                    async.Return(
-                        Ok
-                            { Identity = { Provider = "github"; Subject = "583231"; Login = Some "octocat"; Kind = IdentityKind.User }
-                              RepositoryId = "R_1"
-                              Repository = location.Repository
-                              Visibility = RepositoryVisibility.Private
-                              CanRead = true
-                              CanWrite = true
-                              Archived = false
-                              Branch = BranchAccess.Writable }
-                    )
+                    let identity = { Provider = "github"; Subject = "583231"; Login = Some "octocat"; Kind = IdentityKind.User }
+                    async.Return(Ok { Identity = identity; RepositoryId = "R_1"; Repository = location.Repository; Visibility = RepositoryVisibility.Private; CanRead = true; CanWrite = true; Archived = false; Branch = BranchAccess.Writable })
                 else
                     async.Return(Error(Credential.Unreachable "offline")) }
 
@@ -193,7 +193,11 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
           RandomBytes = fun count -> Array.init count (fun i -> byte (i + keys.Value))
           Bridge = bridge
           Backend = fun _ _ -> backend
-          Identity = Identity.create
+          Identity =
+            fun config ports ->
+                let client = Identity.create config ports
+                let planted () = raise (Json.CapabilityFailed("fides", "planted: the receive threw"))
+                { client with Receive = fun message -> if receiveThrows.Value then async { return planted () } else client.Receive message }
           Catalog =
             [ { Hash = Canonical.templateHash Pilot.assessment
                 SurveyIdentifier = Pilot.assessment.Id
@@ -210,9 +214,11 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
     /// Sends a message and answers every request until none is left.
     member this.Send(message: string) =
         let rec pump (message: string) =
-            let next, reply = AdminWire.handle aegis env state message
-            state <- next
-            let node = JsonNode.Parse reply
+            let handled = AdminWire.handle aegis env state message
+            // As the runtime does: keep the settled state, then re-raise a defect (WI-0114).
+            state <- handled.State
+            handled.Defect |> Option.iter _.Throw()
+            let node = JsonNode.Parse handled.Reply
             view <- node["view"]
 
             for effect in node["effects"].AsArray() do
@@ -240,6 +246,8 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
     member _.AfterCommits(count: int, action: unit -> unit) = afterCommit.Value <- (count, action)
     member _.FaultNextWrite() = faultNextWrite.Value <- true
     member _.CommitsStayUnknown(on: bool) = stillUnknown.Value <- on
+    member _.HoldNextCommit(after: unit -> unit) = holdNextCommit.Value <- Some after
+    member _.ReceiveThrows() = receiveThrows.Value <- true
 
 let openPage (configuration: string option) =
     let browser = Browser(configuration)

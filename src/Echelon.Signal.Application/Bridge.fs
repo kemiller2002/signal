@@ -47,13 +47,25 @@ type KernelAnswer =
     /// The browser refused a storage request.
     | Refused of reason: string
 
+/// Whose work ended in an exception: the engine operation the page is
+/// running (its pending state settles as unknown), or background work such
+/// as a sign-out or a cross-tab receive, which must never settle the running
+/// operation (SIG-VIS-PENDING-002).
+[<RequireQualifiedAccess>]
+type Work =
+    | Operation
+    | Background
+
+/// Work that ended in an exception, tagged with whose work it was.
+type WorkFailure = { Work: Work; Error: exn }
+
 /// One page's in-flight work, producing messages of type 'msg.
 [<Sealed>]
 type Bridge<'msg>() =
     let waiting = Dictionary<string, KernelAnswer -> unit>()
     let outbox = List<string * KernelCall>()
     let finished = List<'msg>()
-    let failures = List<exn>()
+    let failures = List<WorkFailure>()
     let mutable sequence = 0
 
     /// Asks the browser for something and continues with its answer.
@@ -64,15 +76,22 @@ type Bridge<'msg>() =
             waiting[id] <- resume
             outbox.Add(id, request))
 
-    /// Runs an operation to its first browser call (or its end).
-    member _.Start(work: Async<'msg list>) =
+    let run (tag: Work) (work: Async<'msg list>) =
         Async.StartImmediate(
             async {
                 match! Async.Catch work with
                 | Choice1Of2 messages -> finished.AddRange messages
-                | Choice2Of2 error -> failures.Add error
+                | Choice2Of2 error -> failures.Add { Work = tag; Error = error }
             }
         )
+
+    /// Runs background work to its first browser call (or its end). Its
+    /// failure is reported, but never as the running operation's.
+    member _.Start(work: Async<'msg list>) = run Work.Background work
+
+    /// Runs the engine operation's own work; only its failure settles the
+    /// running operation.
+    member _.StartOperation(work: Async<'msg list>) = run Work.Operation work
 
     /// Resumes the operation waiting on this correlation id; false when none is.
     member _.Answer (id: string) (answer: KernelAnswer) =
@@ -87,7 +106,7 @@ type Bridge<'msg>() =
     /// ended in an exception since the last drain. All three are returned
     /// together: one failed operation never discards another's calls or
     /// messages (SIG-VIS-PENDING-002).
-    member _.Drain() : (string * KernelCall) list * 'msg list * exn list =
+    member _.Drain() : (string * KernelCall) list * 'msg list * WorkFailure list =
         let calls = List.ofSeq outbox
         let messages = List.ofSeq finished
         let failed = List.ofSeq failures
