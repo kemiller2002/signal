@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T10:57:09.000Z",
+  "updatedAt": "2026-11-10T11:00:46.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4506,10 +4506,27 @@
     {
       "id": "WI-0121",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-11-10T07:28:39.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "web/admin/index.html"
+        },
+        {
+          "type": "implementation",
+          "path": "web/admin/admin.css"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/ui-conformance-admin-draft.spec.js"
+        },
+        {
+          "type": "docs",
+          "path": "HANDOFF.md"
+        }
+      ],
+      "updatedAt": "2026-11-10T11:00:46.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T072839973Z-4338d24d"
       ],
@@ -4532,7 +4549,9 @@
           "status": "verified",
           "mechanism": "git-remote-observation"
         }
-      }
+      },
+      "completedAt": "2026-11-10T11:00:46.000Z",
+      "conclusion": "signal#137 (SIG-ECHELON-APP-002 c, authoring) done. Draft editor on Echelon panels with one primary (Publish) and danger on Delete draft's confirmation; assessments and report definitions on panels; validation findings in a labelled scroll region with whole-word cells, so the capture audit's collapse check is clean on every draft screen at 1440, 834, 390 and 320 px with 200% text, and a browser test asserts it. #136's review rounds (WI-0125, WI-0127, WI-0128) merged forward. CI green at 76e96ac: 700/700 .NET, 194/194 Playwright; visual-evidence/baseline-76e96ac (87 screens, 576 shots, none unreached)."
     },
     {
       "id": "WI-0125",
