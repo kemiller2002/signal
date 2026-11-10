@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-09T23:43:12.000Z",
+  "updatedAt": "2026-11-10T00:04:48.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4014,33 +4014,47 @@
     {
       "id": "WI-0110",
       "type": "feature",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-11-09T23:43:12.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "tests/visual/capture.spec.js"
+        },
+        {
+          "type": "implementation",
+          "path": ".github/workflows/visual-capture.yml"
+        },
+        {
+          "type": "tests",
+          "path": "tests/visual/capture-plan.test.mjs"
+        }
+      ],
+      "updatedAt": "2026-11-10T00:04:48.000Z",
       "telemetryExecutionIds": [
         "EXE-20261109T234312679Z-27426994"
       ],
       "latestCheckpoint": {
-        "id": "cde6d762af45a3ca63dd7e89",
-        "recordedAt": "2026-11-09T23:55:15.000Z",
+        "id": "9feff56b6376aef6256ea58a",
+        "recordedAt": "2026-11-10T00:04:41.000Z",
         "executionId": "EXE-20261109T234312679Z-27426994",
         "repository": "echelon-signal",
         "branch": "visual/baseline-capture",
-        "commit": "8ae1c0796543195654326fa5237581ab2e10b789",
+        "commit": "c5ed94a894aede4e1a993cfb233b51fb3f5290ab",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal.git"
         },
         "remoteBranch": "visual/baseline-capture",
-        "remoteCommit": "8ae1c0796543195654326fa5237581ab2e10b789",
-        "summary": "Capture script, observer, manifest builder, unit tests and visual-capture workflow pushed to visual/baseline-capture; landing and start-up scenarios verified locally",
-        "nextAction": "Watch the Visual capture run, fix until it succeeds, fetch the evidence branch and inspect images",
+        "remoteCommit": "c5ed94a894aede4e1a993cfb233b51fb3f5290ab",
+        "summary": "Capture workflow succeeded (run 42724278080); evidence on visual-evidence/baseline-8ae1c07 (e19774e) fetched and inspected",
+        "nextAction": "Complete WI-0110",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
         }
-      }
+      },
+      "completedAt": "2026-11-10T00:04:48.000Z"
     }
   ]
 }

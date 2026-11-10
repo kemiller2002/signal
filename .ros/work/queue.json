@@ -2717,10 +2717,10 @@
         "evidence"
       ],
       "priority": "medium",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-09T23:43:06.000Z",
-      "updatedAt": "2026-11-09T23:43:10.000Z",
+      "updatedAt": "2026-11-10T00:04:48.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
