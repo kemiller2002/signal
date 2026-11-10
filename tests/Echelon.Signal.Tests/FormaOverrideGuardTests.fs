@@ -33,7 +33,12 @@ let private rulesOf (css: string) =
               |> Array.map (fun declaration -> family (declaration.Split(':')[0]))
               |> Set.ofArray
 
-          for selector in rule.Groups[1].Value.Split(',') do
+          // The rule's own selector: after the last statement before it, so an
+          // `@import "….css";` line is not read as part of the first selector
+          // (its ".css" counted as a class and left that rule unchecked).
+          let prelude = rule.Groups[1].Value.Split(';') |> Array.last
+
+          for selector in prelude.Split(',') do
               let last = Regex.Split(selector.Trim(), @"[\s>+~]+") |> Array.last
               let classes = Regex.Matches(last, @"\.([\w-]+)") |> Seq.map (fun m -> m.Groups[1].Value) |> Set.ofSeq
               yield selector.Trim(), classes, properties ]
@@ -50,9 +55,28 @@ let private pageClasses (html: string) =
     |> Seq.collect (fun m -> m.Groups[1].Value.Split(' ', System.StringSplitOptions.RemoveEmptyEntries))
     |> Set.ofSeq
 
-/// Whether every class a selector names is on the page.
+/// A selector without its `:not(…)` arguments (nested parentheses included):
+/// a class a rule excludes need not be on the page for the rule to match.
+let private withoutNegations (selector: string) =
+    let rec skip (depth: int) (rest: char list) =
+        match rest with
+        | [] -> []
+        | ')' :: tail when depth = 1 -> tail
+        | ')' :: tail -> skip (depth - 1) tail
+        | '(' :: tail -> skip (depth + 1) tail
+        | _ :: tail -> skip depth tail
+
+    let rec keep (rest: char list) =
+        match rest with
+        | ':' :: 'n' :: 'o' :: 't' :: '(' :: tail -> keep (skip 1 tail)
+        | c :: tail -> c :: keep tail
+        | [] -> []
+
+    selector |> List.ofSeq |> keep |> Array.ofList |> System.String
+
+/// Whether every class a selector requires (outside `:not(…)`) is on the page.
 let private canMatch (classes: Set<string>) (selector: string) =
-    Regex.Matches(selector, @"\.([\w-]+)") |> Seq.forall (fun m -> classes.Contains m.Groups[1].Value)
+    Regex.Matches(withoutNegations selector, @"\.([\w-]+)") |> Seq.forall (fun m -> classes.Contains m.Groups[1].Value)
 
 /// The full list on failure (xUnit's collection message truncates it).
 let private noneOf (clashes: string list) =
@@ -168,3 +192,33 @@ let ``no Signal id selector sets what Forma sets on that element`` () =
                                   yield $"{page}: '{selector}' sets {listed}, which Forma sets on <{tag} id=\"{name}\">" ]
 
     noneOf clashes
+
+/// signal#141 review: the first rule after a sheet's `@import` lines is
+/// checked like any other (its selector is its own, with no ".css" class).
+[<Fact>]
+let ``the guards read the first rule after @import lines as its own selector`` () =
+    let rules = rulesOf "@import \"../node_modules/x/dist/all.css\";\n@import \"./page.css\" print;\n.first-rule { padding: 0; }\n.second { gap: 1rem; }"
+    let first, classes, properties = rules.Head
+    Assert.Equal(".first-rule", first)
+    Assert.Equal<Set<string>>(set [ "first-rule" ], classes)
+    Assert.Contains("padding", properties)
+    Assert.True(canMatch (set [ "first-rule" ]) first)
+    // The sheets the guards read begin with @import lines, and their first
+    // rule's selector is read without them.
+    for sheet in [ "web/styles.css"; "web/admin/admin.css"; "web/home/home.css" ] do
+        let text = readRepoFile sheet
+        Assert.True(text.IndexOf "@import" >= 0 && text.IndexOf "@import" < text.IndexOf "{", $"{sheet} starts with @import")
+        let selector, _, _ = (rulesOf text).Head
+        Assert.DoesNotContain("@import", selector)
+        Assert.DoesNotContain(".css", selector)
+
+/// signal#141 review: a class a rule only excludes (`:not(.x)`) need not be
+/// on the page; the rule is still checked.
+[<Fact>]
+let ``a rule's :not() classes do not stop the guards checking it`` () =
+    let page = set [ "respondent"; "activity" ]
+    Assert.True(canMatch page ".respondent > .activity:not(:has(#loading))")
+    Assert.True(canMatch page ".respondent:not(.never-on-the-page) .activity")
+    Assert.True(canMatch page ".activity:not(:is(.a, .b), .c)")
+    Assert.False(canMatch page ".respondent .missing:not(.activity)")
+    Assert.Equal(".a .b", withoutNegations ".a:not(.x) .b:not(:has(.y, .z))")

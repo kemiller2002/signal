@@ -414,8 +414,8 @@
         <!-- Scoring models, interpretations and the overall score (ALG-004, WI-0081):
              named built-in choices, each compiling to the engine's scorer algebra. -->
         <section id="scoring-authoring" class="draft-scoring" aria-labelledby="scoring-authoring-heading">
-          <h4 id="scoring-authoring-heading">How sections score</h4>
-          <ul id="scoring-sections"><template data-each="draftSectionScoring" data-key="id"><li data-text="label"></li></template></ul>
+          <h4 id="scoring-authoring-heading" class="draft-scoring__heading">How sections score</h4>
+          <ul id="draft-scoring-sections" class="draft-scoring__list"><template data-each="draftSectionScoring" data-key="id"><li data-text="label"></li></template></ul>
           <label>Section <select id="scoring-section" data-event="scoringSection"><template data-each="scoringSectionChoices" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
           <label>Model <select id="scoring-model" data-event="scoringModel"><template data-each="scoringModels" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
           <label>Weights, one per scored question in order (weighted models) <input id="scoring-weights" type="text" data-event="scoringWeights" data-bind-value="scoringWeights" /></label>
@@ -426,7 +426,7 @@
           <label>Special answers count as (blank: left out) <input id="scoring-substitute" type="text" data-event="scoringSubstitute" data-bind-value="scoringSubstitute" /></label>
           <label>Answers a score needs <input id="scoring-minimum" type="text" inputmode="numeric" data-event="scoringMinimum" data-bind-value="scoringMinimum" /></label>
           <button type="button" class="forma-button" data-event="applySectionSpecials">Apply</button>
-          <h4>Interpretations</h4>
+          <h4 class="draft-scoring__heading">Interpretations</h4>
           <ul id="draft-interpretations"><template data-each="draftInterpretations" data-key="id"><li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeInterpretation">Remove</button></li></template></ul>
           <label>Bands on (a section id, or overall) <input id="band-target" type="text" data-event="bandTarget" data-bind-value="bandTarget" /></label>
           <label>Bands, as "Low 0-40; Medium 40-70; High 70-100" <input id="band-text" type="text" data-event="bandText" data-bind-value="bandText" /></label>
@@ -435,7 +435,7 @@
           <label>Threshold <input id="pass-threshold" type="text" data-event="passThreshold" data-bind-value="passThreshold" /></label>
           <label>Direction <select data-event="passDirection"><template data-each="passDirections" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
           <button type="button" class="forma-button" data-event="addPassFail">Add pass / fail</button>
-          <h4>Overall score</h4>
+          <h4 class="draft-scoring__heading">Overall score</h4>
           <p id="overall-now" data-text="overallNow"></p>
           <label>Method <select id="overall-method" data-event="overallMethod"><template data-each="overallMethods" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
           <label>Section weights, as "S1=2, S2=1" (weighted sections) <input id="overall-weights" type="text" data-event="overallWeights" data-bind-value="overallWeights" /></label>

@@ -416,6 +416,15 @@
 }
 .draft-editor :is(.draft-fields, .draft-scoring) > :is(p, ul, ol, fieldset, h3, h4) { margin: 0; }
 .draft-editor :is(.draft-fields, .draft-scoring) > .forma-button { justify-self: start; }
+/* Scoring's sub-sections (How sections score, Interpretations, Overall
+   score) each start with space and a rule, so they do not run together;
+   the sections' scoring is a plain list, not bullets (signal#141 review). */
+.draft-editor .draft-scoring__heading:not(:first-child) {
+  margin-block-start: 1rem;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--echelon-border-subtle);
+}
+.draft-editor .draft-scoring__list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.35rem; }
 @media (min-width: 50rem) {
   .draft-panel--wide :is(.draft-fields, .draft-scoring) {
     grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));

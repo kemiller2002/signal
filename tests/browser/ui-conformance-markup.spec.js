@@ -37,6 +37,14 @@ for (const path of PAGES) {
     expect(problems).toEqual([]);
   });
 
+  // signal#141 review: the draft's list and the group Scoring tab both had
+  // id="scoring-sections", so one rule styled both. Every id in a page's
+  // source is its own (templates included).
+  test(`ULI-A01: every id in ${path} is used once`, async () => {
+    const ids = [...source(path).matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
+    expect(ids.filter((id, i) => ids.indexOf(id) !== i)).toEqual([]);
+  });
+
   test(`ULI-A01: no button in ${path} carries its meaning in a value attribute`, async ({ page }) => {
     const buttons = await page.evaluate((html) => {
       const found = [];
