@@ -108,3 +108,26 @@ test("ULI-A02/A07: each draft editing action adds its entry, refuses an impossib
   await expect(page.locator("#draft-sections li")).toHaveCount(0);
   await expect(page.locator("#draft-findings")).toContainText("STRUCT-NO-SECTIONS");
 });
+
+// Authoring in the "foundry ledger" direction (SIG-ECHELON-APP-002 (c)): the
+// draft's title with its lifecycle chip, each part of the editor on its own
+// panel in the editor's order, at most one primary action (Publish), and
+// danger emphasis on the destructive confirmation.
+test("SIG-ECHELON-APP-002: the draft editor's parts sit on panels in order, with one primary action and a danger confirmation", async ({ page }) => {
+  await signInWithStore(page);
+  const draft = await startDraft(page);
+  await expect(draft.locator("#draft-lifecycle")).toHaveClass(/\bechelon-chip\b/);
+  const panels = draft.locator(".draft-editor > .echelon-panel > .echelon-panel__header h3");
+  await expect(panels).toHaveText(["Details", "Sections", "Questions", "Conditions", "Facts", "Recommendations", "Completion",
+    "Validation rules", "Presentation", "Scoring", "Translations", "Accessibility text", "Test fixtures", "Validation", "Review"]);
+  const primaries = draft.locator('[data-echelon-emphasis="primary"]:visible');
+  expect(await primaries.count()).toBeLessThanOrEqual(1);
+  if (await primaries.count() === 1) await expect(primaries).toHaveText("Publish");
+  // Deleting is offered once the draft is stored.
+  await draft.getByRole("button", { name: "Save draft", exact: true }).click();
+  await expect(page.locator("#notice-message")).toHaveText("The draft of PULSE was saved.", { timeout: STORE_STEP_MS });
+  await draft.getByRole("button", { name: "Delete draft…", exact: true }).click();
+  await expect(draft.locator("#delete-draft-confirm").getByRole("button", { name: "Delete draft", exact: true })).toHaveAttribute("data-echelon-emphasis", "danger");
+  await draft.getByRole("button", { name: "Keep it", exact: true }).click();
+  await expect(draft.locator("#delete-draft-confirm")).toHaveCount(0);
+});

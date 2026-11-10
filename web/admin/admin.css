@@ -158,7 +158,8 @@
   vertical-align: middle;
 }
 .admin-table tr:last-child td { border-block-end: 0; }
-.admin-table td :is(a, code) { overflow-wrap: normal; }
+.admin .echelon-panel__body a { overflow-wrap: anywhere; }
+.admin .admin-table td :is(a, code) { overflow-wrap: normal; }
 
 /* A destructive confirmation stands apart from the controls around it. */
 .admin-confirm {
@@ -228,3 +229,18 @@
   color: var(--echelon-text-secondary);
   text-decoration-style: dotted;
 }
+
+/* ---- Authoring (SIG-ECHELON-APP-002) -----------------------------------
+   The draft editor's parts, each on its own panel, in the editor's order. */
+.draft-state { margin: 0; }
+.draft-editor > .echelon-panel { scroll-margin-block-start: 1rem; }
+.admin-rows li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding-block: 0.5rem;
+  border-block-end: 1px solid var(--echelon-border-subtle);
+}
+.admin-rows li:last-child { border-block-end: 0; }
+.admin-title h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); }
