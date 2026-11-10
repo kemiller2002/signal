@@ -1394,6 +1394,23 @@
         "name": "step",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.completed",
+      "occurredAt": "2026-11-10T12:24:05.000Z",
+      "stepId": "STEP-20261110T112723000Z-117448e4",
+      "actor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": {
+        "type": "ros-cli",
+        "name": "step",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {
@@ -1450,12 +1467,12 @@
       "name": "signal#137 visual gate: header, parts, widths, rows",
       "description": null,
       "classification": [],
-      "status": "active",
+      "status": "completed",
       "plannedAt": "2026-11-10T11:27:23.000Z",
       "startedAt": "2026-11-10T11:27:23.000Z",
-      "completedAt": null,
-      "endedAt": null,
-      "updatedAt": "2026-11-10T11:27:23.000Z",
+      "completedAt": "2026-11-10T12:24:05.000Z",
+      "endedAt": "2026-11-10T12:24:05.000Z",
+      "updatedAt": "2026-11-10T12:24:05.000Z",
       "actor": {
         "kind": "agent",
         "id": "anthropic/claude-code",
@@ -1677,6 +1694,19 @@
           "from": null,
           "to": "active",
           "occurredAt": "2026-11-10T11:27:23.000Z",
+          "reason": null,
+          "actor": {
+            "kind": "agent",
+            "id": "anthropic/claude-code",
+            "provider": "anthropic",
+            "model": "unknown",
+            "runtime": "claude-code"
+          }
+        },
+        {
+          "from": "active",
+          "to": "completed",
+          "occurredAt": "2026-11-10T12:24:05.000Z",
           "reason": null,
           "actor": {
             "kind": "agent",
