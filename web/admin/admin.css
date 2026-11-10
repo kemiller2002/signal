@@ -41,3 +41,148 @@
 @media print {
   .admin:has(> .report-view .report-surface) > :not(.report-view) { display: none !important; }
 }
+
+/* ---- "Foundry ledger" page composition (SIG-ECHELON-APP-002) -----------
+   Composition only: the app bar, route tabs, panels, chips, figures and
+   button emphasis are the Echelon application layer's (echelon-app.css);
+   this file places them and defines no forma- or echelon- name. */
+
+/* The application bar: the page's name is its h1, set as the bar's context. */
+.admin-bar__title { margin: 0; color: inherit; }
+.admin-bar #principal { font-variant-numeric: tabular-nums; }
+
+/* Route tabs: the Forma list markup, laid out as one row of tabs. */
+.admin .echelon-nav-tabs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.admin .echelon-nav-tabs li { display: flex; }
+.admin .echelon-nav-tabs a { white-space: nowrap; }
+
+/* On a phone the seven areas recompose into a list rather than wrapping
+   into ragged rows; the current area keeps its bronze rule, at its start. */
+@media (max-width: 39.99rem) {
+  .admin-areas .echelon-nav-tabs { flex-direction: column; gap: 0; }
+  .admin-areas .echelon-nav-tabs a {
+    flex: 1;
+    margin-block-end: 0;
+    border-block-end: 0;
+    border-inline-start: 3px solid transparent;
+  }
+  .admin-areas .echelon-nav-tabs a[aria-current="page"] { border-inline-start-color: var(--echelon-accent-rule); }
+}
+
+/* The dataset's status line: its name as the view's title, then what the
+   credential allows, then Refresh and Sign out at the end. */
+.admin-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+}
+.admin-status > p { margin: 0; }
+.admin-status > p:not(.admin-status__line) { flex-basis: 100%; max-inline-size: none; }
+.admin-status > .admin-status__eyebrow { margin-block-end: -0.25rem; }
+.admin-status__line {
+  display: grid;
+  gap: 0.25rem;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+.admin-status__dataset { font-size: clamp(1.75rem, 3vw, 2.25rem); line-height: 1.1; }
+#credential { color: var(--echelon-text-secondary); }
+.admin-status > button:first-of-type { margin-inline-start: auto; }
+
+.admin-title { display: grid; gap: 0.35rem; }
+.admin-title > *,
+.admin-group-state { margin: 0; }
+.admin-title h2 { overflow-wrap: anywhere; }
+
+/* Panels: content spacing comes from the panel body's grid. */
+.admin .echelon-panel__body > :is(p, ul, ol, fieldset, h3, h4) { margin: 0; }
+.admin .echelon-panel__header > :is(h2, h3) { font-size: 1.375rem; overflow-wrap: anywhere; }
+.admin-narrow { max-inline-size: 40rem; }
+
+.admin-plain-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Each unresolved item is marked at its start; the panel's own attention
+   border appears only when there are items (hasObligations). */
+.admin-obligations li {
+  padding-inline-start: 0.75rem;
+  border-inline-start: 3px solid var(--forma-color-status-warning);
+}
+
+.admin-figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 1rem;
+  max-inline-size: 44rem;
+}
+.admin-figures .echelon-panel__body { gap: 0.35rem; }
+.admin-figure-note { color: var(--echelon-text-secondary); font-size: 0.875rem; }
+
+/* Tables on panels: a labelled, scrollable region on narrow screens. */
+.admin-table-scroll { overflow-x: auto; }
+.admin-table { inline-size: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+.admin-table th {
+  padding: 0.6rem 0.75rem;
+  text-align: start;
+  font-size: 0.75rem;
+  font-weight: var(--echelon-weight-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--forma-color-text-on-secondary-surface);
+  background: var(--echelon-surface-sunken);
+  border-block: 1px solid var(--echelon-border-subtle);
+}
+.admin-table td {
+  padding: 0.7rem 0.75rem;
+  border-block-end: 1px solid var(--echelon-border-subtle);
+  vertical-align: middle;
+}
+.admin-table tr:last-child td { border-block-end: 0; }
+
+/* A destructive confirmation stands apart from the controls around it. */
+.admin-confirm {
+  padding: 1rem;
+  border: 1px solid var(--forma-color-status-danger);
+  border-radius: var(--echelon-radius-container);
+  background: var(--echelon-surface-raised);
+}
+
+/* The group filters: the state and identity choices as one wrapping row,
+   the survey choice on its own line beneath them. */
+.admin #group-filters {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.25rem;
+}
+.admin #group-filters > legend { flex-basis: 100%; }
+.admin #group-filters > label:has(select) { flex-basis: 100%; max-inline-size: 28rem; }
+
+/* Group tabs bind the engine's view flags, so the current one carries
+   aria-current="true" rather than "page"; it is marked the same way. */
+.admin-tabs .echelon-nav-tabs a[aria-current="true"] {
+  color: var(--forma-color-text-heading);
+  font-weight: 800;
+  border-block-end-color: var(--echelon-accent-rule);
+}
+@media (forced-colors: active) {
+  .admin-tabs .echelon-nav-tabs a[aria-current="true"] { border-block-end-color: Highlight; border-block-end-style: solid; }
+}
+
+/* Actions keep their own width inside panels and confirmations. */
+.admin .echelon-panel__body > .forma-button,
+.admin .admin-confirm > .forma-button {
+  justify-self: start;
+  align-self: flex-start;
+}

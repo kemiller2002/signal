@@ -59,7 +59,9 @@ for (const width of VIEWPORT_WIDTHS) {
   test(`ULI-L01/L05: administration areas share an edge and stay inside the page gutter at ${width} CSS px`, async ({ page }) => {
     await open(page, "/web/admin/#/assessments", width);
     const scope = page.getByRole("navigation", { name: "Administration" });
-    await expectPeerAlignment(page, { ruleId: "ULI-L01", id: "admin.areas", edge: "left",
+    // Route tabs (SIG-ECHELON-APP-002): one row from 40rem, sharing a top
+    // edge; on a phone they recompose into a list, sharing a left edge.
+    await expectPeerAlignment(page, { ruleId: "ULI-L01", id: "admin.areas", edge: width >= 640 ? "top" : "left",
       peers: AREAS.map(([name]) => ({ role: "link", name })) }, { scope });
     // The page has a gutter (the defect fixed under GH-104: text ran to the
     // viewport edge). Measured from the page heading, not a coordinate.
@@ -181,7 +183,9 @@ async function typeToTitleGap(page) {
   });
 }
 
-const HEADER_PAGES = ["/web/index.html", "/web/admin/index.html"];
+// The administrator page's header became the Echelon application bar
+// (SIG-ECHELON-APP-002), tested below; the assessment page keeps its record header.
+const HEADER_PAGES = ["/web/index.html"];
 
 for (const width of [768, 1280]) {
   test(`ULI-L05: the record header's type label sits above its title at ${width} CSS px`, async ({ page }) => {
@@ -203,6 +207,23 @@ for (const width of [320, 390]) {
       await open(page, url, width);
       expect(await typeToTitleGap(page), url).toBeGreaterThanOrEqual(0);
     }
+  });
+}
+
+// The administrator page's application bar (SIG-ECHELON-APP-002): the page's
+// name is its one h1, in the banner, above the area tabs, and the bar never
+// pushes the page sideways.
+for (const width of [320, 390, 768, 1280]) {
+  test(`ULI-L05: the administrator page's application bar names the page above its areas at ${width} CSS px`, async ({ page }) => {
+    await open(page, "/web/admin/index.html", width);
+    const banner = page.getByRole("banner");
+    await expect(banner.getByRole("heading", { level: 1 })).toHaveText("Administration");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+    await expect(banner.getByRole("button", { name: "Copy link" })).toBeVisible();
+    const bar = await banner.boundingBox();
+    const areas = await page.getByRole("navigation", { name: "Administration" }).boundingBox();
+    expect(areas.y, "the areas start below the bar").toBeGreaterThanOrEqual(bar.y + bar.height - 0.5);
+    await expectNoHorizontalOverflow(page, `admin: application bar @${width}`);
   });
 }
 

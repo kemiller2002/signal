@@ -255,6 +255,11 @@ let project (model: Model) : View =
           |> Option.map (obligations >> List.map (fun o -> [ "code", Text(AdminState.obligationCode o); "text", Text(AdminState.describeObligation o) ]))
           |> Option.defaultValue []
       )
+      // Whether the dataset, once read, has unresolved work: the overview's
+      // attention cue, and its plain "nothing unresolved" line, come from the
+      // same list, never from a guess (SIG-ECHELON-APP-002).
+      "hasObligations", flag (dataset |> Option.map (obligations >> List.isEmpty >> not) |> Option.defaultValue false)
+      "noObligations", flag (dataset |> Option.map (obligations >> List.isEmpty) |> Option.defaultValue false)
       "groupsWaiting", number (dataset |> Option.map (fun d -> d.Groups |> List.filter (fun g -> g.Phase = AdminState.GroupReady || g.Phase = AdminState.GroupPartial) |> List.length) |> Option.defaultValue 0)
       "groupsComplete", number (dataset |> Option.map (fun d -> d.Groups |> List.filter (fun g -> g.Phase = AdminState.GroupComplete) |> List.length) |> Option.defaultValue 0)
       // Groups (ADM-007, ADM-032).

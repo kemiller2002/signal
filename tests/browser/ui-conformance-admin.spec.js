@@ -23,7 +23,15 @@ test("ULI-A02: signing in sets the dataset up in the store, opens it writable, r
   expect(recordsOf(store, "signal.administrator")).toEqual(["prod/signal/datasets/ds_engagement/records/signal.administrator/github_3a583231.json"]);
   expect(recordsOf(store, "signal.storage-manifest")).toHaveLength(1);
   await expect(page.getByRole("heading", { level: 2, name: "Overview" })).toBeVisible();
-  await expect(page.locator("#overview")).toContainText("0 group(s) waiting for imports · 0 complete");
+  // The overview's counts are figures, each with what it counts (SIG-ECHELON-APP-002;
+  // was one sentence, "0 group(s) waiting for imports · 0 complete").
+  await expect(page.locator("#groups-waiting")).toHaveText("0");
+  await expect(page.locator("#groups-waiting-note")).toContainText("fewer surveys accepted than expected");
+  await expect(page.locator("#groups-complete")).toHaveText("0");
+  await expect(page.locator("#groups-complete-note")).toContainText("every expected survey accepted");
+  // A new dataset has nothing unresolved: it says so, and is not marked for attention.
+  await expect(page.locator("#no-obligations")).toHaveText("Nothing in this dataset is waiting to be resolved.");
+  await expect(page.locator("#unresolved")).toHaveAttribute("data-echelon-attention", "false");
 
   // Refresh reads the store again (a request that resolves the branch).
   const before = store.requests.length;
@@ -206,4 +214,30 @@ test("ULI-A01/A02: the dataset lifecycle buttons move the dataset, read-only whi
   await targets.getByRole("button", { name: "Make active", exact: true }).click();
   await expect(state).toHaveText("state-active", { timeout: STORE_STEP_MS });
   await expect(page.getByRole("status").filter({ hasText: "Engagement" })).toContainText("Signed in; changes can be saved.");
+});
+
+// The "foundry ledger" shell (SIG-ECHELON-APP-002 (b)): the application bar,
+// route tabs with the current area marked, panels, and at most one primary
+// action in any view; the destructive confirmation carries danger emphasis.
+const visiblePrimaries = (page) => page.locator('[data-echelon-emphasis="primary"]:visible');
+
+test("SIG-ECHELON-APP-002: the administrator shell marks the current area and keeps one primary action per view", async ({ page }) => {
+  await signInWithStore(page);
+  const banner = page.getByRole("banner");
+  await expect(banner).toHaveClass(/\bechelon-app-bar\b/);
+  await expect(banner.locator("#principal")).toHaveText("github:583231");
+  await expect(areas(page).getByRole("link", { name: "Overview", exact: true })).toHaveAttribute("aria-current", "page");
+  await expect(page.locator("#unresolved")).toHaveClass(/\bechelon-panel\b/);
+  expect(await visiblePrimaries(page).count()).toBeLessThanOrEqual(1);
+
+  await area(page, "Groups");
+  await expect(areas(page).getByRole("link", { name: "Groups", exact: true })).toHaveAttribute("aria-current", "page");
+  await expect(areas(page).getByRole("link", { name: "Overview", exact: true })).toHaveAttribute("aria-current", "false");
+  await expect(visiblePrimaries(page)).toHaveCount(1);
+  await expect(visiblePrimaries(page)).toHaveText("Create group");
+
+  await createGroup(page);
+  await expect(page.locator("#tab-group")).toHaveAttribute("aria-current", "true");
+  expect(await visiblePrimaries(page).count()).toBeLessThanOrEqual(1);
+  await expectNoHorizontalOverflow(page, "admin: group overview, foundry ledger shell @1280");
 });

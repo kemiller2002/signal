@@ -263,6 +263,8 @@ test("retire keeps its confirmation, busy, until its commit is answered; then th
   await expect(page.locator("#group-phase")).toHaveAttribute("data-phase", /^Finalized/, { timeout: STORE_STEP_MS });
   const retention = page.locator("#group-retention");
   await retention.getByRole("button", { name: "Retire accepted results…", exact: true }).click();
+  // The destructive confirmation carries danger emphasis (SIG-ECHELON-APP-002).
+  await expect(retention.getByRole("button", { name: "Retire accepted results", exact: true })).toHaveAttribute("data-echelon-emphasis", "danger");
 
   // The retirement's own commit (its branch update), held: with a result to
   // retire it is always made, so the outcome below is the only one.
