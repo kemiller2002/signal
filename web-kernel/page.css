@@ -38,7 +38,12 @@
   margin: 0;
 }
 
+/* Signal's own row (not a Forma cluster it would restyle): wrapping and
+   spaced as Forma's cluster, the heading and its actions on one baseline. */
 .results-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--forma-cluster-gap, var(--forma-primitive-spacing-3, 0.75rem));
   align-items: baseline;
 }
 

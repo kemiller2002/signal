@@ -137,7 +137,7 @@
 | WI-0119 | SIG-ECHELON-APP-002 (a): landing page in the foundry ledger direction | complete |  | medium |
 | WI-0120 | SIG-ECHELON-APP-002 (b): administrator shell and dashboard (app bar, route tabs, panels) | complete |  | medium |
 | WI-0121 | SIG-ECHELON-APP-002 (c): authoring in the foundry ledger direction | complete |  | medium |
-| WI-0122 | SIG-ECHELON-APP-002 (d): respondent page (no admin chrome, one primary action, truthful progress) | captured |  | medium |
+| WI-0122 | SIG-ECHELON-APP-002 (d): respondent page (no admin chrome, one primary action, truthful progress) | complete |  | medium |
 | WI-0123 | SIG-ECHELON-APP-002 (e): results (score figures, How this was calculated panel) | captured |  | medium |
 | WI-0124 | Remove administrator acts without a confirmation: the Administrators area's Remove button removes the account at once (follow-up from the signal#136 review; not fixed there) | captured |  | medium |
 | WI-0125 | SIG-ECHELON-APP-002 (b) review fixes on signal#136: notice layout, retention note, per-group obligations with paths, shell order, danger on destructive lifecycle targets, filter labels, audit collapse check | complete |  | medium |
@@ -149,3 +149,10 @@
 | WI-0131 | Authoring behaviour changes from the approved mockup, out of scope for signal#137: three-column layout with a section outline, a live respondent preview beside the editor, and a per-question edit view (also the way to shorten the draft page on a phone) | captured |  | medium |
 | WI-0132 | The persistence line follows the person across views: a settled outcome (for example 'The accepted results are retired…') stays on the draft page until the next operation; clear or scope it on navigation without breaking #133's pending-state tests | captured |  | medium |
 | WI-0133 | SIG-ECHELON-APP-002 (c) signal#137 review round 2: outcome copy only for the view's own changes, warnings named beside their acknowledgement with Validation in the parts, 390 px outcome pass, parts wrap; #136 follow-ups (release record and blocked-item wording) | complete |  | medium |
+| WI-0134 | Draft outcome copy is per view, not per draft: after saving draft A, opening draft B shows draft A's 'saved' in B's Outcome group (signal#137 review, Low) | captured |  | medium |
+| WI-0135 | The draft's warning summary does not deduplicate repeated warning codes (signal#137 review, Low) | captured |  | medium |
+| WI-0136 | The multi-warning summary test derives its expectation from the same findings instead of a fixed fixture with known codes (signal#137 review, Low) | captured |  | medium |
+| WI-0137 | After a group is finalized, 'import the same links again' cannot resume an unfinished import because imports are refused; the obligation and resolution wording should say so (signal#137 review, Low) | captured |  | medium |
+| WI-0138 | SIG-ECHELON-APP-002 (d) signal#139 review: scale questions as Forma's ordinal scale, no Signal override of Forma's best-worst row or the theme panel (EXCEPTION for the narrow best-worst row) and a guard for it, focus and page announcement on a new page, selection guidance only on change, solid read-only link border | complete |  | medium |
+| WI-0139 | Forma: the narrow best-worst row (.forma-best-worst__row below 44rem) leaves the option's column no width at 320 px with 200% text, so options are set a letter or two a line and the row overflows; fix in Forma, then make Signal's EXCEPTION test in tests/browser/respondent.spec.js an ordinary assertion (signal#139 review) | captured |  | medium |
+| WI-0140 | The administrator's draft preview shows scale questions as a list of choices; give it Forma's ordinal scale as the survey page has it (signal#139 follow-up) | captured |  | medium |

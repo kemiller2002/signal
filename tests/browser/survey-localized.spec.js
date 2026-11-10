@@ -6,6 +6,7 @@
 // same in every language is proven in LocalizedPageTests.
 import { readFileSync } from "node:fs";
 import { test, expect } from "./support.js";
+import { pick } from "./survey-answers.mjs";
 
 const links = JSON.parse(readFileSync(new URL("./fixtures/localized-links.json", import.meta.url), "utf8"));
 
@@ -14,7 +15,6 @@ async function open(page, link) {
   await expect(page.locator("html")).toHaveAttribute("data-kernel", "running");
 }
 
-const pick = (page, row) => page.locator(`[data-row="${row}"] input[data-event="answered"]`);
 
 test("a link in a translated language shows the translation and names its language", async ({ page }) => {
   await open(page, links.french);

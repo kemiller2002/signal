@@ -42,15 +42,48 @@
      every control sends a named event back to it. The survey itself comes
      from the site's published-templates/ folder, checked against the link
      before it is used. -->
-<main class="app forma-stack" data-bind-lang="lang">
-  <header class="forma-record-header page-header">
-    <div class="forma-record-header__main">
-      <div class="forma-record-header__title">
-        <div><span class="forma-record-header__type">Signal</span><h1 id="survey-title" data-text="surveyTitle"></h1></div>
-      </div>
-      <p id="survey-version" data-text="surveyVersion"></p>
-    </div>
+<!-- The respondent's page ("foundry ledger" direction, SIG-ECHELON-APP-002):
+     Signal's own mark and the survey, with no administrator chrome. -->
+<header class="respondent-bar">
+  <span class="respondent-bar__mark">
+    <span class="forma-app-identity">
+      <span class="forma-app-identity__mark"><svg class="forma-app-identity__variant" data-forma-scheme="light" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="12" fill="#202421"/><path d="M10 22V15L20 10V22Z" fill="#c9a07f"/><path d="M10 40H20L25 28L33 50L39 34L42 40H54" fill="none" stroke="#f2efe7" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></svg><svg class="forma-app-identity__variant" data-forma-scheme="dark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="12" fill="#f2efe7"/><path d="M10 22V15L20 10V22Z" fill="#905831"/><path d="M10 40H20L25 28L33 50L39 34L42 40H54" fill="none" stroke="#202421" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></svg></span>
+      <span class="forma-app-identity__name">Signal</span>
+    </span>
+  </span>
+  <!-- The survey's name beside the mark, as in the mockup; the page's h1 below
+       says it to assistive technology. -->
+  <span class="respondent-bar__survey" aria-hidden="true" data-text="surveyTitle"></span>
+</header>
+<main class="app respondent forma-stack" data-bind-lang="lang">
+  <header class="respondent-head">
+    <h1 id="survey-title" class="echelon-heading" data-text="surveyTitle"></h1>
+    <p id="survey-version" class="echelon-eyebrow" data-text="surveyVersion"></p>
   </header>
+
+  <!-- The page's one live region (SIG-ECHELON-APP-002 (d), as #133 made it for
+       the console): it announces the survey loading, the page and its
+       section on a new page, where the respondent is, review, the timer, the
+       selection guidance of the question the respondent just changed (never
+       every question's on opening a page), a link notice and the copy
+       outcome. What it announces is shown, not live, where it belongs below.
+       aria-atomic="false": only what changed is read. Refusals and faults
+       stay alerts. -->
+  <div id="activity" class="activity" role="status" aria-live="polite" aria-atomic="false">
+    <template data-if="loading">
+      <div id="loading" class="echelon-loading">
+        <p class="forma-spinner"><span class="forma-spinner__indicator" aria-hidden="true"></span><span class="forma-spinner__label">Loading the survey…</span></p>
+      </div>
+    </template>
+    <template data-if="hasPages"><span class="forma-visually-hidden" data-text="pageLabel"></span></template>
+    <template data-if="hasPageSection"><span class="forma-visually-hidden" data-text="pageSection"></span></template>
+    <span class="forma-visually-hidden" data-text="progress"></span>
+    <template data-if="reviewing"><span class="forma-visually-hidden">Check your answers. Submit them, or go back to change them.</span></template>
+    <span class="forma-visually-hidden" data-text="timerNotice"></span>
+    <span class="forma-visually-hidden" data-text="guidanceNotice"></span>
+    <span class="forma-visually-hidden" data-text="urlNotice"></span>
+    <span class="forma-visually-hidden" data-text="copyNotice"></span>
+  </div>
 
   <template data-if="hasOperationalFault">
     <forma-fault-inline class="forma-component-tag">
@@ -78,15 +111,6 @@
     </forma-alert>
   </template>
 
-  <!-- Reading the published version over the network (SIG-VIS-PENDING-001):
-       Forma's spinner with its visible label, in a status region the
-       Echelon theme styles as .echelon-loading. -->
-  <template data-if="loading">
-    <div id="loading" class="echelon-loading" role="status">
-      <p class="forma-spinner"><span class="forma-spinner__indicator" aria-hidden="true"></span><span class="forma-spinner__label">Loading the survey…</span></p>
-    </div>
-  </template>
-
   <!-- Missing, damaged, altered or different template: refused, never replaced. -->
   <template data-if="refused">
     <forma-alert class="forma-component-tag">
@@ -99,7 +123,7 @@
 
   <template data-if="hasUrlNotice">
     <forma-alert class="forma-component-tag">
-      <aside id="url-notice" class="forma-alert" role="status" data-tone="attention">
+      <aside id="url-notice" class="forma-alert" role="note" data-tone="attention">
         <div class="forma-alert__icon" aria-hidden="true">!</div>
         <p id="url-notice-message" data-text="urlNotice"></p>
       </aside>
@@ -108,28 +132,68 @@
 
   <template data-if="answering">
     <section id="questions" class="forma-stack" aria-labelledby="questions-title">
-      <h2 id="questions-title">Questions</h2>
+      <h2 id="questions-title" class="forma-visually-hidden">Questions</h2>
       <p id="link-disclosure" class="forma-field__description">This page's address contains your answers, so you can come back to them. Anyone you give the address to can see them; it is never sent to a server.</p>
-      <template data-if="hasProgress">
-        <p id="progress" role="status" data-text="progress"></p>
-      </template>
+      <!-- Where the respondent is, from Signal's own counts only: the page,
+           its section when the page has one, and how many applicable
+           questions are answered. No time estimate, and no section list:
+           the engine projects none. -->
+      <div class="respondent-progress">
+        <template data-if="hasPages">
+          <p class="echelon-eyebrow"><span id="page-label" data-text="pageLabel"></span><template data-if="hasPageSection"><span id="page-section"> · <span data-text="pageSection"></span></span></template></p>
+        </template>
+        <template data-if="hasProgress">
+          <p id="progress" data-text="progress"></p>
+        </template>
+      </div>
       <template data-if="reviewing">
-        <p id="review-notice" role="status">Check your answers. Submit them, or go back to change them.</p>
+        <p id="review-notice">Check your answers. Submit them, or go back to change them.</p>
       </template>
       <template data-if="hasTimer">
-        <p id="timer-notice" role="status" data-text="timerNotice"></p>
+        <p id="timer-notice" data-text="timerNotice"></p>
       </template>
-      <template data-if="hasPages">
-        <p id="page-label" data-text="pageLabel"></p>
-      </template>
-      <div id="survey-rows" class="forma-stack">
+      <!-- The questions on one raised card: the theme's panel, unrestyled,
+           around Signal's own column of rows (its padding is the column's:
+           the panel body's fixed padding left a scale's labels a few
+           letters a line at 320 px with 200% text). -->
+      <div class="echelon-panel respondent-card">
+      <div id="survey-rows" class="respondent-rows">
         <template data-each="rows" data-key="id">
-          <div class="survey-row" data-bind-data-row="id">
-            <h3 class="survey-section" data-bind-hidden="hideSection" data-text="title"></h3>
+          <div class="survey-row" data-bind-data-row="id" data-bind-hidden="hideRow">
+            <!-- The page's first heading takes focus on a new page (a page's
+                 Next becomes Submit, so the control pressed is gone). -->
+            <h3 class="survey-section" tabindex="-1" data-bind-data-focus-target="focusTarget" data-bind-hidden="hideSection" data-text="title"></h3>
             <p class="survey-question" data-bind-hidden="hideQuestion" data-bind-id="promptId" data-bind-data-component="component" data-bind-data-variant="variant"><span class="survey-number" data-bind-hidden="hideQuestionNumber" data-text="questionNumber"></span> <strong data-text="prompt" data-bind-aria-hidden="promptHidden"></strong><span class="forma-sr-only" data-bind-hidden="hideAccessibleName" data-text="accessibleName"></span> <span class="survey-optional" data-text="optionalMark"></span> <span class="forma-field__description" data-text="help"></span></p>
             <p class="forma-sr-only" data-bind-hidden="hideAccessibleDescription" data-bind-id="descriptionId" data-text="accessibleDescription"></p>
             <p class="survey-error" data-bind-hidden="hideError" data-bind-id="errorId" data-text="error"></p>
-            <p class="forma-selection-status" role="status" data-bind-hidden="hideSelectionStatus" data-text="selectionStatus"></p>
+            <p class="forma-selection-status" data-bind-hidden="hideSelectionStatus" data-text="selectionStatus"></p>
+            <!-- A scale question is Forma's ordinal scale, as designed
+                 (patterns/ordinal-scale.html): one radio group of numbered
+                 points, then its special answers. The prompt above names the
+                 group; the scale's size class and each point are projected.
+                 Its radios are their own group (scaleGroup), apart from the
+                 question's hidden choice rows. -->
+            <fieldset data-bind-class="scaleClass" data-bind-hidden="hideScale" data-bind-aria-labelledby="promptId">
+              <div class="forma-ordinal-scale__options">
+                <label class="forma-ordinal-option" data-bind-hidden="hideS0"><input type="radio" value="0" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="scaleGroup" data-bind-disabled="locked" data-bind-checked="s0Checked" /><span class="forma-ordinal-option__marker" aria-hidden="true" data-text="s0Marker"></span><span class="forma-ordinal-option__label" data-text="s0Label"></span></label>
+                <label class="forma-ordinal-option" data-bind-hidden="hideS1"><input type="radio" value="1" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="scaleGroup" data-bind-disabled="locked" data-bind-checked="s1Checked" /><span class="forma-ordinal-option__marker" aria-hidden="true" data-text="s1Marker"></span><span class="forma-ordinal-option__label" data-text="s1Label"></span></label>
+                <label class="forma-ordinal-option" data-bind-hidden="hideS2"><input type="radio" value="2" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="scaleGroup" data-bind-disabled="locked" data-bind-checked="s2Checked" /><span class="forma-ordinal-option__marker" aria-hidden="true" data-text="s2Marker"></span><span class="forma-ordinal-option__label" data-text="s2Label"></span></label>
+                <label class="forma-ordinal-option" data-bind-hidden="hideS3"><input type="radio" value="3" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="scaleGroup" data-bind-disabled="locked" data-bind-checked="s3Checked" /><span class="forma-ordinal-option__marker" aria-hidden="true" data-text="s3Marker"></span><span class="forma-ordinal-option__label" data-text="s3Label"></span></label>
+                <label class="forma-ordinal-option" data-bind-hidden="hideS4"><input type="radio" value="4" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="scaleGroup" data-bind-disabled="locked" data-bind-checked="s4Checked" /><span class="forma-ordinal-option__marker" aria-hidden="true" data-text="s4Marker"></span><span class="forma-ordinal-option__label" data-text="s4Label"></span></label>
+                <label class="forma-ordinal-option" data-bind-hidden="hideS5"><input type="radio" value="5" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="scaleGroup" data-bind-disabled="locked" data-bind-checked="s5Checked" /><span class="forma-ordinal-option__marker" aria-hidden="true" data-text="s5Marker"></span><span class="forma-ordinal-option__label" data-text="s5Label"></span></label>
+                <label class="forma-ordinal-option" data-bind-hidden="hideS6"><input type="radio" value="6" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="scaleGroup" data-bind-disabled="locked" data-bind-checked="s6Checked" /><span class="forma-ordinal-option__marker" aria-hidden="true" data-text="s6Marker"></span><span class="forma-ordinal-option__label" data-text="s6Label"></span></label>
+                <label class="forma-ordinal-option" data-bind-hidden="hideS7"><input type="radio" value="7" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="scaleGroup" data-bind-disabled="locked" data-bind-checked="s7Checked" /><span class="forma-ordinal-option__marker" aria-hidden="true" data-text="s7Marker"></span><span class="forma-ordinal-option__label" data-text="s7Label"></span></label>
+                <label class="forma-ordinal-option" data-bind-hidden="hideS8"><input type="radio" value="8" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="scaleGroup" data-bind-disabled="locked" data-bind-checked="s8Checked" /><span class="forma-ordinal-option__marker" aria-hidden="true" data-text="s8Marker"></span><span class="forma-ordinal-option__label" data-text="s8Label"></span></label>
+                <label class="forma-ordinal-option" data-bind-hidden="hideS9"><input type="radio" value="9" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="scaleGroup" data-bind-disabled="locked" data-bind-checked="s9Checked" /><span class="forma-ordinal-option__marker" aria-hidden="true" data-text="s9Marker"></span><span class="forma-ordinal-option__label" data-text="s9Label"></span></label>
+                <label class="forma-ordinal-option" data-bind-hidden="hideS10"><input type="radio" value="10" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="scaleGroup" data-bind-disabled="locked" data-bind-checked="s10Checked" /><span class="forma-ordinal-option__marker" aria-hidden="true" data-text="s10Marker"></span><span class="forma-ordinal-option__label" data-text="s10Label"></span></label>
+              </div>
+              <div class="forma-special-choices" role="group" aria-label="Other responses" data-bind-hidden="hideSpecials">
+                <label class="forma-special-choice" data-bind-hidden="hideX0"><input type="radio" data-bind-value="x0Value" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="scaleGroup" data-bind-disabled="locked" data-bind-checked="x0Checked" /><span data-text="x0Label"></span></label>
+                <label class="forma-special-choice" data-bind-hidden="hideX1"><input type="radio" data-bind-value="x1Value" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="scaleGroup" data-bind-disabled="locked" data-bind-checked="x1Checked" /><span data-text="x1Label"></span></label>
+                <label class="forma-special-choice" data-bind-hidden="hideX2"><input type="radio" data-bind-value="x2Value" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="scaleGroup" data-bind-disabled="locked" data-bind-checked="x2Checked" /><span data-text="x2Label"></span></label>
+                <label class="forma-special-choice" data-bind-hidden="hideX3"><input type="radio" data-bind-value="x3Value" data-event="answered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="scaleGroup" data-bind-disabled="locked" data-bind-checked="x3Checked" /><span data-text="x3Label"></span></label>
+              </div>
+            </fieldset>
             <div class="survey-review" data-bind-hidden="hideReview">
               <p class="survey-review-prompt"><span data-bind-hidden="hideQuestionNumber" data-text="questionNumber"></span> <span data-text="prompt"></span></p>
               <p class="survey-review-answer" data-text="answerText"></p>
@@ -158,6 +222,7 @@
           </div>
         </template>
       </div>
+      </div>
       <template data-if="hasRefusal">
         <forma-alert class="forma-component-tag">
           <aside id="submit-refusal" class="forma-alert" role="alert" data-tone="attention">
@@ -166,37 +231,39 @@
           </aside>
         </forma-alert>
       </template>
-      <div class="forma-cluster">
+      <div class="forma-cluster respondent-nav">
         <template data-if="canBack">
-          <button id="page-back" type="button" data-event="pageBack">Back</button>
+          <button id="page-back" type="button" class="forma-button" data-echelon-emphasis="tertiary" data-event="pageBack">Back</button>
         </template>
         <template data-if="hasNext">
-          <button id="page-next" type="button" data-event="pageNext">Next</button>
+          <button id="page-next" type="button" class="forma-button" data-echelon-emphasis="primary" data-event="pageNext">Next</button>
         </template>
         <template data-if="reviewing">
-          <button id="review-back" type="button" data-event="reviewClosed">Change answers</button>
+          <button id="review-back" type="button" class="forma-button" data-event="reviewClosed">Change answers</button>
         </template>
         <template data-if="isLastPage">
-          <button id="submit-answers" type="button" data-event="submitRequested" data-text="submitLabel"></button>
+          <button id="submit-answers" type="button" class="forma-button" data-echelon-emphasis="primary" data-event="submitRequested" data-text="submitLabel"></button>
         </template>
       </div>
     </section>
   </template>
 
   <template data-if="submitted">
-    <section id="submitted" class="forma-stack" aria-labelledby="submitted-title">
-      <h2 id="submitted-title">Submitted</h2>
+    <section id="submitted" class="echelon-panel" aria-labelledby="submitted-title">
+      <div class="echelon-panel__header"><h2 id="submitted-title" class="echelon-heading" tabindex="-1" data-focus-target="submitted">Submitted</h2></div>
+      <div class="echelon-panel__body forma-stack">
       <p id="submission-disclosure">Your answers are final. This link contains them; send it to the person who invited you.</p>
       <label class="forma-field">
         <span class="forma-field__label">Submission link</span>
         <input id="submission-link" type="text" readonly data-bind-value="submissionLink" />
       </label>
       <div class="forma-cluster">
-        <button id="copy-link" type="button" data-event="copyRequested">Copy link</button>
+        <button id="copy-link" type="button" class="forma-button" data-echelon-emphasis="primary" data-event="copyRequested">Copy link</button>
       </div>
       <template data-if="hasCopyNotice">
-        <p id="copy-notice" role="status" data-text="copyNotice"></p>
+        <p id="copy-notice" data-text="copyNotice"></p>
       </template>
+      </div>
     </section>
   </template>
 </main>

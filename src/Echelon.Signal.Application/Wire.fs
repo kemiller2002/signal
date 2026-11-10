@@ -211,6 +211,8 @@ let private step (state: State) (inbound: Inbound) =
             None
         // The assessment page requests no Http: no result can be pending.
         | HttpResult(id, _) -> raise (MalformedInput("$.result.correlationId", $"a pending effect, not the Http result '{id}'"))
+        // Nor does it select the focus pack: no focus move can be pending.
+        | FocusResult(id, _) -> raise (MalformedInput("$.result.correlationId", $"a pending effect, not the focus result '{id}'"))
         | NavigationResult(id, _) when not (state.Pending.Contains id) ->
             // A result for a navigation this engine did not request, or one it
             // already heard: stale or forged, never applied (ARX-007).
