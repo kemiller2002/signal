@@ -146,13 +146,19 @@
   color: var(--forma-color-text-on-secondary-surface);
   background: var(--echelon-surface-sunken);
   border-block: 1px solid var(--echelon-border-subtle);
+  /* Column names stay whole words: the table scrolls in its region rather
+     than breaking "Survey" into letters on a phone. */
+  overflow-wrap: normal;
+  white-space: nowrap;
 }
 .admin-table td {
+  overflow-wrap: normal;
   padding: 0.7rem 0.75rem;
   border-block-end: 1px solid var(--echelon-border-subtle);
   vertical-align: middle;
 }
 .admin-table tr:last-child td { border-block-end: 0; }
+.admin-table td :is(a, code) { overflow-wrap: normal; }
 
 /* A destructive confirmation stands apart from the controls around it. */
 .admin-confirm {
