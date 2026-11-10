@@ -5006,7 +5006,27 @@
       "updatedAt": "2026-11-10T16:40:25.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T164026348Z-3c64f31a"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "5ae7c7eda2b7d26712a07aac",
+        "recordedAt": "2026-11-10T17:16:45.000Z",
+        "executionId": "EXE-20261110T164026348Z-3c64f31a",
+        "repository": "echelon-signal",
+        "branch": "fix/respondent-follow-up",
+        "commit": "74eecef466a91e8b20bdfb2bee582d79944bed6a",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "fix/respondent-follow-up",
+        "remoteCommit": "74eecef466a91e8b20bdfb2bee582d79944bed6a",
+        "summary": "signal#139 Should items done: EXCEPTION scoped to Forma's best-worst rows with an ordinary test for the rest of the page, recorded in the verification doc; stored-value markers; numeric labels once; no id restyle of Forma (console notice, scoring authoring, group filters, wide draft panels moved to Signal-owned containers) with an id guard; subject-class guard gap recorded as WI-0142. CI green at d4ac6558 (710 .NET, 208 Playwright)",
+        "nextAction": "complete WI-0141 and report",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
