@@ -50,6 +50,21 @@ let ofPhase (phase: AdminState.GroupPhase) =
     | AdminState.GroupClosedIncomplete
     | AdminState.GroupSuperseded -> Tone.Closed
 
+/// A group phase's visible label: plain words, never the phase's identifier
+/// (`AdminState.phaseName` stays the stable id the page and tests read).
+let phaseLabel (phase: AdminState.GroupPhase) =
+    match phase with
+    | AdminState.GroupReady -> "Ready"
+    | AdminState.Importing -> "Importing"
+    | AdminState.GroupPartial -> "Partial"
+    | AdminState.GroupComplete -> "Complete"
+    | AdminState.Reconciling -> "Reconciling"
+    | AdminState.GroupClosedIncomplete -> "Closed (incomplete)"
+    | AdminState.GroupFinalized -> "Finalized"
+    | AdminState.GroupFinalizedIncomplete -> "Finalized (incomplete)"
+    | AdminState.GroupSealed -> "Sealed"
+    | AdminState.GroupSuperseded -> "Superseded"
+
 /// A template version's tone: draft (dashed, hollow), review (diamond) for a
 /// draft in review or reviewed and not yet published, published (settled
 /// fill). The contract names no tone for a version hidden from new groups;

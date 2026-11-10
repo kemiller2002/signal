@@ -90,3 +90,27 @@ let ``a draft's lifecycle comes from its stored review, and a version's from its
     Assert.Equal(TemplateListing.Lifecycle.Hidden, TemplateListing.versionLifecycle (row true))
     // A survey with no stored draft (one being started) is a draft.
     Assert.Equal(TemplateListing.Lifecycle.Draft, TemplateListing.lifecycleOfDraft TemplateListing.empty "PULSE")
+
+[<Fact>]
+let ``every group phase has a plain-words label, never its identifier`` () =
+    let expected =
+        Map.ofList
+            [ "GroupReady", "Ready"
+              "Importing", "Importing"
+              "GroupPartial", "Partial"
+              "GroupComplete", "Complete"
+              "Reconciling", "Reconciling"
+              "ClosedIncomplete", "Closed (incomplete)"
+              "Finalized", "Finalized"
+              "FinalizedIncomplete", "Finalized (incomplete)"
+              "Sealed", "Sealed"
+              "Superseded", "Superseded" ]
+
+    let phases = everyCase<AdminState.GroupPhase> ()
+    Assert.Equal(expected.Count, phases.Length)
+
+    for phase in phases do
+        Assert.Equal(expected[AdminState.phaseName phase], StateTones.phaseLabel phase)
+
+    let labels = phases |> List.map StateTones.phaseLabel
+    Assert.Equal(labels.Length, (List.distinct labels).Length)

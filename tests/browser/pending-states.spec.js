@@ -1,10 +1,11 @@
 // Per-action pending state, loading regions and state chips
-// (SIG-VIS-PENDING-001) in the real built page, against the test-only fake
-// GitHub store. The fake holds a request (`holdNext`) so a test can look at
-// the page while an operation is in flight: the control that started it is
-// aria-busy with its present-participle label, every other operation's
-// control is unavailable, a second activation queues nothing, and the
-// persistence indicator says "saved" only once the store confirmed.
+// (SIG-VIS-PENDING-001, review follow-ups SIG-VIS-PENDING-002) in the real
+// built page, against the test-only fake GitHub store. The fake holds a
+// request (`holdNext`) so a test can look at the page while an operation is
+// in flight: the control that started it is aria-busy with its
+// present-participle label, every other operation's control is unavailable,
+// a second activation queues nothing, and the page's one live region
+// (#activity, beside the notice) says "saved" only once the store confirmed.
 // The theme that styles .echelon-* (Echelon theme 1.1.0) is not installed:
 // these tests assert the structure and data the theme will style, not looks.
 import { readFileSync } from "node:fs";
@@ -18,7 +19,9 @@ const links = JSON.parse(readFileSync(new URL("./fixtures/survey-links.json", im
 
 const areas = (page) => page.getByRole("navigation", { name: "Administration" });
 const area = (page, name) => areas(page).getByRole("link", { name, exact: true }).click();
+const groupTab = (page, name) => page.getByRole("navigation", { name: "Group" }).getByRole("link", { name, exact: true }).click();
 const notice = (page) => page.locator("#notice-message");
+const activity = (page) => page.locator("#activity");
 // The commit that lands a change: its branch update.
 const REF_UPDATE = /\/git\/refs\/heads\/main$/;
 const refUpdates = (store) => store.requests.filter((r) => /^PATCH .*\/git\/refs\/heads\/main$/.test(r)).length;
@@ -40,6 +43,20 @@ async function expectLoadingRegion(region, label) {
   await expect(region.locator(".forma-spinner__label")).toHaveText(label);
 }
 
+// The running operation inside the page's one live region: Forma's spinner
+// and its label in an .echelon-loading container (not a second live region).
+async function expectRunning(page, label) {
+  const region = activity(page);
+  await expect(region).toHaveAttribute("role", "status");
+  await expect(region).toHaveAttribute("aria-live", "polite");
+  const pending = region.locator("#operation-pending");
+  await expect(pending).toBeVisible();
+  await expect(pending).not.toHaveAttribute("role");
+  await expect(pending).toHaveClass(/(^|\s)echelon-loading(\s|$)/);
+  await expect(pending.locator(".forma-spinner .forma-spinner__indicator")).toHaveCount(1);
+  await expect(pending.locator(".forma-spinner__label")).toHaveText(label);
+}
+
 async function startDraft(page) {
   await area(page, "Assessments");
   const start = page.locator("#new-draft");
@@ -53,9 +70,16 @@ async function startDraft(page) {
   return draft;
 }
 
+async function saveDraft(page, draft) {
+  await draft.getByRole("button", { name: "Save draft", exact: true }).click();
+  await expect(notice(page)).toHaveText("The draft of PULSE was saved.", { timeout: STORE_STEP_MS });
+}
+
 test("a save in flight: its button is busy with its pending label, the other operations wait, and a second click queues nothing", async ({ page }) => {
   const store = await signInWithStore(page);
   const draft = await startDraft(page);
+  // The live region is in the page before anything runs, so additions are announced.
+  await expect(activity(page)).toHaveCount(1);
 
   const hold = store.holdNext("PATCH", REF_UPDATE);
   const before = { commits: store.commitCount, updates: refUpdates(store) };
@@ -68,6 +92,7 @@ test("a save in flight: its button is busy with its pending label, the other ope
   await expect(saving).toHaveAttribute("aria-busy", "true");
   await expect(saving).toHaveAttribute("aria-disabled", "true");
   await expect(saving).not.toHaveAttribute("disabled");
+  await expect(saving).toBeFocused();
   await expect(draft.getByRole("button", { name: "Save draft", exact: true })).toHaveCount(0);
 
   // The guard: every other operation is unavailable, and none is busy.
@@ -81,9 +106,8 @@ test("a save in flight: its button is busy with its pending label, the other ope
   await expect(draft.getByRole("button", { name: "Add section", exact: true })).toBeEnabled();
 
   // The page names what runs, and does not call it saved.
-  const pending = page.locator("#operation-pending");
-  await expectLoadingRegion(pending, "Saving draft: not saved until the store confirms.");
-  await expect(pending).toHaveAttribute("data-persistence", "pending");
+  await expectRunning(page, "Saving draft: not saved until the store confirms.");
+  await expect(page.locator("#operation-pending")).toHaveAttribute("data-persistence", "pending");
   await expect(page.locator("#persistence")).toHaveCount(0);
 
   // A rapid second and third activation, past Playwright's actionability
@@ -98,19 +122,37 @@ test("a save in flight: its button is busy with its pending label, the other ope
   expect(refUpdates(store) - before.updates).toBe(1);
   expect(store.commitCount - before.commits).toBe(1);
 
-  // Settled: the button is itself again, and the indicator says saved, now.
+  // Settled: the button is itself again, and the live region says saved, now,
+  // with the notice's sentence; the notice itself is not a second live region.
   const save = draft.getByRole("button", { name: "Save draft", exact: true });
   await expect(save).toHaveAttribute("aria-busy", "false");
   await expect(save).toBeEnabled();
   await expect(page.locator("#operation-pending")).toHaveCount(0);
-  const persistence = page.locator("#persistence");
-  await expect(persistence).toHaveAttribute("role", "status");
+  const persistence = activity(page).locator("#persistence");
   await expect(persistence).toHaveAttribute("data-persistence", "saved");
   await expect(persistence).toHaveText("The draft is saved: the store confirmed it.");
+  await expect(activity(page)).toContainText("The draft of PULSE was saved.");
+  await expect(page.locator("#notice")).not.toHaveAttribute("role");
+  await expect(page.getByRole("status").filter({ hasText: "The draft of PULSE was saved." })).toHaveCount(1);
   await expect(draft.getByRole("button", { name: "Submit for review", exact: true })).toBeEnabled();
 });
 
-test("a group transition in flight: only its own button is busy, and the others follow the guard", async ({ page }) => {
+test("edits made while a draft saves stay unsaved", async ({ page }) => {
+  const store = await signInWithStore(page);
+  const draft = await startDraft(page);
+  const hold = store.holdNext("PATCH", REF_UPDATE);
+  await draft.getByRole("button", { name: "Save draft", exact: true }).click();
+  await hold.reached;
+  const title = draft.getByRole("textbox", { name: "Title", exact: true });
+  await title.fill("Team pulse, edited");
+  await title.press("Tab");
+  hold.release();
+  await expect(notice(page)).toHaveText("The draft of PULSE was saved.", { timeout: STORE_STEP_MS });
+  await expect(title).toHaveValue("Team pulse, edited");
+  await expect(draft).toContainText("Unsaved changes");
+});
+
+test("a group transition in flight: only its own button is busy, the others follow the guard, and focus goes to the status", async ({ page }) => {
   const store = await signInWithStore(page);
   await createGroup(page);
   const lifecycle = page.locator("#lifecycle");
@@ -124,33 +166,101 @@ test("a group transition in flight: only its own button is busy, and the others 
   const finalize = lifecycle.getByRole("button", { name: "Finalize", exact: true });
   await expect(finalize).toBeDisabled();
   await expect(finalize).toHaveAttribute("aria-busy", "false");
-  await expectLoadingRegion(page.locator("#operation-pending"), "Closing: not saved until the store confirms.");
+  await expectRunning(page, "Closing: not changed until the store confirms.");
 
   hold.release();
   const phase = page.locator("#group-phase");
-  await expect(phase).toHaveText("ClosedIncomplete", { timeout: STORE_STEP_MS });
+  await expect(phase).toHaveText("Closed (incomplete)", { timeout: STORE_STEP_MS });
+  await expect(phase).toHaveAttribute("data-phase", "ClosedIncomplete");
   await expect(phase).toHaveAttribute("data-echelon-tone", "closed");
-  await expect(page.locator("#persistence")).toHaveAttribute("data-persistence", "saved");
+  await expect(activity(page).locator("#persistence")).toHaveAttribute("data-persistence", "saved");
+  // Its button went away; focus is on the status, not lost to the page.
+  await expect(activity(page)).toBeFocused();
 });
 
-test("a change the store does not take is reported as not saved, never as saved", async ({ page }) => {
+test("delete draft keeps its confirmation, busy, until it is answered; then focus goes to the status", async ({ page }) => {
+  const store = await signInWithStore(page);
+  const draft = await startDraft(page);
+  await saveDraft(page, draft);
+  await draft.getByRole("button", { name: "Delete draft…", exact: true }).click();
+
+  const hold = store.holdNext("PATCH", REF_UPDATE);
+  await draft.getByRole("button", { name: "Delete draft", exact: true }).click();
+  await hold.reached;
+  const deleting = draft.getByRole("button", { name: "Deleting draft", exact: true });
+  await expect(deleting).toBeVisible();
+  await expect(deleting).toHaveAttribute("aria-busy", "true");
+  await expect(deleting).toBeFocused();
+  await expect(draft.getByRole("button", { name: "Keep it", exact: true })).toBeDisabled();
+  await expectRunning(page, "Deleting draft: not deleted until the store confirms.");
+
+  hold.release();
+  await expect(draft.getByRole("button", { name: "Deleting draft", exact: true })).toHaveCount(0, { timeout: STORE_STEP_MS });
+  await expect(activity(page).locator("#persistence")).toHaveText("The draft is deleted: the store confirmed it.");
+  await expect(activity(page)).toBeFocused();
+});
+
+test("retire keeps its confirmation, busy, until it is answered; then focus goes to the status", async ({ page }) => {
+  const store = await signInWithStore(page);
+  const key = await createGroup(page);
+  await area(page, "Storage");
+  await page.getByRole("button", { name: "Rebuild the contribution index", exact: true }).click();
+  await expect(notice(page)).toContainText("The contribution index was rebuilt", { timeout: STORE_STEP_MS });
+  await area(page, "Groups");
+  await page.locator("#group-list").getByRole("link", { name: key }).click();
+  await page.locator("#lifecycle").getByRole("button", { name: "Finalize", exact: true }).click();
+  await expect(page.locator("#group-phase")).toHaveAttribute("data-phase", /^Finalized/, { timeout: STORE_STEP_MS });
+  const retention = page.locator("#group-retention");
+  await retention.getByRole("button", { name: "Retire accepted results…", exact: true }).click();
+
+  const hold = store.holdNext("PATCH", REF_UPDATE);
+  await retention.getByRole("button", { name: "Retire accepted results", exact: true }).click();
+  await hold.reached;
+  const retiring = retention.getByRole("button", { name: "Retiring accepted results", exact: true });
+  await expect(retiring).toBeVisible();
+  await expect(retiring).toHaveAttribute("aria-busy", "true");
+  await expect(retiring).toBeFocused();
+  await expect(retention.getByRole("button", { name: "Keep them", exact: true })).toBeDisabled();
+  await expectRunning(page, "Retiring accepted results: nothing is retired until the store confirms.");
+
+  hold.release();
+  await expect(page.locator("#retire-confirm")).toHaveCount(0, { timeout: STORE_STEP_MS });
+  await expect(activity(page).locator("#persistence")).toHaveAttribute("data-persistence", /^(saved|failed)$/);
+  await expect(activity(page)).toBeFocused();
+});
+
+test("a change the store refuses is reported failed: not done, never saved", async ({ page }) => {
   const store = await signInWithStore(page);
   expectConsoleError(page, /status of 503/);
   const draft = await startDraft(page);
-  await draft.getByRole("button", { name: "Save draft", exact: true }).click();
-  await expect(notice(page)).toHaveText("The draft of PULSE was saved.", { timeout: STORE_STEP_MS });
+  await saveDraft(page, draft);
   // The branch update fails, and so does the one inspected resend (Arca 0.7,
-  // ARCA-OUT-001): the request for review is not stored.
+  // ARCA-OUT-001): the request for review is not stored, and the store is offline.
   store.failNext("PATCH", REF_UPDATE);
   store.failNext("PATCH", REF_UPDATE);
   await draft.getByRole("button", { name: "Submit for review", exact: true }).click();
-  const persistence = page.locator("#persistence");
-  await expect(persistence).toHaveAttribute("data-persistence", /^(failed|unknown)$/, { timeout: STORE_STEP_MS });
-  await expect(persistence).not.toContainText("is saved");
-  // Settled: nothing is busy any more. (The store went offline, so the dataset
-  // is read-only and the review controls are withdrawn.)
+  const persistence = activity(page).locator("#persistence");
+  await expect(persistence).toHaveAttribute("data-persistence", "failed", { timeout: STORE_STEP_MS });
+  await expect(persistence).toHaveText("“Submit for review” did not complete; the notice says why.");
   await expect(page.locator("#operation-pending")).toHaveCount(0);
   await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
+});
+
+test("a change whose outcome the store cannot tell is reported unknown, and changes wait for a refresh", async ({ page }) => {
+  const store = await signInWithStore(page);
+  expectConsoleError(page, /status of 503/);
+  const draft = await startDraft(page);
+  await saveDraft(page, draft);
+  // The branch update fails, and the reads that would reconcile it fail too.
+  store.failNext("PATCH", REF_UPDATE);
+  for (const pattern of [/\/commits$/, /\/compare\//, /\/git\/ref\/heads\/main$/, /\/branches\/main$/]) store.failNext("GET", pattern);
+  await draft.getByRole("button", { name: "Submit for review", exact: true }).click();
+  const persistence = activity(page).locator("#persistence");
+  await expect(persistence).toHaveAttribute("data-persistence", "unknown", { timeout: STORE_STEP_MS });
+  await expect(persistence).toContainText("is not known. Refresh to check what the store holds; changes wait until then.");
+  await expect(draft.getByRole("button", { name: "Save draft", exact: true })).toBeDisabled();
+  await page.getByRole("button", { name: "Refresh", exact: true }).click();
+  await expect(draft.getByRole("button", { name: "Save draft", exact: true })).toBeEnabled({ timeout: STORE_STEP_MS });
 });
 
 test("loading regions are status regions with Forma's spinner and a visible label", async ({ page }) => {
@@ -193,7 +303,7 @@ test("opening the dataset after sign-in shows what it waits for", async ({ page 
   await expect(page.locator("html")).toHaveAttribute("data-kernel", "running", { timeout: KERNEL_START_MS });
   await hold.reached;
 
-  await expectLoadingRegion(page.locator("#operation-pending"), "Opening Engagement…");
+  await expectRunning(page, "Opening Engagement…");
   const opening = page.getByRole("button", { name: "Opening Engagement", exact: true });
   await expect(opening).toHaveAttribute("aria-busy", "true");
 
@@ -202,28 +312,37 @@ test("opening the dataset after sign-in shows what it waits for", async ({ page 
   await expect(page.locator("#operation-pending")).toHaveCount(0);
 });
 
-test("chips carry the authoritative state as a tone and a visible label", async ({ page }) => {
-  await signInWithStore(page);
+test("chips carry the authoritative state as a tone and a plain label, apart from the text beside them", async ({ page }) => {
+  const store = await signInWithStore(page);
   await createGroup(page);
 
-  // The group in view and its row in the list: the phase's tone and its name.
+  // The group in view and its row in the list: the phase's tone, its plain
+  // label, and its id.
   const phase = page.locator("#group-phase");
   await expect(phase).toHaveClass(/(^|\s)echelon-chip(\s|$)/);
   await expect(phase).toHaveAttribute("data-echelon-tone", "ready");
-  await expect(phase).toHaveText("GroupReady");
+  await expect(phase).toHaveAttribute("data-phase", "GroupReady");
+  await expect(phase).toHaveText("Ready");
   await area(page, "Groups");
   const chip = page.locator("#group-list tbody tr .echelon-chip");
   await expect(chip).toHaveCount(1);
   await expect(chip).toHaveAttribute("data-echelon-tone", "ready");
-  await expect(chip).toHaveText("GroupReady");
+  await expect(chip).toHaveText("Ready");
 
   // A draft through its review: draft, in review, reviewed.
   const draft = await startDraft(page);
   const lifecycle = page.locator("#draft-lifecycle");
   await expect(lifecycle).toHaveAttribute("data-echelon-tone", "draft");
   await expect(lifecycle).toHaveText("Draft");
-  await draft.getByRole("button", { name: "Save draft", exact: true }).click();
-  await expect(notice(page)).toHaveText("The draft of PULSE was saved.", { timeout: STORE_STEP_MS });
+  await expect(lifecycle.locator("xpath=..")).toContainText("Draft · New survey");
+  await draft.getByRole("textbox", { name: "New section title" }).fill("Delivery");
+  await draft.getByRole("textbox", { name: "New section title" }).press("Tab");
+  await draft.getByRole("button", { name: "Add section" }).click();
+  await draft.getByRole("textbox", { name: "New question" }).fill("We ship every week.");
+  await draft.getByRole("textbox", { name: "New question" }).press("Tab");
+  await draft.getByRole("button", { name: "Add the question below here" }).click();
+  await draft.getByRole("button", { name: "Add a fixture: every answer at the midpoint" }).click();
+  await saveDraft(page, draft);
   await draft.getByRole("button", { name: "Submit for review", exact: true }).click();
   await expect(lifecycle).toHaveText("In review", { timeout: STORE_STEP_MS });
   await expect(lifecycle).toHaveAttribute("data-echelon-tone", "review");
@@ -236,4 +355,48 @@ test("chips carry the authoritative state as a tone and a visible label", async 
   const draftRow = page.locator("#template-drafts li").filter({ hasText: "Team pulse (PULSE)" });
   await expect(draftRow.locator(".echelon-chip")).toHaveText("Reviewed");
   await expect(draftRow.locator(".echelon-chip")).toHaveAttribute("data-echelon-tone", "review");
+  await expect(draftRow).toContainText("Reviewed · Team pulse (PULSE)");
+
+  // Published: the version's chip; hiding it shows its own busy button, then "Hidden".
+  await draftRow.getByRole("link").click();
+  await draft.getByRole("checkbox", { name: "I have read the warnings and accept them" }).check();
+  await draft.getByRole("button", { name: "Publish", exact: true }).click();
+  await expect(notice(page)).toContainText(/^PULSE version 1 is published/, { timeout: STORE_STEP_MS });
+  await area(page, "Assessments");
+  const version = page.locator("#template-versions li").filter({ hasText: "Team pulse (PULSE 1)" });
+  await expect(version.locator(".echelon-chip")).toHaveText("Published");
+  await expect(version.locator(".echelon-chip")).toHaveAttribute("data-echelon-tone", "published");
+  await expect(version).toContainText("Published · Team pulse (PULSE 1)");
+  const hold = store.holdNext("PATCH", REF_UPDATE);
+  const actions = page.locator("#template-actions");
+  await actions.getByRole("button", { name: "Hide from new groups", exact: true }).click();
+  await hold.reached;
+  const hiding = actions.getByRole("button", { name: "Hiding from new groups", exact: true });
+  await expect(hiding).toHaveAttribute("aria-busy", "true");
+  await expect(actions.getByRole("button", { name: "Derive a draft", exact: true })).toHaveCount(0);
+  hold.release();
+  await expect(version.locator(".echelon-chip")).toHaveText("Hidden", { timeout: STORE_STEP_MS });
+  await expect(version.locator(".echelon-chip")).toHaveAttribute("data-echelon-tone", "closed");
+  await expect(activity(page)).toBeFocused();
+});
+
+test("an export in flight: its own button is busy, the other exports wait, and the file arrives", async ({ page }) => {
+  const store = await signInWithStore(page);
+  await createGroup(page);
+  await groupTab(page, "Report");
+  await page.getByRole("button", { name: "Take a snapshot", exact: true }).click();
+  await expect(notice(page)).toContainText(/^Snapshot snap-[0-9a-f]+ was taken/, { timeout: STORE_STEP_MS });
+  const snapshot = page.locator("#snapshots li");
+
+  const hold = store.holdNext("GET", /\/contents\//);
+  const download = page.waitForEvent("download");
+  await snapshot.getByRole("button", { name: "Report (JSON)", exact: true }).click();
+  await hold.reached;
+  const exporting = snapshot.getByRole("button", { name: "Exporting", exact: true });
+  await expect(exporting).toHaveAttribute("aria-busy", "true");
+  for (const name of ["Sections (CSV)", "Lineage"]) await expect(snapshot.getByRole("button", { name, exact: true })).toBeDisabled();
+  await expectRunning(page, "Exporting…");
+  hold.release();
+  expect((await download).suggestedFilename()).toMatch(/^snap-[0-9a-f]+-report\.json$/);
+  await expect(snapshot.getByRole("button", { name: "Report (JSON)", exact: true })).toHaveAttribute("aria-busy", "false");
 });

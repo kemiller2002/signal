@@ -148,7 +148,15 @@ let update (library: Library) (surveys: string list) (name: string) (key: string
     | _ -> screen, []
 
 /// After a save: what is stored is what the builder holds, at its version.
+/// An edit made while it was saving is kept, at the stored version, and
+/// stays unsaved (SIG-VIS-PENDING-002).
 let saved (entry: Entry) (screen: Screen) =
     match screen.Builder with
-    | Some b when b.Definition.Id = entry.Definition.Id -> { screen with Builder = Some { b with Definition = entry.Definition; Unsaved = false } }
+    | Some b when b.Definition.Id = entry.Definition.Id ->
+        let held = { b.Definition with Version = entry.Definition.Version }
+
+        if held = entry.Definition then
+            { screen with Builder = Some { b with Definition = entry.Definition; Unsaved = false } }
+        else
+            { screen with Builder = Some { b with Definition = held; Unsaved = true } }
     | _ -> screen

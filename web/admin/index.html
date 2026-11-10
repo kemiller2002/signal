@@ -58,23 +58,6 @@
     </ul>
   </nav>
 
-  <!-- What runs now and what the store last said about a change
-       (SIG-VIS-PENDING-001). The running control says so itself
-       (aria-busy, its present-participle label); this region names it with
-       a Forma spinner, and the persistence line never says "saved" before
-       the store confirms. -->
-  <template data-if="operationRunning">
-    <div id="operation-pending" class="echelon-loading" role="status" data-bind-data-persistence="persistenceState">
-      <p class="forma-spinner"><span class="forma-spinner__indicator" aria-hidden="true"></span><span class="forma-spinner__label" data-text="operationText"></span></p>
-    </div>
-  </template>
-  <template data-if="hasPersistence">
-    <p id="persistence" role="status" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p>
-  </template>
-  <template data-if="reloadOwed">
-    <p id="reload-owed" role="status">Another tab changed this dataset while an operation ran. Refresh to see what the store holds now.</p>
-  </template>
-
   <!-- A link that names nothing has its own page (SIG-LINK-007). -->
   <template data-if="hasProblem">
     <section id="route-problem" class="forma-stack" role="alert" aria-labelledby="route-problem-title">
@@ -141,7 +124,7 @@
              so the editor below once rendered as its heading alone (GH-113). -->
         <div class="forma-stack draft-editor">
         <h2 id="draft-heading" data-text="draftHeading"></h2>
-        <p><span class="echelon-chip" id="draft-lifecycle" data-bind-data-echelon-tone="draftLifecycleTone" data-text="draftLifecycle">Draft</span> <span data-text="draftParent"></span><template data-if="draftUnsaved"><span> · <strong>Unsaved changes</strong></span></template></p>
+        <p><span class="echelon-chip" id="draft-lifecycle" data-bind-data-echelon-tone="draftLifecycleTone" data-text="draftLifecycle">Draft</span> · <span data-text="draftParent"></span><template data-if="draftUnsaved"><span> · <strong>Unsaved changes</strong></span></template></p>
         <label>Title <input type="text" data-event="draftTitle" data-bind-value="draftTitle" /></label>
         <label>Description <textarea rows="2" data-event="draftDescription" data-bind-value="draftDescription"></textarea></label>
         <h3>Sections</h3>
@@ -392,7 +375,7 @@
           <div id="delete-draft-confirm" class="forma-stack" role="alertdialog" aria-labelledby="delete-draft-text">
             <p id="delete-draft-text">Delete this draft and its review? Unpublished changes are lost. Published versions are not affected.</p>
             <button type="button" class="forma-button" data-event="confirmDeleteDraft" data-bind-disabled="confirmDeleteDisabled" data-bind-aria-busy="confirmDeleteBusy" data-bind-aria-disabled="confirmDeleteBusy" data-text="confirmDeleteLabel">Delete draft</button>
-            <button type="button" class="forma-button" data-event="cancelDeleteDraft">Keep it</button>
+            <button type="button" class="forma-button" data-event="cancelDeleteDraft" data-bind-disabled="busy">Keep it</button>
           </div>
         </template>
         <h3>Review</h3>
@@ -425,7 +408,7 @@
           <h3 id="stored-templates-title">Published in this dataset</h3>
           <ul id="template-versions">
             <template data-each="templateVersions" data-key="key">
-              <li><span class="echelon-chip" data-bind-data-echelon-tone="lifecycleTone" data-text="lifecycle">Published</span> <span data-text="label"></span> · <span data-text="status"></span> · <span data-text="groups"></span>
+              <li><span class="echelon-chip" data-bind-data-echelon-tone="lifecycleTone" data-text="lifecycle">Published</span> · <span data-text="label"></span> · <span data-text="status"></span> · <span data-text="groups"></span>
                 <button type="button" class="forma-button" data-event="downloadSiteFile" data-bind-disabled="busy">For the respondent site</button>
                 <button type="button" class="forma-button" data-event="testLinks">Test links</button></li>
             </template>
@@ -452,7 +435,7 @@
             </template>
           </ul>
           <ul id="template-drafts">
-            <template data-each="draftLinks" data-key="key"><li><span class="echelon-chip" data-bind-data-echelon-tone="lifecycleTone" data-text="lifecycle">Draft</span> <a data-bind-href="href" data-text="label"></a></li></template>
+            <template data-each="draftLinks" data-key="key"><li><span class="echelon-chip" data-bind-data-echelon-tone="lifecycleTone" data-text="lifecycle">Draft</span> · <a data-bind-href="href" data-text="label"></a></li></template>
           </ul>
         </section>
       </template>
@@ -496,10 +479,32 @@
     </aside>
   </template>
 
+  <!-- What runs now and what the store last said about a change
+       (SIG-VIS-PENDING-001, -002), beside the notice and the status where the
+       person acts. #activity is the page's one live region for operations:
+       always in the page, it announces each start and each settle once, the
+       notice's sentence included, so the notice below is not a second live
+       region. The running control says so itself (aria-busy, its
+       present-participle label); focus comes here when that control went away. -->
+  <div id="activity" class="activity" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" data-focus-target="activity">
+    <template data-if="operationRunning">
+      <div id="operation-pending" class="echelon-loading" data-bind-data-persistence="persistenceState">
+        <p class="forma-spinner"><span class="forma-spinner__indicator" aria-hidden="true"></span><span class="forma-spinner__label" data-text="operationText"></span></p>
+      </div>
+    </template>
+    <template data-if="hasPersistence">
+      <p id="persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p>
+    </template>
+    <template data-if="reloadOwed">
+      <p id="reload-owed" data-text="reloadText"></p>
+    </template>
+    <span class="forma-visually-hidden" data-text="noticeAnnouncement"></span>
+  </div>
+
   <!-- Domain refusals and infrastructure notices: a sentence, with the stable
-       code as technical detail (ADM-031). -->
+       code as technical detail (ADM-031). Announced through #activity above. -->
   <template data-if="hasNotice">
-    <aside id="notice" class="forma-alert" role="status" data-tone="attention">
+    <aside id="notice" class="forma-alert" data-tone="attention">
       <p id="notice-message" data-text="notice"></p>
       <details><summary>Technical detail</summary><code id="notice-code" data-text="noticeCode"></code></details>
       <button type="button" class="forma-button" data-event="dismissNotice">Dismiss</button>
@@ -538,12 +543,6 @@
         <p id="retention-disclosure" data-text="retentionDisclosure"></p>
         <button type="submit" class="forma-button" id="sign-in-button" data-bind-aria-busy="signInAriaBusy" data-bind-aria-disabled="signInAriaBusy" data-text="signInLabel">Sign in</button>
       </form>
-      <!-- The provider's round trip and the exchange take network time. -->
-      <template data-if="signInBusy">
-        <div id="signing-in" class="echelon-loading" role="status">
-          <p class="forma-spinner"><span class="forma-spinner__indicator" aria-hidden="true"></span><span class="forma-spinner__label">Signing in with GitHub…</span></p>
-        </div>
-      </template>
     </section>
   </template>
 
@@ -605,7 +604,7 @@
               <template data-each="groups" data-key="key">
                 <tr>
                   <td><a data-bind-href="href" data-text="key"></a></td>
-                  <td data-text="survey"></td><td data-text="mode"></td><td data-text="progress"></td><td><span class="echelon-chip" data-bind-data-echelon-tone="phaseTone" data-text="phase"></span></td>
+                  <td data-text="survey"></td><td data-text="mode"></td><td data-text="progress"></td><td><span class="echelon-chip" data-bind-data-echelon-tone="phaseTone" data-bind-data-phase="phase" data-text="phaseLabel"></span></td>
                 </tr>
               </template>
             </tbody>
@@ -638,7 +637,7 @@
         <template data-if="hasGroup">
             <section id="group" class="forma-stack">
               <h2>Group <code id="group-key" data-text="groupKey"></code></h2>
-              <p><span data-text="groupProgress"></span> · <span id="group-phase" class="echelon-chip" data-bind-data-echelon-tone="groupPhaseTone" data-text="groupPhase"></span></p>
+              <p><span data-text="groupProgress"></span> · <span id="group-phase" class="echelon-chip" data-bind-data-echelon-tone="groupPhaseTone" data-bind-data-phase="groupPhase" data-text="groupPhaseLabel"></span></p>
               <template data-if="hasWithheld"><p id="withheld" class="forma-alert" role="status" data-tone="attention" data-text="withheldNotice"></p></template>
               <nav aria-label="Group" id="group-tabs">
                 <ul class="areas">
@@ -673,7 +672,7 @@
                   <div id="retire-confirm" class="forma-stack" role="alertdialog" aria-labelledby="retire-confirm-text">
                     <p id="retire-confirm-text" data-text="retireWarning"></p>
                     <button type="button" class="forma-button" data-event="confirmRetire" data-bind-disabled="confirmRetireDisabled" data-bind-aria-busy="confirmRetireBusy" data-bind-aria-disabled="confirmRetireBusy" data-text="confirmRetireLabel">Retire accepted results</button>
-                    <button type="button" class="forma-button" data-event="cancelRetire">Keep them</button>
+                    <button type="button" class="forma-button" data-event="cancelRetire" data-bind-disabled="busy">Keep them</button>
                   </div>
                 </template>
               </section>

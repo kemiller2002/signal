@@ -23,6 +23,7 @@ type Purpose =
     | Downloading
     | Configuration
     | BridgeCall
+    | Focusing
 
 [<NoComparison; NoEquality>]
 type State =
@@ -35,6 +36,9 @@ type State =
       Pending: Map<string, Purpose>
       Sequence: int
       Fault: FaultView option
+      /// Operations that ended in an exception during this message, presented
+      /// through Aegis once the message is handled (`handle`).
+      Faults: exn list
       Client: FidesClient option
       Opened: Store.Opened option
       /// The open dataset's template catalog (built-in templates when none is open).
@@ -53,6 +57,7 @@ let initial =
       Pending = Map.empty
       Sequence = 0
       Fault = None
+      Faults = []
       Client = None
       Opened = None
       Catalog = TemplateCatalog.builtIn []
@@ -245,12 +250,13 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
                 | Error Store.ConflictPersists ->
                     return [ ToEngine(AdminApp.Failed(notice "SIGNAL.STORAGE.CONFLICT" "The administrators changed elsewhere and the change no longer applies; it was not saved." false)) ]
                 // Unknown, not refused: the provider could not say whether it
-                // landed, and it is reconciled before anything is resent (ARX-015).
+                // landed. The page sends no change until a reload has shown what
+                // the store holds (`Operations.Reconcile`, ARX-015).
                 | Error(Store.OutcomeStillUnknown _) ->
                     return
                         [ ToEngine(
                               AdminApp.Failed(
-                                  notice Echelon.Signal.Admin.Operations.OutcomeUnknownCode "The provider did not say whether the change to the administrators was saved; it is checked before anything is sent again." true
+                                  notice Echelon.Signal.Admin.Operations.OutcomeUnknownCode "The provider did not say whether the change to the administrators was saved. Refresh to check what the store holds; no change is sent until then." true
                               )
                           ) ]
                 | Error other -> return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ACCESS.REFUSED" $"%A{other}" false)) ]
@@ -292,6 +298,12 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
     | AdminApp.RememberReturn _
     | AdminApp.RecallReturn
     | AdminApp.ForgetReturn -> state, []
+    // Focus moves only where the kernel offers the focus pack; elsewhere the
+    // status still says what happened.
+    | AdminApp.Focus target when negotiated focus state ->
+        let id, state = mint Focusing state
+        state, [ Focus(id, target) ]
+    | AdminApp.Focus _ -> state, []
 
 // ---- The loop ---------------------------------------------------------------------------------
 
@@ -345,9 +357,8 @@ let rec private advance (env: Env) (state: State) (msg: AdminApp.Msg) (sent: Req
 /// and engine messages. A wait the kernel cannot time is answered at once.
 and private settle (env: Env) (state: State) (sent: Request list) =
     match env.Bridge.Drain() with
-    | Result.Error error -> raise error
-    | Ok([], []) -> state, sent
-    | Ok(calls, finished) ->
+    | [], [], [] -> state, sent
+    | calls, finished, failed ->
         let state, made, untimed =
             calls
             |> List.fold
@@ -360,12 +371,21 @@ and private settle (env: Env) (state: State) (sent: Request list) =
         untimed |> List.iter (fun id -> env.Bridge.Answer id Bridge.Done |> ignore)
         let state, sent = if untimed.IsEmpty then state, sent @ made else settle env state (sent @ made)
 
-        finished
-        |> List.fold
-            (fun (state, sent) outcome ->
-                let state, messages = absorb env state outcome
-                messages |> List.fold (fun (state, sent) msg -> advance env state msg sent) (state, sent))
-            (state, sent)
+        let state, sent =
+            finished
+            |> List.fold
+                (fun (state, sent) outcome ->
+                    let state, messages = absorb env state outcome
+                    messages |> List.fold (fun (state, sent) msg -> advance env state msg sent) (state, sent))
+                (state, sent)
+
+        // An operation that ended in an exception is settled as unknown (it
+        // may have written before it failed), after every other operation's
+        // messages of this drain were applied; `handle` presents the fault
+        // through Aegis (SIG-VIS-PENDING-002).
+        match failed with
+        | [] -> state, sent
+        | _ -> advance env { state with Faults = state.Faults @ failed } AdminApp.OperationFaulted sent
 
 let private take (id: string) (state: State) =
     match state.Pending.TryFind id with
@@ -376,8 +396,8 @@ let private answerBridge (env: Env) (id: string) (answer: Bridge.KernelAnswer) =
     if not (env.Bridge.Answer id answer) then
         raise (CapabilityFailed("correlation", $"A result for {id}, which no operation is waiting on"))
 
-/// Pure apart from `env`: (state, message) -> (state, reply).
-let step (env: Env) (state: State) (inbound: Inbound) =
+/// Pure apart from `env`: (state, message) -> (state, requests, handshake answer).
+let private run (env: Env) (state: State) (inbound: Inbound) : State * Request list * Handshake option =
     match inbound with
     | Initialize(protocolVersion, effects, origin, path, query, rawQuery, hash, offer) ->
         if protocolVersion <> 1 then
@@ -386,7 +406,7 @@ let step (env: Env) (state: State) (inbound: Inbound) =
             raise (CapabilityFailed("Http", "The administrator page needs the kernel's Navigation, Http and Storage effects"))
 
         match answer offer with
-        | Rejected _ as handshake -> state, encode (view state) [] (Some handshake)
+        | Rejected _ as handshake -> state, [], Some handshake
         | Accepted(_, _, capabilities) as handshake ->
             let started =
                 { state with
@@ -399,7 +419,7 @@ let step (env: Env) (state: State) (inbound: Inbound) =
                     Effects = effects }
 
             let next, sent = advance env started (AdminApp.Started(page started hash, query)) []
-            next, encode (view next) sent (Some handshake)
+            next, sent, Some handshake
     | other ->
         let state, msg =
             match other with
@@ -485,15 +505,32 @@ let step (env: Env) (state: State) (inbound: Inbound) =
             | Some msg -> advance env state msg []
             | None -> settle env state []
 
-        next, encode (view next) sent None
+        next, sent, None
 
-/// Handles one kernel message under the Aegis boundary. A fault leaves the
-/// state as it was and is shown until the next message.
+/// Pure apart from `env`: (state, message) -> (state, reply).
+let step (env: Env) (state: State) (inbound: Inbound) =
+    let next, sent, handshake = run env state inbound
+    next, encode (view next) sent handshake
+
+/// Handles one kernel message under the Aegis boundary. A fault in handling
+/// the message leaves the state as it was and is shown until the next
+/// message. A fault inside an operation keeps everything else the message
+/// did: the operation was already settled as unknown, and the fault is
+/// presented through Aegis here.
 let handle (aegis: AegisConfig) (env: Env) (state: State) (messageJson: string) =
-    let cleared = { state with Fault = None }
+    let cleared = { state with Fault = None; Faults = [] }
 
-    match capture aegis "Signal.Admin.dispatch" (fun () -> step env cleared (decode messageJson)) with
-    | Ok result -> result
+    match capture aegis "Signal.Admin.dispatch" (fun () -> run env cleared (decode messageJson)) with
+    | Ok(next, sent, handshake) ->
+        let next =
+            match next.Faults with
+            | [] -> next
+            | error :: _ ->
+                match capture aegis "Signal.Admin.operation" (fun () -> (raise error: unit)) with
+                | Result.Error fault -> { next with Fault = Some fault; Faults = [] }
+                | Ok() -> { next with Faults = [] }
+
+        next, encode (view next) sent handshake
     | Result.Error fault ->
         let faulted = { state with Fault = Some fault }
         faulted, encode (view faulted) [] None

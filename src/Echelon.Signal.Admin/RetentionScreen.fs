@@ -84,7 +84,9 @@ let update (can: AdminState.AdminCapability -> bool) (selected: GroupSummary opt
     // runs (the guard in `Operations`), so a second click never queues a write.
     let busy operation effects =
         match Operations.start operation model.Activity with
-        | Some activity -> { model with Activity = activity; Notice = None; RetireConfirm = None }, effects
+        // The retirement's confirmation stays open, its button busy, until it
+        // is answered; the page closes it then (SIG-VIS-PENDING-002).
+        | Some activity -> { model with Activity = activity; Notice = None }, effects
         | None -> model, []
 
     match name, model.Dataset, selected with

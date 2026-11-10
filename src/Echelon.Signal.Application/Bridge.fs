@@ -83,15 +83,15 @@ type Bridge<'msg>() =
             true
         | _ -> false
 
-    /// The browser calls made and messages produced since the last drain.
-    member _.Drain() : Result<(string * KernelCall) list * 'msg list, exn> =
+    /// The browser calls made, the messages produced and the operations that
+    /// ended in an exception since the last drain. All three are returned
+    /// together: one failed operation never discards another's calls or
+    /// messages (SIG-VIS-PENDING-002).
+    member _.Drain() : (string * KernelCall) list * 'msg list * exn list =
         let calls = List.ofSeq outbox
         let messages = List.ofSeq finished
         let failed = List.ofSeq failures
         outbox.Clear()
         finished.Clear()
         failures.Clear()
-
-        match failed with
-        | error :: _ -> Error error
-        | [] -> Ok(calls, messages)
+        calls, messages, failed

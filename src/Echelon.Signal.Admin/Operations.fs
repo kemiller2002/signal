@@ -104,47 +104,98 @@ type Outcome =
 [<Literal>]
 let OutcomeUnknownCode = "SIGNAL.STORAGE.OUTCOME_UNKNOWN"
 
+/// Where a recheck of the store stands.
+type Stage =
+    | Clear
+    /// Owed: the store must be read again.
+    | Owed
+    /// A dataset read started after it was owed is running.
+    | Checking
+
 /// The page's operation state.
 type Activity =
     { /// The operation in flight, if any.
       Running: Operation option
-      /// The latest change's outcome, kept until the next change starts.
+      /// The latest change's outcome, kept until the next change starts or a
+      /// dataset read shows what the store holds.
       LastWrite: (Operation * Outcome) option
-      /// Another tab changed the dataset while an operation ran: reload it
+      /// Another tab changed the dataset while an operation ran: read it again
       /// once that operation is answered, not in the middle of it.
-      ReloadOwed: bool }
+      Reload: Stage
+      /// A change's outcome is unknown: no change is sent until a dataset read
+      /// started afterwards has shown what the store holds (ARX-015).
+      Reconcile: Stage }
 
 let idle =
     { Running = None
       LastWrite = None
-      ReloadOwed = false }
+      Reload = Clear
+      Reconcile = Clear }
 
 let isRunning (activity: Activity) = activity.Running.IsSome
 
 let isRunningOp (operation: Operation) (activity: Activity) = activity.Running = Some operation
 
-/// Starts an operation, or `None` while one runs: the second activation is
-/// ignored, never queued (the guard above). A change clears the previous
-/// change's outcome; a read keeps it.
+/// A read of the whole dataset: what settles an owed reload or reconciliation.
+let private isDatasetRead (operation: Operation) =
+    match operation with
+    | Operation.OpenDataset _
+    | Operation.Refresh -> true
+    | _ -> false
+
+/// Whether `operation` may start now: nothing runs, and no change waits on a
+/// reconciliation.
+let canStart (operation: Operation) (activity: Activity) =
+    activity.Running.IsNone && not (kind operation = Write && activity.Reconcile <> Clear)
+
+/// Starts an operation, or `None` when it may not start now: the second
+/// activation is ignored, never queued (the guard above). A change clears
+/// the previous change's outcome; a read keeps it. A dataset read started
+/// while a recheck is owed is the one that settles it.
 let start (operation: Operation) (activity: Activity) : Activity option =
-    match activity.Running with
-    | Some _ -> None
-    | None ->
+    if not (canStart operation activity) then
+        None
+    else
+        let checking stage = if isDatasetRead operation && stage = Owed then Checking else stage
+
         Some
             { activity with
                 Running = Some operation
-                LastWrite = (if kind operation = Write then None else activity.LastWrite) }
+                LastWrite = (if kind operation = Write then None else activity.LastWrite)
+                Reload = checking activity.Reload
+                Reconcile = checking activity.Reconcile }
+
+/// Another tab changed the dataset: whatever was read before is stale, so a
+/// read is owed again (also when one was already checking).
+let oweReload (activity: Activity) = { activity with Reload = Owed }
 
 /// The operation in flight was answered. Nothing runs afterwards; a change
-/// keeps its outcome for the persistence indicator. An answer with nothing
-/// in flight changes nothing.
+/// keeps its outcome for the persistence indicator, and an unknown one owes
+/// a reconciliation. A dataset read that succeeds settles what it was
+/// checking and shows the store as it is, so the last change's outcome goes.
+/// An answer with nothing in flight changes nothing.
 let settle (outcome: Outcome) (activity: Activity) : Activity =
     match activity.Running with
     | None -> activity
     | Some operation ->
-        { activity with
-            Running = None
-            LastWrite = (if kind operation = Write then Some(operation, outcome) else activity.LastWrite) }
+        let readConfirmed = isDatasetRead operation && outcome = Confirmed
+
+        let after stage =
+            match stage with
+            | Checking when readConfirmed -> Clear
+            | Checking -> Owed
+            | other -> other
+
+        { Running = None
+          LastWrite =
+            (if kind operation = Write then Some(operation, outcome)
+             elif readConfirmed then None
+             else activity.LastWrite)
+          Reload = after activity.Reload
+          Reconcile =
+            (match outcome with
+             | Unknown when kind operation = Write -> Owed
+             | _ -> after activity.Reconcile) }
 
 /// An import's outcome from the batch the store reports back: unreconciled
 /// work is unknown, unprocessed artifacts leave it partial.
@@ -198,30 +249,70 @@ let pendingLabel (operation: Operation) =
     | Operation.RetireSources -> "Retiring accepted results"
     | Operation.TransitionDataset target -> datasetTargetParticiple target
 
-/// What a change is, as a subject: "the draft", "the group".
-let private subject (operation: Operation) =
+/// The control's own words, for what was asked.
+let actionName (operation: Operation) =
     match operation with
-    | Operation.SaveDraft -> "The draft"
-    | Operation.PublishDraft -> "The new version"
-    | Operation.RequestReview -> "The review request"
-    | Operation.ApproveReview -> "The review"
-    | Operation.DeleteDraft -> "The draft's deletion"
-    | Operation.HideVersion _ -> "Hiding the version"
-    | Operation.CreateGroup -> "The new group"
-    | Operation.ImportArtifacts -> "The import"
-    | Operation.TransitionGroup _ -> "The group's new state"
-    | Operation.Admit -> "The new administrator"
-    | Operation.RemoveAdministrator _ -> "The removal"
-    | Operation.RebuildIndex -> "The rebuilt index"
-    | Operation.TakeSnapshot -> "The snapshot"
-    | Operation.SaveReportDefinition -> "The report definition"
-    | Operation.RetireSources -> "The retirement"
-    | Operation.TransitionDataset _ -> "The dataset's new state"
-    | Operation.OpenDataset _
-    | Operation.Refresh
-    | Operation.OpenGroup _
-    | Operation.ExportSnapshot _
-    | Operation.IssueInvitations -> "It"
+    | Operation.OpenDataset _ -> "Open the dataset"
+    | Operation.Refresh -> "Refresh"
+    | Operation.OpenGroup _ -> "Open the group"
+    | Operation.SaveDraft -> "Save draft"
+    | Operation.PublishDraft -> "Publish"
+    | Operation.RequestReview -> "Submit for review"
+    | Operation.ApproveReview -> "Approve as reviewed"
+    | Operation.DeleteDraft -> "Delete draft"
+    | Operation.HideVersion _ -> "Hide from new groups"
+    | Operation.CreateGroup -> "Create group"
+    | Operation.IssueInvitations -> "Create links"
+    | Operation.ImportArtifacts -> "Import"
+    | Operation.TransitionGroup "close" -> "Close incomplete"
+    | Operation.TransitionGroup "reopen" -> "Reopen"
+    | Operation.TransitionGroup "finalize" -> "Finalize"
+    | Operation.TransitionGroup _ -> "Seal"
+    | Operation.Admit -> "Admit"
+    | Operation.RemoveAdministrator _ -> "Remove"
+    | Operation.RebuildIndex -> "Rebuild the contribution index"
+    | Operation.TakeSnapshot -> "Take a snapshot"
+    | Operation.ExportSnapshot _ -> "Export"
+    | Operation.SaveReportDefinition -> "Save definition"
+    | Operation.RetireSources -> "Retire accepted results"
+    | Operation.TransitionDataset _ -> "Change the dataset's state"
+
+/// What a change has not done yet while it runs.
+let private notYet (operation: Operation) =
+    match operation with
+    | Operation.PublishDraft -> "not published"
+    | Operation.RequestReview -> "not submitted"
+    | Operation.ApproveReview -> "not approved"
+    | Operation.DeleteDraft -> "not deleted"
+    | Operation.HideVersion _ -> "not hidden"
+    | Operation.TransitionGroup _
+    | Operation.TransitionDataset _ -> "not changed"
+    | Operation.Admit -> "not admitted"
+    | Operation.RemoveAdministrator _ -> "not removed"
+    | Operation.RebuildIndex -> "not rebuilt"
+    | Operation.RetireSources -> "nothing is retired"
+    | _ -> "not saved"
+
+/// What a confirmed change did.
+let private doneText (operation: Operation) =
+    match operation with
+    | Operation.SaveDraft -> "The draft is saved"
+    | Operation.PublishDraft -> "The new version is published"
+    | Operation.RequestReview -> "The draft is submitted for review"
+    | Operation.ApproveReview -> "The draft is approved as reviewed"
+    | Operation.DeleteDraft -> "The draft is deleted"
+    | Operation.HideVersion _ -> "The version is hidden from new groups"
+    | Operation.CreateGroup -> "The new group is saved"
+    | Operation.ImportArtifacts -> "The import is saved"
+    | Operation.TransitionGroup _ -> "The group's new state is saved"
+    | Operation.Admit -> "The administrator is admitted"
+    | Operation.RemoveAdministrator _ -> "The administrator is removed"
+    | Operation.RebuildIndex -> "The contribution index is rebuilt"
+    | Operation.TakeSnapshot -> "The snapshot is saved"
+    | Operation.SaveReportDefinition -> "The report definition is saved"
+    | Operation.RetireSources -> "The accepted results are retired"
+    | Operation.TransitionDataset _ -> "The dataset's new state is saved"
+    | other -> $"{actionName other} is done"
 
 /// The persistence indicator's state: pending, saved, partial, failed or unknown.
 let persistenceState (activity: Activity) =
@@ -233,14 +324,21 @@ let persistenceState (activity: Activity) =
     | _, Some(_, Unknown) -> "unknown"
     | _, None -> ""
 
-/// What the persistence indicator says. It never says "saved" before the
-/// store confirmed, and never turns an unknown outcome into a failure.
+/// What the persistence indicator says. It never says a change is done
+/// before the store confirmed, and never turns an unknown outcome into a
+/// failure.
 let persistenceText (activity: Activity) =
     match activity.Running, activity.LastWrite with
-    | Some operation, _ when kind operation = Write -> $"{pendingLabel operation}: not saved until the store confirms."
-    | _, Some(operation, Confirmed) -> $"{subject operation} is saved: the store confirmed it."
-    | _, Some(operation, Partial remaining) -> $"{subject operation} is saved in part: {remaining} item(s) are still to do. Import them again to continue."
-    | _, Some(operation, NotDone _) -> $"{subject operation} was not saved; the notice says why."
+    | Some operation, _ when kind operation = Write -> $"{pendingLabel operation}: {notYet operation} until the store confirms."
+    | _, Some(operation, Confirmed) -> $"{doneText operation}: the store confirmed it."
+    | _, Some(_, Partial remaining) -> $"The import is saved in part: {remaining} item(s) are still to do. Import them again to continue."
+    | _, Some(operation, NotDone _) -> $"“{actionName operation}” did not complete; the notice says why."
     | _, Some(operation, Unknown) ->
-        $"Whether {(subject operation).ToLowerInvariant()} was saved is not known yet. It is checked with the store before anything is sent again; refresh to see what the store holds."
+        $"Whether “{actionName operation}” took effect is not known. Refresh to check what the store holds; changes wait until then."
     | _, None -> ""
+
+/// What the page says about an owed reload, if anything.
+let reloadText (activity: Activity) =
+    match activity.Reload with
+    | Owed when activity.Running.IsNone -> "Another tab changed this dataset while an operation ran. Refresh to see what the store holds now."
+    | _ -> ""

@@ -51,6 +51,7 @@ let private groupItem (model: Model) (group: GroupSummary) =
       "phase", Text(AdminState.phaseName group.Phase)
       // The phase's chip tone (SIG-VIS-PENDING-001), from the phase itself.
       "phaseTone", Text(StateTones.toneId (StateTones.ofPhase group.Phase))
+      "phaseLabel", Text(StateTones.phaseLabel group.Phase)
       "status", Text(GroupLifecycle.statusName group.Status)
       "href", Text(href (Group group.Key))
       "resultsHref", Text(href (Results(group.Key, defaultResults)))
@@ -272,6 +273,7 @@ let project (model: Model) : View =
       "hasGroup", flag selected.IsSome
       "groupKey", text (selected |> Option.map _.Key |> Option.defaultValue "")
       "groupPhase", text (selected |> Option.map (_.Phase >> AdminState.phaseName) |> Option.defaultValue "")
+      "groupPhaseLabel", text (selected |> Option.map (_.Phase >> StateTones.phaseLabel) |> Option.defaultValue "")
       "groupPhaseTone", text (selected |> Option.map (_.Phase >> StateTones.ofPhase >> StateTones.toneId) |> Option.defaultValue "")
       "groupProgress", text (selected |> Option.map (fun g -> $"{g.Accepted} of {g.Expected} accepted") |> Option.defaultValue "")
       // ARX-009: newer responses are shown only once they cannot be singled out by difference.

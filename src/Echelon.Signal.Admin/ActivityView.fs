@@ -27,7 +27,8 @@ let fieldsWith (activity: Activity) (prefix: string) (operation: Operation) (lab
     let mine = isRunningOp operation activity
 
     [ $"{prefix}Busy", ariaFlag mine
-      $"{prefix}Disabled", Flag(isRunning activity && not mine)
+      // Another operation runs, or a change waits on a reconciliation.
+      $"{prefix}Disabled", Flag(not mine && not (canStart operation activity))
       $"{prefix}Label", Text(if mine then pending else label) ]
 
 /// The same, with the present participle of the control's own words while it runs.
@@ -39,7 +40,7 @@ let control (activity: Activity) (prefix: string) (operation: Operation) (label:
     fields activity prefix operation label |> List.map (fun (name, value) -> name, Value value)
 
 /// The words that say what is running, for the activity region.
-let private runningText (model: Model) (operation: Operation) =
+let private readingText (model: Model) (operation: Operation) =
     match operation with
     | Operation.OpenDataset id ->
         let label =
@@ -51,27 +52,37 @@ let private runningText (model: Model) (operation: Operation) =
         $"Opening {label}…"
     | other -> $"{pendingLabel other}…"
 
-/// The page's activity and persistence regions, and the page-level guard.
+/// The page's activity region (`#activity`, beside the notice, where the
+/// person acts): what runs, with a spinner; the last change's outcome; an
+/// owed reload. It is the page's one live region for operations: always in
+/// the page, it announces each start and each settle once, the notice's
+/// sentence included (the notice itself is not a second live region).
 let project (model: Model) : View =
     let activity = model.Activity
+    let signingIn = model.SignIn = Echelon.Signal.Admin.Credential.SigningIn
+
+    let runningText =
+        match activity.Running with
+        | Some operation when kind operation = Write -> persistenceText activity
+        | Some operation -> readingText model operation
+        | None when signingIn -> "Signing in with GitHub…"
+        | None -> ""
+
+    let settledText = if isRunning activity then "" else persistenceText activity
+    let reload = reloadText activity
+    let notice = model.Notice |> Option.map _.Message |> Option.defaultValue ""
 
     [ // Some operation runs: the controls that start none but were unavailable
       // while the page was busy stay so (startDraft, deriveDraft, the site file…).
       "busy", Value(Flag(isRunning activity))
-      "operationRunning", Value(Flag(isRunning activity))
-      // What runs; a change also says it is not saved until the store confirms.
-      "operationText",
-      Value(
-          Text(
-              match activity.Running with
-              | Some operation when kind operation = Write -> persistenceText activity
-              | Some operation -> runningText model operation
-              | None -> ""
-          )
-      )
+      "operationRunning", Value(Flag(isRunning activity || signingIn))
+      "operationText", Value(Text runningText)
       // The persistence indicator: pending, saved, partial, failed or unknown.
       "persistenceState", Value(Text(persistenceState activity))
-      "hasPersistence", Value(Flag(activity.LastWrite.IsSome && not (isRunning activity)))
-      "persistenceText", Value(Text(persistenceText activity))
-      // Another tab changed the dataset while an operation ran.
-      "reloadOwed", Value(Flag(activity.ReloadOwed && not (isRunning activity))) ]
+      "hasPersistence", Value(Flag(settledText <> ""))
+      "persistenceText", Value(Text settledText)
+      "reloadOwed", Value(Flag(reload <> ""))
+      "reloadText", Value(Text reload)
+      // The notice's sentence for assistive technology, inside the live
+      // region; visually the notice shows it.
+      "noticeAnnouncement", Value(Text(if isRunning activity then "" else notice)) ]

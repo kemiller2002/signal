@@ -31,7 +31,7 @@ let configured =
 let local = """{"environment":"local","environmentName":"local"}"""
 
 let offer =
-    $"""{{"protocol":{{"major":1,"minor":4}},"contract":{{"unit":"limen.core","version":1,"fingerprint":"{Limen.core.Fingerprint}"}},"capabilities":[{{"id":"{AdminProtocol.schedule.Id}","version":1,"fingerprint":"{AdminProtocol.schedule.Fingerprint}"}},{{"id":"{AdminProtocol.host.Id}","version":1,"fingerprint":"{AdminProtocol.host.Fingerprint}"}},{{"id":"{AdminProtocol.files.Id}","version":1,"fingerprint":"{AdminProtocol.files.Fingerprint}"}}]}}"""
+    $"""{{"protocol":{{"major":1,"minor":4}},"contract":{{"unit":"limen.core","version":1,"fingerprint":"{Limen.core.Fingerprint}"}},"capabilities":[{{"id":"{AdminProtocol.schedule.Id}","version":1,"fingerprint":"{AdminProtocol.schedule.Fingerprint}"}},{{"id":"{AdminProtocol.host.Id}","version":1,"fingerprint":"{AdminProtocol.host.Fingerprint}"}},{{"id":"{AdminProtocol.files.Id}","version":1,"fingerprint":"{AdminProtocol.files.Fingerprint}"}},{{"id":"{AdminProtocol.focus.Id}","version":1,"fingerprint":"{AdminProtocol.focus.Fingerprint}"}}]}}"""
 
 let initialize (query: string) (hash: string) =
     $"""{{"kind":"Initialize","protocolVersion":1,"capabilities":["Http","Storage","Clipboard","Navigation"],"location":{{"origin":"http://127.0.0.1:4321","path":"/web/admin/index.html","query":"{query}","hash":"{hash}"}},"handshake":{offer}}}"""
@@ -122,6 +122,20 @@ type Browser(configuration: string option) =
 type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
     let keys = ref 0
     let bridge = Bridge.Bridge<AdminWork.Outcome>()
+    // Faults a test arranges (SIG-VIS-PENDING-002): the store unreachable from
+    // a point on, an action once the next commit landed, an exception inside
+    // the next write, and commits whose outcome stays unknown.
+    let offlineNow = ref false
+    let afterCommit = ref (0, (fun () -> ()))
+    let faultNextWrite = ref false
+    let stillUnknown = ref false
+    let reachable () = reachable () && not offlineNow.Value
+
+    let unknownPending () : PendingReconciliation =
+        { IdempotencyKey = (match IdempotencyKey.create "op-still-unknown-0001" with Ok key -> key | Error e -> failwith $"%A{e}")
+          Base = ChangeToken "still-unknown"
+          Candidate = None
+          Revisions = Map.empty }
 
     let backend: Store.Backend =
         let offline () = async.Return(Error(StorageFailure.ProviderFailed("AEGIS.NETWORK.UNAVAILABLE", true, "offline")))
@@ -133,7 +147,26 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
                 { real with
                     Read = fun ns p -> if reachable () then real.Read ns p else offline ()
                     List = fun ns p -> if reachable () then real.List ns p else offline ()
-                    Commit = fun o -> if reachable () then real.Commit o else offline ()
+                    Commit =
+                        fun o ->
+                            if not (reachable ()) then
+                                offline ()
+                            elif stillUnknown.Value then
+                                async.Return(Error(StorageFailure.OutcomeUnknown(unknownPending ())))
+                            else
+                                async {
+                                    let! result = real.Commit o
+
+                                    match afterCommit.Value with
+                                    | 1, landed ->
+                                        afterCommit.Value <- (0, (fun () -> ()))
+                                        landed ()
+                                    | n, landed when n > 1 -> afterCommit.Value <- (n - 1, landed)
+                                    | _ -> ()
+
+                                    return result
+                                }
+                    Reconcile = fun ns pending -> if stillUnknown.Value then async.Return(Ok(ReconcileOutcome.StillUnknown pending)) else real.Reconcile ns pending
                     ChangeToken = fun ns -> if reachable () then real.ChangeToken ns else offline ()
                     NamespaceState = fun ns -> if reachable () then real.NamespaceState ns else offline () }
           Resolve =
@@ -155,7 +188,16 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
 
     let env: AdminWork.Env =
         { Now = fun () -> start
-          NewKey = fun prefix -> $"{prefix}-{Threading.Interlocked.Increment keys:D6}"
+          NewKey =
+            fun prefix ->
+                // A planted operational failure inside the next write's work (its
+                // operation context): an exception, not an answer. (A programming
+                // defect is re-raised by Aegis and fails loudly instead.)
+                if prefix = "op" && faultNextWrite.Value then
+                    faultNextWrite.Value <- false
+                    raise (Json.CapabilityFailed("signal.store", "planted: the operation threw"))
+
+                $"{prefix}-{Threading.Interlocked.Increment keys:D6}"
           RandomBytes = fun count -> Array.init count (fun i -> byte (i + keys.Value))
           Bridge = bridge
           Backend = fun _ _ -> backend
@@ -200,6 +242,15 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
     /// The engine's model as the wire holds it now, for pure update tests
     /// that start from a real signed-in page (OperationsTests).
     member _.Model = state.Model
+    /// The store answers nothing from now on (offline), or again.
+    member _.GoOffline() = offlineNow.Value <- true
+    member _.GoOnline() = offlineNow.Value <- false
+    /// Runs `action` once the `count`th commit from now has landed.
+    member _.AfterCommits(count: int, action: unit -> unit) = afterCommit.Value <- (count, action)
+    /// The next write's work throws before it commits.
+    member _.FaultNextWrite() = faultNextWrite.Value <- true
+    /// Commits report an unknown outcome that reconciliation cannot settle.
+    member _.CommitsStayUnknown(on: bool) = stillUnknown.Value <- on
 
 let openPage (configuration: string option) =
     let browser = Browser(configuration)

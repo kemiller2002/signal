@@ -40,7 +40,15 @@ let files =
       Version = 1
       Fingerprint = "sha256:2cf28b1016994b11955c412282ec6038a6c8c205a056b14c6039ef6fd5bfabdf" }
 
-let wanted = [ schedule; host; files ]
+/// `limen.focus` v1 (from the installed package's generated contract): moving
+/// focus to a status the engine names after an operation settles
+/// (SIG-VIS-PENDING-002). Targets are `data-focus-target` names in the page.
+let focus =
+    { Id = "limen.focus"
+      Version = 1
+      Fingerprint = "sha256:6180bce797be6bf993594d62570550a2dc72507edc136263c52e262c5f7c66ec" }
+
+let wanted = [ schedule; host; files; focus ]
 
 type StorageResult =
     | StorageValue of value: string option
@@ -232,6 +240,8 @@ type Request =
     | Host of correlationId: string * operation: string * arguments: (string * string) list
     /// A `limen.files` download: the file name, its media type and its text.
     | Download of correlationId: string * fileName: string * mimeType: string * data: string
+    /// A `limen.focus` move to the element named `data-focus-target="target"`.
+    | Focus of correlationId: string * target: string
 
 let private writeScalar (writer: Utf8JsonWriter) =
     function
@@ -336,6 +346,14 @@ let private writeRequest (writer: Utf8JsonWriter) (request: Request) =
             w.WriteString("mimeType", mimeType)
             w.WriteString("format", "text")
             w.WriteString("data", data))
+    | Focus(correlationId, target) ->
+        writeCapability writer correlationId focus (fun w ->
+            w.WriteString("operation", "focus")
+            w.WritePropertyName "target"
+            w.WriteStartObject()
+            w.WriteString("name", target)
+            w.WriteEndObject()
+            w.WriteBoolean("preventScroll", false))
 
     writer.WriteEndObject()
 

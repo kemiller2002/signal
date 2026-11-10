@@ -91,6 +91,10 @@ let private onNamedEvent (model: Model) (name: string) (key: string option) (val
         if value = "" then members |> List.filter ((<>) member') else member' :: members |> List.distinct |> List.sort
 
     match name with
+    // A confirmation whose change is running cannot be cancelled: it closes
+    // when the change is answered (SIG-VIS-PENDING-002).
+    | "cancelDeleteDraft"
+    | "cancelRetire" when Operations.isRunning model.Activity -> model, []
     | "retention" -> { model with Retention = (if value = "tab" then Credential.ThisTab else Credential.ThisPage) }, []
     | "signIn" when model.SignIn <> Credential.SigningIn ->
         match model.Deployment |> Option.bind _.Identity with
@@ -323,14 +327,6 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
     | Some(original, action) -> onNamedEvent model original key action
     | None -> onNamedEvent model name key value
 
-/// The operation in flight settled by `msg`, when `msg` answers it
-/// (`AdminApp.answer`): before the message itself is applied, so what it
-/// starts (a new group's view) finds nothing running.
-let private settled (msg: Msg) (model: Model) : Model =
-    match model.Activity.Running |> Option.bind (fun running -> AdminApp.answer running msg) with
-    | Some outcome -> { model with Activity = Operations.settle outcome model.Activity }
-    | None -> model
-
 let private apply (msg: Msg) (model: Model) : Model * Effect list =
     match msg with
     | Started(page, query) ->
@@ -375,16 +371,15 @@ let private apply (msg: Msg) (model: Model) : Model * Effect list =
 
                 // Reloaded now; while an operation runs, the reload would race it
                 // (`Operations`), so the page asks for a refresh once it is answered.
-                match started Operations.Operation.Refresh model with
+                match started Operations.Operation.Refresh (if Operations.isRunning model.Activity then model else { model with Activity = Operations.oweReload model.Activity }) with
                 | Some model -> model, [ OpenDataset dataset.DatasetId ]
-                | None -> { model with Activity = { model.Activity with ReloadOwed = true } }, []
+                | None -> { model with Activity = Operations.oweReload model.Activity }, []
         | None -> model, []
     | DatasetOpened(dataset, at) ->
         { model with
             Dataset = Some dataset
             Connectivity = Credential.Online
-            LastVerified = Some at
-            Activity = { model.Activity with ReloadOwed = false } },
+            LastVerified = Some at },
         []
     | CatalogLoaded(catalog, listing) ->
         let template = if catalog |> List.exists (fun e -> e.Hash = model.NewGroup.Template) then model.NewGroup.Template else catalog |> List.tryHead |> Option.map _.Hash |> Option.defaultValue ""
@@ -394,7 +389,7 @@ let private apply (msg: Msg) (model: Model) : Model * Effect list =
     | DraftDeleted survey -> { model with Authoring = Authoring.deleted survey model.Authoring }, []
     | DefinitionSaved entry -> { model with Builder = ReportBuilder.saved entry model.Builder }, []
     | ExportReady(name, mime, data) -> model, [ Download(name, mime, data) ]
-    | DraftSaved survey -> { model with Authoring = Authoring.saved survey model.Authoring }, []
+    | DraftSaved stored -> { model with Authoring = Authoring.saved stored model.Authoring }, []
     | DraftPublished(survey, _) -> { model with Authoring = Authoring.published survey model.Authoring }, []
     | GroupUpdated group ->
         match model.Dataset with
@@ -427,6 +422,33 @@ let private apply (msg: Msg) (model: Model) : Model * Effect list =
     | LinkCopied false ->
         { model with Notice = Some { Code = "SIGNAL.LINK.NOT_COPIED"; Message = "The browser did not allow copying. Copy the address from the address bar instead."; Infrastructure = false } }, []
     | Ui(name, key, value) -> onUi model name key value
+    // Settled as unknown before it is applied (`AdminApp.answer`); the wire
+    // presents the fault itself through Aegis.
+    | OperationFaulted -> model, []
+
+/// A confirmation held open while its change ran closes once it is answered.
+let private closeConfirmation (operation: Operations.Operation) (model: Model) =
+    match operation with
+    | Operations.Operation.DeleteDraft -> { model with Authoring = { model.Authoring with ConfirmDelete = None } }
+    | Operations.Operation.RetireSources -> { model with RetireConfirm = None }
+    | _ -> model
+
+/// Where focus goes once an operation is answered, when the control that
+/// started it may be gone (a closed confirmation, a lifecycle button that no
+/// longer applies, a hidden version): the activity status beside the notice.
+let private focusAfter (operation: Operations.Operation) =
+    match operation with
+    | Operations.Operation.DeleteDraft
+    | Operations.Operation.RetireSources
+    | Operations.Operation.HideVersion _
+    | Operations.Operation.TransitionGroup _
+    | Operations.Operation.TransitionDataset _ -> [ Focus "activity" ]
+    | _ -> []
 
 /// The next model and the effects to perform.
-let update (msg: Msg) (model: Model) : Model * Effect list = apply msg (settled msg model)
+let update (msg: Msg) (model: Model) : Model * Effect list =
+    match model.Activity.Running |> Option.bind (fun running -> AdminApp.answer running msg |> Option.map (fun outcome -> running, outcome)) with
+    | Some(running, outcome) ->
+        let model, effects = apply msg (closeConfirmation running { model with Activity = Operations.settle outcome model.Activity })
+        model, effects @ focusAfter running
+    | None -> apply msg model

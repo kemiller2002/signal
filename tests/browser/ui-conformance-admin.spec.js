@@ -88,7 +88,9 @@ test("ULI-A02/A05: groups are created, listed, filtered, compared and moved thro
   const store = await signInWithStore(page);
   const key = await createGroup(page);
   expect(recordsOf(store, "signal.group")).toEqual([`prod/signal/datasets/ds_engagement/records/signal.group/${key}.json`]);
-  await expect(page.locator("#group-phase")).toHaveText("GroupReady");
+  // The phase's id is kept in data-phase; the chip shows plain words (SIG-VIS-PENDING-002).
+  await expect(page.locator("#group-phase")).toHaveAttribute("data-phase", "GroupReady");
+  await expect(page.locator("#group-phase")).toHaveText("Ready");
 
   // The list holds it, and a typed filter is held in the address.
   await area(page, "Groups");
@@ -125,7 +127,8 @@ test("ULI-A02/A05: groups are created, listed, filtered, compared and moved thro
   const phase = page.locator("#group-phase");
   await page.getByRole("button", { name: "Finalize" }).click();
   await expect(notice(page)).toContainText("The derived index is out of date; rebuild it.", { timeout: STORE_STEP_MS });
-  await expect(phase).toHaveText("GroupReady");
+  await expect(phase).toHaveAttribute("data-phase", "GroupReady");
+  await expect(phase).toHaveText("Ready");
   await area(page, "Storage");
   await page.getByRole("button", { name: "Rebuild the contribution index" }).click();
   await expect(notice(page)).toContainText("The contribution index was rebuilt", { timeout: STORE_STEP_MS });
@@ -135,11 +138,12 @@ test("ULI-A02/A05: groups are created, listed, filtered, compared and moved thro
   await row.getByRole("link", { name: key }).click();
   const lifecycle = (name) => page.locator("#lifecycle").getByRole("button", { name, exact: true });
   const stored = () => store.read(`prod/signal/datasets/ds_engagement/records/signal.group-lifecycle/${key}.json`) ?? "";
-  for (const [button, after] of [["Close incomplete", "ClosedIncomplete"], ["Reopen", "GroupReady"], ["Close incomplete", "ClosedIncomplete"],
-    ["Finalize", "FinalizedIncomplete"], ["Seal", "Sealed"]]) {
+  for (const [button, after, label] of [["Close incomplete", "ClosedIncomplete", "Closed (incomplete)"], ["Reopen", "GroupReady", "Ready"],
+    ["Close incomplete", "ClosedIncomplete", "Closed (incomplete)"], ["Finalize", "FinalizedIncomplete", "Finalized (incomplete)"], ["Seal", "Sealed", "Sealed"]]) {
     const before = stored();
     await lifecycle(button).click();
-    await expect(phase).toHaveText(after, { timeout: STORE_STEP_MS });
+    await expect(phase).toHaveAttribute("data-phase", after, { timeout: STORE_STEP_MS });
+    await expect(phase).toHaveText(label);
     expect(stored()).not.toBe(before);
   }
   await expect(page.locator("#lifecycle").getByRole("button")).toHaveCount(0);
