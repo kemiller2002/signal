@@ -101,3 +101,12 @@
 }
 .respondent-card .survey-section { margin: 0; }
 .respondent-progress #progress { color: var(--echelon-text-secondary); }
+
+/* A best-worst row on a phone (and at 320 px with 200% text): the option
+   takes the whole row and "Fits best" and "Fits least" share the row below
+   in two equal columns, so the option is never squeezed to a few letters a
+   line and the columns still line up from row to row (ULI-L09). */
+@media (max-width: 30rem) {
+  .respondent-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .respondent-pair > :first-child { grid-column: 1 / -1; }
+}
