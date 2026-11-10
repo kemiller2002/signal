@@ -178,6 +178,25 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - Evidence: CI on `d2ab83d` green (693 .NET, 191 Playwright); `visual-evidence/baseline-d2ab83d` (85 screens, 540 shots, all 85 audited, no finding; 959 focus stops, all visible).
 - The improved audit on `e9eed4e` found admin panels overflowing with 200% text at 320 px (fixed in `afee558`, now also asserted by the shell test), an unavailable report link at 2.42:1 from an old `opacity: 0.6` (secondary colour now), and light shots taken mid colour-transition after a dark one (the capture now waits for finite animations, `98532cc`).
 
+### signal#136 review round 2 (WI-0127, 2026-11-10)
+
+- **Outcome beside the actions on long views.** It restores #133's SIG-VIS-PENDING-002.2.
+  - The shell keeps #activity and #notice at the top of `<main>`.
+  - The draft editor (between Save/Delete and Review/Publish, and in the draft's place once it is deleted), Assessments (after the versions' Hide buttons) and the report builder now show `.admin-outcome`: a non-live copy of the persistence line, the reload line, the editor's refusal and the notice.
+  - #activity stays the one announcer.
+  - Deleted-draft and hidden-version focus moves to that copy (`data-focus-target="outcome"`), not to #activity.
+  - Tests: `tests/browser/outcome-beside-actions.spec.js`; `pending-states.spec.js` (delete draft, and hide focus within 400 px of the Hide button); `OperationsFollowUpTests` (Focus "outcome").
+- **Unresolved work is stated truthfully.**
+  - On open and refresh, groups are summarised with `GroupAdmin.summary 0 None`. An import whose outcome is unknown is therefore listed only when it happens on this page.
+  - The empty state now says so, and that finalizing still checks every stored import (`AdminView.noUnresolvedWork`).
+  - The resolution now says to import exactly the same links again (`AdminView.resumeImport`, also shown on the Imported surveys tab). Batches are identified by their exact link set.
+  - Follow-up WI-0126 will read stored batches on open and refresh.
+- **Page-flow test.** `ShellProjectionTests` renders an obligation through an import whose commit stays unknown. The AdminLinkTests comment now cites it.
+- **New captures:**
+  - `admin-overview-unresolved`;
+  - `admin-assessments-version-hidden`;
+  - viewport shots of `admin-draft-saved`, `admin-publish-refused` and `admin-draft-deleted`, scrolled to their action (the capture `anchor` field).
+
 ### signal#136 review round (WI-0125, 2026-11-10)
 
 - REQUEST_CHANGES at `977ffb9` (visual gate). Fixed in `4227355` and `8d48eae`: the notice's "Technical detail" no longer collapses at 834 px; the Retention panel says why nothing can be retired (`RetentionScreen.retentionNote`); unresolved work is one item per obligation per group with its group, a path (the group's imported surveys, or Storage) and what resolves it (`AdminView.obligationsOf`, `obligationPath`; `ShellProjectionTests`); order is dataset title, activity, notice, then tabs; danger on Delete draft's confirmation and the Retire / Delete from active state targets; group filters labelled as the chips; `admin.areas` declared top from 768, left below.

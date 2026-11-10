@@ -81,6 +81,20 @@ let obligationsOf (groups: (string * int * int) list) =
 let private obligations (dataset: DatasetSummary) =
     dataset.Groups |> List.map (fun g -> g.Key, g.UnreconciledBatches, g.Problems.Length) |> obligationsOf
 
+/// How an interrupted import is resumed. Batches are identified by the exact
+/// set of links they carry, so only the same links, imported again, resume
+/// one; the engine skips what it already decided and counts nothing twice.
+let resumeImport =
+    "Import exactly the same completed-survey links again to resume: Signal finishes what was interrupted, skips what it already decided and never counts a link twice. Until then the group cannot be finalized."
+
+/// Says truthfully how far the overview's unresolved work reaches: record
+/// problems are read with the dataset, but an import whose outcome is unknown
+/// is known only when it happens on this page (WI-0126 would read stored
+/// batches instead).
+/// Finalizing a group still checks every stored import.
+let noUnresolvedWork =
+    "No unresolved work found. An import whose outcome Signal could not confirm appears here only when it happens on this page; finalizing a group still checks every import stored for it."
+
 /// Where the person goes to resolve an obligation, and what resolves it: a
 /// path through the console, never an action the console does not have.
 let obligationPath (group: string) (obligation: AdminState.Obligation) =
@@ -88,7 +102,7 @@ let obligationPath (group: string) (obligation: AdminState.Obligation) =
     | AdminState.ReconcileUnknownWrite _ ->
         href (Imports(group, [])),
         "Open the group's imported surveys",
-        "Resolved when the interrupted import is resumed from its stored record and its outcome is confirmed; it is listed there under Requiring reconciliation."
+        resumeImport
     | AdminState.RebuildDerivedProjection ->
         href Storage, "Open Storage", "Resolved by rebuilding the contribution index in Storage."
     | AdminState.RepairCorruptRecords _ ->
@@ -287,6 +301,8 @@ let project (model: Model) : View =
           )
           |> Option.defaultValue []
       )
+      "resumeImport", Text resumeImport
+      "noUnresolvedWork", Text noUnresolvedWork
       // Whether the dataset, once read, has unresolved work: the overview's
       // attention cue, and its plain "nothing unresolved" line, come from the
       // same list, never from a guess (SIG-ECHELON-APP-002).

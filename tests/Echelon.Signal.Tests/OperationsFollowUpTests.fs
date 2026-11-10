@@ -123,7 +123,7 @@ let ``the bridge returns every message of a drain, also when another operation t
     Assert.Single(failed) |> ignore
 
 [<Fact>]
-let ``delete draft keeps its confirmation busy until answered, then closes it and moves focus to the status`` () =
+let ``delete draft keeps its confirmation busy until answered, then closes it and moves focus to the outcome in the draft's place`` () =
     let page = onStoredDraft ()
     page.Event("deleteDraft")
     let model = page.Model.Value
@@ -140,17 +140,21 @@ let ``delete draft keeps its confirmation busy until answered, then closes it an
     Assert.Empty(ignored)
     Assert.Equal(View.Value(View.Flag true), value "confirmingDeleteDraft" kept)
 
-    // Refused: closed, focus to the status, the draft still there.
+    // Refused: closed, focus to the outcome shown beside the draft's actions
+    // (.admin-outcome; #activity is at the top of the long page: signal#136
+    // review round 2), the draft still there.
     let refusal: AdminApp.Notice = { Code = "SIGNAL.AUTHORING.NO_DRAFT"; Message = "There is no stored draft of PULSE."; Infrastructure = false }
     let refused, effects = AdminUpdate.update (AdminApp.Failed refusal) deleting
     Assert.Equal(View.Value(View.Flag false), value "confirmingDeleteDraft" refused)
-    Assert.Contains(AdminApp.Focus "activity", effects)
-    // Deleted: closed, focus to the status, the editor closed. (The listing
+    Assert.Contains(AdminApp.Focus "outcome", effects)
+    Assert.DoesNotContain(AdminApp.Focus "activity", effects)
+    // Deleted: closed, focus to the outcome in the draft's place, the editor closed. (The listing
     // drops the draft with the catalog reread that precedes this message.)
     let deleted, effects = AdminUpdate.update (AdminApp.DraftDeleted "PULSE") deleting
     Assert.Equal(View.Value(View.Flag false), value "confirmingDeleteDraft" deleted)
     Assert.True(deleted.Authoring.Editor.IsNone)
-    Assert.Contains(AdminApp.Focus "activity", effects)
+    Assert.Contains(AdminApp.Focus "outcome", effects)
+    Assert.DoesNotContain(AdminApp.Focus "activity", effects)
 
 [<Fact>]
 let ``retire keeps its confirmation busy until answered, then closes it and moves focus back to its button when refused`` () =

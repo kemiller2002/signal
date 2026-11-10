@@ -177,6 +177,16 @@
           <template data-if="canBuildReports"><button type="button" class="forma-button" data-event="saveReportDefinition" data-bind-disabled="saveDefinitionDisabled" data-bind-aria-busy="saveDefinitionBusy" data-bind-aria-disabled="saveDefinitionBusy" data-text="saveDefinitionLabel">Save definition</button></template>
         </section>
       </template>
+      <!-- The outcome beside the actions on a long view (the report builder): a visual copy of
+           #activity's persistence and the notice's sentence, not a live region, so
+           #activity stays the one announcer (signal#136 review round 2; #133's
+           SIG-VIS-PENDING-002.2). Focus comes here after a change that removes
+           its own control (a deleted draft, a hidden version). -->
+      <div class="admin-outcome" tabindex="-1" data-focus-target="outcome">
+        <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
+        <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
+        <template data-if="hasNotice"><p class="admin-outcome__notice" data-text="notice"></p></template>
+      </div>
     </section>
   </template>
   <template data-if="viewDraft">
@@ -441,6 +451,17 @@
             <button type="button" class="forma-button" data-event="cancelDeleteDraft" data-bind-disabled="busy">Keep it</button>
           </div>
         </template>
+        <!-- The outcome beside the draft's actions: a visual copy of #activity's
+             persistence and the notice's sentence, not a live region, so #activity
+             (at the top of this long page) stays the one announcer (signal#136
+             review round 2; #133's SIG-VIS-PENDING-002.2). It sits between Save
+             and Publish so either one's outcome is on screen beside it. -->
+        <div class="admin-outcome" tabindex="-1" data-focus-target="outcome">
+          <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
+          <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
+          <template data-if="hasAuthoringProblem"><p class="admin-outcome__notice" data-text="authoringProblem"></p></template>
+          <template data-if="hasNotice"><p class="admin-outcome__notice" data-text="notice"></p></template>
+        </div>
         <h3>Review</h3>
         <p id="draft-review" data-text="draftReview"></p>
         <template data-if="canRequestReview"><button type="button" class="forma-button" data-event="requestReview" data-bind-disabled="requestReviewDisabled" data-bind-aria-busy="requestReviewBusy" data-bind-aria-disabled="requestReviewBusy" data-text="requestReviewLabel">Submit for review</button></template>
@@ -449,6 +470,15 @@
       </div>
       </template>
       <template data-if="hasNoDraft"><p>There is no draft of <span data-text="draftSurvey"></span>. Start one or derive one from a published version under Assessments.</p></template>
+      <!-- A deleted draft: its outcome, where the draft was. Focus comes here. -->
+      <template data-if="hasNoDraft">
+        <div class="admin-outcome" tabindex="-1" data-focus-target="outcome">
+          <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
+          <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
+          <template data-if="hasAuthoringProblem"><p class="admin-outcome__notice" data-text="authoringProblem"></p></template>
+          <template data-if="hasNotice"><p class="admin-outcome__notice" data-text="notice"></p></template>
+        </div>
+      </template>
     </section>
   </template>
   <template data-if="viewAssessments">
@@ -497,6 +527,17 @@
               </li>
             </template>
           </ul>
+          <!-- The outcome beside the actions on a long view (Assessments, after the versions' Hide buttons): a visual copy of
+               #activity's persistence and the notice's sentence, not a live region, so
+               #activity stays the one announcer (signal#136 review round 2; #133's
+               SIG-VIS-PENDING-002.2). Focus comes here after a change that removes
+               its own control (a deleted draft, a hidden version). -->
+          <div class="admin-outcome" tabindex="-1" data-focus-target="outcome">
+            <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
+            <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
+            <template data-if="hasAuthoringProblem"><p class="admin-outcome__notice" data-text="authoringProblem"></p></template>
+            <template data-if="hasNotice"><p class="admin-outcome__notice" data-text="notice"></p></template>
+          </div>
           <ul id="template-drafts">
             <template data-each="draftLinks" data-key="key"><li><span class="echelon-chip" data-bind-data-echelon-tone="lifecycleTone" data-text="lifecycle">Draft</span> · <a data-bind-href="href" data-text="label"></a></li></template>
           </ul>
@@ -607,7 +648,7 @@
                   </li>
                 </template>
               </ul>
-              <template data-if="noObligations"><p id="no-obligations">Nothing in this dataset is waiting to be resolved.</p></template>
+              <template data-if="noObligations"><p id="no-obligations" data-text="noUnresolvedWork"></p></template>
             </div>
           </section>
           <div class="admin-figures" role="group" aria-label="Groups at a glance">
@@ -823,6 +864,7 @@
                 <form id="import" class="echelon-panel" data-event="import" aria-labelledby="import-title">
                   <div class="echelon-panel__header"><h3 id="import-title" class="echelon-heading">Import completed surveys</h3></div>
                   <div class="echelon-panel__body forma-stack">
+                  <p id="resume-import" class="forma-field__description" data-text="resumeImport"></p>
                   <label>Completed survey links, one per line
                     <textarea rows="6" data-event="importText" data-bind-value="importText"></textarea>
                   </label>
@@ -848,7 +890,7 @@
                 <details id="importAccepted"><summary>Accepted</summary><ul><template data-each="importAccepted" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
                 <details id="importDuplicate"><summary>Duplicates</summary><ul><template data-each="importDuplicate" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
                 <details id="importRejected"><summary>Rejected</summary><ul><template data-each="importRejected" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
-                <details id="importReconciliation"><summary>Requiring reconciliation</summary><ul><template data-each="importReconciliation" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
+                <details id="importReconciliation"><summary>Requiring reconciliation</summary><p class="forma-field__description" data-text="resumeImport"></p><ul><template data-each="importReconciliation" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
                 <details id="importBlockedTemplate"><summary>Blocked by a missing template</summary><ul><template data-each="importBlockedTemplate" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
                 <details id="importBlockedEncoding"><summary>Blocked by an unsupported encoding</summary><ul><template data-each="importBlockedEncoding" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
                 <p><strong data-text="batchStatus"></strong> <span data-text="batchCounts"></span></p>

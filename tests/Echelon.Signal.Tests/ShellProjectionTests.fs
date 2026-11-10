@@ -5,8 +5,10 @@
 /// lifecycle targets are marked; the Retention panel never stands empty.
 module Echelon.Signal.Tests.ShellProjectionTests
 
+open System
 open Xunit
 open Echelon.Signal.Admin
+open Echelon.Signal.Tests.AdminPageTests
 
 [<Fact>]
 let ``two groups with the same obligation are two items, each naming its group`` () =
@@ -29,7 +31,10 @@ let ``each obligation links where it is resolved, and says what resolves it`` ()
     let link, label, resolution = AdminView.obligationPath "g-one" (AdminState.ReconcileUnknownWrite 1)
     Assert.Equal(Routes.href (Routes.Imports("g-one", [])), link)
     Assert.Equal("Open the group's imported surveys", label)
-    Assert.Contains("Requiring reconciliation", resolution)
+    // Batches are identified by the exact set of links they carry: only the
+    // same links, imported again, resume one (signal#136 review round 2).
+    Assert.Equal(AdminView.resumeImport, resolution)
+    Assert.StartsWith("Import exactly the same completed-survey links again to resume", resolution)
 
     let link, label, resolution = AdminView.obligationPath "g-one" (AdminState.RepairCorruptRecords 2)
     Assert.Equal(Routes.href Routes.Storage, link)
@@ -68,3 +73,33 @@ let ``the Retention panel says why nothing can be retired, and nothing when it c
     Assert.Equal<string option>(Some "Retiring accepted results needs a writable store and the ManageStorage grant.", RetentionScreen.retentionNote GroupLifecycle.Finalized false false)
     Assert.Equal<string option>(None, RetentionScreen.retentionNote GroupLifecycle.Finalized false true)
     Assert.Equal<string option>(None, RetentionScreen.retentionNote GroupLifecycle.Sealed true false)
+
+[<Fact>]
+let ``an import whose outcome stays unknown is unresolved work naming its group, its link and how to resume`` () =
+    let _, _, page = signedIn ()
+    page.Event("navigate", key = "/groups")
+    page.Event("newGroupExpected", value = "2")
+    page.Event("newGroupMinimum", value = "1")
+    page.Event("createGroup")
+    let key = page.Text "groupKey"
+    let id = (Echelon.Signal.Engine.UrlState.OpaqueId.ofBytes (Convert.FromHexString key)).Value
+    Assert.True(page.Flag "noObligations", page.ViewText)
+    Assert.Equal(AdminView.noUnresolvedWork, page.Text "noUnresolvedWork")
+
+    // The import's commit is sent but the provider never says whether it
+    // landed: the batch needs reconciliation.
+    page.CommitsStayUnknown(true)
+    page.Event("importText", value = String.concat "\n" [ link 1uy id; link 2uy id ])
+    page.Event("import")
+
+    Assert.True(page.Flag "hasObligations", page.ViewText)
+    Assert.False(page.Flag "noObligations")
+    let item = page.Items "obligations" |> List.exactlyOne
+    let field (name: string) = item[name].GetValue<string>()
+    Assert.Equal("ReconcileUnknownWrite", field "code")
+    Assert.Equal(key, field "group")
+    Assert.Equal(Routes.href (Routes.Imports(key, [])), field "href")
+    Assert.Equal("Open the group's imported surveys", field "linkLabel")
+    Assert.Equal(AdminView.resumeImport, field "resolution")
+    // The Imported surveys tab says the same, where the import is.
+    Assert.Equal(AdminView.resumeImport, page.Text "resumeImport")
