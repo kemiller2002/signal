@@ -184,6 +184,13 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - The empty state: such an import "is not always listed here; when it is, only until the page is refreshed or reopened" (only NeedsReconciliation is counted; part-way, offline and blocked imports show on the persistence line).
 - The release record written after an import has its own unknown-outcome sentence (`AdminWork.releaseStopped`), never "whether the import was saved"; the import's own notice is emitted last so it is the one shown.
 
+### signal#137 reviewer's Low items, recorded (2026-11-10)
+
+- WI-0134: the draft's outcome copy is per view, not per draft (draft B shows draft A's "saved").
+- WI-0135: repeated warning codes are not deduplicated in the warning summary.
+- WI-0136: the multi-warning summary test derives its expectation from the same findings.
+- WI-0137: after finalize, "import the same links again" cannot work because imports are refused.
+
 ### Respondent page (WI-0122, SIG-ECHELON-APP-002 (d), 2026-11-10)
 
 - `web/survey/index.html` in the foundry ledger direction (mockup `respondent.html`): a quiet bar with Signal's mark and the survey's name, the title with its version eyebrow, the page and answered counts from Signal's own projection (no time estimate, no section steps: the engine projects no per-section progress), the questions on one raised card with prompts in the display face, Back tertiary and the one forward action primary, the submitted panel with Copy link primary.

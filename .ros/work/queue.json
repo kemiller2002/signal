@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 134,
+  "nextSeq": 138,
   "items": [
     {
       "id": "WI-0001",
@@ -3205,6 +3205,90 @@
       "attachments": [],
       "createdAt": "2026-11-10T12:30:32.260Z",
       "updatedAt": "2026-11-10T12:50:42.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0134",
+      "title": "Draft outcome copy is per view, not per draft: after saving draft A, opening draft B shows draft A's 'saved' in B's Outcome group (signal#137 review, Low)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T13:07:19.279Z",
+      "updatedAt": "2026-11-10T13:07:19.279Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0135",
+      "title": "The draft's warning summary does not deduplicate repeated warning codes (signal#137 review, Low)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T13:07:19.696Z",
+      "updatedAt": "2026-11-10T13:07:19.696Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0136",
+      "title": "The multi-warning summary test derives its expectation from the same findings instead of a fixed fixture with known codes (signal#137 review, Low)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T13:07:20.108Z",
+      "updatedAt": "2026-11-10T13:07:20.108Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0137",
+      "title": "After a group is finalized, 'import the same links again' cannot resume an unfinished import because imports are refused; the obligation and resolution wording should say so (signal#137 review, Low)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T13:07:20.511Z",
+      "updatedAt": "2026-11-10T13:07:20.511Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
