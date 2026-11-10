@@ -101,7 +101,7 @@ jobs:
           fi
 
       - name: Check the capture's pure planning
-        run: node --test tests/visual/capture-plan.test.mjs
+        run: node --test tests/visual/capture-plan.test.mjs tests/visual/audit.test.mjs
 
       # A screen the capture cannot reach is recorded in the manifest, not
       # fatal. A failure of the run itself still publishes what was captured,

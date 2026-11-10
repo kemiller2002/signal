@@ -9,6 +9,7 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { buildManifest, SCHEMES, VIEWPORTS } from "./capture-plan.mjs";
+import { auditSummary } from "./audit.mjs";
 
 const out = resolve(process.argv[2] ?? process.env.VISUAL_OUT ?? "visual-capture");
 const fragmentsDir = join(out, "fragments");
@@ -53,6 +54,13 @@ const lines = [
   `|---|---|---|${VIEWPORTS.map(() => "---").join("|")}|`,
   ...manifest.screens.map((screen) =>
     `| \`${screen.id}\` ${screen.title} | ${screen.site} | ${screen.auth.required ? "fakes" : "no"} | ${VIEWPORTS.map((v) => SCHEMES.map((s) => cell(screen, v.id, s, "full")).join(" ")).join(" | ")} |`),
+  "",
+  "## Accessibility audit (tests/visual/audit.mjs)",
+  "",
+  "Measured on each screen as captured: WCAG AA text contrast (light, dark; text below AA / text measured), keyboard focus stops with a visible indicator, horizontal overflow with 200% text at 320 CSS px, and running shimmer animations under reduced motion. A forced-colors screenshot is linked. Findings are in manifest.json under each screen's `audit`.",
+  "",
+  ...manifest.screens.map((screen) =>
+    `- \`${screen.id}\`: ${screen.audit?.error ? `audit failed: ${screen.audit.error}` : auditSummary(screen.audit)}${screen.audit?.forcedColors?.file ? ` ([forced colors](${screen.audit.forcedColors.file}))` : ""}`),
   "",
   "## Not captured",
   "",

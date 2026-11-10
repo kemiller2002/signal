@@ -16,8 +16,8 @@
 // tests/browser/fakes/github-store.js).
 //
 // This module holds the capture's shared session: where the evidence goes,
-// the sites, and the scenario wrapper that records every screen. The
-// scenarios themselves are
+// the sites, and the scenario wrapper that records every screen and its
+// accessibility audit (tests/visual/audit.mjs). The scenarios themselves are
 // in capture-public.spec.js (landing, start-up, assessment, survey) and
 // capture-admin.spec.js (the administrator console), split by concern
 // (SDE-STRUCT-001).
@@ -27,6 +27,7 @@ import { fileURLToPath } from "node:url";
 import { test, expect } from "@playwright/test";
 import { origin } from "../browser/ui-conformance-fixtures.mjs";
 import { AUTH, describeSnapshot, distinctStates, logSince, matrix, shotPath, slug } from "./capture-plan.mjs";
+import { auditPage } from "./audit.mjs";
 
 export const OUT = resolve(process.env.VISUAL_OUT ?? "visual-capture");
 const OBSERVER = join(dirname(fileURLToPath(import.meta.url)), "observe-init.js");
@@ -103,7 +104,7 @@ export const session = (scenario) => {
     return log && log.log.length ? describeSnapshot(log.log[log.log.length - 1]) : [];
   };
 
-  const record = async (page, screen, shots) => {
+  const record = async (page, screen, shots, audit = null) => {
     screens.push({
       id: screen.id,
       title: screen.title,
@@ -115,7 +116,8 @@ export const session = (scenario) => {
       steps: pending,
       notes: screen.notes ?? null,
       page: await context(page),
-      shots
+      shots,
+      audit
     });
     previous = screen.id;
     pending = [];
@@ -139,7 +141,19 @@ export const session = (scenario) => {
     }
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.emulateMedia({ colorScheme: "light" });
-    await record(page, screen, shots);
+    // The accessibility audit (tests/visual/audit.mjs, SIG-ECHELON-APP-001.7)
+    // on the same state; a failure of the audit itself is recorded, not thrown.
+    const forced = shotPath(screen.id, "desktop", "forced-colors", "viewport");
+    const audit = await auditPage(page, {
+      screenshot: async () => {
+        mkdirSync(dirname(join(OUT, forced)), { recursive: true });
+        await page.screenshot({ path: join(OUT, forced), caret: "hide" });
+        return forced;
+      }
+    }).catch((error) => ({ error: String(error).slice(0, 300) }));
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.emulateMedia({ colorScheme: "light", reducedMotion: "no-preference", forcedColors: "none" });
+    await record(page, screen, shots, audit);
   };
 
   // Every (viewport, scheme) in a fresh context created at that size and
