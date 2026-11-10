@@ -1394,6 +1394,23 @@
         "name": "step",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.completed",
+      "occurredAt": "2026-11-10T11:37:33.000Z",
+      "stepId": "STEP-20261110T112005000Z-8e38263e",
+      "actor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": {
+        "type": "ros-cli",
+        "name": "step",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {
@@ -1449,12 +1466,12 @@
       "name": "signal#136 second re-review",
       "description": null,
       "classification": [],
-      "status": "active",
+      "status": "completed",
       "plannedAt": "2026-11-10T11:20:05.000Z",
       "startedAt": "2026-11-10T11:20:05.000Z",
-      "completedAt": null,
-      "endedAt": null,
-      "updatedAt": "2026-11-10T11:20:05.000Z",
+      "completedAt": "2026-11-10T11:37:33.000Z",
+      "endedAt": "2026-11-10T11:37:33.000Z",
+      "updatedAt": "2026-11-10T11:37:33.000Z",
       "actor": {
         "kind": "agent",
         "id": "anthropic/claude-code",
@@ -1676,6 +1693,19 @@
           "from": null,
           "to": "active",
           "occurredAt": "2026-11-10T11:20:05.000Z",
+          "reason": null,
+          "actor": {
+            "kind": "agent",
+            "id": "anthropic/claude-code",
+            "provider": "anthropic",
+            "model": "unknown",
+            "runtime": "claude-code"
+          }
+        },
+        {
+          "from": "active",
+          "to": "completed",
+          "occurredAt": "2026-11-10T11:37:33.000Z",
           "reason": null,
           "actor": {
             "kind": "agent",
