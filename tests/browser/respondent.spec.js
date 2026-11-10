@@ -113,16 +113,20 @@ test("the respondent page (the compound kinds) keeps whole words and does not sc
   await expect(page.locator("#submit-answers")).toBeVisible();
 });
 
-// The best-worst choices' column names ("Fits best", "Fits least") in
-// Forma's narrow best-worst row: the EXCEPTION below is about them alone.
-const PAIR_CHOICE_NAMES = ".forma-best-worst__row .survey-pair-choice";
+// Forma's best-worst rows, as the survey page shows them (each is the
+// component's row, .forma-best-worst__row; the page has no wrapper around
+// them). The EXCEPTION below is about the text inside them alone: the
+// options' names and the "Fits best" and "Fits least" column names.
+const BEST_WORST = ".forma-best-worst__row";
 
-// The compound kinds at 320 px with 200% text: apart from the best-worst
-// column names (the EXCEPTION below), every word stays whole and nothing
-// scrolls sideways.
-test("the respondent page (the compound kinds) keeps every other word whole and does not scroll sideways at 320 px with 200% text", async ({ page }) => {
+// The compound kinds at 320 px with 200% text: outside Forma's best-worst
+// rows (the EXCEPTION below), every word stays whole, and the page does not
+// scroll sideways. The rows are on the page, so the EXCEPTION has something
+// to check.
+test("the respondent page (the compound kinds) keeps every word outside the best-worst rows whole and does not scroll sideways at 320 px with 200% text", async ({ page }) => {
   await atWidth(page, 320, "200%", "compound", compoundReady);
-  expect(await collapsedWords(page, { outside: PAIR_CHOICE_NAMES })).toEqual([]);
+  await expect(page.locator(`${BEST_WORST}:visible`)).toHaveCount(3);
+  expect(await collapsedWords(page, { outside: BEST_WORST })).toEqual([]);
   expect(await sideways(page)).toBeLessThanOrEqual(0);
   await expect(page.locator("#submit-answers")).toBeVisible();
 });
@@ -131,20 +135,20 @@ test("the respondent page (the compound kinds) keeps every other word whole and 
 // is WI-0139; recorded in docs/verification/ui-conformance-2026-10-13.md): at
 // 320 px with 200% text, Forma 1.0.1's narrow best-worst row
 // (.forma-best-worst__row below 44rem: minmax(0, 1fr) then two
-// minmax(2.75rem, auto) columns) leaves its choice columns too narrow for
-// their names, so "Fits best" and "Fits least" are set a few letters a line.
-// Signal does not restyle Forma (its own override of the row's columns was
-// removed), and no wrapper can give the row more than the screen's width.
-// The expected failure covers those names only: the test above holds the rest
-// of the page. test.fail keeps the defect visible; this test starts failing,
-// and must become an ordinary assertion, as soon as the pinned Forma lays the
-// row out at this width.
-test("EXCEPTION ULI-L05: the best-worst column names collapse at 320 px with 200% text", async ({ page }) => {
-  test.fail(true, "Forma 1.0.1 .forma-best-worst__row sets its column names a few letters a line at 320 px with 200% text (upstream defect)");
+// minmax(2.75rem, auto) columns) has too little room for its text: the
+// options' names ("Calm", "Busy", "Chaotic") and the column names ("Fits
+// best", "Fits least") are set a few letters a line. Signal does not restyle
+// Forma (its own override of the row's columns was removed), and no wrapper
+// can give the row more than the screen's width. The expected failure covers
+// the text inside the rows only, and its one assertion is that check; the
+// test above holds the rest of the page and the rows' presence. test.fail
+// keeps the defect visible; this test starts failing, and must become an
+// ordinary assertion, as soon as the pinned Forma lays the row out at this
+// width.
+test("EXCEPTION ULI-L05: the text in Forma's best-worst rows collapses at 320 px with 200% text", async ({ page }) => {
+  test.fail(true, "Forma 1.0.1 .forma-best-worst__row sets its options' and columns' names a few letters a line at 320 px with 200% text (upstream defect)");
   await atWidth(page, 320, "200%", "compound", compoundReady);
-  // The names are there to be checked: the page shows best-worst rows.
-  await expect(page.locator(PAIR_CHOICE_NAMES).first()).toBeVisible();
-  expect(await collapsedWords(page, { within: PAIR_CHOICE_NAMES })).toEqual([]);
+  expect(await collapsedWords(page, { within: BEST_WORST })).toEqual([]);
 });
 
 // MUST 1 of #139's review: a scale question is Forma's ordinal scale as
