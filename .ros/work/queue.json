@@ -2886,10 +2886,10 @@
         "design-system"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-10T05:13:40.771Z",
-      "updatedAt": "2026-11-10T05:13:55.000Z",
+      "updatedAt": "2026-11-10T05:44:42.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
