@@ -1,0 +1,680 @@
+{
+  "scenario": "admin-unsigned",
+  "durationMs": 4600,
+  "consoleErrors": [],
+  "screens": [
+    {
+      "id": "admin-loading-configuration",
+      "title": "Console while its deployment configuration loads (fetch held)",
+      "scenario": "admin-unsigned",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/admin/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "hold signal.deployment.json, open http://127.0.0.1:4321/web/admin/index.html",
+          "operation": "deployment configuration fetch",
+          "durationMs": 623,
+          "observed": [
+            {
+              "atMs": 13,
+              "forMs": 18,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 30,
+              "forMs": 480,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 510,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\""
+              ]
+            },
+            {
+              "atMs": 515,
+              "forMs": null,
+              "shown": [
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Administration",
+        "headings": [
+          "Administration"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-loading-configuration/desktop-light-full.png",
+          "shown": [
+            "spinner: \"Loading the deployment's configuration…\"",
+            "status: \"\"",
+            "status: \"Loading the deployment's configuration…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-loading-configuration/desktop-dark-full.png",
+          "shown": [
+            "spinner: \"Loading the deployment's configuration…\"",
+            "status: \"\"",
+            "status: \"Loading the deployment's configuration…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-loading-configuration/tablet-light-full.png",
+          "shown": [
+            "spinner: \"Loading the deployment's configuration…\"",
+            "status: \"\"",
+            "status: \"Loading the deployment's configuration…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-loading-configuration/tablet-dark-full.png",
+          "shown": [
+            "spinner: \"Loading the deployment's configuration…\"",
+            "status: \"\"",
+            "status: \"Loading the deployment's configuration…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-loading-configuration/mobile-light-full.png",
+          "shown": [
+            "spinner: \"Loading the deployment's configuration…\"",
+            "status: \"\"",
+            "status: \"Loading the deployment's configuration…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-loading-configuration/mobile-dark-full.png",
+          "shown": [
+            "spinner: \"Loading the deployment's configuration…\"",
+            "status: \"\"",
+            "status: \"Loading the deployment's configuration…\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "admin-unconfigured",
+      "title": "Console with no data store configured (the demo deployment; empty state)",
+      "scenario": "admin-unsigned",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/admin/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "admin-loading-configuration",
+      "steps": [
+        {
+          "action": "release signal.deployment.json (the checkout has none: 404)",
+          "operation": "deployment configuration fetch",
+          "durationMs": 79,
+          "observed": [
+            {
+              "atMs": 1078,
+              "forMs": null,
+              "shown": [
+                "status: \"\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Administration",
+        "headings": [
+          "Administration",
+          "No data store is configured"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-unconfigured/desktop-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-unconfigured/desktop-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-unconfigured/tablet-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-unconfigured/tablet-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-unconfigured/mobile-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-unconfigured/mobile-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "admin-misconfigured",
+      "title": "Console with a deployment configuration it cannot use (error)",
+      "scenario": "admin-unsigned",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/admin/index.html",
+      "auth": {
+        "required": false,
+        "how": "a test-only deployment configuration (signal.deployment.json answered locally) that names an identity exchange; nothing is signed in"
+      },
+      "reachedFrom": "admin-unconfigured",
+      "steps": [
+        {
+          "action": "answer signal.deployment.json with a dataset whose profile is not configured, reload",
+          "operation": "deployment configuration fetch",
+          "durationMs": 435,
+          "observed": [
+            {
+              "atMs": 9,
+              "forMs": 12,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 21,
+              "forMs": 298,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 319,
+              "forMs": 4,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\""
+              ]
+            },
+            {
+              "atMs": 323,
+              "forMs": 64,
+              "shown": [
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 388,
+              "forMs": null,
+              "shown": [
+                "status: \"\"",
+                "alert: \"This deployment is not configured correctly The deployment's configuration is not valid: dataset 'ds_engagement' lives in profile 'missing', which is not configured.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Administration",
+        "headings": [
+          "Administration",
+          "This deployment is not configured correctly"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-misconfigured/desktop-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"This deployment is not configured correctly The deployment's configuration is not valid: dataset 'ds_engagement' lives in profile 'missing', which is not configured.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-misconfigured/desktop-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"This deployment is not configured correctly The deployment's configuration is not valid: dataset 'ds_engagement' lives in profile 'missing', which is not configured.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-misconfigured/tablet-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"This deployment is not configured correctly The deployment's configuration is not valid: dataset 'ds_engagement' lives in profile 'missing', which is not configured.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-misconfigured/tablet-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"This deployment is not configured correctly The deployment's configuration is not valid: dataset 'ds_engagement' lives in profile 'missing', which is not configured.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-misconfigured/mobile-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"This deployment is not configured correctly The deployment's configuration is not valid: dataset 'ds_engagement' lives in profile 'missing', which is not configured.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-misconfigured/mobile-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"This deployment is not configured correctly The deployment's configuration is not valid: dataset 'ds_engagement' lives in profile 'missing', which is not configured.\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "admin-sign-in",
+      "title": "Console sign-in screen (a configured deployment, signed out)",
+      "scenario": "admin-unsigned",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/admin/index.html#/sign-in?returnTo=%2F",
+      "auth": {
+        "required": false,
+        "how": "a test-only deployment configuration (signal.deployment.json answered locally) that names an identity exchange; nothing is signed in"
+      },
+      "reachedFrom": "admin-misconfigured",
+      "steps": [
+        {
+          "action": "answer signal.deployment.json with the suite's test deployment (GitHub through Fides), reload",
+          "operation": "deployment configuration fetch",
+          "durationMs": 558,
+          "observed": [
+            {
+              "atMs": 10,
+              "forMs": 14,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 24,
+              "forMs": 307,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 331,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\""
+              ]
+            },
+            {
+              "atMs": 336,
+              "forMs": 78,
+              "shown": [
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 414,
+              "forMs": 129,
+              "shown": [
+                "spinner: \"Signing in with GitHub…\"",
+                "aria-busy element: \"Signing in\"",
+                "status: \"Signing in with GitHub…\"",
+                "1 button(s) disabled",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 542,
+              "forMs": null,
+              "shown": [
+                "status: \"\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Administration",
+        "headings": [
+          "Administration",
+          "Sign in with GitHub"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-sign-in/desktop-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-sign-in/desktop-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-sign-in/tablet-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-sign-in/tablet-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-sign-in/mobile-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-sign-in/mobile-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "admin-pages-site-demo",
+      "title": "Console on the assembled Pages site (the published demo: no store, no sign-in)",
+      "scenario": "admin-unsigned",
+      "site": "pages",
+      "url": "http://127.0.0.1:4322/signal/web/admin/#/sign-in?returnTo=%2F",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "admin-sign-in",
+      "steps": [
+        {
+          "action": "open http://127.0.0.1:4322/signal/web/admin/",
+          "operation": "engine start-up + deployment configuration fetch",
+          "durationMs": 572,
+          "observed": [
+            {
+              "atMs": 11,
+              "forMs": 17,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 28,
+              "forMs": 311,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 339,
+              "forMs": 4,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\""
+              ]
+            },
+            {
+              "atMs": 343,
+              "forMs": 82,
+              "shown": [
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 425,
+              "forMs": 129,
+              "shown": [
+                "spinner: \"Signing in with GitHub…\"",
+                "aria-busy element: \"Signing in\"",
+                "status: \"Signing in with GitHub…\"",
+                "1 button(s) disabled",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 554,
+              "forMs": null,
+              "shown": [
+                "status: \"\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Administration",
+        "headings": [
+          "Administration",
+          "Sign in with GitHub"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-pages-site-demo/desktop-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-pages-site-demo/desktop-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-pages-site-demo/tablet-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-pages-site-demo/tablet-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-pages-site-demo/mobile-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-pages-site-demo/mobile-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    }
+  ],
+  "unreached": [],
+  "browserVersion": "153.0.8010.12"
+}
