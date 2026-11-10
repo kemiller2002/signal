@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" data-forma-brand="echelon">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Signal · Surveys whose answers live in the link</title>
+<meta name="description" content="Signal is a survey and assessment engine: published templates fix what each question means, respondents' answers live in their own link, and administrators get deterministic, traceable results." />
+<link rel="icon" href="../brand/signal-mark.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="./home.css" />
+<link rel="stylesheet" href="../pages.css" />
+</head>
+<body>
+<p class="pages-demo-banner" role="note" data-pages-banner>Demo — data stays in this browser; GitHub sign-in not configured</p>
+<!-- Landing page (EDS-UX-LANDING-001; "foundry ledger" direction, owner-approved
+     2026-11-09, SIG-ECHELON-APP-002): static HTML and CSS only, composed with
+     Forma and the Echelon application layer (echelon-display, -lead, -eyebrow,
+     -heading, -panel and button emphasis). It explains Signal and leads to the
+     administrator console; it shows no sample records, demonstrates no
+     administrator feature and seeds no data. Respondents never start here:
+     they open the survey link their administrator sends. Signal keeps its own
+     mark. -->
+<header class="home-header">
+  <a class="forma-app-identity" href="./">
+    <span class="forma-app-identity__mark"><svg class="forma-app-identity__variant" data-forma-scheme="light" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="12" fill="#202421"/><path d="M10 22V15L20 10V22Z" fill="#c9a07f"/><path d="M10 40H20L25 28L33 50L39 34L42 40H54" fill="none" stroke="#f2efe7" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></svg><svg class="forma-app-identity__variant" data-forma-scheme="dark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="12" fill="#f2efe7"/><path d="M10 22V15L20 10V22Z" fill="#905831"/><path d="M10 40H20L25 28L33 50L39 34L42 40H54" fill="none" stroke="#202421" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></svg></span>
+    <span class="forma-app-identity__name">Signal</span>
+  </a>
+  <nav class="home-nav" aria-label="On this page">
+    <a href="#home-how">How it works</a>
+    <a href="#home-who">Who it is for</a>
+  </nav>
+</header>
+<main id="main">
+  <section class="home-hero" aria-labelledby="home-title">
+    <div class="home-hero__copy">
+      <p class="echelon-eyebrow">Surveys and assessments</p>
+      <h1 id="home-title" class="echelon-display">Surveys whose answers live in the link</h1>
+      <p class="echelon-lead">Signal runs surveys and assessments from published, immutable templates. Each respondent's answers are carried in their own link, not stored on a server, and results are calculated the same way every time.</p>
+      <div class="forma-actions">
+        <a class="forma-button" data-echelon-emphasis="primary" href="../admin/">Open the administrator console</a>
+        <a class="forma-button" href="#home-how">See how it works</a>
+      </div>
+    </div>
+    <aside class="echelon-panel home-respondent" data-echelon-surface="accent" aria-labelledby="home-respondent-title">
+      <div class="echelon-panel__body">
+        <h2 id="home-respondent-title" class="echelon-eyebrow">Answering a survey?</h2>
+        <p>Use the link your survey administrator sent you. Signal never asks you to sign in to answer.</p>
+        <p>Your answers stay in that link, so you can stop and come back to it later.</p>
+      </div>
+    </aside>
+  </section>
+
+  <div class="home-band">
+    <section class="home-section" aria-labelledby="home-who">
+      <header class="home-section__header">
+        <p class="echelon-eyebrow">Who it is for</p>
+        <h2 id="home-who" class="echelon-heading">Three roles, one fixed meaning</h2>
+      </header>
+      <ul class="home-roles">
+        <li class="echelon-panel"><div class="echelon-panel__body"><h3 class="echelon-heading">Survey authors</h3><p>Publish a template whose questions, branching, validation and scoring cannot change after publication.</p></div></li>
+        <li class="echelon-panel"><div class="echelon-panel__body"><h3 class="echelon-heading">Respondents</h3><p>Answer from a link. The link always holds their current answers, so they can stop and continue later.</p></div></li>
+        <li class="echelon-panel"><div class="echelon-panel__body"><h3 class="echelon-heading">Administrators</h3><p>Import completed submissions and read results together with how they were calculated.</p></div></li>
+      </ul>
+    </section>
+  </div>
+
+  <section class="home-section" aria-labelledby="home-how">
+    <header class="home-section__header">
+      <p class="echelon-eyebrow">How it works</p>
+      <h2 id="home-how" class="echelon-heading">From template to traceable result</h2>
+    </header>
+    <ol class="home-steps">
+      <li><h3>Publish a template</h3><p>An author publishes a template. Its version fixes the meaning of every answer.</p></li>
+      <li><h3>Respondents answer</h3><p>Respondents answer in the browser. Finishing an anonymous survey produces a submission that holds no personal information.</p></li>
+      <li><h3>Import and read results</h3><p>An administrator imports the submissions. Signal recalculates results deterministically and shows how they were derived.</p></li>
+    </ol>
+  </section>
+</main>
+<footer class="home-footer">
+  <span>Signal · Echelon Foundry</span>
+  <span>Answers stay in the respondent's link.</span>
+</footer>
+</body>
+</html>

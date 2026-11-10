@@ -1,0 +1,237 @@
+[
+  {
+    "screen": "assessment",
+    "scheme": "light",
+    "viewport": "desktop",
+    "pageOverflow": false
+  },
+  {
+    "screen": "assessment",
+    "scheme": "light",
+    "viewport": "tablet",
+    "pageOverflow": false
+  },
+  {
+    "screen": "assessment",
+    "scheme": "light",
+    "viewport": "mobile",
+    "pageOverflow": false
+  },
+  {
+    "screen": "assessment",
+    "scheme": "light",
+    "viewport": "narrow",
+    "pageOverflow": false
+  },
+  {
+    "screen": "assessment",
+    "scheme": "dark",
+    "viewport": "desktop",
+    "pageOverflow": false
+  },
+  {
+    "screen": "assessment",
+    "scheme": "dark",
+    "viewport": "tablet",
+    "pageOverflow": false
+  },
+  {
+    "screen": "assessment",
+    "scheme": "dark",
+    "viewport": "mobile",
+    "pageOverflow": false
+  },
+  {
+    "screen": "assessment",
+    "scheme": "dark",
+    "viewport": "narrow",
+    "pageOverflow": false
+  },
+  {
+    "screen": "assessment",
+    "viewport": "320-text200",
+    "pageOverflow": false
+  },
+  {
+    "flow": "unanswered assessment refused",
+    "pass": true
+  },
+  {
+    "screen": "results",
+    "scheme": "light",
+    "viewport": "desktop",
+    "pageOverflow": false
+  },
+  {
+    "screen": "results",
+    "scheme": "light",
+    "viewport": "tablet",
+    "pageOverflow": false
+  },
+  {
+    "screen": "results",
+    "scheme": "light",
+    "viewport": "mobile",
+    "pageOverflow": false
+  },
+  {
+    "screen": "results",
+    "scheme": "light",
+    "viewport": "narrow",
+    "pageOverflow": false
+  },
+  {
+    "screen": "results",
+    "scheme": "dark",
+    "viewport": "desktop",
+    "pageOverflow": false
+  },
+  {
+    "screen": "results",
+    "scheme": "dark",
+    "viewport": "tablet",
+    "pageOverflow": false
+  },
+  {
+    "screen": "results",
+    "scheme": "dark",
+    "viewport": "mobile",
+    "pageOverflow": false
+  },
+  {
+    "screen": "results",
+    "scheme": "dark",
+    "viewport": "narrow",
+    "pageOverflow": false
+  },
+  {
+    "screen": "results",
+    "viewport": "320-text200",
+    "pageOverflow": false
+  },
+  {
+    "flow": "assessment answers, scores 50.0 x 3, methodology and edit answers",
+    "pass": true
+  },
+  {
+    "screen": "respondent",
+    "scheme": "light",
+    "viewport": "desktop",
+    "pageOverflow": false
+  },
+  {
+    "screen": "respondent",
+    "scheme": "light",
+    "viewport": "tablet",
+    "pageOverflow": false
+  },
+  {
+    "screen": "respondent",
+    "scheme": "light",
+    "viewport": "mobile",
+    "pageOverflow": false
+  },
+  {
+    "screen": "respondent",
+    "scheme": "light",
+    "viewport": "narrow",
+    "pageOverflow": false
+  },
+  {
+    "screen": "respondent",
+    "scheme": "dark",
+    "viewport": "desktop",
+    "pageOverflow": false
+  },
+  {
+    "screen": "respondent",
+    "scheme": "dark",
+    "viewport": "tablet",
+    "pageOverflow": false
+  },
+  {
+    "screen": "respondent",
+    "scheme": "dark",
+    "viewport": "mobile",
+    "pageOverflow": false
+  },
+  {
+    "screen": "respondent",
+    "scheme": "dark",
+    "viewport": "narrow",
+    "pageOverflow": false
+  },
+  {
+    "screen": "respondent",
+    "viewport": "320-text200",
+    "pageOverflow": false
+  },
+  {
+    "keyboard": {
+      "tag": "INPUT",
+      "outline": "solid"
+    }
+  },
+  {
+    "flow": "generic survey answers and submission",
+    "pass": true
+  },
+  {
+    "screen": "submitted",
+    "scheme": "light",
+    "viewport": "desktop",
+    "pageOverflow": false
+  },
+  {
+    "screen": "submitted",
+    "scheme": "light",
+    "viewport": "tablet",
+    "pageOverflow": false
+  },
+  {
+    "screen": "submitted",
+    "scheme": "light",
+    "viewport": "mobile",
+    "pageOverflow": false
+  },
+  {
+    "screen": "submitted",
+    "scheme": "light",
+    "viewport": "narrow",
+    "pageOverflow": false
+  },
+  {
+    "screen": "submitted",
+    "scheme": "dark",
+    "viewport": "desktop",
+    "pageOverflow": false
+  },
+  {
+    "screen": "submitted",
+    "scheme": "dark",
+    "viewport": "tablet",
+    "pageOverflow": false
+  },
+  {
+    "screen": "submitted",
+    "scheme": "dark",
+    "viewport": "mobile",
+    "pageOverflow": false
+  },
+  {
+    "screen": "submitted",
+    "scheme": "dark",
+    "viewport": "narrow",
+    "pageOverflow": false
+  },
+  {
+    "screen": "submitted",
+    "viewport": "320-text200",
+    "pageOverflow": false
+  },
+  {
+    "origin": "http://127.0.0.1:4321",
+    "runtime": "locally built",
+    "pageErrors": []
+  }
+]

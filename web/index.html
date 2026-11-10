@@ -35,13 +35,13 @@
      CSS and the inert <forma-*> authoring wrappers around native HTML); Folio
      owns the print surface. Neither decides anything: Signal owns meaning. -->
 <main class="app forma-stack">
-  <header class="forma-record-header page-header">
-    <div class="forma-record-header__main">
-      <div class="forma-record-header__title">
-        <div><span class="forma-record-header__type">Signal</span><h1 data-text="assessmentTitle"></h1></div>
-      </div>
-      <p id="assessment-version" data-text="assessmentVersion"></p>
-    </div>
+  <header class="respondent-header forma-stack">
+    <span class="forma-app-identity">
+      <span class="forma-app-identity__mark"><img class="forma-app-identity__variant" data-forma-scheme="light" src="./brand/signal-mark.svg" alt="" width="32" height="32" /><img class="forma-app-identity__variant" data-forma-scheme="dark" src="./brand/signal-mark-dark.svg" alt="" width="32" height="32" /></span>
+      <span class="forma-app-identity__name">Signal</span>
+    </span>
+    <h1 class="echelon-display" data-text="assessmentTitle"></h1>
+    <p class="echelon-eyebrow" id="assessment-version" data-text="assessmentVersion"></p>
   </header>
 
   <!-- Unexpected operational failure (Aegis) is its own presentation. An
@@ -83,7 +83,7 @@
 
   <template data-if="responding">
     <section id="questions" class="forma-stack" aria-labelledby="questions-title">
-      <h2 id="questions-title">Questions</h2>
+      <h2 class="echelon-heading" id="questions-title">Questions</h2>
       <p class="forma-field__description">Answer for the last eight weeks. If you do not know, have not observed it, or it does not apply, say so: those answers are not counted as zero.</p>
       <!-- The address is the respondent's own answer link (LURL-001, ARX-007,
            DF-SIGNAL-2026-0003 decision 4): say so plainly. -->
@@ -108,7 +108,7 @@
 
       <form id="answers" class="forma-stack" data-event="resultsRequested">
         <template data-each="items" data-key="id">
-          <section class="forma-question" data-bind-data-item="id" data-bind-data-answer-state="answerState">
+          <section class="forma-question echelon-panel" data-bind-data-item="id" data-bind-data-answer-state="answerState">
             <header class="forma-question__header">
               <span class="forma-question__number" aria-hidden="true" data-text="number"></span>
               <p class="forma-question__help" data-text="dimension"></p>
@@ -162,20 +162,20 @@
           </section>
         </template>
         <div class="forma-cluster">
-          <button id="see-results" type="submit">See results</button>
+          <button class="forma-button" data-echelon-emphasis="primary" id="see-results" type="submit">See results</button>
         </div>
       </form>
     </section>
   </template>
 
   <template data-if="reviewing">
-    <section id="results" class="forma-stack" aria-labelledby="results-title">
+    <section id="results" class="forma-stack echelon-panel respondent-panel" aria-labelledby="results-title">
       <div class="forma-cluster results-header">
-        <h2 id="results-title">Results</h2>
+        <h2 class="echelon-heading" id="results-title">Results</h2>
         <span class="forma-status-lozenge" id="scored-count" role="status" data-text="scoredCount"></span>
       </div>
       <forma-data-grid class="forma-component-tag">
-        <div class="forma-data-grid" role="region" tabindex="0" aria-labelledby="results-title">
+        <div class="forma-data-grid result-grid" role="region" tabindex="0" aria-labelledby="results-title">
           <table>
             <thead>
               <tr><th scope="col">Dimension</th><th scope="col">Score (0-100)</th><th scope="col">Coverage</th><th scope="col">Note</th></tr>
@@ -184,7 +184,7 @@
               <template data-each="results" data-key="id">
                 <tr data-bind-data-dimension="id">
                   <td data-label="Dimension" data-text="dimension"></td>
-                  <td data-label="Score"><span class="forma-status-lozenge" data-bind-data-state="scoreState" data-text="score"></span></td>
+                  <td data-label="Score"><span class="echelon-figure" data-bind-data-state="scoreState" data-text="score"></span></td>
                   <td data-label="Coverage" data-text="coverage"></td>
                   <td data-label="Note" data-text="note"></td>
                 </tr>
@@ -193,12 +193,17 @@
           </table>
         </div>
       </forma-data-grid>
-      <p id="methodology" class="forma-field__description" data-text="methodology"></p>
+      <aside class="echelon-panel" data-echelon-surface="accent" aria-labelledby="methodology-title">
+        <div class="echelon-panel__body forma-stack">
+          <h3 class="echelon-heading" id="methodology-title">How this was calculated</h3>
+          <p id="methodology" data-text="methodology"></p>
+        </div>
+      </aside>
       <div class="forma-cluster">
-        <button id="edit-answers" type="button" data-event="editRequested">Edit answers</button>
-        <button id="start-over" type="button" data-event="restarted">Start over</button>
+        <button class="forma-button" id="edit-answers" type="button" data-event="editRequested">Edit answers</button>
+        <button class="forma-button" id="start-over" type="button" data-event="restarted">Start over</button>
         <template data-if="canSubmit">
-          <button id="submit-answers" type="button" data-event="submitRequested">Submit answers</button>
+          <button class="forma-button" data-echelon-emphasis="primary" id="submit-answers" type="button" data-event="submitRequested">Submit answers</button>
         </template>
       </div>
       <p class="forma-field__description">Print this page for the result report.</p>
@@ -208,15 +213,15 @@
   <!-- A finalized submission: sealed, with the link the respondent sends. An
        anonymous link carries a fresh identifier and no invitation. -->
   <template data-if="submitted">
-    <section id="submitted" class="forma-stack" aria-labelledby="submitted-title">
-      <h2 id="submitted-title">Submitted</h2>
+    <section id="submitted" class="forma-stack echelon-panel respondent-panel" aria-labelledby="submitted-title">
+      <h2 class="echelon-heading" id="submitted-title">Submitted</h2>
       <p id="submission-disclosure">Your answers are final. This link contains your answers, and nothing that identifies you. Send it to the person who invited you. Submission type: <strong id="submission-kind" data-text="submissionKind"></strong>.</p>
       <label class="forma-field">
         <span class="forma-field__label">Submission link</span>
         <input id="submission-link" type="text" readonly data-bind-value="submissionLink" />
       </label>
       <div class="forma-cluster">
-        <button id="copy-link" type="button" data-event="copyRequested">Copy link</button>
+        <button class="forma-button" data-echelon-emphasis="primary" id="copy-link" type="button" data-event="copyRequested">Copy link</button>
       </div>
       <template data-if="hasCopyNotice">
         <p id="copy-notice" role="status" data-text="copyNotice"></p>

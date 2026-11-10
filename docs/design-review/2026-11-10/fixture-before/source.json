@@ -1,0 +1,18 @@
+{
+  "source": {
+    "repository": "kemiller2002/signal",
+    "ref": "visual/echelon-app-layer",
+    "commit": "ddc929e15e996258a6fe5fbc693342c82fae58f7",
+    "run": "https://github.com/kemiller2002/signal/actions/runs/42762365861"
+  },
+  "generatedAt": "2026-11-10T05:39:00.924Z",
+  "method": {
+    "capture": "tests/visual/capture-public.spec.js and capture-admin.spec.js (shared session: capture-session.mjs), run with tests/visual/visual.config.js (the browser suite's servers and Chromium)",
+    "viewports": "viewport size only (Desktop Chrome device: no mobile user agent or touch emulation); a reached state is resized and its colour scheme emulated in place, except the start-up states, which load once per viewport and scheme",
+    "colourScheme": "prefers-color-scheme emulated by Playwright (light, dark)",
+    "observation": "tests/visual/observe-init.js records the page's waiting indicators on every DOM change; each step lists the distinct states seen while it ran"
+  },
+  "browser": [
+    "153.0.8010.12"
+  ]
+}

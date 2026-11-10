@@ -1,0 +1,71 @@
+{
+  "results": {
+    "contrastLight": {
+      "checked": 23,
+      "unmeasurable": 0,
+      "failures": []
+    },
+    "contrastDark": {
+      "checked": 23,
+      "unmeasurable": 0,
+      "failures": []
+    },
+    "keyboard": {
+      "stops": 3,
+      "withoutIndicator": [],
+      "outOfDocumentOrder": [],
+      "sequence": [
+        "DimensionScore (0-100)CoverageNote Plan ",
+        "Edit answers",
+        "Start over"
+      ]
+    },
+    "text200at320": {
+      "overflow": 0,
+      "offenders": []
+    },
+    "reducedMotion": {
+      "infinite": [],
+      "shimmer": 0
+    },
+    "forcedColors": {
+      "file": "results-audit-forced.png"
+    }
+  },
+  "respondent": {
+    "contrastLight": {
+      "checked": 49,
+      "unmeasurable": 0,
+      "failures": []
+    },
+    "contrastDark": {
+      "checked": 49,
+      "unmeasurable": 0,
+      "failures": []
+    },
+    "keyboard": {
+      "stops": 6,
+      "withoutIndicator": [],
+      "outOfDocumentOrder": [],
+      "sequence": [
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "Submit answers"
+      ]
+    },
+    "text200at320": {
+      "overflow": 0,
+      "offenders": []
+    },
+    "reducedMotion": {
+      "infinite": [],
+      "shimmer": 0
+    },
+    "forcedColors": {
+      "file": "respondent-audit-forced.png"
+    }
+  }
+}

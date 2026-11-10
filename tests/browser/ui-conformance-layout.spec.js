@@ -169,14 +169,14 @@ test("ULI-L05: a best-worst option with a very long word stays inside Forma's ro
   await expectNoHorizontalOverflow(page, "survey best-worst with a long option @320");
 });
 
-// --- Record header: the type label sits above the title (ULI-L05) ---------
+// --- Header: identity or record type sits above the title (ULI-L05) -------
 
 // The gap from the bottom of the header's type label to the top of its title:
 // negative means the two overlap, or the label renders below the title.
 async function typeToTitleGap(page) {
   return page.evaluate(() => {
-    const type = document.querySelector(".forma-record-header__type");
-    const title = type.parentElement.querySelector("h1, h2, h3, h4");
+    const type = document.querySelector(".respondent-header .forma-app-identity, .forma-record-header__type");
+    const title = type.closest("header").querySelector("h1, h2, h3, h4");
     return title.getBoundingClientRect().top - type.getBoundingClientRect().bottom;
   });
 }
@@ -184,7 +184,7 @@ async function typeToTitleGap(page) {
 const HEADER_PAGES = ["/web/index.html", "/web/admin/index.html"];
 
 for (const width of [768, 1280]) {
-  test(`ULI-L05: the record header's type label sits above its title at ${width} CSS px`, async ({ page }) => {
+  test(`ULI-L05: the header's identity or type label sits above its title at ${width} CSS px`, async ({ page }) => {
     for (const url of HEADER_PAGES) {
       await open(page, url, width);
       expect(await typeToTitleGap(page), url).toBeGreaterThanOrEqual(0);

@@ -1,0 +1,64 @@
+[
+  {
+    "screen": "home",
+    "url": "https://signal.echelonfoundry.com/web/home/",
+    "text": "Demo \u2014 data stays in this browser; GitHub sign-in not configured\n\nSignal\nHow it works\nWho it is for\n\nSURVEYS AND ASSESSMENTS\n\nSurveys whose answers live in the link\n\nSignal runs surveys and assessments from published, immutable templates. Each respondent's answers are carried in their own link, not stored on a server, and results are calculated the same way every time.\n\nOpen the administrator console\nSee how it works\nANSWERING A SURVEY?\n\nUse the link your survey administrator sent you. Signal never asks you to sign in to answer.\n\nYour answers stay in that link, so you can stop and come back to it later.\n\nWHO IT IS FOR\n\nThree roles, one fixed meaning\nSurvey authors\n\nPublish a template whose questions, branching, validation and scoring cannot change after publication.\n\nRespondents\n\nAnswer from a link. The link always holds their current answers, so they can stop and continue later.\n\nAdministrators\n\nImport completed submissions and read results together with how they were calculated.\n\nHOW IT WORKS\n\nFrom template to traceable result\nPublish a template\n\nAn author publishes a template. Its version fixes the meaning of every answer.\n\nRespondents answer\n\nRespondents answer in the browser. Finishing an anonymous survey produces a submission that holds no personal information.\n\nImport and read results\n\nAn administrator imports the submissions. Signal recalculates results deterministically and shows how they were derived.\n\nSignal \u00b7 Echelon Foundry\nAnswers stay in the respondent's link.",
+    "links": [
+      {
+        "text": "\n    \n    Signal\n  ",
+        "href": "https://signal.echelonfoundry.com/web/home/"
+      },
+      {
+        "text": "How it works",
+        "href": "https://signal.echelonfoundry.com/web/home/#home-how"
+      },
+      {
+        "text": "Who it is for",
+        "href": "https://signal.echelonfoundry.com/web/home/#home-who"
+      },
+      {
+        "text": "Open the administrator console",
+        "href": "https://signal.echelonfoundry.com/web/admin/"
+      },
+      {
+        "text": "See how it works",
+        "href": "https://signal.echelonfoundry.com/web/home/#home-how"
+      }
+    ]
+  },
+  {
+    "screen": "admin",
+    "url": "https://signal.echelonfoundry.com/web/admin/",
+    "text": "Demo \u2014 data stays in this browser; GitHub sign-in not configured\n\nSIGNAL\nAdministration\n\nCopy link\nOverview\nGroups\nCompare\nAssessments\nReports\nAdministrators\nStorage\n\nLoading the deployment's configuration\u2026",
+    "links": [
+      {
+        "text": "Overview",
+        "href": "https://signal.echelonfoundry.com/web/admin/#/"
+      },
+      {
+        "text": "Groups",
+        "href": "https://signal.echelonfoundry.com/web/admin/#/groups"
+      },
+      {
+        "text": "Compare",
+        "href": "https://signal.echelonfoundry.com/web/admin/#/compare"
+      },
+      {
+        "text": "Assessments",
+        "href": "https://signal.echelonfoundry.com/web/admin/#/assessments"
+      },
+      {
+        "text": "Reports",
+        "href": "https://signal.echelonfoundry.com/web/admin/#/reports"
+      },
+      {
+        "text": "Administrators",
+        "href": "https://signal.echelonfoundry.com/web/admin/#/administrators"
+      },
+      {
+        "text": "Storage",
+        "href": "https://signal.echelonfoundry.com/web/admin/#/storage"
+      }
+    ]
+  }
+]

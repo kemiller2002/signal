@@ -16,3 +16,21 @@
 /* A fixture's scoring explanation (WI-0081): contributions and calculations sit under their section. */
 #fixture-explanation-lines [data-indented="true"],
 #preview-explanation-lines [data-indented="true"] { margin-inline-start: 1.5rem; }
+
+/* Respondent and result composition only. Forma owns controls and semantics;
+   the approved Echelon layer owns typography, surfaces, depth and emphasis. */
+.respondent-header { padding-block-end: var(--forma-space-5); }
+.respondent-header > p { margin: 0; }
+.respondent-panel { padding: clamp(1rem, 3vw, 1.5rem); min-inline-size: 0; }
+.respondent-panel > .echelon-panel { min-inline-size: 0; }
+.respondent-panel .echelon-panel__body > p { margin: 0; }
+/* The generic survey projects one row per option. Keep options close to
+   their prompt, with a larger separation before the next question; retain
+   their source order and the shared native control contract. */
+#survey-rows { gap: var(--forma-space-2); }
+.survey-row:has(> .survey-question:not([hidden])) { margin-block-start: var(--forma-space-5); }
+
+/* Preserve readable words in the comparison table and confine overflow to
+   its named keyboard-focusable region, including 320px with enlarged text. */
+.result-grid { overflow-x: auto; min-inline-size: 0; }
+#results :is(th, td) { overflow-wrap: normal; word-break: normal; }

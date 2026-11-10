@@ -1,0 +1,6 @@
+Test run for /workspace/signal-current/tests/Echelon.Signal.Tests/bin/Release/net10.0/Echelon.Signal.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+WARNING: Overwriting results file: /workspace/signal-current/tests/Echelon.Signal.Tests/TestResults/visual-refinement.trx
+Results File: /workspace/signal-current/tests/Echelon.Signal.Tests/TestResults/visual-refinement.trx
+
+Passed!  - Failed:     0, Passed:   692, Skipped:     0, Total:   692, Duration: 1 m 17 s - Echelon.Signal.Tests.dll (net10.0)

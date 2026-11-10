@@ -1,0 +1,599 @@
+{
+  "schema": "signal.visual-refinement-review/1",
+  "workItem": "SIG-VIS-REFINE-20261110",
+  "execution": "EXE-20261110T110150614Z-4baebf7e",
+  "generatedAt": "2026-11-10T11:19:08.783842+00:00",
+  "baseCommit": "8d20d51bd548786146d15b89e173f60c5dd0fbbb",
+  "visualAcceptance": "pending independent owner review",
+  "kind": "visual evidence, not functional test evidence",
+  "sourceFileSha256": {
+    "web/index.html": "4a7de7afd4a013392ed5556ab6f16314e8ee43f8b94aa4b5a02025f77c2e7956",
+    "web/survey/index.html": "f23e819bab839d969a530875426cbe241ce8b27523eefbb545efb519d1720091",
+    "web/styles.css": "ba5843827351be6ca320a1c3c9cbccc2a5e03ff31f7658cd789cae93b1160973",
+    "package-lock.json": "21810786cbaac4c832354f94a85a9fe1a4978f0cb6b63d9485689749dcbe4b6a"
+  },
+  "images": [
+    {
+      "file": "after/assessment-320-text200.png",
+      "width": 320,
+      "height": 24497,
+      "sha256": "50536afec08e4942c41348fb18537a6925467447911a453f576326eb56aa9172"
+    },
+    {
+      "file": "after/assessment-desktop-dark.png",
+      "width": 1440,
+      "height": 4774,
+      "sha256": "81a69c04cca918bcd4d36210b94593ba1b41a92c547adbbc0593744f4260a484"
+    },
+    {
+      "file": "after/assessment-desktop-light.png",
+      "width": 1440,
+      "height": 4774,
+      "sha256": "18b7bf94e6bc53b4c0de18d68318d436955f9ec1260c43eac27423c591ca2d51"
+    },
+    {
+      "file": "after/assessment-forced-colors.png",
+      "width": 320,
+      "height": 9239,
+      "sha256": "5965bc9b461bbaa0fb73211e5530dfd775536512d25f13bedf98b709d855cccb"
+    },
+    {
+      "file": "after/assessment-mobile-dark.png",
+      "width": 390,
+      "height": 9086,
+      "sha256": "f528e346a7a09466d2dfd582ee5d66318f9ec66fc150562ac3cc6e641aa1910b"
+    },
+    {
+      "file": "after/assessment-mobile-light.png",
+      "width": 390,
+      "height": 9086,
+      "sha256": "b9fe8d68b37eac35d1a38f42ce6030d1f2a505e7aa9be5395ac78c4f9e7fdb02"
+    },
+    {
+      "file": "after/assessment-narrow-dark.png",
+      "width": 320,
+      "height": 9239,
+      "sha256": "33e570662d0d037ea4b783d44e0710b877627eeb7d6b441f16b37b106c9c98fc"
+    },
+    {
+      "file": "after/assessment-narrow-light.png",
+      "width": 320,
+      "height": 9239,
+      "sha256": "da33d0b389d74d35f73eb751c76783340ab2c9be9a1f0e6a5cb89934600c84da"
+    },
+    {
+      "file": "after/assessment-tablet-dark.png",
+      "width": 834,
+      "height": 4759,
+      "sha256": "ed433e20a0fc40730f84fe6a2c25c32348a24b1c69cec2ebaa6be99deda70793"
+    },
+    {
+      "file": "after/assessment-tablet-light.png",
+      "width": 834,
+      "height": 4759,
+      "sha256": "e7c0bce091db0ebf9cc8027cb8d1bba59ff04cc7eb7901af257b43627c69b981"
+    },
+    {
+      "file": "after/respondent-320-text200.png",
+      "width": 320,
+      "height": 9873,
+      "sha256": "34276da3e5e9ce730b4186468d7233a911de78e3c2e00f03a932c86741982148"
+    },
+    {
+      "file": "after/respondent-audit-forced.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "52ce47ff0db8d14deaf8eedf57d973497b079d33f2d13934fbe3f660e4098e15"
+    },
+    {
+      "file": "after/respondent-desktop-dark.png",
+      "width": 1440,
+      "height": 3245,
+      "sha256": "2ab967ef74764b49d8e6b00dd071876dd4e26f12f9cc2be50afd2eeafa3bd3b1"
+    },
+    {
+      "file": "after/respondent-desktop-light.png",
+      "width": 1440,
+      "height": 3298,
+      "sha256": "7cbcc8edd503483039758f54a9d3f9a64188746ca880c28adaceb39dd4d821e0"
+    },
+    {
+      "file": "after/respondent-forced-colors.png",
+      "width": 320,
+      "height": 3499,
+      "sha256": "b6a44dc8ab061de6789dd01cc538361d1d4c957ae0fc5b3cbbaa98f78d3091b8"
+    },
+    {
+      "file": "after/respondent-keyboard.png",
+      "width": 1440,
+      "height": 3298,
+      "sha256": "512ae0f162f1258443b733ebd3188196896472f23c79dd2bc1baef5b8e7f9ccd"
+    },
+    {
+      "file": "after/respondent-mobile-dark.png",
+      "width": 390,
+      "height": 3366,
+      "sha256": "a1ef7cea7a548c182a9b581441e354661554d3abe02759469611ed5514141da3"
+    },
+    {
+      "file": "after/respondent-mobile-light.png",
+      "width": 390,
+      "height": 3366,
+      "sha256": "9671ac381531d72d9be49ff336f3cce0fd432de54946f9fd1e7171d00ae33099"
+    },
+    {
+      "file": "after/respondent-narrow-dark.png",
+      "width": 320,
+      "height": 3499,
+      "sha256": "b7b68ccf95423ab0233a5076ec8d1720a9c1b3df542de7eb5ed00fb0b117815f"
+    },
+    {
+      "file": "after/respondent-narrow-light.png",
+      "width": 320,
+      "height": 3499,
+      "sha256": "78325030b4ae994adac99193e2de30cd49234c65caedba15ae0ce9df235b2af5"
+    },
+    {
+      "file": "after/respondent-tablet-dark.png",
+      "width": 834,
+      "height": 3283,
+      "sha256": "3d7d858e65f1ae4b7a219604547a8d966b08516df1b269521cce0e113f68c6b5"
+    },
+    {
+      "file": "after/respondent-tablet-light.png",
+      "width": 834,
+      "height": 3283,
+      "sha256": "164d236f3d2e1d0fc2f1eb9512b2ed9f7bd0dbea4cc32f7e1f2d711f3958aa99"
+    },
+    {
+      "file": "after/results-320-text200.png",
+      "width": 320,
+      "height": 6346,
+      "sha256": "b8990e5b838fcd4d945e1ce17dd94410dcfd0f544de1c39b031f1b3d167249dd"
+    },
+    {
+      "file": "after/results-audit-forced.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "f219394bae24b93619d4e22fffd064b7055ff753bcb075f72acdf633a7bf940f"
+    },
+    {
+      "file": "after/results-desktop-dark.png",
+      "width": 1440,
+      "height": 933,
+      "sha256": "1a621b07fb9c762c961f693344f256d695a4e9802c326dd8920b1c3136ee700f"
+    },
+    {
+      "file": "after/results-desktop-light.png",
+      "width": 1440,
+      "height": 933,
+      "sha256": "b0fe65e4f42a8d709adad9f49d4544da0494361046e41fb15d819497038088eb"
+    },
+    {
+      "file": "after/results-forced-colors.png",
+      "width": 320,
+      "height": 1798,
+      "sha256": "d9630d62e5c6e273e399a9d6c607950c0f271e2314aea8b9486f7dcd660f22ce"
+    },
+    {
+      "file": "after/results-mobile-dark.png",
+      "width": 390,
+      "height": 1441,
+      "sha256": "6de6edcad1f7c4851925999d51624c412e7f7508e00fdb161b79bdb2bdeefe2a"
+    },
+    {
+      "file": "after/results-mobile-light.png",
+      "width": 390,
+      "height": 1441,
+      "sha256": "73f010b0a255faf9ed1b92936c257afa1f9e7e825faffffb1dbdd063081b941b"
+    },
+    {
+      "file": "after/results-narrow-dark.png",
+      "width": 320,
+      "height": 1798,
+      "sha256": "7dc0086810dbe6b70bfd96b725ddfce80adee33407d851d0e8798c1688fa9b76"
+    },
+    {
+      "file": "after/results-narrow-light.png",
+      "width": 320,
+      "height": 1870,
+      "sha256": "9e9c0d77cb9e2d1ea62f60e9a86b7c5b6b11ef9077f69b213d31cee9b8c33a12"
+    },
+    {
+      "file": "after/results-tablet-dark.png",
+      "width": 834,
+      "height": 1112,
+      "sha256": "d587676a8c062686fd14da3ba6c9117522d14a76a5b84230e615155ac8315762"
+    },
+    {
+      "file": "after/results-tablet-light.png",
+      "width": 834,
+      "height": 1112,
+      "sha256": "c73333ee42d57ab41ec2556ca3880a9ff0de6d5f8ead0bc14b3fb1043e38b13e"
+    },
+    {
+      "file": "after/submitted-320-text200.png",
+      "width": 320,
+      "height": 900,
+      "sha256": "c1d9b75447232ee0c54b715f89723cbeddad2391acd9f5ee50f62cb501385bd9"
+    },
+    {
+      "file": "after/submitted-desktop-dark.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "508edc7f9b0131aaf1946d5ee32a7cb17c1cfbca68947e652ce80c4458181ea9"
+    },
+    {
+      "file": "after/submitted-desktop-light.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "82145868c5c0e6e42cc8faee6a17b7aa9379ad7ffaf80a583538ed0135a73d6d"
+    },
+    {
+      "file": "after/submitted-forced-colors.png",
+      "width": 320,
+      "height": 1580,
+      "sha256": "85d868c869f941eb67ecb4c54c61d1419f3acd5620040f659a04b6dcfc669df7"
+    },
+    {
+      "file": "after/submitted-mobile-dark.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "b4e58db00e22ddadea71b61a15237cd5ec46f89f7fc99d1004e78ef3705d7e6c"
+    },
+    {
+      "file": "after/submitted-mobile-light.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "47013b38ab3e6f0f9f2421192cdf96da887aafb0e90a8fe152e385549cd4a1a9"
+    },
+    {
+      "file": "after/submitted-narrow-dark.png",
+      "width": 320,
+      "height": 900,
+      "sha256": "8bc6f9af2b029e06a4aa3bac56ca7f41c165114f13ba571c08c114ab45e04056"
+    },
+    {
+      "file": "after/submitted-narrow-light.png",
+      "width": 320,
+      "height": 900,
+      "sha256": "f7fd1e87b217ab1756075200fbb8f4b923cb8374796b4d48ea1cea35c73e59de"
+    },
+    {
+      "file": "after/submitted-tablet-dark.png",
+      "width": 834,
+      "height": 1112,
+      "sha256": "49163dbc39f4ae9ddf6de8bacbb37beb281aee956684cc1fbe919fcff0b38678"
+    },
+    {
+      "file": "after/submitted-tablet-light.png",
+      "width": 834,
+      "height": 1112,
+      "sha256": "1506a0b485df3d86e019347b69ae2dcbfa69157f3af3ef3295b4a4a6eae0e4d5"
+    },
+    {
+      "file": "fixture-after/admin-draft-edited-desktop.png",
+      "width": 1440,
+      "height": 10805,
+      "sha256": "a44030cf91c11169651f36222a1efd28f46ce897f9fb802c6c989212407e3c1c"
+    },
+    {
+      "file": "fixture-after/admin-draft-edited-mobile.png",
+      "width": 390,
+      "height": 11900,
+      "sha256": "67ecc9cca2138c25ad59f31387c346167f2e3baf5ba240a202da866948bc3f8e"
+    },
+    {
+      "file": "fixture-after/admin-draft-edited-tablet.png",
+      "width": 834,
+      "height": 10836,
+      "sha256": "7fbc6b75cdd7f51cc6e63609d29852498dbda030b1230e46fb0269618581e68f"
+    },
+    {
+      "file": "fixture-after/admin-overview-desktop.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "8c0c4ab4426613c3b5ee67de7202e8c0a5369e41e501b320dce0f2bea793d899"
+    },
+    {
+      "file": "fixture-after/admin-overview-mobile.png",
+      "width": 390,
+      "height": 1591,
+      "sha256": "3a53561c7df0cc0a13799f8d53ebed2797031cb3fb7bed344f80626a9a0ebe00"
+    },
+    {
+      "file": "fixture-after/admin-overview-tablet.png",
+      "width": 834,
+      "height": 1112,
+      "sha256": "ad96cb6ba4a9401d112a7a399e28d47687a89396c4e2cf396bf5d0134ad47352"
+    },
+    {
+      "file": "fixture-before/admin-draft-edited-desktop.png",
+      "width": 1440,
+      "height": 10842,
+      "sha256": "b35ab544f09c90da02b026c852669e330634006ae0acc79db85b366498cd1e37"
+    },
+    {
+      "file": "fixture-before/admin-draft-edited-mobile.png",
+      "width": 390,
+      "height": 11750,
+      "sha256": "518a324696a43e0b1a6a81f08f19d1b0f9145db71b1fb09c03c83cc06596d2d6"
+    },
+    {
+      "file": "fixture-before/admin-draft-edited-tablet.png",
+      "width": 834,
+      "height": 10842,
+      "sha256": "70b4679142ad85c929cbca22a420ed53df0f152ac1b2d55aef4e546850f79225"
+    },
+    {
+      "file": "fixture-before/admin-overview-desktop.png",
+      "width": 1440,
+      "height": 997,
+      "sha256": "222bbc1a626747d6b0de47bd4fa3057f24dd763ce9bd2072ec1f2ad5974faf2d"
+    },
+    {
+      "file": "fixture-before/admin-overview-mobile.png",
+      "width": 390,
+      "height": 1414,
+      "sha256": "13dc2769ab59eef0734d7c6dfaff8625aa2cf2420963d28cbd6be843aa94e306"
+    },
+    {
+      "file": "fixture-before/admin-overview-tablet.png",
+      "width": 834,
+      "height": 1323,
+      "sha256": "64b9c2da80b0af8effd7f31fb65ef9e3aaf29c6c4657025f4d0077f88629fcb1"
+    },
+    {
+      "file": "fixture-before/landing-desktop.png",
+      "width": 1440,
+      "height": 997,
+      "sha256": "e45dbb197e91164368d32687f25697a036f18fc36471ac4335007e0a3204bc9c"
+    },
+    {
+      "file": "fixture-before/landing-mobile.png",
+      "width": 390,
+      "height": 1273,
+      "sha256": "bc340c187afdb8f19e868c5af61e27270a232bdfdb0f175ecf56c10b9f49020c"
+    },
+    {
+      "file": "fixture-before/landing-tablet.png",
+      "width": 834,
+      "height": 1112,
+      "sha256": "7785698ee5f4fcbc987f82690bc95be8fd5b69b6aabefc780a0c8c58e5d33ec0"
+    },
+    {
+      "file": "live-before/admin-desktop.png",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "408a0b44a6c1af3301df623c1e0b2aadcbda54ce7a37e288bba1515d6f9fb827"
+    },
+    {
+      "file": "live-before/admin-mobile.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "c1ced429995fb7d226a1b14ee11e62580d99e74431165ea87e029181178b17a3"
+    },
+    {
+      "file": "live-before/admin-tablet.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "522da793aa14e15bf74c918de979274eae9e38cac7a770c57089b79f5f4b2846"
+    },
+    {
+      "file": "live-before/administrators-desktop.png",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "b22b16d7d59af9e1fa0718feaf2cc8d62a877c8388b23f5814c9b823dc261ae3"
+    },
+    {
+      "file": "live-before/administrators-mobile.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "eb3a7151dd49f6075bd47724c30401d4bb40756e285f68f8868736b074c632d3"
+    },
+    {
+      "file": "live-before/administrators-tablet.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "343e4116e049abc693aff433ebae9c00d57343ab1a669904bc039229cde5f264"
+    },
+    {
+      "file": "live-before/assessment-desktop.png",
+      "width": 1440,
+      "height": 5501,
+      "sha256": "c6d8cf308ae2f5822ce9ce7c6dbcbfa388c9ae2452800b003a461dd8b9ee7ba7"
+    },
+    {
+      "file": "live-before/assessment-detail-desktop.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "bcba7f23ed236d25f27a2d83b85751b112988f66e3569b8ee89396e392852998"
+    },
+    {
+      "file": "live-before/assessment-detail-mobile.png",
+      "width": 390,
+      "height": 962,
+      "sha256": "4c6d6b0133edd60d81987b55dfeb245a223dfabfc12b6435d091643648173a1b"
+    },
+    {
+      "file": "live-before/assessment-detail-tablet.png",
+      "width": 834,
+      "height": 1112,
+      "sha256": "5cee5456a663ed1ffd4e0d0df1c6ddb8cfcaa25a11cc2382fec8663dbc3c3d4e"
+    },
+    {
+      "file": "live-before/assessment-mobile.png",
+      "width": 390,
+      "height": 9855,
+      "sha256": "38845567642023ea9eb3ee85ff3b4928b485789ca4c993a98e4f0bfe470c8bdf"
+    },
+    {
+      "file": "live-before/assessment-tablet.png",
+      "width": 834,
+      "height": 5501,
+      "sha256": "8f7c025dadfe687f097c73affdd68df85de53ad2dac5c9f4c09e674509fd4a07"
+    },
+    {
+      "file": "live-before/assessments-desktop.png",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "b351a4f7b766f90c3342a14b541deb4a906a2a55080fe6b55c5c3dfc2c4b68e1"
+    },
+    {
+      "file": "live-before/assessments-mobile.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "387f0ccc69aa47aa03dca496d119d0e4f8e1139602f77246ea7c0f1baff13a42"
+    },
+    {
+      "file": "live-before/assessments-tablet.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "934fbee2976c7367e36735faaeb649e3f8d166c257a78e891406e7b408250ee1"
+    },
+    {
+      "file": "live-before/compare-desktop.png",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "b22b16d7d59af9e1fa0718feaf2cc8d62a877c8388b23f5814c9b823dc261ae3"
+    },
+    {
+      "file": "live-before/compare-mobile.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "eb3a7151dd49f6075bd47724c30401d4bb40756e285f68f8868736b074c632d3"
+    },
+    {
+      "file": "live-before/compare-tablet.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "343e4116e049abc693aff433ebae9c00d57343ab1a669904bc039229cde5f264"
+    },
+    {
+      "file": "live-before/groups-desktop.png",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "b22b16d7d59af9e1fa0718feaf2cc8d62a877c8388b23f5814c9b823dc261ae3"
+    },
+    {
+      "file": "live-before/groups-mobile.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "eb3a7151dd49f6075bd47724c30401d4bb40756e285f68f8868736b074c632d3"
+    },
+    {
+      "file": "live-before/groups-tablet.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "343e4116e049abc693aff433ebae9c00d57343ab1a669904bc039229cde5f264"
+    },
+    {
+      "file": "live-before/home-desktop.png",
+      "width": 1280,
+      "height": 1553,
+      "sha256": "425672e360647b7dad833021c0aa3771e4d37ce4cbe41f3ee15000ee70fcc46f"
+    },
+    {
+      "file": "live-before/home-mobile.png",
+      "width": 390,
+      "height": 2517,
+      "sha256": "aa76b4c5cf442c95609c52aa2c0d035ae64d538515641d8770fe35f04023f26f"
+    },
+    {
+      "file": "live-before/home-tablet.png",
+      "width": 768,
+      "height": 2063,
+      "sha256": "3c1ae663a3bb3527e883c9202668ad262df4cceff8876530e740dd547c1f8fb8"
+    },
+    {
+      "file": "live-before/overview-desktop.png",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "b22b16d7d59af9e1fa0718feaf2cc8d62a877c8388b23f5814c9b823dc261ae3"
+    },
+    {
+      "file": "live-before/overview-mobile.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "eb3a7151dd49f6075bd47724c30401d4bb40756e285f68f8868736b074c632d3"
+    },
+    {
+      "file": "live-before/overview-tablet.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "343e4116e049abc693aff433ebae9c00d57343ab1a669904bc039229cde5f264"
+    },
+    {
+      "file": "live-before/reports-desktop.png",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "140fafd13ab743a1b72d324028290bb7addfe3ec810d599402e10e3c869cc605"
+    },
+    {
+      "file": "live-before/reports-mobile.png",
+      "width": 390,
+      "height": 987,
+      "sha256": "fcfbcc6c23881d3340099a885f68c39d1fe0522d647351e8002ad38a2136a049"
+    },
+    {
+      "file": "live-before/reports-tablet.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "24b64b2cfd7cb0eb0850fb31714fbc4fc2c07fc198ab187d4d6b4485bccb8a1b"
+    },
+    {
+      "file": "live-before/respondent-desktop.png",
+      "width": 1440,
+      "height": 3539,
+      "sha256": "85b64e00dddc4d522f14eb78b71ce2318871eca2da8477be81a4adc4ca739711"
+    },
+    {
+      "file": "live-before/respondent-mobile.png",
+      "width": 390,
+      "height": 3669,
+      "sha256": "2bbe220a322bfc6c33dd7d2ec3a3f8a4ba097bf1b4596cf7f873d86236698076"
+    },
+    {
+      "file": "live-before/respondent-tablet.png",
+      "width": 834,
+      "height": 3539,
+      "sha256": "ef9adc8116d62351bffeeab308f3e54bbb7ce2769cde12c95aae9f993887f89a"
+    },
+    {
+      "file": "live-before/results-desktop.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "cab8b3bcfa4426b91b07e79a77f32f92cc96bf563b2dc568ce2dcccfec3be628"
+    },
+    {
+      "file": "live-before/results-mobile.png",
+      "width": 390,
+      "height": 1264,
+      "sha256": "8d0aa02520224c77952b37f5e6934a89301e80c60018bfac507f4775c4ee4c72"
+    },
+    {
+      "file": "live-before/results-tablet.png",
+      "width": 834,
+      "height": 1112,
+      "sha256": "c994bb96b8ddc7a10637704c9776adc2477da824756a2679d52c270263c3398a"
+    },
+    {
+      "file": "live-before/storage-desktop.png",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "b22b16d7d59af9e1fa0718feaf2cc8d62a877c8388b23f5814c9b823dc261ae3"
+    },
+    {
+      "file": "live-before/storage-mobile.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "eb3a7151dd49f6075bd47724c30401d4bb40756e285f68f8868736b074c632d3"
+    },
+    {
+      "file": "live-before/storage-tablet.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "343e4116e049abc693aff433ebae9c00d57343ab1a669904bc039229cde5f264"
+    }
+  ]
+}

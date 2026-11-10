@@ -1,5 +1,14 @@
 # Echelon Signal handoff
 
+## Visual refinement review (SIG-VIS-REFINE-20261110, 2026-11-10)
+
+- Review package: `docs/design-review/2026-11-10/review.html`; audit and open visual gates in its `README.md`; functional evidence in `FUNCTIONAL.md`. Manifest inventories 97 screenshots and source checksums.
+- Verified branding authority: `kemiller2002/echelon-design-system` at `a03c5ac`; released Echelon theme 1.1.0 / Forma 1.0.1. The existing owner-approved foundry ledger direction and Signal marks are reused. No shared package or domain code changed.
+- This branch improves the assessment/respondent identity, question surfaces and grouping, primary actions, assessment score figures and methodology surface. It does not merge the existing admin (#136) or authoring (#137) branches; their traceable captures are included as clearly labelled fixture evidence.
+- Live baseline: landing, assessment, synthetic respondent link and every discovered admin navigation route. The deployed app has no configured sign-in or data store; populated authenticated screens cannot be verified live. Existing fixture captures must not be called live authenticated evidence.
+- Build and 692 .NET tests pass, as do strict Limen verification and Praxis validation. The full locally built Chromium suite is tracked in the review's separate functional report. Use that report for the final result, rather than inferring it from this checkpoint.
+- Next: independent review of the concrete comparisons, then integrate the existing admin/authoring stack and complete authenticated group results/scoring/report refinements and configured-deployment verification. Whole-application visual acceptance remains open; functional checks do not close it.
+
 ## Objective
 
 Build Signal toward the charter's first bounded outcome (template, live URL,

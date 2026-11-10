@@ -39,13 +39,13 @@
      from the site's published-templates/ folder, checked against the link
      before it is used. -->
 <main class="app forma-stack" data-bind-lang="lang">
-  <header class="forma-record-header page-header">
-    <div class="forma-record-header__main">
-      <div class="forma-record-header__title">
-        <div><span class="forma-record-header__type">Signal</span><h1 id="survey-title" data-text="surveyTitle"></h1></div>
-      </div>
-      <p id="survey-version" data-text="surveyVersion"></p>
-    </div>
+  <header class="respondent-header forma-stack">
+    <span class="forma-app-identity">
+      <span class="forma-app-identity__mark"><img class="forma-app-identity__variant" data-forma-scheme="light" src="../brand/signal-mark.svg" alt="" width="32" height="32" /><img class="forma-app-identity__variant" data-forma-scheme="dark" src="../brand/signal-mark-dark.svg" alt="" width="32" height="32" /></span>
+      <span class="forma-app-identity__name">Signal</span>
+    </span>
+    <h1 class="echelon-display" id="survey-title" data-text="surveyTitle"></h1>
+    <p class="echelon-eyebrow" id="survey-version" data-text="surveyVersion"></p>
   </header>
 
   <template data-if="hasOperationalFault">
@@ -103,8 +103,8 @@
   </template>
 
   <template data-if="answering">
-    <section id="questions" class="forma-stack" aria-labelledby="questions-title">
-      <h2 id="questions-title">Questions</h2>
+    <section id="questions" class="forma-stack echelon-panel respondent-panel" aria-labelledby="questions-title">
+      <h2 class="echelon-heading" id="questions-title">Questions</h2>
       <p id="link-disclosure" class="forma-field__description">This page's address contains your answers, so you can come back to them. Anyone you give the address to can see them; it is never sent to a server.</p>
       <template data-if="hasProgress">
         <p id="progress" role="status" data-text="progress"></p>
@@ -121,7 +121,7 @@
       <div id="survey-rows" class="forma-stack">
         <template data-each="rows" data-key="id">
           <div class="survey-row" data-bind-data-row="id">
-            <h3 class="survey-section" data-bind-hidden="hideSection" data-text="title"></h3>
+            <h3 class="survey-section echelon-heading" data-bind-hidden="hideSection" data-text="title"></h3>
             <p class="survey-question" data-bind-hidden="hideQuestion" data-bind-id="promptId" data-bind-data-component="component" data-bind-data-variant="variant"><span class="survey-number" data-bind-hidden="hideQuestionNumber" data-text="questionNumber"></span> <strong data-text="prompt" data-bind-aria-hidden="promptHidden"></strong><span class="forma-sr-only" data-bind-hidden="hideAccessibleName" data-text="accessibleName"></span> <span class="survey-optional" data-text="optionalMark"></span> <span class="forma-field__description" data-text="help"></span></p>
             <p class="forma-sr-only" data-bind-hidden="hideAccessibleDescription" data-bind-id="descriptionId" data-text="accessibleDescription"></p>
             <p class="survey-error" data-bind-hidden="hideError" data-bind-id="errorId" data-text="error"></p>
@@ -164,31 +164,31 @@
       </template>
       <div class="forma-cluster">
         <template data-if="canBack">
-          <button id="page-back" type="button" data-event="pageBack">Back</button>
+          <button class="forma-button" id="page-back" type="button" data-event="pageBack">Back</button>
         </template>
         <template data-if="hasNext">
-          <button id="page-next" type="button" data-event="pageNext">Next</button>
+          <button class="forma-button" data-echelon-emphasis="primary" id="page-next" type="button" data-event="pageNext">Next</button>
         </template>
         <template data-if="reviewing">
-          <button id="review-back" type="button" data-event="reviewClosed">Change answers</button>
+          <button class="forma-button" id="review-back" type="button" data-event="reviewClosed">Change answers</button>
         </template>
         <template data-if="isLastPage">
-          <button id="submit-answers" type="button" data-event="submitRequested" data-text="submitLabel"></button>
+          <button class="forma-button" data-echelon-emphasis="primary" id="submit-answers" type="button" data-event="submitRequested" data-text="submitLabel"></button>
         </template>
       </div>
     </section>
   </template>
 
   <template data-if="submitted">
-    <section id="submitted" class="forma-stack" aria-labelledby="submitted-title">
-      <h2 id="submitted-title">Submitted</h2>
+    <section id="submitted" class="forma-stack echelon-panel respondent-panel" aria-labelledby="submitted-title">
+      <h2 class="echelon-heading" id="submitted-title">Submitted</h2>
       <p id="submission-disclosure">Your answers are final. This link contains them; send it to the person who invited you.</p>
       <label class="forma-field">
         <span class="forma-field__label">Submission link</span>
         <input id="submission-link" type="text" readonly data-bind-value="submissionLink" />
       </label>
       <div class="forma-cluster">
-        <button id="copy-link" type="button" data-event="copyRequested">Copy link</button>
+        <button class="forma-button" data-echelon-emphasis="primary" id="copy-link" type="button" data-event="copyRequested">Copy link</button>
       </div>
       <template data-if="hasCopyNotice">
         <p id="copy-notice" role="status" data-text="copyNotice"></p>
