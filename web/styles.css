@@ -107,6 +107,19 @@
    in two equal columns, so the option is never squeezed to a few letters a
    line and the columns still line up from row to row (ULI-L09). */
 @media (max-width: 30rem) {
-  .respondent-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .respondent-pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 0.75rem;
+    padding-inline: 0.25rem;
+  }
   .respondent-pair > :first-child { grid-column: 1 / -1; }
+  /* Each choice gives its padding to its name; the column gap keeps the two
+     names apart (ULI-L04), so "Fits best" and "Fits least" wrap between
+     words, not inside them, at 320 px with 200% text. Both stay on one row,
+     level with each other (ULI-L01). */
+  .respondent-pair .survey-pair-choice { padding-inline: 0; }
+}
+/* At 320 px the card's padding goes to the answers too. */
+@media (max-width: 22.5rem) {
+  .respondent-card { padding-inline: 0.25rem; }
 }
