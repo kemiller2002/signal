@@ -22,9 +22,10 @@ async function startDraft(page) {
   return draft;
 }
 
-// The person has read down to the draft's actions at the end of the page.
-async function scrollToActions(page) {
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+// The person has read down the long draft to an action: it is in the middle
+// of the screen (not wherever Playwright's own scroll would leave it).
+async function scrollTo(action) {
+  await action.evaluate((element) => element.scrollIntoView({ block: "center" }));
 }
 
 test("on the long draft page, Publish's refusal and Save's outcome are shown beside the actions, and #activity alone announces them", async ({ page }) => {
@@ -41,8 +42,8 @@ test("on the long draft page, Publish's refusal and Save's outcome are shown bes
   await expect(outcome.locator("[role], [aria-live]")).toHaveCount(0);
 
   // Publish with blockers: refused, and the refusal is on screen beside Publish.
-  await scrollToActions(page);
   const publish = draft.getByRole("button", { name: "Publish", exact: true });
+  await scrollTo(publish);
   await expect(publish).toBeInViewport();
   await publish.click();
   const refusal = "Publication is blocked: resolve the blockers listed under validation.";
@@ -58,8 +59,8 @@ test("on the long draft page, Publish's refusal and Save's outcome are shown bes
   await page.screenshot({ path: test.info().outputPath("draft-publish-refused.png") });
 
   // Save: its outcome is shown beside the actions too.
-  await scrollToActions(page);
   const save = draft.getByRole("button", { name: "Save draft", exact: true });
+  await scrollTo(save);
   await expect(save).toBeInViewport();
   await save.click();
   const saved = "The draft of PULSE was saved.";
