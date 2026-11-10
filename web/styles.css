@@ -132,9 +132,6 @@ main.app > #activity:not(:has(#loading)),
   outline: 3px solid var(--forma-color-focus-ring);
   outline-offset: 4px;
 }
-/* The submission link is read only, not unavailable: a solid border, since
-   Forma's dashed read-only border read as disabled on the dark scheme. */
-#submission-link { border-style: solid; }
 /* The prompt is in the display face; its optional mark and guidance after
    it stay in the body face, the guidance on its own line. */
 .respondent-card .survey-question > :is(.survey-optional, span:last-child) {
