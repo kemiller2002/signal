@@ -169,17 +169,22 @@
   background: var(--echelon-surface-raised);
 }
 
-/* The group filters: the state and identity choices as one wrapping row,
-   the survey choice on its own line beneath them. */
-.admin #group-filters {
+/* The group filters: Signal's own fieldset (not Forma's choice group, a
+   column it would restyle), the state and identity choices as one wrapping
+   row, the survey choice on its own line beneath them. */
+.admin .admin-filters {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem 1.25rem;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
-.admin #group-filters > legend { flex-basis: 100%; }
-.admin #group-filters > label:has(select) { flex-basis: 100%; max-inline-size: 28rem; }
+.admin .admin-filters > legend { flex-basis: 100%; }
+.admin .admin-filters > label:has(select) { flex-basis: 100%; max-inline-size: 28rem; }
 
 /* Group tabs bind the engine's view flags, so the current one carries
    aria-current="true" rather than "page"; it is marked the same way. */
@@ -241,15 +246,15 @@
    while there is room and wrap below one another when there is not; each
    keeps a readable width (the detail collapsed into a column of letters at
    834 px when the alert's columns were left to Forma's default). */
-.admin #notice {
+.admin .admin-notice__body {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 0.5rem 1rem;
+  min-inline-size: 0;
 }
-.admin #notice > #notice-message { flex: 1 1 18rem; margin: 0; min-inline-size: 0; }
-.admin #notice > details { flex: 1 1 12rem; min-inline-size: 0; }
-.admin #notice > .forma-button { flex: 0 0 auto; }
+.admin .admin-notice__body > #notice-message { flex: 1 1 18rem; margin: 0; min-inline-size: 0; }
+.admin .admin-notice__body > details { flex: 1 1 12rem; min-inline-size: 0; }
 
 /* A long view's outcome beside its actions (signal#136 review round 2): a
    quiet copy of the persistence line and the notice's sentence, ruled like
@@ -420,8 +425,11 @@
 /* Forma's stack aligns a grid's tracks to the start, which sized the panel
    body's one column to its widest field (Title was 155-220 px): the track
    fills the panel, so fields take its width up to the measure. */
-.draft-editor .draft-panel > .echelon-panel__body,
-.draft-editor #scoring-authoring { gap: 0.75rem; justify-content: stretch; }
+.draft-editor .draft-panel > .echelon-panel__body { gap: 0.75rem; justify-content: stretch; }
+/* Scoring's authoring is Signal's own column (it was a Forma stack this
+   sheet restyled): one track that fills the panel, its fields up to the
+   measure; two or more columns on a wide panel (above). */
+.draft-editor .draft-scoring { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
 @media (max-width: 30rem) {
   .draft-editor .draft-panel > :is(.echelon-panel__header, .echelon-panel__body) { padding-inline: 0.875rem; }
   .draft-editor { gap: 1rem; }

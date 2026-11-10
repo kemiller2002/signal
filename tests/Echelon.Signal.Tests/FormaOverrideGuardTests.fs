@@ -40,6 +40,24 @@ let private rulesOf (css: string) =
 
 let private ownedByFoundations (name: string) = name.StartsWith "forma-" || name.StartsWith "echelon-"
 
+/// The classes a page's markup names. A selector naming a class the page never
+/// carries cannot match there (".respondent-progress #progress" is the survey
+/// page's, not the assessment page's #progress), so it is not held against
+/// that page's elements. Classes bound at run time (data-bind-class) are not
+/// in the source; neither guard sees them.
+let private pageClasses (html: string) =
+    Regex.Matches(html, "\\sclass=\"([^\"]+)\"")
+    |> Seq.collect (fun m -> m.Groups[1].Value.Split(' ', System.StringSplitOptions.RemoveEmptyEntries))
+    |> Set.ofSeq
+
+/// Whether every class a selector names is on the page.
+let private canMatch (classes: Set<string>) (selector: string) =
+    Regex.Matches(selector, @"\.([\w-]+)") |> Seq.forall (fun m -> classes.Contains m.Groups[1].Value)
+
+/// The full list on failure (xUnit's collection message truncates it).
+let private noneOf (clashes: string list) =
+    Assert.True(List.isEmpty clashes, $"{List.length clashes} found:\n" + String.concat "\n" clashes)
+
 /// Each page and the stylesheets that style it.
 let private stylesheets =
     [ "web/index.html", [ "web/styles.css"; "web-kernel/page.css" ]
@@ -71,7 +89,8 @@ let ``no Signal class sets what the Forma or theme class on the same element set
 
     let clashes =
         [ for page, sheets in stylesheets do
-              let rules = sheets |> List.collect (readRepoFile >> rulesOf)
+              let classes = pageClasses (readRepoFile page)
+              let rules = sheets |> List.collect (readRepoFile >> rulesOf) |> List.filter (fun (selector, _, _) -> canMatch classes selector)
 
               for element in Regex.Matches(readRepoFile page, "\\sclass=\"([^\"]+)\"") do
                   let theirs, mine =
@@ -88,7 +107,7 @@ let ``no Signal class sets what the Forma or theme class on the same element set
                               if not clash.IsEmpty then
                                   yield $"{page}: '{selector}' sets {listed}, which .{owner} on the same element (.{name}) sets" ]
 
-    Assert.Empty clashes
+    noneOf clashes
 
 /// The form controls Forma's foundations style by element, not by class.
 let private formControls = [ "input"; "textarea"; "select"; "button" ]
@@ -121,7 +140,8 @@ let ``no Signal id selector sets what Forma sets on that element`` () =
 
     let clashes =
         [ for page, sheets in stylesheets do
-              let rules = sheets |> List.collect (readRepoFile >> rulesOf)
+              let classes = pageClasses (readRepoFile page)
+              let rules = sheets |> List.collect (readRepoFile >> rulesOf) |> List.filter (fun (selector, _, _) -> canMatch classes selector)
 
               for element in Regex.Matches(readRepoFile page, @"<(\w+)\b([^>]*)>") do
                   let tag = element.Groups[1].Value.ToLowerInvariant()
@@ -147,4 +167,4 @@ let ``no Signal id selector sets what Forma sets on that element`` () =
                               if not clash.IsEmpty then
                                   yield $"{page}: '{selector}' sets {listed}, which Forma sets on <{tag} id=\"{name}\">" ]
 
-    Assert.Empty clashes
+    noneOf clashes
