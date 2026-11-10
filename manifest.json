@@ -1,0 +1,443 @@
+{
+  "schema": "signal.visual-capture-manifest/1",
+  "kind": "visual-review evidence (not functional test evidence)",
+  "workItem": "WI-0110",
+  "intake": ".praxis/inbox/documents/2026-11-09-SIG-VIS-CAPTURE-001-visual-review-evidence-capture.md",
+  "generatedAt": "2026-11-10T05:28:04.529Z",
+  "source": {
+    "repository": "kemiller2002/signal",
+    "ref": "visual/echelon-app-layer",
+    "commit": "311f90d1efe4a1b6931d52874656bcbfafe40203",
+    "run": "https://github.com/kemiller2002/signal/actions/runs/42761757163"
+  },
+  "browser": [
+    "153.0.8010.12"
+  ],
+  "method": {
+    "capture": "tests/visual/capture.spec.js, run with tests/visual/visual.config.js (the browser suite's servers and Chromium)",
+    "viewports": "viewport size only (Desktop Chrome device: no mobile user agent or touch emulation); a reached state is resized and its colour scheme emulated in place, except the start-up states, which load once per viewport and scheme",
+    "colourScheme": "prefers-color-scheme emulated by Playwright (light, dark)",
+    "observation": "tests/visual/observe-init.js records the page's waiting indicators on every DOM change; each step lists the distinct states seen while it ran"
+  },
+  "viewports": [
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "id": "tablet",
+      "width": 834,
+      "height": 1112
+    },
+    {
+      "id": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "schemes": [
+    "light",
+    "dark"
+  ],
+  "summary": {
+    "screens": 3,
+    "screenshots": 36,
+    "byViewport": {
+      "desktop": 12,
+      "tablet": 12,
+      "mobile": 12
+    },
+    "byScheme": {
+      "light": 18,
+      "dark": 18
+    },
+    "byExtent": {
+      "full": 18,
+      "viewport": 18
+    },
+    "bySite": {
+      "checkout": 1,
+      "pages": 2
+    },
+    "authGated": [],
+    "unreached": [],
+    "loadingByOperation": {
+      "static page load": {
+        "screens": [
+          "landing",
+          "landing-pages-site",
+          "pages-site-root"
+        ],
+        "observed": []
+      }
+    }
+  },
+  "scenarios": [
+    {
+      "id": "landing",
+      "consoleErrors": [],
+      "durationMs": 3080
+    }
+  ],
+  "screens": [
+    {
+      "id": "landing",
+      "title": "Landing page (web/home/) — repository-root server (python http.server), as the browser suite serves it",
+      "scenario": "landing",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/home/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "open http://127.0.0.1:4321/web/home/index.html",
+          "operation": "static page load",
+          "durationMs": 116,
+          "observed": [
+            {
+              "atMs": 27,
+              "forMs": null,
+              "shown": []
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Surveys whose answers live in the link",
+        "headings": [
+          "Surveys whose answers live in the link",
+          "Who it is for",
+          "How it works"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing/desktop-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing/desktop-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing/desktop-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing/desktop-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing/tablet-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing/tablet-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing/tablet-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing/tablet-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing/mobile-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing/mobile-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing/mobile-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing/mobile-dark-viewport.png",
+          "shown": []
+        }
+      ]
+    },
+    {
+      "id": "landing-pages-site",
+      "title": "Landing page (web/home/) — the assembled GitHub Pages site (tools/pages/assemble-site.mjs) under /signal/, with the demo banner and Content-Security-Policy",
+      "scenario": "landing",
+      "site": "pages",
+      "url": "http://127.0.0.1:4322/signal/web/home/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "landing",
+      "steps": [
+        {
+          "action": "open http://127.0.0.1:4322/signal/web/home/index.html",
+          "operation": "static page load",
+          "durationMs": 52,
+          "observed": [
+            {
+              "atMs": 13,
+              "forMs": null,
+              "shown": []
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Surveys whose answers live in the link",
+        "headings": [
+          "Surveys whose answers live in the link",
+          "Who it is for",
+          "How it works"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing-pages-site/desktop-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/desktop-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing-pages-site/desktop-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/desktop-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing-pages-site/tablet-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/tablet-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing-pages-site/tablet-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/tablet-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing-pages-site/mobile-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/mobile-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing-pages-site/mobile-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/mobile-dark-viewport.png",
+          "shown": []
+        }
+      ]
+    },
+    {
+      "id": "pages-site-root",
+      "title": "Pages site root (redirects to web/home/)",
+      "scenario": "landing",
+      "site": "pages",
+      "url": "http://127.0.0.1:4322/signal/web/home/",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "landing-pages-site",
+      "steps": [
+        {
+          "action": "open http://127.0.0.1:4322/signal/",
+          "operation": "static page load",
+          "durationMs": 29,
+          "observed": []
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Surveys whose answers live in the link",
+        "headings": [
+          "Surveys whose answers live in the link",
+          "Who it is for",
+          "How it works"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/pages-site-root/desktop-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/desktop-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/pages-site-root/desktop-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/desktop-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/pages-site-root/tablet-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/tablet-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/pages-site-root/tablet-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/tablet-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/pages-site-root/mobile-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/mobile-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/pages-site-root/mobile-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/mobile-dark-viewport.png",
+          "shown": []
+        }
+      ]
+    }
+  ],
+  "unreached": []
+}
