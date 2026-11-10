@@ -1,0 +1,882 @@
+{
+  "scenario": "landing",
+  "durationMs": 8758,
+  "consoleErrors": [],
+  "screens": [
+    {
+      "id": "landing",
+      "title": "Landing page (web/home/) — repository-root server (python http.server), as the browser suite serves it",
+      "scenario": "landing",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/home/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "open http://127.0.0.1:4321/web/home/index.html",
+          "operation": "static page load",
+          "durationMs": 84,
+          "observed": [
+            {
+              "atMs": 18,
+              "forMs": null,
+              "shown": []
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Surveys whose answers live in the link",
+        "headings": [
+          "Surveys whose answers live in the link",
+          "ANSWERING A SURVEY?",
+          "Three roles, one fixed meaning",
+          "From template to traceable result"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing/desktop-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing/desktop-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing/desktop-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing/desktop-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing/tablet-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing/tablet-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing/tablet-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing/tablet-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing/mobile-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing/mobile-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing/mobile-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing/mobile-dark-viewport.png",
+          "shown": []
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 29,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 16,
+            "4.5to7": 13
+          },
+          "lowest": [
+            {
+              "element": "p.echelon-eyebrow",
+              "text": "Surveys and assessments",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-lead",
+              "text": "Signal runs surveys and assessments from published, immutabl",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-eyebrow",
+              "text": "How it works",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "An author publishes a template. Its version fixes the meanin",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Respondents answer in the browser. Finishing an anonymous su",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "An administrator imports the submissions. Signal recalculate",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Signal · Echelon Foundry",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Answers stay in the respondent's link.",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-eyebrow",
+              "text": "Who it is for",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Publish a template whose questions, branching, validation an",
+              "ratio": 4.89,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 29,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 29
+          },
+          "lowest": [
+            {
+              "element": "a.forma-button",
+              "text": "Open the administrator console",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-eyebrow",
+              "text": "Who it is for",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Publish a template whose questions, branching, validation an",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Answer from a link. The link always holds their current answ",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Import completed submissions and read results together with ",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "h2#home-respondent-title.echelon-eyebrow",
+              "text": "Answering a survey?",
+              "ratio": 13.21,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Use the link your survey administrator sent you. Signal neve",
+              "ratio": 13.21,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Your answers stay in that link, so you can stop and come bac",
+              "ratio": 13.21,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-eyebrow",
+              "text": "Surveys and assessments",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-lead",
+              "text": "Signal runs surveys and assessments from published, immutabl",
+              "ratio": 13.29,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 5,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Signal",
+            "How it works",
+            "Who it is for",
+            "Open the administrator console",
+            "See how it works"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/landing/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 29,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "landing-pages-site",
+      "title": "Landing page (web/home/) — the assembled GitHub Pages site (tools/pages/assemble-site.mjs) under /signal/, with the demo banner and Content-Security-Policy",
+      "scenario": "landing",
+      "site": "pages",
+      "url": "http://127.0.0.1:4322/signal/web/home/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "landing",
+      "steps": [
+        {
+          "action": "open http://127.0.0.1:4322/signal/web/home/index.html",
+          "operation": "static page load",
+          "durationMs": 51,
+          "observed": [
+            {
+              "atMs": 11,
+              "forMs": null,
+              "shown": []
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Surveys whose answers live in the link",
+        "headings": [
+          "Surveys whose answers live in the link",
+          "ANSWERING A SURVEY?",
+          "Three roles, one fixed meaning",
+          "From template to traceable result"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing-pages-site/desktop-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/desktop-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing-pages-site/desktop-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/desktop-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing-pages-site/tablet-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/tablet-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing-pages-site/tablet-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/tablet-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing-pages-site/mobile-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/mobile-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing-pages-site/mobile-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/mobile-dark-viewport.png",
+          "shown": []
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 30,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 14,
+            "7plus": 16
+          },
+          "lowest": [
+            {
+              "element": "p.pages-demo-banner",
+              "text": "Demo — data stays in this browser; GitHub sign-in not config",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-eyebrow",
+              "text": "Surveys and assessments",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-lead",
+              "text": "Signal runs surveys and assessments from published, immutabl",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-eyebrow",
+              "text": "How it works",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "An author publishes a template. Its version fixes the meanin",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Respondents answer in the browser. Finishing an anonymous su",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "An administrator imports the submissions. Signal recalculate",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Signal · Echelon Foundry",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Answers stay in the respondent's link.",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-eyebrow",
+              "text": "Who it is for",
+              "ratio": 4.89,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 30,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 30
+          },
+          "lowest": [
+            {
+              "element": "a.forma-button",
+              "text": "Open the administrator console",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-eyebrow",
+              "text": "Who it is for",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Publish a template whose questions, branching, validation an",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Answer from a link. The link always holds their current answ",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Import completed submissions and read results together with ",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "h2#home-respondent-title.echelon-eyebrow",
+              "text": "Answering a survey?",
+              "ratio": 13.21,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Use the link your survey administrator sent you. Signal neve",
+              "ratio": 13.21,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Your answers stay in that link, so you can stop and come bac",
+              "ratio": 13.21,
+              "required": 4.5
+            },
+            {
+              "element": "p.pages-demo-banner",
+              "text": "Demo — data stays in this browser; GitHub sign-in not config",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-eyebrow",
+              "text": "Surveys and assessments",
+              "ratio": 13.29,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 5,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Signal",
+            "How it works",
+            "Who it is for",
+            "Open the administrator console",
+            "See how it works"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/landing-pages-site/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 30,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "pages-site-root",
+      "title": "Pages site root (redirects to web/home/)",
+      "scenario": "landing",
+      "site": "pages",
+      "url": "http://127.0.0.1:4322/signal/web/home/",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "landing-pages-site",
+      "steps": [
+        {
+          "action": "open http://127.0.0.1:4322/signal/",
+          "operation": "static page load",
+          "durationMs": 21,
+          "observed": []
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Surveys whose answers live in the link",
+        "headings": [
+          "Surveys whose answers live in the link",
+          "ANSWERING A SURVEY?",
+          "Three roles, one fixed meaning",
+          "From template to traceable result"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/pages-site-root/desktop-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/desktop-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/pages-site-root/desktop-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/desktop-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/pages-site-root/tablet-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/tablet-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/pages-site-root/tablet-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/tablet-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/pages-site-root/mobile-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/mobile-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/pages-site-root/mobile-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/mobile-dark-viewport.png",
+          "shown": []
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 30,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 14,
+            "7plus": 16
+          },
+          "lowest": [
+            {
+              "element": "p.pages-demo-banner",
+              "text": "Demo — data stays in this browser; GitHub sign-in not config",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-eyebrow",
+              "text": "Surveys and assessments",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-lead",
+              "text": "Signal runs surveys and assessments from published, immutabl",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-eyebrow",
+              "text": "How it works",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "An author publishes a template. Its version fixes the meanin",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Respondents answer in the browser. Finishing an anonymous su",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "An administrator imports the submissions. Signal recalculate",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Signal · Echelon Foundry",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Answers stay in the respondent's link.",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-eyebrow",
+              "text": "Who it is for",
+              "ratio": 4.89,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 30,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 30
+          },
+          "lowest": [
+            {
+              "element": "a.forma-button",
+              "text": "Open the administrator console",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-eyebrow",
+              "text": "Who it is for",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Publish a template whose questions, branching, validation an",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Answer from a link. The link always holds their current answ",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Import completed submissions and read results together with ",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "h2#home-respondent-title.echelon-eyebrow",
+              "text": "Answering a survey?",
+              "ratio": 13.21,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Use the link your survey administrator sent you. Signal neve",
+              "ratio": 13.21,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "Your answers stay in that link, so you can stop and come bac",
+              "ratio": 13.21,
+              "required": 4.5
+            },
+            {
+              "element": "p.pages-demo-banner",
+              "text": "Demo — data stays in this browser; GitHub sign-in not config",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.echelon-eyebrow",
+              "text": "Surveys and assessments",
+              "ratio": 13.29,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 5,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Signal",
+            "How it works",
+            "Who it is for",
+            "Open the administrator console",
+            "See how it works"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/pages-site-root/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 30,
+            "failures": []
+          }
+        }
+      }
+    }
+  ],
+  "unreached": [],
+  "browserVersion": "153.0.8010.12"
+}
