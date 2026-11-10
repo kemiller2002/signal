@@ -57,6 +57,7 @@ type Work =
     | Background
 
 /// Work that ended in an exception, tagged with whose work it was.
+[<NoComparison; NoEquality>]
 type WorkFailure = { Work: Work; Error: exn }
 
 /// One page's in-flight work, producing messages of type 'msg.
@@ -68,14 +69,6 @@ type Bridge<'msg>() =
     let failures = List<WorkFailure>()
     let mutable sequence = 0
 
-    /// Asks the browser for something and continues with its answer.
-    member _.Call(request: KernelCall) : Async<KernelAnswer> =
-        Async.FromContinuations(fun (resume, _, _) ->
-            sequence <- sequence + 1
-            let id = $"bridge-{sequence}"
-            waiting[id] <- resume
-            outbox.Add(id, request))
-
     let run (tag: Work) (work: Async<'msg list>) =
         Async.StartImmediate(
             async {
@@ -84,6 +77,14 @@ type Bridge<'msg>() =
                 | Choice2Of2 error -> failures.Add { Work = tag; Error = error }
             }
         )
+
+    /// Asks the browser for something and continues with its answer.
+    member _.Call(request: KernelCall) : Async<KernelAnswer> =
+        Async.FromContinuations(fun (resume, _, _) ->
+            sequence <- sequence + 1
+            let id = $"bridge-{sequence}"
+            waiting[id] <- resume
+            outbox.Add(id, request))
 
     /// Runs background work to its first browser call (or its end). Its
     /// failure is reported, but never as the running operation's.

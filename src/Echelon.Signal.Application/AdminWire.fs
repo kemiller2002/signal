@@ -439,6 +439,7 @@ let step (env: Env) (state: State) (inbound: Inbound) =
 
 /// What handling one kernel message gave: the state to keep, the reply, and
 /// a programming defect to re-raise once that state is kept.
+[<NoComparison; NoEquality>]
 type Handled =
     { State: State
       Reply: string
