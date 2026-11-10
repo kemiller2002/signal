@@ -435,7 +435,7 @@ let private closeConfirmation (operation: Operations.Operation) (model: Model) =
 
 /// Where focus goes once a change that moves or removes the control it was
 /// on has answered: to what the change produced, beside where it was made
-/// (SIG-VIS-PENDING-002). A retire that worked lands on the open group's
+/// (SIG-VIS-PENDING-003). A retire that worked lands on the open group's
 /// retired results, shown once the store holds its record; otherwise (also
 /// a group with nothing to retire) back on the button that starts it. A
 /// group or dataset transition lands on the state it changed. A deleted
@@ -449,136 +449,6 @@ let private focusAfter (operation: Operations.Operation) (outcome: Operations.Ou
 
     match operation, outcome with
     | Operations.Operation.RetireSources, Operations.Outcome.Confirmed when retiredShown -> [ Focus "sources-retired" ]
-    | Operations.Operation.RetireSources, _ -> [ Focus "retire-sources" ]
-    | Operations.Operation.TransitionGroup _, _ -> [ Focus "group-phase" ]
-    | Operations.Operation.TransitionDataset _, _ -> [ Focus "dataset-lifecycle" ]
-    | Operations.Operation.DeleteDraft, _
-    | Operations.Operation.HideVersion _, _ -> [ Focus "activity" ]
-    | _ -> []
-
-/// The next model and the effects to perform.
-/// What the page does for an event, a button's own action event included.
-let private onUi (model: Model) (name: string) (key: string option) (value: string) : Model * Effect list =
-    match Map.tryFind name buttonActions with
-    | Some(original, action) -> onNamedEvent model original key action
-    | None -> onNamedEvent model name key value
-
-let private apply (msg: Msg) (model: Model) : Model * Effect list =
-    match msg with
-    | Started(page, query) ->
-        // A provider callback is consumed and removed from the address by
-        // Fides; the view to return to was kept in this tab (SIG-LINK-006).
-        let callback = query |> List.exists (fun (k, _) -> k = "state")
-        let model, moves = go (arrive (access model) model.Place page) { model with CallbackQuery = query }
-        let place = if callback then withoutCallback model.Place else model.Place
-        { model with Place = place }, moves @ [ ReadConfiguration ] @ (if callback then [ RecallReturn ] else [])
-    | ConfigurationRead None -> { model with ConfigurationProblem = Some "This deployment's configuration could not be read." }, []
-    | ConfigurationRead(Some text) ->
-        match Deployment.parse text with
-        | Error problem -> { model with ConfigurationProblem = Some(Problems.describe problem) }, []
-        | Ok config ->
-            let model = { model with Deployment = Some config; ConfigurationProblem = None }
-
-            match config.Identity with
-            | Some identity -> { model with SignIn = Credential.SigningIn; CallbackQuery = [] }, [ BeginIdentity(identity, model.CallbackQuery) ]
-            | None -> model, []
-    | IdentityChanged(signIn, principal) ->
-        let model, moves = settleAccess { model with SignIn = signIn; Principal = principal }
-
-        match principal, model.Deployment with
-        | Some _, Some config ->
-            match config.Datasets with
-            | [ only ] ->
-                match started (Operations.Operation.OpenDataset only.Id) model with
-                | Some opening -> opening, moves @ [ OpenDataset only.Id ]
-                | None -> model, moves
-            | _ -> model, moves
-        | None, _ -> { model with Dataset = None }, moves
-        | _ -> model, moves
-    | TabNoticed notice ->
-        match model.Dataset with
-        | Some dataset ->
-            let downgraded = Credential.afterNotice notice dataset.Credential
-
-            match notice with
-            | Credential.SignedOutElsewhere -> settleAccess { model with Dataset = None; Principal = None; SignIn = Credential.SignedOut }
-            | _ ->
-                let model = { model with Dataset = Some { dataset with Credential = downgraded } }
-
-                // Reloaded now; while an operation runs, the reload would race it
-                // (`Operations`), so the page asks for a refresh once it is answered.
-                match started Operations.Operation.Refresh (if Operations.isRunning model.Activity then model else { model with Activity = Operations.oweReload model.Activity }) with
-                | Some model -> model, [ OpenDataset dataset.DatasetId ]
-                | None -> { model with Activity = Operations.oweReload model.Activity }, []
-        | None -> model, []
-    | DatasetOpened(dataset, at) ->
-        { model with
-            Dataset = Some dataset
-            Connectivity = Credential.Online
-            LastVerified = Some at },
-        []
-    | CatalogLoaded(catalog, listing) ->
-        let template = if catalog |> List.exists (fun e -> e.Hash = model.NewGroup.Template) then model.NewGroup.Template else catalog |> List.tryHead |> Option.map _.Hash |> Option.defaultValue ""
-        { model with Catalog = catalog; Templates = listing; NewGroup = {| model.NewGroup with Template = template |} }, []
-    | SnapshotsLoaded snapshots -> { model with Snapshots = snapshots }, []
-    | LibraryLoaded library -> { model with Library = library }, []
-    | DraftDeleted survey -> { model with Authoring = Authoring.deleted survey model.Authoring }, []
-    | DefinitionSaved entry -> { model with Builder = ReportBuilder.saved entry model.Builder }, []
-    | ExportReady(name, mime, data) -> model, [ Download(name, mime, data) ]
-    | DraftSaved stored -> { model with Authoring = Authoring.saved stored model.Authoring }, []
-    | DraftPublished(survey, _) -> { model with Authoring = Authoring.published survey model.Authoring }, []
-    | GroupUpdated group ->
-        match model.Dataset with
-        | Some dataset ->
-            let groups =
-                if dataset.Groups |> List.exists (fun g -> g.Key = group.Key) then
-                    dataset.Groups |> List.map (fun g -> if g.Key = group.Key then group else g)
-                else
-                    dataset.Groups @ [ group ]
-
-            let model = { model with Dataset = Some { dataset with Groups = groups } }
-            // A new group opens; an update to the group in view stays where it is.
-            if groupKey model = Some group.Key then model, [] else go (navigate model.Place (Group group.Key)) model
-        | None -> model, []
-    | InvitationsIssued(group, links) -> { model with Issued = Some {| Group = group; Links = links |} }, []
-    | Failed notice
-    | Noted notice -> { model with Notice = Some notice }, []
-    | WentOffline reason ->
-        { model with
-            Connectivity = Credential.Degraded(reason, model.LastVerified)
-            Notice = Some { Code = "SIGNAL.STORAGE.OFFLINE"; Message = "The data store cannot be reached. What is shown may be out of date; changes are unavailable."; Infrastructure = true } },
-        []
-    | ConflictFound conflict -> { model with Conflict = Some conflict }, []
-    | LocationMoved page -> go (arrive (access model) model.Place page) model
-    | ReturnRecalled target ->
-        match target |> Option.bind (ReturnTo.capture table) with
-        | Some target -> settleAccess { model with ReturnTarget = Some target }
-        | None -> model, [ ForgetReturn ]
-    | LinkCopied true -> { model with Notice = Some { Code = "SIGNAL.LINK.COPIED"; Message = "Link copied. It opens this view for anyone who may see it."; Infrastructure = false } }, []
-    | LinkCopied false ->
-        { model with Notice = Some { Code = "SIGNAL.LINK.NOT_COPIED"; Message = "The browser did not allow copying. Copy the address from the address bar instead."; Infrastructure = false } }, []
-    | Ui(name, key, value) -> onUi model name key value
-    // Settled as unknown before it is applied (`AdminApp.answer`); the wire
-    // presents the fault itself through Aegis.
-    | OperationFaulted -> model, []
-
-/// A confirmation held open while its change ran closes once it is answered.
-let private closeConfirmation (operation: Operations.Operation) (model: Model) =
-    match operation with
-    | Operations.Operation.DeleteDraft -> { model with Authoring = { model.Authoring with ConfirmDelete = None } }
-    | Operations.Operation.RetireSources -> { model with RetireConfirm = None }
-    | _ -> model
-
-/// Where focus goes once a change that moves or removes the control it was
-/// on has answered: to what the change produced, beside where it was made
-/// (SIG-VIS-PENDING-002). A retire that worked lands on what it retired,
-/// otherwise back on the button that starts it; a group or dataset
-/// transition lands on the state it changed. A deleted draft or hidden
-/// version leaves nothing beside it, so focus goes to the status region,
-/// which otherwise only announces.
-let private focusAfter (operation: Operations.Operation) (outcome: Operations.Outcome) =
-    match operation, outcome with
-    | Operations.Operation.RetireSources, Operations.Outcome.Confirmed -> [ Focus "sources-retired" ]
     | Operations.Operation.RetireSources, _ -> [ Focus "retire-sources" ]
     | Operations.Operation.TransitionGroup _, _ -> [ Focus "group-phase" ]
     | Operations.Operation.TransitionDataset _, _ -> [ Focus "dataset-lifecycle" ]
