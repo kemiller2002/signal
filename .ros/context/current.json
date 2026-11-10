@@ -4840,7 +4840,27 @@
       "updatedAt": "2026-11-10T12:30:32.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T123033719Z-318c51c4"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "32372095e2d0b259b964abcb",
+        "recordedAt": "2026-11-10T12:50:37.000Z",
+        "executionId": "EXE-20261110T123033719Z-318c51c4",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-authoring",
+        "commit": "11ab89556960859a02bbd64a0d25003343854608",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-authoring",
+        "remoteCommit": "11ab89556960859a02bbd64a0d25003343854608",
+        "summary": "signal#137 review round 2 fixed; CI green at 8f5eedb2 (704 .NET, 197 Playwright); visual-evidence/baseline-8f5eedb (87 screens, none unreached)",
+        "nextAction": "complete WI-0133, update the signal#137 PR body, report, resume 2d",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
