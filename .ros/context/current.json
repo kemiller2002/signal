@@ -4786,7 +4786,27 @@
       "updatedAt": "2026-11-10T11:27:07.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T112708013Z-587f2c82"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "479b47a648765041a66f7be9",
+        "recordedAt": "2026-11-10T12:24:09.000Z",
+        "executionId": "EXE-20261110T112708013Z-587f2c82",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-authoring",
+        "commit": "f6f76c1b945cfaf66f178803d7894a814d67466a",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-authoring",
+        "remoteCommit": "f6f76c1b945cfaf66f178803d7894a814d67466a",
+        "summary": "signal#137 visual gate fixed: template header with one action group and the outcome under it, draft parts navigation, fields as wide as their column, structured question rows, two panels to a row from 50rem. CI green at 6bbf9166 (702 .NET, 195 Playwright); visual-evidence/baseline-6bbf916",
+        "nextAction": "complete WI-0130, update the signal#137 PR body and report",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
