@@ -28,6 +28,21 @@ async function scrollTo(action) {
   await action.evaluate((element) => element.scrollIntoView({ block: "center" }));
 }
 
+// Where an element is in the document, so "beside" is a distance between
+// two elements and does not depend on where the page is scrolled.
+const pageTop = (locator) => locator.evaluate((element) => element.getBoundingClientRect().top + window.scrollY);
+
+// The outcome is beside the action (within 400px of it in the document) and
+// on screen. How far the page moved while the action ran is logged.
+async function expectBeside(page, outcome, action, scrolledBefore, label) {
+  await expect(outcome).toBeVisible();
+  await expect(outcome).toBeInViewport();
+  expect(Math.abs((await pageTop(outcome)) - (await pageTop(action)))).toBeLessThanOrEqual(400);
+  const moved = (await page.evaluate(() => window.scrollY)) - scrolledBefore;
+  test.info().annotations.push({ type: "scroll", description: `${label}: the page moved ${moved}px while it ran` });
+  console.log(`${label}: the page moved ${moved}px while it ran`);
+}
+
 test("on the long draft page, Publish's refusal and Save's outcome are shown beside the actions, and #activity alone announces them", async ({ page }) => {
   await signInWithStore(page);
   const draft = await startDraft(page);
@@ -45,12 +60,11 @@ test("on the long draft page, Publish's refusal and Save's outcome are shown bes
   const publish = draft.getByRole("button", { name: "Publish", exact: true });
   await scrollTo(publish);
   await expect(publish).toBeInViewport();
+  const beforePublish = await page.evaluate(() => window.scrollY);
   await publish.click();
   const refusal = "Publication is blocked: resolve the blockers listed under validation.";
   await expect(outcome).toContainText(refusal, { timeout: STORE_STEP_MS });
-  await expect(outcome).toBeVisible();
-  await expect(outcome).toBeInViewport();
-  await expect(publish).toBeInViewport();
+  await expectBeside(page, outcome, publish, beforePublish, "Publish");
   // The editor's own alert says it at the top of the draft, out of view here,
   // and is the one region that announces it.
   const announcers = page.locator('[aria-live], [role="status"], [role="alert"]').filter({ hasText: refusal });
@@ -62,11 +76,11 @@ test("on the long draft page, Publish's refusal and Save's outcome are shown bes
   const save = draft.getByRole("button", { name: "Save draft", exact: true });
   await scrollTo(save);
   await expect(save).toBeInViewport();
+  const beforeSave = await page.evaluate(() => window.scrollY);
   await save.click();
   const saved = "The draft of PULSE was saved.";
   await expect(outcome).toContainText(saved, { timeout: STORE_STEP_MS });
-  await expect(outcome).toBeInViewport();
-  await expect(save).toBeInViewport();
+  await expectBeside(page, outcome, save, beforeSave, "Save");
   // The shell's notice says it at the top of the page, out of view here, and
   // #activity, the one live region, announces it.
   await expect(page.locator("#notice-message")).toHaveText(saved);
