@@ -301,8 +301,8 @@ let project (model: Model) : View =
           )
           |> Option.defaultValue []
       )
-      "resumeImport", Text resumeImport
-      "noUnresolvedWork", Text noUnresolvedWork
+      "resumeImport", text resumeImport
+      "noUnresolvedWork", text noUnresolvedWork
       // Whether the dataset, once read, has unresolved work: the overview's
       // attention cue, and its plain "nothing unresolved" line, come from the
       // same list, never from a guess (SIG-ECHELON-APP-002).
