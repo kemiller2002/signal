@@ -514,7 +514,7 @@ let ``a scale question is Forma's ordinal scale on its own row, answered by its 
     Assert.Equal(Some(Value(Point 3)), (response state.Session).Answers.TryFind "CORE-001")
     // A special answer by its index; the yes/no keeps its own rows.
     let state, reply = run (opened @ [ eventWith "answered" "0" "7"; event "answered" "3-1" ])
-    Assert.Equal(Some(Special NotApplicable), (response state.Session).Answers.TryFind "CORE-001")
+    Assert.Equal(Some(Responses.Special Responses.NotApplicable), (response state.Session).Answers.TryFind "CORE-001")
     Assert.True((rowOf "3" reply).["hideScale"].GetValue<bool>())
     Assert.False((rowOf "3-1" reply).["hideRow"].GetValue<bool>())
     Assert.Equal("2 of 5 answered", text "progress" reply)

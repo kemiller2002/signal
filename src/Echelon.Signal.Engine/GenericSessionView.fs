@@ -30,7 +30,7 @@ let private scaleSizes = set [ 3; 4; 5; 6; 7; 10; 11 ]
 /// A question's points, when the page shows it as Forma's ordinal scale.
 let scalePoints (q: Question) =
     match q.Answer with
-    | Ordinal points when scaleSizes.Contains points && q.SpecialStates.Length <= SpecialSlots -> Some points
+    | Primitives.Ordinal points when scaleSizes.Contains points && q.SpecialStates.Length <= SpecialSlots -> Some points
     | _ -> None
 
 /// Every row carries every field the page's row template binds; a row's
