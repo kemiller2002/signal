@@ -2731,6 +2731,31 @@
       },
       "source": "intake",
       "sourceReference": ".praxis/inbox/documents/2026-11-09-SIG-VIS-PENDING-001-per-action-pending-states.md"
+    },
+    {
+      "id": "WI-0112",
+      "title": "SIG-VIS-PENDING-002: review follow-ups to WI-0111 (PR #133): busy confirmations and focus, one live region, operation faults settle unknown, edits during save, reconcile before resend, tests, human phase labels",
+      "description": null,
+      "tags": [
+        "signal",
+        "visual",
+        "accessibility"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-10T02:52:19.000Z",
+      "updatedAt": "2026-11-10T02:52:19.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "review",
+      "sourceReference": "kemiller2002/signal#133"
     }
   ]
 }

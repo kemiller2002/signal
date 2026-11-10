@@ -127,3 +127,4 @@
 | WI-0108 | SIG-FORMA1-001: Forma 1.0.1 (forma- namespace) and the Echelon theme 1.0.0 via echelon-current 1.38.0; keep Signal's own mark | complete | signal, forma, identity | high |
 | WI-0109 | SIG-FORMA1-002: review follow-ups to WI-0108 (PR #131): true codemod --check record, wider and exact no-Forma-0.x guard, theme in deployment doc, test comment | complete | signal, forma | medium |
 | WI-0111 | SIG-VIS-PENDING-001: per-action pending state, spinner loading regions and group-phase/template-lifecycle chip data under the approved visual refinement | complete | signal, visual, accessibility | high |
+| WI-0112 | SIG-VIS-PENDING-002: review follow-ups to WI-0111 (PR #133): busy confirmations and focus, one live region, operation faults settle unknown, edits during save, reconcile before resend, tests, human phase labels | ready | signal, visual, accessibility | high |

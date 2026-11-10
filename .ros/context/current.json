@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T02:24:28.000Z",
+  "updatedAt": "2026-11-10T02:52:20.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4075,6 +4075,38 @@
         }
       },
       "completedAt": "2026-11-10T02:24:28.000Z"
+    },
+    {
+      "id": "WI-0112",
+      "type": "engineering",
+      "state": "active",
+      "semanticState": "active",
+      "evidence": [],
+      "updatedAt": "2026-11-10T02:52:20.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T025220961Z-a00aaed1"
+      ],
+      "latestCheckpoint": {
+        "id": "5f4c8adfc00ed8838d726ff7",
+        "recordedAt": "2026-11-10T03:02:07.000Z",
+        "executionId": "EXE-20261110T025220961Z-a00aaed1",
+        "stepId": "STEP-20261110T025227000Z-7787444a",
+        "repository": "echelon-signal",
+        "branch": "feat/per-action-pending-states",
+        "commit": "9359a46c4ddba93a4441b598ea1426c9243612b3",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/per-action-pending-states",
+        "remoteCommit": "9359a46c4ddba93a4441b598ea1426c9243612b3",
+        "summary": "Review follow-ups 1-9 implemented and tested at 9359a46",
+        "nextAction": "Fix CI failures, add capture screens, refresh visual evidence, update PR",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
