@@ -15,7 +15,8 @@
 //   CSSOM, which the pages' style-src 'self' allows) and the horizontal
 //   overflow it causes, with the widest offenders outside scroll containers.
 // - collapsedText: text whose box is narrower than its words (more line
-//   boxes than words), at 1440, 834 and 390 px and at 320 px with 200% text.
+//   boxes, fewer than four characters a line), at 1440, 834 and 390 px and
+//   at 320 px with 200% text.
 // - reducedMotion: running infinite animations under prefers-reduced-motion,
 //   by name (the Echelon skeleton shimmer must be none).
 // - forcedColors: a viewport screenshot with forced-colors: active, and the
@@ -154,8 +155,9 @@ const overflowAt200 = () => {
 
 // In the page: text whose box is narrower than its words, so a word breaks
 // across lines (the notice's "Technical detail" collapsed into a column of
-// letters at 834 px, signal#136 review). A text node with more line boxes
-// than words, and at least three lines, is collapsed. Identifiers set in
+// letters at 834 px, signal#136 review). A text node set over at least three
+// lines with fewer than four characters a line is collapsed (a word that
+// only wraps, at 200% text on a phone, is not). Identifiers set in
 // code (keys, links, hashes), which may break anywhere by design, and
 // visually hidden text are left out.
 const collapsedText = () => {
@@ -170,8 +172,10 @@ const collapsedText = () => {
     range.selectNodeContents(node);
     const lines = new Set([...range.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top))).size;
     const words = text.split(/\s+/).filter((w) => w.length > 1).length;
-    if (lines >= 3 && lines > words) {
-      found.push({ element: `${parent.tagName.toLowerCase()}${parent.id ? `#${parent.id}` : ""}`, text: text.slice(0, 40), lines, words, boxWidth: Math.round(parent.getBoundingClientRect().width) });
+    const perLine = text.replace(/\s/g, "").length / Math.max(lines, 1);
+    const box = parent.getBoundingClientRect().width;
+    if (box >= 2 && lines >= 3 && perLine < 4) {
+      found.push({ element: `${parent.tagName.toLowerCase()}${parent.id ? `#${parent.id}` : ""}`, text: text.slice(0, 40), lines, words, boxWidth: Math.round(box) });
     }
   }
   return found.slice(0, 10);

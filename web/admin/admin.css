@@ -253,3 +253,17 @@
 /* The activity line sits under the dataset's title, part of the shell. */
 .admin .activity > :is(p, div) { margin: 0; }
 .admin .activity { color: var(--echelon-text-secondary); }
+
+/* Buttons in table rows keep their label on one line: the table scrolls in
+   its region instead (the audit found "Remove" set as a column of letters
+   at 834 and 390 px). */
+.admin .admin-table :is(td, th) .forma-button { overflow-wrap: normal; white-space: nowrap; }
+
+/* On the narrowest screens buttons and confirmations give their inner
+   padding to their labels, so a label breaks between words, not letters. */
+@media (max-width: 30rem) {
+  .admin .echelon-panel .forma-button { padding-inline: 0.75rem; }
+  .admin .admin-confirm { padding: 0.5rem; }
+}
+/* The lifecycle targets are a list of actions: no bullet, no indent. */
+.admin #lifecycle-targets { padding: 0; margin: 0; list-style: none; }
