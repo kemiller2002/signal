@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 110,
+  "nextSeq": 117,
   "items": [
     {
       "id": "WI-0001",
@@ -2756,6 +2756,102 @@
       },
       "source": "review",
       "sourceReference": "kemiller2002/signal#133"
+    },
+    {
+      "id": "WI-0113",
+      "title": "Admin console: edits made while a draft is being published are discarded when the editor closes on DraftPublished; keep or warn (follow-up to SIG-VIS-PENDING-002)",
+      "description": null,
+      "tags": [
+        "signal",
+        "visual"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T03:05:29.937Z",
+      "updatedAt": "2026-11-10T03:05:29.937Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0114",
+      "title": "Admin console: a programming defect inside an operation is re-raised by Aegis (fails loudly) and leaves the operation pending until reload; decide whether the wire should settle it unknown before re-raising (follow-up to SIG-VIS-PENDING-002)",
+      "description": null,
+      "tags": [
+        "signal",
+        "visual"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T03:05:30.327Z",
+      "updatedAt": "2026-11-10T03:05:30.327Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0115",
+      "title": "Admin console: verify #activity live-region announcements and focus moves with real screen readers (NVDA, VoiceOver); only structure is tested (follow-up to SIG-VIS-PENDING-002)",
+      "description": null,
+      "tags": [
+        "signal",
+        "visual"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T03:05:30.741Z",
+      "updatedAt": "2026-11-10T03:05:30.741Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0116",
+      "title": "Admin console: a created group that cannot be read back reports one notice but no longer marks the store offline when the read failed for connectivity (follow-up to SIG-VIS-PENDING-002)",
+      "description": null,
+      "tags": [
+        "signal",
+        "visual"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T03:05:31.113Z",
+      "updatedAt": "2026-11-10T03:05:31.113Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
     }
   ]
 }
