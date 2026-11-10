@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 119,
+  "nextSeq": 124,
   "items": [
     {
       "id": "WI-0001",
@@ -2890,6 +2890,111 @@
       "attachments": [],
       "createdAt": "2026-11-10T05:13:40.771Z",
       "updatedAt": "2026-11-10T05:44:42.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0119",
+      "title": "SIG-ECHELON-APP-002 (a): landing page in the foundry ledger direction",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-10T05:45:34.998Z",
+      "updatedAt": "2026-11-10T05:45:41.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0120",
+      "title": "SIG-ECHELON-APP-002 (b): administrator shell and dashboard (app bar, route tabs, panels)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T05:45:35.539Z",
+      "updatedAt": "2026-11-10T05:45:35.539Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0121",
+      "title": "SIG-ECHELON-APP-002 (c): authoring in the foundry ledger direction",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T05:45:36.174Z",
+      "updatedAt": "2026-11-10T05:45:36.174Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0122",
+      "title": "SIG-ECHELON-APP-002 (d): respondent page (no admin chrome, one primary action, truthful progress)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T05:45:36.920Z",
+      "updatedAt": "2026-11-10T05:45:36.920Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0123",
+      "title": "SIG-ECHELON-APP-002 (e): results (score figures, How this was calculated panel)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T05:45:37.548Z",
+      "updatedAt": "2026-11-10T05:45:37.548Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
