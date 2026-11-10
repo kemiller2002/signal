@@ -1,0 +1,474 @@
+{
+  "scenario": "landing",
+  "durationMs": 6051,
+  "consoleErrors": [],
+  "screens": [
+    {
+      "id": "landing",
+      "title": "Landing page (web/home/) — repository-root server (python http.server), as the browser suite serves it",
+      "scenario": "landing",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/home/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "open http://127.0.0.1:4321/web/home/index.html",
+          "operation": "static page load",
+          "durationMs": 73,
+          "observed": [
+            {
+              "atMs": 13,
+              "forMs": null,
+              "shown": []
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Surveys whose answers live in the link",
+        "headings": [
+          "Surveys whose answers live in the link",
+          "ANSWERING A SURVEY?",
+          "Three roles, one fixed meaning",
+          "From template to traceable result"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing/desktop-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing/desktop-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing/desktop-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing/desktop-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing/tablet-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing/tablet-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing/tablet-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing/tablet-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing/mobile-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing/mobile-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing/mobile-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing/mobile-dark-viewport.png",
+          "shown": []
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 29,
+          "unmeasurable": 0,
+          "failures": []
+        },
+        "contrastDark": {
+          "checked": 29,
+          "unmeasurable": 0,
+          "failures": []
+        },
+        "keyboard": {
+          "stops": 5,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Signal",
+            "How it works",
+            "Who it is for",
+            "Open the administrator console",
+            "See how it works"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/landing/desktop-forced-colors-viewport.png"
+        }
+      }
+    },
+    {
+      "id": "landing-pages-site",
+      "title": "Landing page (web/home/) — the assembled GitHub Pages site (tools/pages/assemble-site.mjs) under /signal/, with the demo banner and Content-Security-Policy",
+      "scenario": "landing",
+      "site": "pages",
+      "url": "http://127.0.0.1:4322/signal/web/home/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "landing",
+      "steps": [
+        {
+          "action": "open http://127.0.0.1:4322/signal/web/home/index.html",
+          "operation": "static page load",
+          "durationMs": 52,
+          "observed": [
+            {
+              "atMs": 12,
+              "forMs": null,
+              "shown": []
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Surveys whose answers live in the link",
+        "headings": [
+          "Surveys whose answers live in the link",
+          "ANSWERING A SURVEY?",
+          "Three roles, one fixed meaning",
+          "From template to traceable result"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing-pages-site/desktop-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/desktop-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing-pages-site/desktop-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/desktop-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing-pages-site/tablet-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/tablet-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing-pages-site/tablet-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/tablet-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/landing-pages-site/mobile-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/mobile-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/landing-pages-site/mobile-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/landing-pages-site/mobile-dark-viewport.png",
+          "shown": []
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 30,
+          "unmeasurable": 0,
+          "failures": []
+        },
+        "contrastDark": {
+          "checked": 30,
+          "unmeasurable": 0,
+          "failures": []
+        },
+        "keyboard": {
+          "stops": 5,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Signal",
+            "How it works",
+            "Who it is for",
+            "Open the administrator console",
+            "See how it works"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/landing-pages-site/desktop-forced-colors-viewport.png"
+        }
+      }
+    },
+    {
+      "id": "pages-site-root",
+      "title": "Pages site root (redirects to web/home/)",
+      "scenario": "landing",
+      "site": "pages",
+      "url": "http://127.0.0.1:4322/signal/web/home/",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "landing-pages-site",
+      "steps": [
+        {
+          "action": "open http://127.0.0.1:4322/signal/",
+          "operation": "static page load",
+          "durationMs": 21,
+          "observed": []
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Surveys whose answers live in the link",
+        "headings": [
+          "Surveys whose answers live in the link",
+          "ANSWERING A SURVEY?",
+          "Three roles, one fixed meaning",
+          "From template to traceable result"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/pages-site-root/desktop-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/desktop-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/pages-site-root/desktop-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/desktop-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/pages-site-root/tablet-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/tablet-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/pages-site-root/tablet-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/tablet-dark-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/pages-site-root/mobile-light-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/mobile-light-viewport.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/pages-site-root/mobile-dark-full.png",
+          "shown": []
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/pages-site-root/mobile-dark-viewport.png",
+          "shown": []
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 30,
+          "unmeasurable": 0,
+          "failures": []
+        },
+        "contrastDark": {
+          "checked": 30,
+          "unmeasurable": 0,
+          "failures": []
+        },
+        "keyboard": {
+          "stops": 5,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Signal",
+            "How it works",
+            "Who it is for",
+            "Open the administrator console",
+            "See how it works"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/pages-site-root/desktop-forced-colors-viewport.png"
+        }
+      }
+    }
+  ],
+  "unreached": [],
+  "browserVersion": "153.0.8010.12"
+}
