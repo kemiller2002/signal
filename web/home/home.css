@@ -7,18 +7,134 @@
 @import "../../node_modules/@echelon-foundry/echelon-theme/dist/echelon-fonts.css";
 @import "../../node_modules/@echelon-foundry/echelon-theme/dist/echelon-app.css";
 
-.home-header,
-.home {
-  max-inline-size: 60rem;
+/* Page composition only (SIG-ECHELON-APP-002, from the approved landing
+   mockup). Components and type roles are Forma's and the Echelon
+   application layer's; nothing here defines a forma- or echelon- name. */
+
+.home-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  max-inline-size: 76rem;
   margin-inline: auto;
-  padding-inline: 1rem;
+  padding: 1.25rem clamp(1rem, 5vw, 4rem);
 }
 
-.home-header { padding-block: 1rem 0; }
+.home-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-inline-start: auto;
+  font-size: 0.9375rem;
+}
 
-.home { padding-block: clamp(1.5rem, 5vw, 3rem) 4rem; }
+.home-nav a {
+  color: var(--forma-color-text-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
 
-.home-lead { font-size: 1.15em; max-inline-size: 42rem; }
+.home-nav a:hover { text-decoration: underline; }
+
+.home-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 2.5rem;
+  align-items: center;
+  max-inline-size: 76rem;
+  margin-inline: auto;
+  padding: clamp(2rem, 7vw, 5rem) clamp(1rem, 5vw, 4rem) clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.home-hero__copy { display: grid; gap: 1.25rem; }
+
+.home-hero__copy > * { margin: 0; min-inline-size: 0; }
+
+.home-hero h1 { overflow-wrap: anywhere; }
+
+.home-respondent .echelon-panel__body > * { margin: 0; }
+
+.home-band {
+  background: var(--echelon-surface-raised);
+  border-block: 1px solid var(--echelon-border-subtle);
+}
+
+.home-section {
+  display: grid;
+  gap: 2rem;
+  max-inline-size: 76rem;
+  margin-inline: auto;
+  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 5vw, 4rem);
+}
+
+.home-section__header { display: grid; gap: 0.5rem; max-inline-size: 40rem; }
+
+.home-section__header > *,
+.home-roles h3,
+.home-roles p,
+.home-steps h3,
+.home-steps p { margin: 0; }
+
+.home-section h2 { font-size: clamp(1.75rem, 3vw, 2.25rem); }
 
 .home-roles,
-.home-steps { display: grid; gap: 0.75rem; padding-inline-start: 1.25rem; max-inline-size: 42rem; }
+.home-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-roles h3 { font-size: 1.375rem; }
+
+/* A short bronze rule above each role, as in the approved mockup. */
+.home-roles h3::before {
+  content: "";
+  display: block;
+  inline-size: 2rem;
+  block-size: 3px;
+  margin-block-end: 0.75rem;
+  background: var(--echelon-accent-rule);
+}
+
+.home-steps { counter-reset: home-step; gap: 1.5rem; }
+
+.home-steps li {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--forma-color-border-functional);
+}
+
+/* The step number is decorative: the list itself is ordered. */
+.home-steps li::before {
+  counter-increment: home-step;
+  content: "0" counter(home-step) / "";
+  font: 500 2.5rem/1 var(--forma-primitive-font-family-display);
+  color: var(--echelon-accent-rule);
+}
+
+.home-steps h3 { font-size: 1.125rem; }
+
+.home-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  max-inline-size: 76rem;
+  margin-inline: auto;
+  padding: 2rem clamp(1rem, 5vw, 4rem);
+  border-block-start: 1px solid var(--echelon-border-subtle);
+  color: var(--forma-color-text-secondary);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 900px) {
+  .home-hero,
+  .home-roles,
+  .home-steps { grid-template-columns: minmax(0, 1fr); }
+}
