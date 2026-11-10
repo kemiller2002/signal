@@ -661,11 +661,11 @@ scenario("admin-signed-in", async ({ page, capture }) => {
   await tab("admin-group-results", "Group results with one imported survey", "Results", () => expect(page.locator("#exploration")).toBeVisible());
   await tab("admin-group-scoring", "Group scoring with one imported survey", "Scoring", () => expect(page.getByRole("region", { name: "Scoring" })).toBeVisible());
   await tab("admin-group-report", "Group report", "Report", () => expect(page.locator("#report")).toBeVisible());
-  // SIG-VIS-PENDING-002: the group finalized and its results retired through
-  // the confirmation, the retirement held, then the status with focus.
-  const retireHold = { hold: null };
-  await capture.attempt(page, { ...signedIn, id: "admin-group-retiring", title: "Retire accepted results confirmed, retirement in flight (store write held): the confirmation stays, its button busy" }, async () => {
-    await capture.step(page, "rebuild the index, close and finalize the group, click Retire accepted results…, hold its first store read, confirm", async () => {
+  // SIG-VIS-PENDING-002/003: the group finalized (focus moves to its phase,
+  // with the focus ring), then its results retired through the confirmation,
+  // the retirement's commit held, then the retired results with focus.
+  await capture.attempt(page, { ...signedIn, id: "admin-group-finalized", title: "Group finalized: focus on the group's phase chip, with the Forma focus ring", extents: ["full", "viewport"] }, async () => {
+    await capture.step(page, "rebuild the index, open the group, click Close incomplete, then Finalize", async () => {
       await area(page, "Storage");
       await page.getByRole("button", { name: "Rebuild the contribution index", exact: true }).click();
       await expect(notice(page)).toContainText("The contribution index was rebuilt", { timeout: STORE_MS });
@@ -675,18 +675,27 @@ scenario("admin-signed-in", async ({ page, capture }) => {
       await expect(page.locator("#group-phase")).toHaveAttribute("data-phase", "ClosedIncomplete", { timeout: STORE_MS });
       await page.locator("#lifecycle").getByRole("button", { name: "Finalize", exact: true }).click();
       await expect(page.locator("#group-phase")).toHaveAttribute("data-phase", /^Finalized/, { timeout: STORE_MS });
+      await expect(page.locator("#group-phase")).toBeFocused({ timeout: STORE_MS });
+      await expect(page.locator("#group-phase")).toBeInViewport();
+    }, { operation: "group lifecycle transitions (store writes)" });
+  });
+  const retireHold = { hold: null };
+  await capture.attempt(page, { ...signedIn, id: "admin-group-retiring", title: "Retire accepted results confirmed, retirement in flight (its commit held): the confirmation stays, its button busy" }, async () => {
+    await capture.step(page, "click Retire accepted results…, hold the retirement's branch update, confirm", async () => {
       const retention = page.locator("#group-retention");
       await retention.getByRole("button", { name: "Retire accepted results…", exact: true }).click();
-      retireHold.hold = store.holdNext("GET", /./);
+      retireHold.hold = store.holdNext("PATCH", /\/git\/refs\/heads\/main$/);
       await retention.getByRole("button", { name: "Retire accepted results", exact: true }).click();
       await retireHold.hold.reached;
       await expect(retention.getByRole("button", { name: "Retiring accepted results", exact: true })).toHaveAttribute("aria-busy", "true");
     }, { operation: "retire accepted results (store write)" });
   });
-  await capture.attempt(page, { ...signedIn, id: "admin-group-retired", title: "Accepted results retired: the confirmation closed, focus on the status" }, async () => {
+  await capture.attempt(page, { ...signedIn, id: "admin-group-retired", title: "Accepted results retired: the confirmation closed, focus on the retired results, with the Forma focus ring", extents: ["full", "viewport"] }, async () => {
     await capture.step(page, "release the branch update", async () => {
       retireHold.hold?.release();
       await expect(page.locator("#retire-confirm")).toHaveCount(0, { timeout: STORE_MS });
+      await expect(page.locator("#sources-retired")).toBeFocused({ timeout: STORE_MS });
+      await expect(page.locator("#sources-retired")).toBeInViewport();
     }, { operation: "retire accepted results (store write)" });
   });
   await visit("admin-overview", "Console home (Overview) with one group", "Overview", () => expect(page.getByRole("heading", { level: 2, name: "Overview" })).toBeVisible());
