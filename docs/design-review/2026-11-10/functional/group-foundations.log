@@ -1,0 +1,4 @@
+Test run for /workspace/signal-current/tests/Echelon.Signal.Tests/bin/Release/net10.0/Echelon.Signal.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    22, Skipped:     0, Total:    22, Duration: 10 s - Echelon.Signal.Tests.dll (net10.0)

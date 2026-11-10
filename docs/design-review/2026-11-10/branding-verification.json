@@ -1,0 +1,67 @@
+{
+  "signal-mark": {
+    "reference": "brand/logos/signal/mark.svg",
+    "consumer": "web/brand/signal-mark.svg",
+    "byteEqual": true,
+    "sha256": "1e212a2dd2da41a2687e015ef36e8fc720639ebc8db0f628f597f251f4472a17"
+  },
+  "signal-mark-dark": {
+    "reference": "brand/logos/signal/mark-dark.svg",
+    "consumer": "web/brand/signal-mark-dark.svg",
+    "byteEqual": true,
+    "sha256": "663c35e43139019e1c001e130f89504f6729048a170c70fff305a05112ba801c"
+  },
+  "theme": {
+    "reference": "dist/echelon-app.css",
+    "consumer": "node_modules/@echelon-foundry/echelon-theme/dist/echelon-app.css",
+    "byteEqual": true,
+    "sha256": "d65759e601af7bef107a60ab04567939a305f36d61df757c78f58bdf85917669"
+  },
+  "brand": {
+    "reference": "dist/echelon.css",
+    "consumer": "node_modules/@echelon-foundry/echelon-theme/dist/echelon.css",
+    "byteEqual": true,
+    "sha256": "4ccb9dd28cab52d0225a1d0b40599b195f5e636b5bcfe9c5faa5f47195663d92"
+  },
+  "design-system": {
+    "version": "1.0.1"
+  },
+  "echelon-theme": {
+    "version": "1.1.0"
+  },
+  "print-components": {
+    "version": "0.4.1"
+  },
+  "liveAssets": [
+    {
+      "url": "https://signal.echelonfoundry.com/node_modules/@echelon-foundry/design-system/dist/all.css",
+      "sha256": "c38f80d8dedb6b2f6a896f0200ae34a60d22c4ff28dd73422cf40d2d16c87950",
+      "matchesPinnedLocalAsset": true
+    },
+    {
+      "url": "https://signal.echelonfoundry.com/node_modules/@echelon-foundry/echelon-theme/dist/echelon.css",
+      "sha256": "4ccb9dd28cab52d0225a1d0b40599b195f5e636b5bcfe9c5faa5f47195663d92",
+      "matchesPinnedLocalAsset": true
+    },
+    {
+      "url": "https://signal.echelonfoundry.com/node_modules/@echelon-foundry/echelon-theme/dist/echelon-fonts.css",
+      "sha256": "b8c81581c682e877f73bca84c927167ba5d8476f732dd9381215ca896f99e629",
+      "matchesPinnedLocalAsset": true
+    },
+    {
+      "url": "https://signal.echelonfoundry.com/node_modules/@echelon-foundry/echelon-theme/dist/echelon-app.css",
+      "sha256": "d65759e601af7bef107a60ab04567939a305f36d61df757c78f58bdf85917669",
+      "matchesPinnedLocalAsset": true
+    },
+    {
+      "url": "https://signal.echelonfoundry.com/web/brand/signal-mark.svg",
+      "sha256": "1e212a2dd2da41a2687e015ef36e8fc720639ebc8db0f628f597f251f4472a17",
+      "matchesPinnedLocalAsset": true
+    },
+    {
+      "url": "https://signal.echelonfoundry.com/web/brand/signal-mark-dark.svg",
+      "sha256": "663c35e43139019e1c001e130f89504f6729048a170c70fff305a05112ba801c",
+      "matchesPinnedLocalAsset": true
+    }
+  ]
+}

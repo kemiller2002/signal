@@ -1,0 +1,167 @@
+{
+  "kind": "test-fixture functional and visual measurements, not live authentication",
+  "before-results": "D01\t● 75.0\t\nD02\t■ 75.0\t\nD03\t▲ 75.0\t",
+  "before-scoring": "D01\tMean\t75.0\nD01\tMedian\t75.0\nD01\tStandardDeviation\tneeds 2 scores, has 1\nD01\tInterquartileRange\tneeds 4 scores, has 1\nD01\tConfidenceLower95\tneeds 5 scores, has 1\nD01\tConfidenceUpper95\tneeds 5 scores, has 1\nD02\tMean\t75.0\nD02\tMedian\t75.0\nD02\tStandardDeviation\tneeds 2 scores, has 1\nD02\tInterquartileRange\tneeds 4 scores, has 1\nD02\tConfidenceLower95\tneeds 5 scores, has 1\nD02\tConfidenceUpper95\tneeds 5 scores, has 1\nD03\tMean\t75.0\nD03\tMedian\t75.0\nD03\tStandardDeviation\tneeds 2 scores, has 1\nD03\tInterquartileRange\tneeds 4 scores, has 1\nD03\tConfidenceLower95\tneeds 5 scores, has 1\nD03\tConfidenceUpper95\tneeds 5 scores, has 1",
+  "before-report": "D01 Plan Commitment\t75.0\tNot available\tNot available\t1\t0\nD02 Change Responsiveness\t75.0\tNot available\tNot available\t1\t0\nD03 Timebox Discipline\t75.0\tNot available\tNot available\t1\t0",
+  "after-results": "D01\t● 75.0\t\nD02\t■ 75.0\t\nD03\t▲ 75.0\t",
+  "after-results-audit": {
+    "contrastLight": {
+      "checked": 44,
+      "unmeasurable": 0,
+      "failures": []
+    },
+    "contrastDark": {
+      "checked": 44,
+      "unmeasurable": 0,
+      "failures": []
+    },
+    "keyboard": {
+      "stops": 22,
+      "withoutIndicator": [],
+      "outOfDocumentOrder": [],
+      "sequence": [
+        "Copy link",
+        "Overview",
+        "Groups",
+        "Compare",
+        "Assessments",
+        "Reports",
+        "Administrators",
+        "Storage",
+        "Refresh",
+        "Sign out",
+        "Overview",
+        "Results",
+        "Scoring",
+        "Imported surveys",
+        "Report",
+        "value",
+        "percent",
+        "All sections",
+        "Section means",
+        "D01",
+        "D02",
+        "D03"
+      ]
+    },
+    "text200at320": {
+      "overflow": 0,
+      "offenders": []
+    },
+    "reducedMotion": {
+      "infinite": [],
+      "shimmer": 0
+    },
+    "forcedColors": {
+      "file": "after-results-forced.png"
+    }
+  },
+  "after-scoring": "D01\tMean\t75.0\nD01\tMedian\t75.0\nD01\tStandardDeviation\tneeds 2 scores, has 1\nD01\tInterquartileRange\tneeds 4 scores, has 1\nD01\tConfidenceLower95\tneeds 5 scores, has 1\nD01\tConfidenceUpper95\tneeds 5 scores, has 1\nD02\tMean\t75.0\nD02\tMedian\t75.0\nD02\tStandardDeviation\tneeds 2 scores, has 1\nD02\tInterquartileRange\tneeds 4 scores, has 1\nD02\tConfidenceLower95\tneeds 5 scores, has 1\nD02\tConfidenceUpper95\tneeds 5 scores, has 1\nD03\tMean\t75.0\nD03\tMedian\t75.0\nD03\tStandardDeviation\tneeds 2 scores, has 1\nD03\tInterquartileRange\tneeds 4 scores, has 1\nD03\tConfidenceLower95\tneeds 5 scores, has 1\nD03\tConfidenceUpper95\tneeds 5 scores, has 1",
+  "after-scoring-audit": {
+    "contrastLight": {
+      "checked": 92,
+      "unmeasurable": 0,
+      "failures": []
+    },
+    "contrastDark": {
+      "checked": 92,
+      "unmeasurable": 0,
+      "failures": []
+    },
+    "keyboard": {
+      "stops": 19,
+      "withoutIndicator": [],
+      "outOfDocumentOrder": [],
+      "sequence": [
+        "Copy link",
+        "Overview",
+        "Groups",
+        "Compare",
+        "Assessments",
+        "Reports",
+        "Administrators",
+        "Storage",
+        "Refresh",
+        "Sign out",
+        "Overview",
+        "Results",
+        "Scoring",
+        "Imported surveys",
+        "Report",
+        "D01",
+        "D02",
+        "D03",
+        "Calculated measures"
+      ]
+    },
+    "text200at320": {
+      "overflow": 0,
+      "offenders": []
+    },
+    "reducedMotion": {
+      "infinite": [],
+      "shimmer": 0
+    },
+    "forcedColors": {
+      "file": "after-scoring-forced.png"
+    }
+  },
+  "after-report": "D01 Plan Commitment\t75.0\tNot available\tNot available\t1\t0\nD02 Change Responsiveness\t75.0\tNot available\tNot available\t1\t0\nD03 Timebox Discipline\t75.0\tNot available\tNot available\t1\t0",
+  "after-report-audit": {
+    "contrastLight": {
+      "checked": 108,
+      "unmeasurable": 0,
+      "failures": []
+    },
+    "contrastDark": {
+      "checked": 108,
+      "unmeasurable": 0,
+      "failures": []
+    },
+    "keyboard": {
+      "stops": 27,
+      "withoutIndicator": [],
+      "outOfDocumentOrder": [],
+      "sequence": [
+        "Copy link",
+        "Overview",
+        "Groups",
+        "Compare",
+        "Assessments",
+        "Reports",
+        "Administrators",
+        "Storage",
+        "Refresh",
+        "Sign out",
+        "Overview",
+        "Results",
+        "Scoring",
+        "Imported surveys",
+        "Report",
+        "Administrator group report",
+        "Executive summary",
+        "Detailed sections",
+        "Anonymous aggregate",
+        "Identified detail",
+        "Audit",
+        "English",
+        "Deutsch",
+        "Français",
+        "العربية",
+        "Take a snapshot",
+        "SectionMeanMedianRangeScoredNot scored D"
+      ]
+    },
+    "text200at320": {
+      "overflow": 0,
+      "offenders": []
+    },
+    "reducedMotion": {
+      "infinite": [],
+      "shimmer": 0
+    },
+    "forcedColors": {
+      "file": "after-report-forced.png"
+    }
+  }
+}

@@ -681,7 +681,8 @@
               <template data-if="viewResults">
               <!-- Charts compiled and validated in F# (ADM-015..017): meters for the
                    marks, a symbol beside every colour, and the same data as text. -->
-              <section id="exploration" class="forma-stack" aria-label="Exploration">
+              <section id="exploration" class="forma-stack echelon-panel admin-result-panel" aria-label="Exploration">
+                <h3 class="echelon-heading">Results</h3>
                 <div class="explore-controls">
                   <label><input type="checkbox" data-event="exploreSort" value="value" data-bind-checked="exploreByValue" /> Sort by value</label>
                   <label><input type="checkbox" data-event="exploreDisplay" value="percent" data-bind-checked="explorePercent" /> Distribution as percentages</label>
@@ -689,24 +690,27 @@
                 </div>
                 <figure id="section-chart">
                   <figcaption data-text="chartDescription"></figcaption>
-                  <table class="chart">
+                  <div class="admin-result-scroll" role="region" tabindex="0" aria-label="Section means">
+                  <table class="chart admin-result-table">
                     <thead><tr><th>Section</th><th>Mean</th><th>Bar</th></tr></thead>
                     <tbody>
                       <template data-each="chart" data-key="key">
                         <tr data-bind-data-pattern="pattern">
                           <th scope="row"><button type="button" class="forma-button" data-event="exploreSection" data-text="category"></button></th>
-                          <td><span aria-hidden="true" data-text="symbol"></span> <span data-text="value"></span></td>
+                          <td><span aria-hidden="true" data-text="symbol"></span> <span class="echelon-figure" data-text="value"></span></td>
                           <td><meter min="0" max="1" data-bind-value="position" data-bind-hidden="unavailable" data-bind-aria-label="value"></meter></td>
                         </tr>
                       </template>
                     </tbody>
                   </table>
+                  </div>
                   <p class="chart-warnings" data-text="chartWarnings"></p>
                 </figure>
                 <template data-if="hasDistribution">
                   <figure id="distribution-chart">
                     <figcaption data-text="distributionDescription"></figcaption>
-                    <table class="chart">
+                    <div class="admin-result-scroll" role="region" tabindex="0" aria-label="Score distribution">
+                    <table class="chart admin-result-table">
                       <thead><tr><th>Scores</th><th>Respondents</th><th>Bar</th></tr></thead>
                       <tbody>
                         <template data-each="distribution" data-key="key">
@@ -714,21 +718,30 @@
                         </template>
                       </tbody>
                     </table>
+                    </div>
                   </figure>
                 </template>
               </section>
               </template>
               <template data-if="viewScoring">
-              <section id="scoring" class="forma-stack" aria-label="Scoring">
+              <section id="scoring" class="forma-stack echelon-panel admin-result-panel" aria-label="Scoring">
+                <h3 class="echelon-heading">Scoring</h3>
                 <p>Calculated measures, not the canonical result.</p>
                 <ul class="areas" id="scoring-sections">
                   <template data-each="scoringSections" data-key="id"><li><a data-bind-href="href" data-bind-aria-current="current" data-text="id"></a></li></template>
                 </ul>
-                <table id="scoring-measures">
+                <div class="admin-result-scroll" role="region" tabindex="0" aria-label="Calculated measures">
+                <table id="scoring-measures" class="admin-result-table">
                   <thead><tr><th>Section</th><th>Measure</th><th>Value</th></tr></thead>
-                  <tbody><template data-each="scoringMeasures" data-key="key"><tr><td data-text="section"></td><td data-text="measure"></td><td data-text="value"></td></tr></template></tbody>
+                  <tbody><template data-each="scoringMeasures" data-key="key"><tr><td data-text="section"></td><td data-text="measure"></td><td class="echelon-figure" data-text="value"></td></tr></template></tbody>
                 </table>
-                <p>Lineage: <code id="lineage" data-text="lineage"></code></p>
+                </div>
+                <aside class="echelon-panel" data-echelon-surface="accent" aria-labelledby="scoring-methodology-title">
+                  <div class="echelon-panel__body forma-stack">
+                    <h4 id="scoring-methodology-title" class="echelon-heading">How this was calculated</h4>
+                    <p>Lineage: <code id="lineage" class="forma-identifier" data-text="lineage"></code></p>
+                  </div>
+                </aside>
                 <template data-if="hasLateSubmissions"><p id="late-submissions" role="status" data-text="lateSubmissions"></p></template>
               </section>
               </template>
@@ -950,17 +963,19 @@
             <ef-print-metric><p id="report-overall" data-text="reportOverall"></p></ef-print-metric></section></ef-print-section>
         </template>
         <template data-if="reportHasSectionResults">
-          <ef-print-section><section><h2 data-text="reportTitleSectionResults"></h2>
-            <ef-print-table><table id="report-sections">
+          <ef-print-section><section><h2 id="report-section-results-title" data-text="reportTitleSectionResults"></h2>
+            <div class="admin-result-scroll" role="region" tabindex="0" aria-labelledby="report-section-results-title">
+            <ef-print-table><table id="report-sections" class="admin-result-table">
               <thead><tr><template data-each="reportColumns" data-key="key"><th scope="col" data-text="label"></th></template></tr></thead>
               <tbody><template data-each="reportSections" data-key="key"><tr><th scope="row" data-text="section"></th><td data-text="mean"></td><td data-text="median"></td><td data-text="range"></td><td data-text="scored"></td><td data-text="unscored"></td></tr></template></tbody>
-            </table></ef-print-table></section></ef-print-section>
+            </table></ef-print-table></div></section></ef-print-section>
         </template>
         <template data-if="reportHasGroupDistributions">
-          <ef-print-section><section><h2 data-text="reportTitleGroupDistributions"></h2>
-            <ef-print-table><table id="report-spread">
+          <ef-print-section><section><h2 id="report-group-distributions-title" data-text="reportTitleGroupDistributions"></h2>
+            <div class="admin-result-scroll" role="region" tabindex="0" aria-labelledby="report-group-distributions-title">
+            <ef-print-table><table id="report-spread" class="admin-result-table">
               <tbody><template data-each="reportSections" data-key="key"><tr><th scope="row" data-text="section"></th><td data-text="median"></td><td data-text="range"></td></tr></template></tbody>
-            </table></ef-print-table></section></ef-print-section>
+            </table></ef-print-table></div></section></ef-print-section>
         </template>
         <template data-if="reportHasStrengths">
           <ef-print-section><section><h2 data-text="reportTitleStrengths"></h2><ul><template data-each="reportStrengths" data-key="key"><li data-text="text"></li></template></ul></section></ef-print-section>

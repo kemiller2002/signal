@@ -30,6 +30,8 @@ with sync_playwright() as p:
    page.emulate_media(color_scheme=scheme)
    for label,w,h in [('desktop',1440,900),('tablet',834,1112),('mobile',390,844),('narrow',320,900)]:
     page.set_viewport_size({'width':w,'height':h})
+    page.mouse.move(0,0)
+    page.evaluate('() => document.fonts.ready.then(() => Promise.all(document.getAnimations().filter(a => a.effect?.getTiming().iterations !== Infinity).map(a => a.finished.catch(() => {}))))')
     page.screenshot(path=str(out/(name+'-'+label+'-'+scheme+'.png')),full_page=True)
     overflow=page.evaluate('document.documentElement.scrollWidth>innerWidth')
     checks.append({'screen':name,'scheme':scheme,'viewport':label,'pageOverflow':overflow})

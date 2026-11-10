@@ -12,7 +12,7 @@ Authority was checked in `brand/AUDIT.md`, `brand/logos/catalog.json`, `brand/ap
 
 Signal also contains the November 10 intake `SIG-ECHELON-APP-002`, recording Kevin's November 9 approval of all five screen-family mockups. This work follows that existing direction; it does not request a second approval or treat the intake itself as a new approval. Exact original mockup image files were not found in this checkout. The released theme and traceable application captures supply the review references.
 
-Pinned consumer contracts: Forma **1.0.1**, Echelon theme **1.1.0**, Folio **0.4.1**, as declared by Signal's package and lock files. Forma is brand-neutral. Its semantic patterns and native controls remain authoritative; Echelon's scoped theme owns colors, fonts, elevations, chips and emphasis. No new Forma capability or Echelon default was added to Forma.
+Pinned consumer contracts: Forma **1.0.1**, Echelon theme **1.1.0**, Folio **0.4.1**, as declared by Signal's package and lock files. Forma is brand-neutral. Its semantic patterns and native controls remain authoritative; Echelon's scoped theme owns colors, fonts, elevations, chips and emphasis. No new Forma capability or Echelon default was added to Forma. `branding-verification.json` proves that the approved light/dark Signal marks and consumed theme match the verified branding source byte for byte; it also records that all six fetched live Forma/theme/mark assets match the pinned local consumer files.
 
 ## Live inspection and access limits
 
@@ -31,6 +31,7 @@ Authenticated populated dashboard, authoring, imported group results/scoring, re
 | Authoring | Earlier editor lacks section separation and action hierarchy | Existing `feat/echelon-authoring` supplies panels in editor order, lifecycle chips, primary Publish and destructive confirmation emphasis. Shown for comparison; not duplicated here |
 | Respondent | Text-only in-app identity, weak title hierarchy, options spaced apart like unrelated blocks | Approved light/dark Signal marks, theme display heading, raised question surface, options closer to prompts, primary Next/Submit/Copy. Preserve native controls, labels, DOM order, URL state, progress and review semantics |
 | Assessment results | Scores visually compete with prose; methodology is an undifferentiated paragraph | Theme figures for each existing score, raised result surface and an accent “How this was calculated” panel. Keep the scorer's values, coverage, notes and methodology. No invented overall score or favorable/unfavorable interpretation |
+| Group results, scoring and reports | Comparison tables collapse words on narrow screens; calculated values and lineage lack hierarchy | Theme result/scoring panels and figures, a lineage accent panel, and named keyboard-focusable table scroll regions. Report table sizing changes apply on screen only; Folio keeps each table as its direct child and retains print sizing |
 
 Results remain a comparison table. At narrow widths and enlarged text it scrolls inside its named, keyboard-focusable region, preserving whole words. Local CSS expresses composition using existing tokens; it introduces no color literals, token defaults or reusable component replacements. Generic survey selector variants remain outside scope while their documented Limen dependency remains unresolved.
 
@@ -44,13 +45,14 @@ First-glance review: identity precedes the survey title and version; the questio
 
 Visual Engineering **1.0.1**, source `b648cdef291d39c443ccb10215529ad69afe8b32`, verified successfully before UI changes. Applied principles: relational spacing, proportional emphasis, native semantics, explicit uncertainty, color-independent status and preserved source order.
 
+`group-review/` adds fresh before-and-after results, scoring and report captures using the real runtime with test-only GitHub/Fides/store fakes. The frozen pre-change application markup is in `group-before/` (source `4f6e24e`); it is a reference fixture, never a production UI fork. The test imports a completed survey, then verifies identical chart values, calculated measures and report table values before and after. Its after audit reports zero measured contrast failures for 44 results, 92 scoring and 108 report text nodes in each scheme, zero page overflow at 320 pixels / 200% text, and visible visited focus indicators. It also generates `group-review/after-report.pdf` and verifies that only the report prints. These comparisons use this branch's main-based shell; the dark admin shell remains the separate #136 change.
+
 ## Open acceptance items
 
 - Integrate and independently review the existing admin and authoring PRs through their own gates; this branch does not merge them.
-- Apply and verify the results treatment across authenticated group scoring/results and reports, including the known narrow-table collapse findings recorded by the existing stack.
 - Run the full configured deployment and authentication workflows. Live access requires a configured identity exchange and data store, not merely a login.
 - Do not claim every asynchronous operation has been reverified. This change preserves existing branded pre-runtime screens, survey-fetch status, per-operation admin feedback and unknown-write handling. Comprehensive loading/failure coverage remains the responsibility of the existing capture and functional suites.
-- Independent owner/design review of the concrete comparisons remains a release gate. Prior direction approval is recorded; it is not blanket visual acceptance of these final pixels.
+- Independent visual review of the concrete comparisons remains open. Prior direction approval is recorded; it does not constitute a visual conformance verdict for this implementation.
 - Screen-reader testing, real Safari/Firefox, physical touch devices, grayscale/CVD screening, text-spacing stress and full 200% browser zoom remain unverified in this session. Root text enlargement is not a substitute for all zoom testing.
 
 A functionally passing build must not close these visual acceptance items.
@@ -64,5 +66,7 @@ SIGNAL_REVIEW_ORIGIN=http://127.0.0.1:4321 python docs/design-review/2026-11-10/
 SIGNAL_REVIEW_ORIGIN=http://127.0.0.1:4321 node docs/design-review/2026-11-10/tools/audit_refinement.mjs
 python docs/design-review/2026-11-10/tools/visual-regression.py OWNER_APPROVED_REFERENCE CANDIDATE_CAPTURES --output pixel-review.json
 ```
+
+The group comparison runs with `SIGNAL_TEST_PORT=4361 npx playwright test -c docs/design-review/2026-11-10/tools/group-review.config.mjs`. By default its screenshots go into test results; set `SIGNAL_RESULTS_REVIEW_OUT` explicitly to refresh review artifacts.
 
 The pixel tool rejects missing images, dimension changes and changed pixels (default tolerance zero; a nonzero fraction must be explicitly supplied). Compare the same browser, fonts, fixture state and viewport. The candidate screenshots are **not yet owner-accepted regression baselines**. The saved self-comparison is only a harness smoke check, not a passed application visual-regression gate. `manifest.json` inventories all evidence images with dimensions and SHA-256 values.

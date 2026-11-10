@@ -1,0 +1,9 @@
+
+Running 2 tests using 1 worker
+
+(node:51091) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [ui-conformance] › tests/browser/ui-conformance-admin-content.spec.js:21:1 › ULI-A02: results exploration, scoring and report options change the view and the address (11.9s)
+  ✓  2 [ui-conformance] › tests/browser/ui-conformance-admin-content.spec.js:58:1 › ULI-A02/A07: a snapshot is stored, and each of its three exports reaches the browser (18.3s)
+
+  2 passed (31.4s)
