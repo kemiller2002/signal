@@ -37,7 +37,6 @@
 /* A group's report (WI-0062): a document on screen, and the only thing
    printed while it is shown (Print, or Save as PDF). */
 .report-surface { display: block; margin-block-start: 1.5rem; }
-.report-controls a[data-available="false"] { opacity: 0.6; }
 @media print {
   .admin:has(> .report-view .report-surface) > :not(.report-view) { display: none !important; }
 }
@@ -198,3 +197,22 @@
    rather than left to the browser's default monospace. */
 .admin code,
 .admin-bar code { font-family: var(--forma-primitive-font-family-mono); font-size: 0.9em; }
+
+/* Reflow at 200% text on a 320 px screen (WCAG 1.4.4/1.4.10; the capture's
+   audit on e9eed4e): nothing inside a panel may be wider than the panel.
+   Its children may shrink, identifiers (invitation links, the capability
+   list) break anywhere, and button labels wrap rather than push the page. */
+.admin .echelon-panel__body > *,
+.admin .echelon-panel__body .forma-stack > *,
+.admin .admin-confirm > * { min-inline-size: 0; max-inline-size: 100%; }
+.admin code { overflow-wrap: anywhere; }
+.admin .echelon-panel .forma-button,
+.admin .admin-status .forma-button { white-space: normal; }
+
+/* An unavailable report family is shown as such without fading its text
+   below AA (it was opacity: 0.6, 2.42:1): the secondary text colour, and a
+   dotted underline instead of a solid one. */
+.report-controls a[data-available="false"] {
+  color: var(--echelon-text-secondary);
+  text-decoration-style: dotted;
+}

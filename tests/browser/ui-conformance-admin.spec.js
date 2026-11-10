@@ -240,4 +240,21 @@ test("SIG-ECHELON-APP-002: the administrator shell marks the current area and ke
   await expect(page.locator("#tab-group")).toHaveAttribute("aria-current", "true");
   expect(await visiblePrimaries(page).count()).toBeLessThanOrEqual(1);
   await expectNoHorizontalOverflow(page, "admin: group overview, foundry ledger shell @1280");
+
+  // Reflow (WCAG 1.4.4/1.4.10): with text at 200% on a 320 px screen the
+  // panels, their buttons and long identifiers still fit; the group's
+  // imports, with an issued invitation link, and storage too.
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
+  await expectNoHorizontalOverflow(page, "admin: group overview, 200% text @320");
+  await page.locator("#tab-imports").click();
+  const invitations = page.locator("#invitations");
+  await invitations.getByRole("spinbutton", { name: "How many links" }).fill("1");
+  await invitations.getByRole("spinbutton", { name: "How many links" }).press("Tab");
+  await invitations.getByRole("button", { name: "Create links" }).click();
+  await expect(page.locator("#invitation-links li")).toHaveCount(1, { timeout: STORE_STEP_MS });
+  await expectNoHorizontalOverflow(page, "admin: group imports with an issued link, 200% text @320");
+  await area(page, "Storage");
+  await expect(page.getByRole("heading", { level: 2, name: "Storage" })).toBeVisible();
+  await expectNoHorizontalOverflow(page, "admin: storage, 200% text @320");
 });
