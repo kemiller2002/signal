@@ -130,3 +130,27 @@ let ``every report label has all four locales, and every block has a title`` () 
 
     for code in [ ReportModel.LowCoverage; ReportModel.LowResponseCount; ReportModel.HighDontKnowRate; ReportModel.IncompleteGroup; ReportModel.NotComparableToPriorVersion; ReportModel.AnonymousSmallGroupSuppressed ] do
         Assert.Contains(ReportModel.warningCode code, ReportLabels.keys)
+
+[<Fact>]
+let ``a Recommendations block with nothing to recommend says None, in the report's language`` () =
+    // signal#140 review: the heading stood over nothing. Imported pilot
+    // responses carry no recommendations, and the default family has the block.
+    let _, _, page, key = reportPage "1"
+    changed page $"#/groups/{key}/report"
+    Assert.True(page.Flag "reportHasRecommendations")
+    Assert.Empty(page.Items "reportRecommendations")
+    Assert.True(page.Flag "reportRecommendationsNone")
+    Assert.Equal("None", page.Text "reportNone")
+
+    changed page $"#/groups/{key}/report?locale=de-DE"
+    Assert.Equal("Keine", page.Text "reportNone")
+
+[<Fact>]
+let ``the spread of results names its columns in the report's language`` () =
+    // signal#142 review: its median and range had no column names.
+    let _, _, page, key = reportPage "1"
+    changed page $"#/groups/{key}/report?family=audit"
+    Assert.True(page.Flag "reportHasGroupDistributions")
+    Assert.Equal<string list>([ "Section"; "Median"; "Range" ], column page "reportSpreadColumns" "label")
+    changed page $"#/groups/{key}/report?family=audit&locale=de-DE"
+    Assert.Equal<string list>([ "Abschnitt"; "Median"; "Spannweite" ], column page "reportSpreadColumns" "label")

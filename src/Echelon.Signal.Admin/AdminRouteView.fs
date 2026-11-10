@@ -173,8 +173,11 @@ let private imports (model: Model) (group: GroupSummary option) : View =
           |> Option.defaultValue []
       ) ]
 
-let private score (value: float option) =
-    value |> Option.map (fun v -> v.ToString("0.0", CultureInfo.InvariantCulture)) |> Option.defaultValue "suppressed"
+let private score =
+    function
+    | Some(Analysis.Value v) -> v.ToString("0.0", CultureInfo.InvariantCulture)
+    | Some(Analysis.Unavailable why) -> Visualization.unavailableText why
+    | None -> ReportLabels.label "en" "notAvailable"
 
 /// Groups compare only with the same survey and template version, identity
 /// mode and privacy minimum (ADM-014); anything else says why not.
@@ -204,7 +207,7 @@ let private comparison (model: Model) : View =
           else
               [ for s in sections |> List.filter (fun s -> section |> Option.forall ((=) s)) do
                     for g in chosen do
-                        [ "key", Text $"{s}/{g.Key}"; "section", Text s; "group", Text g.Key; "score", Text(g.Sections |> List.tryFind (fst >> (=) s) |> Option.bind snd |> score) ] ]
+                        [ "key", Text $"{s}/{g.Key}"; "section", Text s; "group", Text g.Key; "score", Text(g.Sections |> List.tryFind (fst >> (=) s) |> Option.map snd |> score) ] ]
       ) ]
 
 /// The routed part of the page's view.

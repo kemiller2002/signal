@@ -208,9 +208,18 @@ let private text (unit: Unit) (value: float) =
     | Score0To100 -> value.ToString("0.0", Globalization.CultureInfo.InvariantCulture)
     | Count -> value.ToString("0", Globalization.CultureInfo.InvariantCulture)
 
-let private reason =
+/// A value withheld by the privacy policy, in the words the report uses
+/// ("Withheld to protect anonymity"), with the minimum it is below.
+let suppressedText (minimum: int) = $"""{ReportLabels.label "en" "suppressed"} (below {minimum})"""
+
+/// Why a value is missing, in words a reader can act on.
+let unavailableText =
     function
-    | Suppressed(minimum, _) -> $"suppressed below {minimum}"
+    // The report's own words for it (ReportLabels "suppressed"), with the minimum.
+    | Suppressed(minimum, _) -> suppressedText minimum
+    | NoAcceptedResponses -> ReportLabels.label "en" "noAcceptedResponses"
+    | HeldBack -> ReportLabels.label "en" "heldBack"
+    | NotScored -> ReportLabels.label "en" "notScored"
     | InsufficientSample(required, found) -> $"needs {required}, has {found}"
     | NotRetained _ -> "not retained"
     | other -> $"unavailable ({other})"
@@ -247,7 +256,7 @@ let compile (spec: Spec) (data: Datum list) : Result<Compiled, Refusal list> =
                       Available = true }
                 | Unavailable why ->
                     { Category = d.Category
-                      Text = reason why
+                      Text = unavailableText why
                       Position = None
                       Colour = colour
                       Pattern = pattern

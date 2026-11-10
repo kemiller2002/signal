@@ -40,7 +40,8 @@ let ``missing values stay explicit, never zero, and totals cannot reveal suppres
     let safety = compiled.Marks |> List.find (fun m -> m.Category = "Safety")
 
     Assert.Equal(None, safety.Position)
-    Assert.Equal("suppressed below 5", safety.Text)
+    // In the report's own words, with the minimum (signal#140 review nit).
+    Assert.Equal("Withheld to protect anonymity (below 5)", safety.Text)
     Assert.Equal(None, compiled.Total)
     Assert.Contains(TotalWithheldForSuppression, compiled.Warnings)
     Assert.Contains(MissingValues 1, compiled.Warnings)

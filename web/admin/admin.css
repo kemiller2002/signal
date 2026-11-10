@@ -527,7 +527,7 @@
 
 /* The report on screen (print keeps Folio's own layout): figures as a
    definition grid, methodology and summary as prose with a measure, and a
-   table that, on a narrow screen, shows each row as a card naming its
+   table that, where its box is narrow, shows each row as a card naming its
    figures, so nothing scrolls sideways and no heading is cut off. */
 @media screen {
   .admin .report-facts {
@@ -552,19 +552,23 @@
      inside it instead of pushing the page sideways. */
   .admin ul.report-prose { padding-inline-start: 1.25rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
   .admin .report-prose { overflow-wrap: break-word; }
-  .admin .report-table { overflow-x: auto; }
-  .admin .report-cards { border-collapse: collapse; min-inline-size: 100%; }
+  /* The table's box decides between table and cards, so it never scrolls
+     sideways at any width or text size and needs no focusable region. */
+  .admin .report-table { container: report-table / inline-size; }
+  .admin .report-cards { border-collapse: collapse; inline-size: 100%; }
   .admin .report-cards :is(th, td) {
-    white-space: nowrap;
-    overflow-wrap: normal;
+    overflow-wrap: break-word;
     padding: 0.6rem 0.75rem;
     text-align: start;
     border-block-end: 1px solid var(--echelon-border-subtle);
   }
   .admin .report-cards thead th { color: var(--echelon-text-secondary); font-size: 0.8125rem; }
+  /* A section title may be one long unbroken word: it breaks inside the
+     word rather than widen the table past the page (signal#142 review). */
+  .admin .report-cards th[scope="row"] { overflow-wrap: anywhere; hyphens: auto; }
   .admin .report-cards td { font-variant-numeric: tabular-nums; }
 }
-@media screen and (max-width: 40rem) {
+@container report-table (max-width: 44rem) {
   .admin .report-cards thead { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .admin .report-cards,
   .admin .report-cards tbody { display: grid; gap: 0.75rem; }
@@ -576,7 +580,9 @@
     border: 1px solid var(--echelon-border-subtle);
     border-radius: var(--echelon-radius-container);
   }
-  .admin .report-cards th[scope="row"] { grid-column: 1 / -1; text-align: start; white-space: normal; }
+  /* The card's heading starts where its figures do: the card's padding is
+     the only inset (signal#140 review). */
+  .admin .report-cards th[scope="row"] { grid-column: 1 / -1; text-align: start; padding: 0 0 0.5rem; }
   .admin .report-cards td { display: contents; }
-  .admin .report-cards td::before { content: attr(data-label); color: var(--echelon-text-secondary); white-space: normal; }
+  .admin .report-cards td::before { content: attr(data-label); color: var(--echelon-text-secondary); }
 }

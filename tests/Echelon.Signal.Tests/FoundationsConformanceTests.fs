@@ -364,3 +364,31 @@ let ``the engine answers the Limen contract the installed kernel offers`` () =
     let text = readRepoFile "node_modules/@echelon-foundry/limen/dist/generated/core.js"
     Assert.Contains($"\"{Echelon.Signal.Application.Limen.core.Id}\"", text)
     Assert.Contains($"\"{Echelon.Signal.Application.Limen.core.Fingerprint}\"", text)
+
+/// The class names a stylesheet's selectors name (comments dropped).
+let private selectorClasses (css: string) =
+    let rules = Regex.Replace(css, @"/\*.*?\*/", "", RegexOptions.Singleline)
+
+    Regex.Matches(rules, @"([^{}]+)\{")
+    |> Seq.map (fun m -> m.Groups[1].Value.Trim())
+    |> Seq.filter (fun selector -> not (selector.StartsWith "@"))
+    |> Seq.collect (fun selector -> Regex.Matches(selector, @"\.([A-Za-z_][\w-]*)") |> Seq.map (fun c -> c.Groups[1].Value))
+    |> Set.ofSeq
+
+[<Fact>]
+let ``the kernel's page stylesheet styles only classes a page or the engine uses`` () =
+    // signal#140 review: `.page-header h1` outlived the header it styled.
+    let used =
+        [ "web"; "src" ]
+        |> List.collect (fun dir -> sourceFiles (repoFile dir))
+        |> List.filter (fun file -> [ ".html"; ".js"; ".fs" ] |> List.contains (Path.GetExtension file))
+        |> List.map File.ReadAllText
+        |> String.concat "\n"
+
+    let unused =
+        selectorClasses (readRepoFile "web-kernel/page.css")
+        |> Set.filter (fun name -> not (Regex.IsMatch(used, $@"(?<![\w-]){Regex.Escape name}(?![\w-])")))
+
+    Assert.True(unused.IsEmpty, $"""page.css styles classes nothing uses: {String.concat ", " unused}""")
+    // The check sees a dead rule: one naming a class no page has.
+    Assert.Contains("page-header", selectorClasses ".page-header h1, .results-header h2 { margin: 0; }")

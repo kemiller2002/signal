@@ -168,7 +168,7 @@ let private analysisRows (group: OpenedGroup) =
     let show =
         function
         | Analysis.Value v -> v.ToString("0.0#", Globalization.CultureInfo.InvariantCulture)
-        | Analysis.Unavailable(Analysis.Suppressed(minimum, _)) -> $"suppressed below {minimum}"
+        | Analysis.Unavailable(Analysis.Suppressed(minimum, _)) -> Visualization.suppressedText minimum
         | Analysis.Unavailable(Analysis.InsufficientSample(required, found)) -> $"needs {required} scores, has {found}"
         | Analysis.Unavailable reason -> $"unavailable: %A{reason}"
 
@@ -235,7 +235,7 @@ let summary (unreconciled: int) (imported: Imported option) (live: OpenedGroup) 
               Expected = group.Config.ExpectedCount
               BatchRunning = lastBatch |> Option.exists (fun b -> b.Status = Intake.Running)
               UnreconciledBatches = unreconciled }
-      Sections = state.Sections |> List.map (fun s -> s.SectionId, s.AggregateScore)
+      Sections = state.Sections |> List.map (fun s -> s.SectionId, Analysis.sectionScore group.Config.MinimumReportableCount live.Accumulator.Accepted.Count state s)
       ReportFragment =
         match ReportState.persistence ReportState.defaultBudget state with
         | ReportState.EmbeddedInUrl fragment

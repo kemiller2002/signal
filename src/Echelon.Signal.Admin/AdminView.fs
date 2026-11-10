@@ -40,8 +40,10 @@ let private credentialText (state: Credential.CredentialState) =
     | Credential.PermissionInsufficient reason -> $"Your account cannot use this data: {reason}."
     | Credential.ProviderIdentityMismatch _ -> "The configured repository is now a different repository; an administrator must confirm it."
 
-let private score (value: float option) =
-    value |> Option.map (fun v -> v.ToString("0.0", CultureInfo.InvariantCulture)) |> Option.defaultValue "suppressed"
+let private score =
+    function
+    | Analysis.Value v -> v.ToString("0.0", CultureInfo.InvariantCulture)
+    | Analysis.Unavailable why -> Visualization.unavailableText why
 
 let private groupItem (model: Model) (group: GroupSummary) =
     [ "key", Text group.Key
@@ -181,10 +183,8 @@ let private charts (model: Model) (group: GroupSummary option) =
                 g.Sections
                 |> List.mapi (fun i (id, score) ->
                     ({ Category = nameOf id
-                       Value =
-                         match score with
-                         | Some v -> Analysis.Value v
-                         | None -> Analysis.Unavailable(Analysis.Suppressed(g.MinimumReportable, g.Accepted))
+                       // The engine's reason when there is no score (signal#142 review).
+                       Value = score
                        Order = i }: Visualization.Datum))
 
             Visualization.compile spec data)

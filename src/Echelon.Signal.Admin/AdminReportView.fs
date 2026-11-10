@@ -180,6 +180,10 @@ let project (model: Model) (group: GroupSummary option) : View =
       "reportOverall", text (data |> Option.map (fun r -> valueText tag decimals r.Overall) |> Option.defaultValue "")
       "reportColumns",
       items ([ "section"; "mean"; "median"; "range"; "scored"; "unscored" ] |> List.map (fun k -> [ "key", Text k; "label", Text(l k) ]))
+      // The distributions table's own header row, in the report's language
+      // (signal#142 review: its median and range had no column names).
+      "reportSpreadColumns",
+      items ([ "section"; "median"; "range" ] |> List.map (fun k -> [ "key", Text k; "label", Text(l k) ]))
       "reportSections",
       items (
           data
@@ -205,6 +209,10 @@ let project (model: Model) (group: GroupSummary option) : View =
       )
       "reportStrengths", items (data |> Option.map (fun r -> r.Strengths |> List.map (fun s -> [ "key", Text s; "text", Text s ])) |> Option.defaultValue [])
       "reportWeaknesses", items (data |> Option.map (fun r -> r.Weaknesses |> List.map (fun s -> [ "key", Text s; "text", Text s ])) |> Option.defaultValue [])
+      // A block the definition includes but this group has nothing for says
+      // so, rather than a heading over nothing (signal#140 review).
+      "reportRecommendationsNone", flag (data |> Option.forall _.Recommendations.IsEmpty)
+      "reportNone", text (l "none")
       "reportRecommendations",
       items (data |> Option.map (fun r -> r.Recommendations |> List.map (fun x -> [ "key", Text x.Id; "title", Text x.Title; "priority", Text x.Priority; "frequency", Text(n x.Frequency) ])) |> Option.defaultValue [])
       "reportCoverage",

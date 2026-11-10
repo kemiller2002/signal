@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 143,
+  "nextSeq": 146,
   "items": [
     {
       "id": "WI-0001",
@@ -3394,6 +3394,69 @@
       "attachments": [],
       "createdAt": "2026-11-10T16:46:30.655Z",
       "updatedAt": "2026-11-10T16:46:30.655Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0143",
+      "title": "Results follow-up: report table semantics, per-scale markers, card inset, empty recommendations, dead page rule, suppressed wording",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-10T18:53:17.346Z",
+      "updatedAt": "2026-11-10T19:12:55.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0144",
+      "title": "signal#142 review: section reasons from the engine (anonymity only when suppressed), long titles in table mode, spread column headers",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-10T19:36:44.639Z",
+      "updatedAt": "2026-11-10T19:56:22.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0145",
+      "title": "signal#142 round 2: held-back and not-scored reasons true to the engine",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-10T20:11:12.263Z",
+      "updatedAt": "2026-11-10T20:30:36.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
