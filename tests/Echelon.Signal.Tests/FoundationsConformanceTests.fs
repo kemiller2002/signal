@@ -115,10 +115,10 @@ let ``every page is branded Echelon, loading the theme after Forma`` () =
         let found = brandOrder |> List.map (fun suffix -> suffix, positions suffix)
 
         for suffix, at in found do
-            Assert.True(List.length at = 1, $"{stylesheet} must import {suffix} exactly once, not {List.length at} times")
+            Assert.True((List.length at = 1), $"{stylesheet} must import {suffix} exactly once, not {List.length at} times")
 
         let order = found |> List.map (snd >> List.head)
-        Assert.True(order = List.sort order, $"{stylesheet} must import Forma, echelon.css, echelon-fonts.css, then echelon-app.css; found positions {order}")
+        Assert.True((order = List.sort order), $"{stylesheet} must import Forma, echelon.css, echelon-fonts.css, then echelon-app.css; found positions {order}")
 
         for imported in imports do
             let dir = Path.GetDirectoryName(repoFile stylesheet)
