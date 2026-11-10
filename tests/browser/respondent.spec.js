@@ -142,7 +142,7 @@ test("a scale question is Forma's segmented ordinal scale: numbered points, then
   const specials = scale.locator(".forma-special-choices .forma-special-choice:visible");
   await expect(specials).toHaveText(["Don't know", "Not observed", "Not applicable"]);
   await expect(scale.locator('input[type="radio"]:visible')).toHaveCount(8);
-  expect(new Set(await scale.locator('input[type="radio"]:visible').evaluateAll((inputs) => inputs.map((i) => i.name)))).toEqual(new Set(["q0"]));
+  expect(new Set(await scale.locator('input[type="radio"]:visible').evaluateAll((inputs) => inputs.map((i) => i.name)))).toEqual(new Set(["q0-scale"]));
   // Its choice rows are not shown as well.
   await expect(page.locator('[data-row="0-0"]')).toBeHidden();
   await expect(page.locator('[data-row="0-0"]')).toContainText("Never or almost never");

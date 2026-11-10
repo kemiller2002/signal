@@ -83,6 +83,24 @@
   line-height: 1.3;
   overflow-wrap: break-word;
 }
+/* The rows are Signal's own column inside the theme's panel (which it does
+   not restyle): one track that fills the card and never grows to a row's
+   longest word, padded by the column itself. On a phone, and at 320 px with
+   200% text, the column gives its padding to the answers, so a scale's
+   labels ("Never or almost never") keep whole words. */
+.respondent-rows {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--forma-stack-gap, var(--forma-primitive-spacing-4, 1rem));
+  min-inline-size: 0;
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+@media (max-width: 30rem) {
+  .respondent-rows { padding: 0.75rem; }
+}
+@media (max-width: 22.5rem) {
+  .respondent-rows { padding-inline: 0.25rem; }
+}
 .respondent-card .survey-section { margin: 0; }
 /* Focus moves to the page's first heading on a new page, and to the
    submitted heading (tabindex -1): moved by script, so the ring shows

@@ -85,6 +85,9 @@ let ``a scale question is Forma's ordinal scale on its own row, answered by its 
     Assert.True(scale.["hideX3"].GetValue<bool>())
     Assert.False(scale.["hideSpecials"].GetValue<bool>())
     Assert.Equal("q0", scale.["group"].GetValue<string>())
+    // Its own radio group, apart from its hidden choice rows' radios.
+    Assert.Equal("q0-scale", scale.["scaleGroup"].GetValue<string>())
+    Assert.Equal("", (rowOf "0-3" reply).["scaleGroup"].GetValue<string>())
     Assert.True((rowOf "0-3" reply).["hideRow"].GetValue<bool>())
     Assert.Equal(Some(Value(Point 3)), (response state.Session).Answers.TryFind "CORE-001")
     // A special answer by its index; the yes/no keeps its own rows.

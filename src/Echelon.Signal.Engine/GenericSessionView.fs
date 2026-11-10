@@ -87,6 +87,9 @@ let private defaults =
       // its points, and its special answers after them.
       "hideScale", flag true
       "scaleClass", text ""
+      // The scale's own radio group: apart from its hidden choice rows'
+      // radios (named by "group"), which the page still checks.
+      "scaleGroup", text ""
       "hideSpecials", flag true
       yield!
           [ for n in 0 .. ScaleSlots - 1 do
@@ -162,7 +165,7 @@ let private marker (n: int) (label: string) =
 /// A scale question's row as Forma's ordinal scale: one slot per point,
 /// numbered, then its special answers, all one radio group. Each input's
 /// value is its choice's index, so the page sends the question and the index.
-let private scaleFields (q: Question) (answer: AnswerState option) =
+let private scaleFields (qi: int) (q: Question) (answer: AnswerState option) =
     match scalePoints q with
     | None -> []
     | Some points ->
@@ -170,6 +173,7 @@ let private scaleFields (q: Question) (answer: AnswerState option) =
         let specials = options |> List.skip points
 
         [ "hideScale", flag false
+          "scaleGroup", text $"q{qi}-scale"
           "scaleClass", text $"forma-ordinal-scale forma-ordinal-scale--{points}"
           "hideSpecials", flag specials.IsEmpty ]
         @ (options
@@ -299,7 +303,7 @@ let private pageRows (r: Response) =
                           "required", text (if required then "true" else "false")
                           "invalid", text (if invalid then "true" else "false")
                           "describedBy", text (scaleDescription qi a11y.Description.IsSome (invalid || held.IsSome))
-                          yield! scaleFields shownQuestion (r.Answers.TryFind q.Id)
+                          yield! scaleFields qi shownQuestion (r.Answers.TryFind q.Id)
                           yield! numbered q ]
                     :: choiceRows qi shownQuestion (r.Answers.TryFind q.Id) held (sealedResponse || locked.Contains q.Id) required invalid)))
 
