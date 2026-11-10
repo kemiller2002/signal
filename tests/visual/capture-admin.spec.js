@@ -357,6 +357,20 @@ scenario("admin-signed-in", async ({ page, capture }) => {
     }, { operation: "refresh (store reads)" });
   });
 
+  // signal#136 review round 2: a published version hidden; its button goes
+  // away, so focus moves to the outcome beside the versions, near where the
+  // button was, not to #activity at the top of the page.
+  await capture.attempt(page, { ...signedIn, id: "admin-assessments-version-hidden", title: "Assessments: version hidden from new groups, focus on the outcome beside the versions, with the Forma focus ring", extents: ["full", "viewport"], anchor: "#assessments .admin-outcome" }, async () => {
+    await capture.step(page, "click Refresh, open Assessments, click Hide from new groups", async () => {
+      await page.getByRole("button", { name: "Refresh" }).click();
+      await expect(page.getByRole("status").filter({ hasText: "Signed in; changes can be saved." })).toBeVisible({ timeout: STORE_MS });
+      await area(page, "Assessments");
+      await page.locator("#template-actions").getByRole("button", { name: "Hide from new groups", exact: true }).click();
+      await expect(outcome("#assessments")).toBeFocused({ timeout: STORE_MS });
+      await expect(outcome("#assessments")).toContainText("PULSE version 1 is hidden from new groups");
+      await expect(outcome("#assessments")).toBeInViewport();
+    }, { operation: "hide version (store write)" });
+
   // signal#136 review round 2: unresolved work rendered. A new group's import
   // whose branch update fails ambiguously (503) and whose check of whether it
   // landed then fails too, so its outcome stays unknown and the batch needs
@@ -378,12 +392,19 @@ scenario("admin-signed-in", async ({ page, capture }) => {
       await imports.getByRole("textbox", { name: "Completed survey links, one per line" }).fill("not a link\nnot a link either");
       await imports.getByRole("button", { name: "Import" }).click();
       await hold.reached;
+      const from = store.requests.length;
       store.failNext("PATCH", /\/git\/refs\/heads\/main$/);
-      for (let i = 0; i < 3; i += 1) store.failNext("GET", /^\/repos\//);
+      for (let i = 0; i < 8; i += 1) store.failNext("GET", /^\/repos\//);
       hold.release();
-      await expect(page.locator("#importReconciliation li")).not.toHaveCount(0, { timeout: STORE_MS });
-      // A failure the import did not use must not reach a later request.
-      store.failures.splice(0);
+      try {
+        await expect(page.locator("#importReconciliation li")).not.toHaveCount(0, { timeout: STORE_MS });
+      } catch (error) {
+        // Say what the store was asked, so the next attempt is not a guess.
+        throw new Error(`no reconciliation; requests after the held update: ${store.requests.slice(from - 1).join(" | ")}`);
+      } finally {
+        // A failure the import did not use must not reach a later request.
+        store.failures.splice(0);
+      }
     }, { operation: "import submissions (store write, outcome unknown)" });
     await capture.step(page, "open the Overview", async () => {
       await area(page, "Overview");
@@ -395,18 +416,5 @@ scenario("admin-signed-in", async ({ page, capture }) => {
     }, { operation: "area navigation" });
   });
 
-  // signal#136 review round 2: a published version hidden; its button goes
-  // away, so focus moves to the outcome beside the versions, near where the
-  // button was, not to #activity at the top of the page.
-  await capture.attempt(page, { ...signedIn, id: "admin-assessments-version-hidden", title: "Assessments: version hidden from new groups, focus on the outcome beside the versions, with the Forma focus ring", extents: ["full", "viewport"], anchor: "#assessments .admin-outcome" }, async () => {
-    await capture.step(page, "click Refresh, open Assessments, click Hide from new groups", async () => {
-      await page.getByRole("button", { name: "Refresh" }).click();
-      await expect(page.getByRole("status").filter({ hasText: "Signed in; changes can be saved." })).toBeVisible({ timeout: STORE_MS });
-      await area(page, "Assessments");
-      await page.locator("#template-actions").getByRole("button", { name: "Hide from new groups", exact: true }).click();
-      await expect(outcome("#assessments")).toBeFocused({ timeout: STORE_MS });
-      await expect(outcome("#assessments")).toContainText("PULSE version 1 is hidden from new groups");
-      await expect(outcome("#assessments")).toBeInViewport();
-    }, { operation: "hide version (store write)" });
   });
 });
