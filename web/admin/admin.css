@@ -348,9 +348,16 @@
 }
 .draft-editor .echelon-panel__header h3:focus { outline-offset: 4px; }
 
+/* The editor is Signal's own container (not a Forma stack it would
+   restyle): one column of panels, spaced as Forma's stack spaces them, and
+   two columns on a wide screen. */
+.draft-editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--forma-stack-gap, var(--forma-primitive-spacing-4, 1rem));
+}
 @media (min-width: 50rem) {
   .draft-editor {
-    display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.25rem;
     align-items: start;

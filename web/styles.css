@@ -35,10 +35,56 @@
 .results-figure-note { color: var(--echelon-text-secondary); font-size: 0.875rem; }
 #results .echelon-panel[data-echelon-surface="accent"] .echelon-panel__body > * { margin: 0; }
 
-/* A page's one live region (#activity) takes no room when it only holds
-   what it announces (visually hidden copies of text shown elsewhere); a
-   loading spinner inside it shows. */
-main.app > #activity:not(:has(#loading)) {
+/* ---- The respondent's page ("foundry ledger", SIG-ECHELON-APP-002) -----
+   Composition only: panels, type roles and button emphasis are the Echelon
+   application layer's. A quiet bar with Signal's mark (no administrator
+   chrome), the survey's name, where the respondent is from Signal's own
+   counts, the questions on one raised card, and one primary action. */
+.respondent-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.875rem clamp(1rem, 4vw, 2.5rem);
+  background: var(--echelon-surface-raised);
+  border-block-end: 1px solid var(--echelon-border-subtle);
+}
+
+.respondent { max-inline-size: 46rem; }
+
+.respondent-head { display: grid; gap: 0.35rem; }
+.respondent-head > * { margin: 0; }
+.respondent-head h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); overflow-wrap: anywhere; }
+
+.respondent-progress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+.respondent-progress > p { margin: 0; }
+
+
+/* Back stays at the start; the one forward action sits at the end. */
+.respondent-nav > :last-child { margin-inline-start: auto; }
+
+/* The survey's name beside Signal's mark, as in the mockup (decorative: the
+   page's h1 names it to assistive technology). */
+.respondent-bar__mark { flex: none; display: flex; }
+.respondent-bar__survey {
+  flex: 1 1 10rem;
+  min-inline-size: 0;
+  font-weight: var(--echelon-weight-label);
+  overflow-wrap: anywhere;
+}
+.respondent-bar__survey:not(:empty)::before { content: "· "; color: var(--echelon-text-secondary); }
+
+/* A page's one live region (#activity, on the assessment and survey pages):
+   the loading spinner shows; what it announces otherwise is shown where it
+   belongs, so it takes no room when idle. */
+main.app > #activity:not(:has(#loading)),
+.respondent > .activity:not(:has(#loading)) {
   position: absolute;
   inline-size: 1px;
   block-size: 1px;
@@ -46,3 +92,53 @@ main.app > #activity:not(:has(#loading)) {
   clip-path: inset(50%);
   white-space: nowrap;
 }
+.respondent > .activity > :is(p, div) { margin: 0; }
+
+/* Each question on the card reads as the mockup's: the prompt in the
+   display face. */
+.respondent-card .survey-question {
+  font-family: var(--forma-primitive-font-family-display);
+  color: var(--forma-color-text-heading);
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  line-height: 1.3;
+  overflow-wrap: break-word;
+}
+/* The rows are Signal's own column inside the theme's panel (which it does
+   not restyle): one track that fills the card and never grows to a row's
+   longest word, padded by the column itself. On a phone, and at 320 px with
+   200% text, the column gives its padding to the answers, so a scale's
+   labels ("Never or almost never") keep whole words. */
+.respondent-rows {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--forma-stack-gap, var(--forma-primitive-spacing-4, 1rem));
+  min-inline-size: 0;
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+@media (max-width: 30rem) {
+  .respondent-rows { padding: 0.75rem; }
+}
+@media (max-width: 22.5rem) {
+  .respondent-rows { padding-inline: 0.25rem; }
+}
+.respondent-card .survey-section { margin: 0; }
+/* Focus moves to the page's first heading on a new page, and to the
+   submitted heading (tabindex -1): moved by script, so the ring shows
+   whatever moved it, in Forma's focus colours. */
+.respondent-card .survey-section:focus,
+#submitted-title:focus {
+  outline: 3px solid var(--forma-color-focus-ring);
+  outline-offset: 4px;
+}
+/* The submission link is read only, not unavailable: a solid border, since
+   Forma's dashed read-only border read as disabled on the dark scheme. */
+#submission-link { border-style: solid; }
+/* The prompt is in the display face; its optional mark and guidance after
+   it stay in the body face, the guidance on its own line. */
+.respondent-card .survey-question > :is(.survey-optional, span:last-child) {
+  font-family: var(--forma-primitive-font-family-sans);
+  font-weight: normal;
+}
+.respondent-card .survey-question > span:last-child:not(:empty) { display: block; margin-block-start: 0.35rem; }
+.respondent-progress #progress { color: var(--echelon-text-secondary); }
+

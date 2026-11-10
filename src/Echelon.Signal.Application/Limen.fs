@@ -2,14 +2,16 @@
 /// and writes it: the kernel's messages in, the engine's view and handshake
 /// answer out. Mechanics only; no Signal decision is made here.
 ///
-/// The respondent pages request Core effects only, and negotiate no capability
-/// pack: a Navigation `replace` that keeps the live URL equal to the
-/// respondent's state (LURL-001), a Clipboard `writeText` that copies a
-/// finalized submission link, and (the survey page only) one same-origin Http
-/// GET of a published template from the site's catalog (DF-SIGNAL-2026-0005).
-/// The kernel can therefore send the handshake, events, location changes, and
-/// navigation, clipboard and Http results. Anything else is not a message
-/// this engine could have caused.
+/// The respondent pages request Core effects: a Navigation `replace` that
+/// keeps the live URL equal to the respondent's state (LURL-001), a Clipboard
+/// `writeText` that copies a finalized submission link, and (the survey page
+/// only) one same-origin Http GET of a published template from the site's
+/// catalog (DF-SIGNAL-2026-0005). The survey page may also select one pack,
+/// `limen.focus`, to move focus to the top of a new page (SIG-ECHELON-APP-002
+/// (d)); the assessment page selects none. The kernel can therefore send the
+/// handshake, events, location changes, and navigation, clipboard, Http and
+/// focus results. Anything else is not a message this engine could have
+/// caused.
 ///
 /// See the `protocol` export of `@echelon-foundry/limen` (0.9.0; protocol unchanged since 0.7.1).
 module Echelon.Signal.Application.Limen
@@ -31,6 +33,14 @@ let core =
     { Id = "limen.core"
       Version = 1
       Fingerprint = "sha256:2d5e16b7111fc78a319706b9927e4523cfcc519b7a2c9352ca8283ba32d6b71c" }
+
+/// `limen.focus` v1 (from the installed package's generated contract, as the
+/// administrator page selects it): moving focus to an element named by
+/// `data-focus-target`.
+let focus =
+    { Id = "limen.focus"
+      Version = 1
+      Fingerprint = "sha256:6180bce797be6bf993594d62570550a2dc72507edc136263c52e262c5f7c66ec" }
 
 /// The newest protocol revision this engine speaks (1.4).
 [<Literal>]
@@ -65,6 +75,8 @@ type Inbound =
     /// A Clipboard writeText outcome: Ok, or the failure reason.
     | ClipboardResult of correlationId: string * outcome: Result<unit, string>
     | HttpResult of correlationId: string * outcome: HttpOutcome
+    /// A `limen.focus` outcome: whether the pack moved focus (`Completed`).
+    | FocusResult of correlationId: string * moved: bool
 
 /// An effect the engine asks the kernel to perform.
 type Effect =
@@ -78,6 +90,9 @@ type Effect =
     /// GET a file's exact bytes (base64), without credentials. The address
     /// is relative to the page, so the request stays on the page's origin.
     | FetchBytes of correlationId: string * url: string
+    /// Move focus to the element named `data-focus-target="target"` (the
+    /// `limen.focus` pack; only where the handshake selected it).
+    | FocusOn of correlationId: string * target: string
 
 /// How long the survey page waits for its template file.
 [<Literal>]
@@ -147,9 +162,12 @@ let decode (messageJson: string) =
                 | other -> raise (MalformedInput("$.result.outcome.kind", $"an Http outcome, not '{other}'"))
 
             HttpResult(required "correlationId" "$.result" asString result, read)
-        // The engine requests only navigation, clipboard writes and Http
-        // reads, so no other result can answer anything it asked.
-        | _ -> raise (MalformedInput("$.result.kind", "a result for an effect this engine requests (NavigationResult, ClipboardResult, HttpResult)"))
+        | "CapabilityResult" when required "capability" "$.result" asString result = focus.Id ->
+            let outcome = required "outcome" "$.result" asObject result
+            FocusResult(required "correlationId" "$.result" asString result, required "kind" "$.result.outcome" asString outcome = "Completed")
+        // The engine requests only navigation, clipboard writes, Http reads
+        // and focus moves, so no other result can answer anything it asked.
+        | _ -> raise (MalformedInput("$.result.kind", "a result for an effect this engine requests (NavigationResult, ClipboardResult, HttpResult, a limen.focus CapabilityResult)"))
     | "CapabilityFact" -> raise (MalformedInput("$.kind", "a message this engine can receive, not a fact for a capability it never negotiated"))
     | other -> raise (MalformedInput("$.kind", $"a known message kind, not '{other}'"))
 
@@ -161,6 +179,25 @@ let decode (messageJson: string) =
 type Handshake =
     | Accepted of minor: int * contract: JsonNode
     | Rejected of reason: (Utf8JsonWriter -> unit)
+
+/// The packs the kernel offers in its handshake, as it names them.
+let offered (offer: JsonNode) : Contract list =
+    match tryField "capabilities" offer with
+    | Some list ->
+        asArray "$.handshake.capabilities" list
+        |> List.mapi (fun index item ->
+            let path = $"$.handshake.capabilities[{index}]"
+
+            { Id = required "id" path asString item
+              Version = required "version" path asInt item
+              Fingerprint = required "fingerprint" path asString item })
+    | None -> []
+
+/// Of the packs a page wants, those the kernel offers at exactly the version
+/// and fingerprint this engine was written against.
+let selecting (wanted: Contract list) (offer: JsonNode) =
+    let available = offered offer
+    wanted |> List.filter (fun w -> List.contains w available)
 
 /// The engine's answer to the kernel's handshake offer: accept the Core
 /// contract, selecting no capability pack, or say precisely why not.
@@ -229,8 +266,9 @@ let private writeView (writer: Utf8JsonWriter) (view: View) =
 
     writer.WriteEndObject()
 
-/// The engine's complete reply to one kernel message.
-let encode (view: View) (effects: Effect list) (handshake: Handshake option) =
+/// The engine's complete reply to one kernel message, selecting the packs
+/// named (in the handshake answer only).
+let encodeSelecting (selected: Contract list) (view: View) (effects: Effect list) (handshake: Handshake option) =
     write (fun writer ->
         writer.WriteStartObject()
         writer.WritePropertyName "view"
@@ -265,6 +303,22 @@ let encode (view: View) (effects: Effect list) (handshake: Handshake option) =
                 writer.WriteString("response", "base64")
                 writer.WriteString("credentials", "omit")
                 writer.WriteEndObject()
+            | FocusOn(correlationId, target) ->
+                writer.WriteStartObject()
+                writer.WriteString("kind", "Capability")
+                writer.WriteString("correlationId", correlationId)
+                writer.WriteString("capability", focus.Id)
+                writer.WriteNumber("version", focus.Version)
+                writer.WritePropertyName "request"
+                writer.WriteStartObject()
+                writer.WriteString("operation", "focus")
+                writer.WritePropertyName "target"
+                writer.WriteStartObject()
+                writer.WriteString("name", target)
+                writer.WriteEndObject()
+                writer.WriteBoolean("preventScroll", false)
+                writer.WriteEndObject()
+                writer.WriteEndObject()
 
         writer.WriteEndArray()
         writer.WritePropertyName "cancellations"
@@ -286,6 +340,14 @@ let encode (view: View) (effects: Effect list) (handshake: Handshake option) =
             writeNode writer contract
             writer.WritePropertyName "capabilities"
             writer.WriteStartArray()
+
+            for pack in selected do
+                writer.WriteStartObject()
+                writer.WriteString("id", pack.Id)
+                writer.WriteNumber("version", pack.Version)
+                writer.WriteString("fingerprint", pack.Fingerprint)
+                writer.WriteEndObject()
+
             writer.WriteEndArray()
             writer.WriteEndObject()
         | Some(Rejected reason) ->
@@ -299,3 +361,6 @@ let encode (view: View) (effects: Effect list) (handshake: Handshake option) =
             writer.WriteEndObject()
 
         writer.WriteEndObject())
+
+/// The engine's complete reply to one kernel message, selecting no pack.
+let encode (view: View) (effects: Effect list) (handshake: Handshake option) = encodeSelecting [] view effects handshake

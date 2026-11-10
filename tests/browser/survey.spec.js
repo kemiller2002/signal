@@ -5,6 +5,7 @@
 // Runs against the checkout and (project "pages") the assembled Pages site.
 import { readFileSync } from "node:fs";
 import { test, expect, expectConsoleError } from "./support.js";
+import { pick } from "./survey-answers.mjs";
 
 const links = JSON.parse(readFileSync(new URL("./fixtures/survey-links.json", import.meta.url), "utf8"));
 
@@ -20,8 +21,6 @@ async function open(page, link) {
   await expect(page.locator("html")).toHaveAttribute("data-kernel", "running");
 }
 
-// Each row holds every input kind, hidden but the one it shows; name the input by its event.
-const pick = (page, row) => page.locator(`[data-row="${row}"] input[data-event="answered"]`);
 
 test("a published survey is fetched from the site, answered and submitted", async ({ page }) => {
   const seen = requests(page);
@@ -346,4 +345,27 @@ test("an unfinished ranking is held, said so and kept out of the link; out-of-or
   await expect(page.locator("#survey-refused")).toHaveCount(0);
   await expect(number("1-n0")).toHaveValue("");
   await expect(page.locator("#progress")).toHaveText("1 of 6 answered");
+});
+
+// The respondent's page in the "foundry ledger" direction
+// (SIG-ECHELON-APP-002 (d)): Signal's mark and the survey, no administrator
+// chrome, one primary action in any view, and progress only from Signal's
+// own counts (the page and answered of applicable), with no time estimate.
+test("the respondent page shows no administrator chrome, one primary action, and only Signal's own progress", async ({ page }) => {
+  const primaries = () => page.locator('[data-echelon-emphasis="primary"]:visible');
+  await open(page, links.paged);
+  await expect(page.locator(".echelon-app-bar, nav[aria-label='Administration'], #copy-link[data-event='copyLink']")).toHaveCount(0);
+  await expect(page.locator(".respondent-bar .forma-app-identity__name")).toHaveText("Signal");
+  await expect(page.locator("#page-label")).toHaveText("Page 1 of 3");
+  await expect(page.locator("#progress")).toHaveText(/^\d+ of \d+ answered$/);
+  await expect(page.locator("main")).not.toContainText(/minute|second|remaining/i);
+  await expect(primaries()).toHaveCount(1);
+  await expect(primaries()).toHaveText("Next");
+
+  await pick(page, "0-3").check();
+  await pick(page, "1-4").check();
+  await page.locator("#page-next").click();
+  await expect(page.locator("#page-label")).toHaveText("Page 2 of 3");
+  await expect(page.locator("#page-back")).toHaveAttribute("data-echelon-emphasis", "tertiary");
+  await expect(primaries()).toHaveCount(1);
 });

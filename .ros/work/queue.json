@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 134,
+  "nextSeq": 141,
   "items": [
     {
       "id": "WI-0001",
@@ -2970,10 +2970,10 @@
       "description": null,
       "tags": [],
       "priority": "medium",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-10T05:45:36.920Z",
-      "updatedAt": "2026-11-10T05:45:36.920Z",
+      "updatedAt": "2026-11-10T14:51:34.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -3205,6 +3205,153 @@
       "attachments": [],
       "createdAt": "2026-11-10T12:30:32.260Z",
       "updatedAt": "2026-11-10T12:50:42.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0134",
+      "title": "Draft outcome copy is per view, not per draft: after saving draft A, opening draft B shows draft A's 'saved' in B's Outcome group (signal#137 review, Low)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T13:07:19.279Z",
+      "updatedAt": "2026-11-10T13:07:19.279Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0135",
+      "title": "The draft's warning summary does not deduplicate repeated warning codes (signal#137 review, Low)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T13:07:19.696Z",
+      "updatedAt": "2026-11-10T13:07:19.696Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0136",
+      "title": "The multi-warning summary test derives its expectation from the same findings instead of a fixed fixture with known codes (signal#137 review, Low)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T13:07:20.108Z",
+      "updatedAt": "2026-11-10T13:07:20.108Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0137",
+      "title": "After a group is finalized, 'import the same links again' cannot resume an unfinished import because imports are refused; the obligation and resolution wording should say so (signal#137 review, Low)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T13:07:20.511Z",
+      "updatedAt": "2026-11-10T13:07:20.511Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0138",
+      "title": "SIG-ECHELON-APP-002 (d) signal#139 review: scale questions as Forma's ordinal scale, no Signal override of Forma's best-worst row or the theme panel (EXCEPTION for the narrow best-worst row) and a guard for it, focus and page announcement on a new page, selection guidance only on change, solid read-only link border",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-10T15:15:23.134Z",
+      "updatedAt": "2026-11-10T16:14:19.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0139",
+      "title": "Forma: the narrow best-worst row (.forma-best-worst__row below 44rem) leaves the option's column no width at 320 px with 200% text, so options are set a letter or two a line and the row overflows; fix in Forma, then make Signal's EXCEPTION test in tests/browser/respondent.spec.js an ordinary assertion (signal#139 review)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T15:15:23.635Z",
+      "updatedAt": "2026-11-10T15:15:23.635Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0140",
+      "title": "The administrator's draft preview shows scale questions as a list of choices; give it Forma's ordinal scale as the survey page has it (signal#139 follow-up)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T15:15:24.046Z",
+      "updatedAt": "2026-11-10T15:15:24.046Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

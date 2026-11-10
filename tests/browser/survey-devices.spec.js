@@ -3,6 +3,7 @@
 // scrolling, and is answered and submitted by touch.
 import { readFileSync } from "node:fs";
 import { test, expect } from "./support.js";
+import { pick } from "./survey-answers.mjs";
 
 const links = JSON.parse(readFileSync(new URL("./fixtures/survey-links.json", import.meta.url), "utf8"));
 
@@ -24,7 +25,7 @@ for (const name of ["identified", "kinds", "compound", "paged", "banked", "timed
 
 test("a survey is answered and submitted by touch on a phone", async ({ page }) => {
   await open(page, links.identified);
-  for (const row of ["0-3", "1-4", "2-6", "3-1", "4-2"]) await page.locator(`[data-row="${row}"] input[data-event="answered"]`).tap();
+  for (const row of ["0-3", "1-4", "2-6", "3-1", "4-2"]) await pick(page, row).tap();
   await expect(page.locator("#progress")).toHaveText("5 of 5 answered");
   await page.locator("#submit-answers").tap();
   await expect(page.locator("#submitted-title")).toHaveText("Submitted");
@@ -55,7 +56,7 @@ const PERCEPTIBLE_MS = 1;
 test("with reduced motion asked for, answering runs no animation or transition", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await open(page, links.identified);
-  await page.locator('[data-row="0-3"] input[data-event="answered"]').tap();
+  await pick(page, "0-3").tap();
   await expect(page.locator("#progress")).toHaveText("1 of 5 answered");
   // Every running or declared animation and transition longer than 1 ms,
   // named so a failure says what moved.

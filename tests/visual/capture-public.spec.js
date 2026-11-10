@@ -6,6 +6,7 @@
 import { expect, test } from "@playwright/test";
 import { INVITATION, links, origin } from "../browser/ui-conformance-fixtures.mjs";
 import { FRAMEWORK, SITES, fresh, kernelRunning, scenario } from "./capture-session.mjs";
+import { pick } from "../browser/survey-answers.mjs";
 
 // Independent scenarios: one that stops part way does not skip the others.
 test.describe.configure({ timeout: 45 * 60_000 });
@@ -182,7 +183,6 @@ scenario("assessment", async ({ page, capture }) => {
 // ---------------------------------------------------------------------------
 // The respondent survey (web/survey/) with the site's published demo surveys.
 
-const pick = (page, row) => page.locator(`[data-row="${row}"] input[data-event="answered"]`);
 const openSurvey = async (page, capture, link, site = SITES.checkout) =>
   capture.step(page, `open ${link} and wait for the kernel`, async () => { await fresh(page, `${site.base}${link}`); await kernelRunning(page); }, { operation: "engine start-up + survey template fetch" });
 
@@ -239,6 +239,16 @@ scenario("survey", async ({ page, capture }) => {
   await capture.attempt(page, { id: "survey-completion", title: "Survey: submitted, with the submission link (completion)" }, async () => {
     await capture.step(page, "click Submit", () => page.locator("#submit-answers").click(), { operation: "submit answers (engine)" });
     await expect(page.locator("#submitted-title")).toHaveText("Submitted");
+  });
+  // SIG-ECHELON-APP-002 (d): Copy link's outcome, shown under the button and
+  // announced by the page's one live region (#activity).
+  await capture.attempt(page, { id: "survey-link-copied", title: "Survey: the submission link copied, its outcome shown and announced by #activity", extents: ["full", "viewport"], anchor: "#copy-link" }, async () => {
+    await capture.step(page, "allow the clipboard, click Copy link", async () => {
+      await page.context().grantPermissions(["clipboard-read", "clipboard-write"]).catch(() => {});
+      await page.locator("#copy-link").click();
+      await expect(page.locator("#copy-notice")).toBeVisible();
+      await expect(page.locator("#activity")).toContainText(await page.locator("#copy-notice").innerText());
+    }, { operation: "copy to the clipboard" });
   });
 
   const variants = [

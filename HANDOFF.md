@@ -184,6 +184,19 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - The empty state: such an import "is not always listed here; when it is, only until the page is refreshed or reopened" (only NeedsReconciliation is counted; part-way, offline and blocked imports show on the persistence line).
 - The release record written after an import has its own unknown-outcome sentence (`AdminWork.releaseStopped`), never "whether the import was saved"; the import's own notice is emitted last so it is the one shown.
 
+### signal#137 reviewer's Low items, recorded (2026-11-10)
+
+- WI-0134: the draft's outcome copy is per view, not per draft (draft B shows draft A's "saved").
+- WI-0135: repeated warning codes are not deduplicated in the warning summary.
+- WI-0136: the multi-warning summary test derives its expectation from the same findings.
+- WI-0137: after finalize, "import the same links again" cannot work because imports are refused.
+
+### Respondent page (WI-0122, SIG-ECHELON-APP-002 (d), 2026-11-10)
+
+- `web/survey/index.html` in the foundry ledger direction (mockup `respondent.html`): a quiet bar with Signal's mark and the survey's name, the title with its version eyebrow, the page and answered counts from Signal's own projection (no time estimate, no section steps: the engine projects no per-section progress), the questions on one raised card with prompts in the display face, Back tertiary and the one forward action primary, the submitted panel with Copy link primary.
+- `#activity` is the page's one live region (polite, not atomic): the loading spinner and label, the answered count, review, timer, each question's selection guidance, a link notice and the copy outcome. What it announces is shown, not live, where it belongs. Refusals and faults stay alerts; the start-up screen's own status (before the engine) is unchanged.
+- #133's survey-loading assertions moved from `pending-states.spec.js` into `respondent.spec.js` with every assertion kept; the one change is where the status role sits (on `#activity`, which holds `#loading`, instead of on `#loading`).
+
 ### signal#137 review round 2 (WI-0133, 2026-11-10)
 
 - The long views' outcome copies show the persistence, reload and notice lines only for the view's own latest change (`ActivityView`: `draftOutcome` for save, publish, review, approve and delete; `assessmentsOutcome` for hide; `reportOutcome` for a report definition). A retire's line no longer sits in the draft's Outcome group; the shell's persistence line still says it.

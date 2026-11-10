@@ -4829,7 +4829,7 @@
         }
       },
       "completedAt": "2026-11-10T12:24:14.000Z",
-      "conclusion": "signal#137 visual-gate review done. The draft has a template header (title, lifecycle chip, one action group: Delete draft… danger, Submit for review and Approve as reviewed tertiary, Save draft, Publish primary) with the acknowledgement, delete confirmation and outcome copy under it; draft parts (Questions … Review) move focus to their headings without changing the route; fields fill their column up to 40rem; question rows show the question, section and kind tags and a tertiary Remove named for the question; panels two to a row from 50rem. Heights (capture, admin-draft-edited): desktop 10805 -> 7256 px, tablet 10836 -> 7950 px, phone 11900 -> 12118 px (follow-up WI-0131). Audit: no finding on any draft screen. CI green at 6bbf9166: 702/702 .NET, 195/195 Playwright; visual-evidence/baseline-6bbf916 (87 screens, 576 shots, none unreached). Follow-ups WI-0131, WI-0132."
+      "conclusion": "signal#137 visual-gate review done. The draft has a template header (title, lifecycle chip, one action group: Delete draft\u2026 danger, Submit for review and Approve as reviewed tertiary, Save draft, Publish primary) with the acknowledgement, delete confirmation and outcome copy under it; draft parts (Questions \u2026 Review) move focus to their headings without changing the route; fields fill their column up to 40rem; question rows show the question, section and kind tags and a tertiary Remove named for the question; panels two to a row from 50rem. Heights (capture, admin-draft-edited): desktop 10805 -> 7256 px, tablet 10836 -> 7950 px, phone 11900 -> 12118 px (follow-up WI-0131). Audit: no finding on any draft screen. CI green at 6bbf9166: 702/702 .NET, 195/195 Playwright; visual-evidence/baseline-6bbf916 (87 screens, 576 shots, none unreached). Follow-ups WI-0131, WI-0132."
     },
     {
       "id": "WI-0133",
@@ -4884,6 +4884,118 @@
       },
       "completedAt": "2026-11-10T12:50:42.000Z",
       "conclusion": "signal#137 review round 2 fixed: each long view's Outcome group shows the persistence, reload and notice lines only for its own latest change (a retire's line no longer sits in the draft's); the warnings are named beside their acknowledgement from the findings, with a way to Validation, which is now a draft part; outcome-beside-actions runs at 1280 and 390 px; the parts wrap on a phone; #136 follow-ups (release record and blocked-item wording) folded in. CI green at 8f5eedb2: 704/704 .NET, 197/197 Playwright; visual-evidence/baseline-8f5eedb (87 screens, 576 shots, none unreached)."
+    },
+    {
+      "id": "WI-0122",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "web/survey/index.html"
+        },
+        {
+          "type": "implementation",
+          "path": "web/styles.css"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/respondent.spec.js"
+        },
+        {
+          "type": "docs",
+          "path": "HANDOFF.md"
+        }
+      ],
+      "updatedAt": "2026-11-10T14:51:34.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T122650408Z-18e0c750"
+      ],
+      "latestCheckpoint": {
+        "id": "6e31869390f97885a5f2e2bb",
+        "recordedAt": "2026-11-10T14:51:29.000Z",
+        "executionId": "EXE-20261110T122650408Z-18e0c750",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-respondent",
+        "commit": "04c06fd34c2ed6f89006f43cf196838c314302e5",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-respondent",
+        "remoteCommit": "04c06fd34c2ed6f89006f43cf196838c314302e5",
+        "summary": "Respondent page done; CI green at 73749f54 (704 .NET, 203 Playwright); visual-evidence/baseline-73749f5 (88 screens, none unreached, no finding on any survey screen)",
+        "nextAction": "complete WI-0122, update the signal#139 PR body and report",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-10T14:51:34.000Z",
+      "conclusion": "SIG-ECHELON-APP-002 (d) respondent page done: Signal's bar with the survey's name, the title and version, the page and answered counts from the projection, the questions on one raised card, one primary action, #activity as the page's one live region (loading, progress, review, timer, selection guidance, link notice, copy outcome), refusals as alerts. Narrow screens: bar, card track, best-worst rows stacked on a phone, choice names with room; every compound kind checked at 320 px with 200% text. #133's survey-loading assertions moved to respondent.spec.js, every one kept (the status role asserted on #activity). CI green at 73749f54: 704/704 .NET, 203/203 Playwright; visual-evidence/baseline-73749f5 (88 screens, 588 shots, none unreached; no finding on any survey screen)."
+    },
+    {
+      "id": "WI-0138",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "web/survey/index.html"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Engine/GenericSessionView.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/SurveyWire.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "web/styles.css"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/respondent.spec.js"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/SurveyScaleFocusTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/FoundationsConformanceTests.fs"
+        }
+      ],
+      "updatedAt": "2026-11-10T16:14:19.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T151529594Z-cc193051"
+      ],
+      "latestCheckpoint": {
+        "id": "42b3299b5304f0612e331738",
+        "recordedAt": "2026-11-10T16:13:43.000Z",
+        "executionId": "EXE-20261110T151529594Z-cc193051",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-respondent",
+        "commit": "62aaf43e7f7a1a8f7f7d485de36cd7d300f54481",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-respondent",
+        "remoteCommit": "62aaf43e7f7a1a8f7f7d485de36cd7d300f54481",
+        "summary": "signal#139 review fixed: scale questions as Forma's ordinal scale (own radio group), no Signal override of the best-worst row or the theme panel (EXCEPTION test for the narrow best-worst row, WI-0139), a property-overlap conformance guard, focus and page announcement on a new page, guidance only on change, solid read-only link border. CI green at 45f2e377 (708 .NET, 207 Playwright); visual-evidence/baseline-45f2e37 (88 screens, none unreached)",
+        "nextAction": "complete WI-0138, update the signal#139 PR body, report, resume 2e",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-10T16:14:19.000Z",
+      "conclusion": "signal#139 review fixed: scale questions are Forma's ordinal scale (their own radio group); the best-worst row and theme panel are not overridden (the narrow best-worst collapse is an EXCEPTION test, Forma fix WI-0139); a conformance guard fails on a Signal class setting what the Forma or theme class on the same element sets; focus moves to the first heading on a new page with the page announced; guidance announced only on change; solid read-only link border. CI green at 45f2e377 (708 .NET, 207 Playwright); visual-evidence/baseline-45f2e37."
     },
     {
       "id": "WI-0123",
