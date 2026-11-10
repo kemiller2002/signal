@@ -661,6 +661,32 @@ scenario("admin-signed-in", async ({ page, capture }) => {
   await tab("admin-group-results", "Group results with one imported survey", "Results", () => expect(page.locator("#exploration")).toBeVisible());
   await tab("admin-group-scoring", "Group scoring with one imported survey", "Scoring", () => expect(page.getByRole("region", { name: "Scoring" })).toBeVisible());
   await tab("admin-group-report", "Group report", "Report", () => expect(page.locator("#report")).toBeVisible());
+  // SIG-VIS-PENDING-002: the group finalized and its results retired through
+  // the confirmation, the retirement held, then the status with focus.
+  const retireHold = { hold: null };
+  await capture.attempt(page, { ...signedIn, id: "admin-group-retiring", title: "Retire accepted results confirmed, retirement in flight (store write held): the confirmation stays, its button busy" }, async () => {
+    await capture.step(page, "rebuild the index, finalize the group, click Retire accepted results…, hold the branch update, confirm", async () => {
+      await area(page, "Storage");
+      await page.getByRole("button", { name: "Rebuild the contribution index", exact: true }).click();
+      await expect(notice(page)).toContainText("The contribution index was rebuilt", { timeout: STORE_MS });
+      await area(page, "Groups");
+      await page.locator("#group-list tbody tr a").first().click();
+      await page.locator("#lifecycle").getByRole("button", { name: "Finalize", exact: true }).click();
+      await expect(page.locator("#group-phase")).toHaveAttribute("data-phase", /^Finalized/, { timeout: STORE_MS });
+      const retention = page.locator("#group-retention");
+      await retention.getByRole("button", { name: "Retire accepted results…", exact: true }).click();
+      retireHold.hold = store.holdNext("PATCH", /\/git\/refs\/heads\/main$/);
+      await retention.getByRole("button", { name: "Retire accepted results", exact: true }).click();
+      await retireHold.hold.reached;
+      await expect(retention.getByRole("button", { name: "Retiring accepted results", exact: true })).toHaveAttribute("aria-busy", "true");
+    }, { operation: "retire accepted results (store write)" });
+  });
+  await capture.attempt(page, { ...signedIn, id: "admin-group-retired", title: "Accepted results retired: the confirmation closed, focus on the status" }, async () => {
+    await capture.step(page, "release the branch update", async () => {
+      retireHold.hold?.release();
+      await expect(page.locator("#retire-confirm")).toHaveCount(0, { timeout: STORE_MS });
+    }, { operation: "retire accepted results (store write)" });
+  });
   await visit("admin-overview", "Console home (Overview) with one group", "Overview", () => expect(page.getByRole("heading", { level: 2, name: "Overview" })).toBeVisible());
   await visit("admin-groups-list", "Groups list with one group", "Groups", () => expect(page.locator("#group-list tbody tr")).toHaveCount(1));
 
@@ -739,6 +765,33 @@ scenario("admin-signed-in", async ({ page, capture }) => {
   await capture.attempt(page, { ...signedIn, id: "admin-assessments-test-links", title: "Assessments: test links for the published version" }, async () => {
     await capture.step(page, "click Test links", () => page.locator("#template-versions li").getByRole("button", { name: "Test links" }).click(), { operation: "test links (engine)" });
     await expect(page.getByRole("region", { name: "Test links for Team pulse (PULSE 1)" })).toBeVisible();
+  });
+
+  // SIG-VIS-PENDING-002: a second draft deleted through its confirmation,
+  // the deletion held (busy confirm button, the way out disabled), then the
+  // status it hands focus to.
+  const deleteHold = { hold: null };
+  await capture.attempt(page, { ...signedIn, id: "admin-draft-deleting", title: "Delete draft confirmed, deletion in flight (store write held): the confirmation stays, its button busy" }, async () => {
+    await capture.step(page, "start and save draft TEMP, click Delete draft…, hold the branch update, click Delete draft", async () => {
+      await area(page, "Assessments");
+      const start = page.locator("#new-draft");
+      await fill(start, "Survey identifier", "TEMP");
+      await fill(start, "Title", "Temporary");
+      await start.getByRole("button", { name: "Start draft" }).click();
+      await draft.getByRole("button", { name: "Save draft", exact: true }).click();
+      await expect(notice(page)).toHaveText("The draft of TEMP was saved.", { timeout: STORE_MS });
+      await draft.getByRole("button", { name: "Delete draft…", exact: true }).click();
+      deleteHold.hold = store.holdNext("PATCH", /\/git\/refs\/heads\/main$/);
+      await draft.getByRole("button", { name: "Delete draft", exact: true }).click();
+      await deleteHold.hold.reached;
+      await expect(draft.getByRole("button", { name: "Deleting draft", exact: true })).toHaveAttribute("aria-busy", "true");
+    }, { operation: "delete draft (store write)" });
+  });
+  await capture.attempt(page, { ...signedIn, id: "admin-draft-deleted", title: "Draft deleted: the confirmation closed, focus on the status beside the notice" }, async () => {
+    await capture.step(page, "release the branch update", async () => {
+      deleteHold.hold?.release();
+      await expect(page.locator("#activity")).toBeFocused({ timeout: STORE_MS });
+    }, { operation: "delete draft (store write)" });
   });
 
   // A store that keeps failing mid-write: offline and read-only.
