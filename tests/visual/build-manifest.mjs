@@ -28,7 +28,7 @@ const manifest = buildManifest(fragments, {
   },
   browser: [...new Set(fragments.map((fragment) => fragment.browserVersion).filter(Boolean))],
   method: {
-    capture: "tests/visual/capture.spec.js, run with tests/visual/visual.config.js (the browser suite's servers and Chromium)",
+    capture: "tests/visual/capture-public.spec.js and capture-admin.spec.js (shared session: capture-session.mjs), run with tests/visual/visual.config.js (the browser suite's servers and Chromium)",
     viewports: "viewport size only (Desktop Chrome device: no mobile user agent or touch emulation); a reached state is resized and its colour scheme emulated in place, except the start-up states, which load once per viewport and scheme",
     colourScheme: "prefers-color-scheme emulated by Playwright (light, dark)",
     observation: "tests/visual/observe-init.js records the page's waiting indicators on every DOM change; each step lists the distinct states seen while it ran"

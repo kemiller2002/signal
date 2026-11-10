@@ -19,7 +19,7 @@ const chromium = suite.projects.find((project) => project.name === "chromium");
 
 export default defineConfig({
   testDir: ".",
-  testMatch: /capture\.spec\.js$/,
+  testMatch: /capture-(public|admin)\.spec\.js$/,
   fullyParallel: false,
   workers: 1,
   retries: 0,

@@ -2,7 +2,7 @@
 // half. Which viewports and colour schemes every screen is captured at, how
 // each screenshot is named, how the page's observed waiting states are
 // reduced to what a person saw, and how the per-scenario records become one
-// manifest. No IO here; capture.spec.js and build-manifest.mjs do the IO.
+// manifest. No IO here; capture-session.mjs, the capture-*.spec.js scenarios and build-manifest.mjs do the IO.
 //
 // This is evidence tooling, not a test: a screenshot proves what was on the
 // screen, never that the screen is correct. Nothing here asserts a design.
