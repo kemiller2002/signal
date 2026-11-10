@@ -168,6 +168,16 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - Evidence: CI on `cac77d0` green (692 .NET, 186 Playwright); `visual-evidence/baseline-cac77d0` (85 screens, 540 shots; 70 audited, no finding; 944 focus stops all visible).
 - Continuity gap: WI-0119 completed without a durable checkpoint. `work checkpoint` was refused because the executor's worktree had an untracked `node_modules` symlink (the `.gitignore` pattern `node_modules/` matches directories only), and the refusal was missed before `work complete`. All work was committed and pushed before completion (`3c2cb37`).
 
+### Administrator shell and dashboard (WI-0120, SIG-ECHELON-APP-002 (b), 2026-11-10)
+
+- `web/admin/index.html`: the Echelon application bar (mark, h1 "Administration" as its context, `#principal`, Copy link) replaces the record header; areas and group tabs are `.echelon-nav-tabs` (one row from 48rem, a list below); the dataset status is the view's title; the overview's unresolved work is a panel with attention only when `hasObligations` (new, `AdminView`), an explicit line when `noObligations`, and the two counts as figures; panels throughout the shell views; Create group and Sign in primary; the retire confirmation's button danger. `#activity`, the notice and #133's focus targets unchanged.
+- Review follow-ups of #134/#135: admin `code` in IBM Plex Mono; Manrope and Newsreader preloaded on every page; `.gitignore` `node_modules` (symlinks too); capture rests the pointer before each shot and audits the start-up screens; audit counts opacity, records ratio bands and the lowest ten, and checks contrast under forced colors.
+- WI-0119 record notes (no history rewritten): its completion event recorded `"paths":["node_modules"]` (the untracked symlink), and commit `3c2cb37` is titled "checkpoint and complete WI-0119" although no durable checkpoint exists (see the WI-0119 entry above).
+- CI caught two layout regressions on `2b0444f` (tabs wrapping at 768 px; nowrap tab names overflowing at 320 px), fixed in `e9eed4e`.
+- Admin tables keep whole words and scroll in their region on a phone (`d2ab83d`).
+- Evidence: CI on `d2ab83d` green (693 .NET, 191 Playwright); `visual-evidence/baseline-d2ab83d` (85 screens, 540 shots, all 85 audited, no finding; 959 focus stops, all visible).
+- The improved audit on `e9eed4e` found admin panels overflowing with 200% text at 320 px (fixed in `afee558`, now also asserted by the shell test), an unavailable report link at 2.42:1 from an old `opacity: 0.6` (secondary colour now), and light shots taken mid colour-transition after a dark one (the capture now waits for finite animations, `98532cc`).
+
 ## Modernization audit (WI-0100, 2026-11-08)
 
 - Reports and machine-readable coverage: `docs/modernization/` (start at
