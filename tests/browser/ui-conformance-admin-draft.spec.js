@@ -131,3 +131,41 @@ test("SIG-ECHELON-APP-002: the draft editor's parts sit on panels in order, with
   await draft.getByRole("button", { name: "Keep it", exact: true }).click();
   await expect(draft.locator("#delete-draft-confirm")).toHaveCount(0);
 });
+
+// The validation findings table never sets a word as a column of letters
+// (WI-0121; the capture audit's collapse check found "Severity", "Blocker"
+// and the finding codes broken at 390 px and at 320 px with 200% text). Its
+// cells keep whole words and the table scrolls in its labelled region; the
+// page itself does not scroll sideways. Same rule as tests/visual/audit.mjs:
+// three or more lines with fewer than four characters a line is collapsed.
+test("SIG-ECHELON-APP-002 (WI-0121): the draft's validation findings keep whole words at 834, 390 and 320 px with 200% text", async ({ page }) => {
+  await signInWithStore(page);
+  await startDraft(page);
+  const findings = page.locator("#draft-findings");
+  await expect(findings).toContainText("STRUCT-NO-SECTIONS");
+  const collapsed = () => findings.evaluate((table) =>
+    [...table.querySelectorAll("th, td")].flatMap((cell) => {
+      const text = cell.textContent.trim();
+      if (!text) return [];
+      const range = document.createRange();
+      range.selectNodeContents(cell);
+      const lines = new Set([...range.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top))).size;
+      const perLine = text.replace(/\s/g, "").length / Math.max(lines, 1);
+      return lines >= 3 && perLine < 4 ? [`${text} (${lines} lines)`] : [];
+    }));
+  const pageOverflow = () => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  for (const width of [834, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    expect(await collapsed(), `at ${width} px`).toEqual([]);
+    expect(await pageOverflow(), `at ${width} px`).toBeLessThanOrEqual(0);
+  }
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
+  expect(await collapsed(), "at 320 px with 200% text").toEqual([]);
+  expect(await pageOverflow(), "at 320 px with 200% text").toBeLessThanOrEqual(0);
+  // The table scrolls inside its region, which says what it holds and can take focus.
+  const region = page.locator(".admin-table-scroll").filter({ has: findings });
+  await expect(region).toHaveAttribute("role", "region");
+  await expect(region).toHaveAttribute("tabindex", "0");
+  await expect(region).toHaveAccessibleName("Validation");
+});
