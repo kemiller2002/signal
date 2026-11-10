@@ -47,25 +47,22 @@
 }
 .respondent-progress > p { margin: 0; }
 
-.respondent-card { padding: clamp(1.25rem, 4vw, 2rem); }
+/* The card is the theme's panel, a grid; Forma's stack aligns a grid's
+   tracks to the start, which sized its one column to its content and set the
+   compound kinds' column labels ("Fits best", "Calm") a few letters a line at
+   320 px with 200% text. The column fills the card instead. */
+.respondent-card {
+  padding: clamp(1.25rem, 4vw, 2rem);
+  grid-template-columns: minmax(0, 1fr);
+  justify-content: stretch;
+}
 /* On a phone, and at 320 px with 200% text, the card gives its padding to
    the answers, so "Not observed" keeps whole words (the respondent test's
    collapse check). */
 @media (max-width: 30rem) {
   .respondent-card { padding: 0.75rem; }
 }
-/* At 320 px (and 200% text there) the card lays flat and gives its whole
-   width to the answers, as before it was a card: the best-worst columns'
-   "Fits best" and "Fits least" keep whole words (the capture's audit). */
-@media (max-width: 22.5rem) {
-  .respondent-card {
-    padding-inline: 0;
-    border-inline: 0;
-    border-radius: 0;
-    box-shadow: none;
-    background: transparent;
-  }
-}
+
 
 /* Back stays at the start; the one forward action sits at the end. */
 .respondent-nav > :last-child { margin-inline-start: auto; }
