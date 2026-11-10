@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T04:53:11Z",
+  "updatedAt": "2026-11-10T05:13:56.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4324,6 +4324,17 @@
       ],
       "completedAt": "2026-11-10T04:53:11Z",
       "conclusion": "Resolved in WI-0117: the settled state is kept before a defect is re-raised; the next kernel message renders it."
+    },
+    {
+      "id": "WI-0118",
+      "type": "task",
+      "state": "active",
+      "semanticState": "active",
+      "evidence": [],
+      "updatedAt": "2026-11-10T05:13:56.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T051356837Z-45bb5227"
+      ]
     }
   ]
 }
