@@ -4022,21 +4022,20 @@
         "EXE-20261110T013250888Z-cbeacd8a"
       ],
       "latestCheckpoint": {
-        "id": "3372b65e7facaffba786338e",
-        "recordedAt": "2026-11-10T01:51:15.000Z",
+        "id": "cd9364392cc810fbfafa5045",
+        "recordedAt": "2026-11-10T02:13:56.000Z",
         "executionId": "EXE-20261110T013250888Z-cbeacd8a",
-        "stepId": "STEP-20261110T013256000Z-b8618999",
         "repository": "echelon-signal",
         "branch": "feat/per-action-pending-states",
-        "commit": "ab18d2e14213ff9e4475ece23ac83caf395e79d9",
+        "commit": "c1ff24fd7d4bf5a28434a26495b8f6e039bf24fd",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal.git"
         },
         "remoteBranch": "feat/per-action-pending-states",
-        "remoteCommit": "ab18d2e14213ff9e4475ece23ac83caf395e79d9",
-        "summary": "Per-action pending state (Operations), settlement, ActivityView bindings, chips, loading regions, app-tier answer ordering, F# and browser tests committed (ab18d2e)",
-        "nextAction": "Fix any CI compile/test failures, then visual capture on visual/pending-states and open the PR",
+        "remoteCommit": "c1ff24fd7d4bf5a28434a26495b8f6e039bf24fd",
+        "summary": "CI green at c1ff24f: Build (668/668 dotnet, 176/176 Playwright incl. 6 pending-states), Limen, Praxis, foundations; HANDOFF updated",
+        "nextAction": "Push visual/pending-states, read the busy/loading screenshots, open the PR",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
