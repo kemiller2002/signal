@@ -147,7 +147,10 @@ test("a change the store does not take is reported as not saved, never as saved"
   const persistence = page.locator("#persistence");
   await expect(persistence).toHaveAttribute("data-persistence", /^(failed|unknown)$/, { timeout: STORE_STEP_MS });
   await expect(persistence).not.toContainText("is saved");
-  await expect(draft.getByRole("button", { name: "Submit for review", exact: true })).toHaveAttribute("aria-busy", "false");
+  // Settled: nothing is busy any more. (The store went offline, so the dataset
+  // is read-only and the review controls are withdrawn.)
+  await expect(page.locator("#operation-pending")).toHaveCount(0);
+  await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
 });
 
 test("loading regions are status regions with Forma's spinner and a visible label", async ({ page }) => {
