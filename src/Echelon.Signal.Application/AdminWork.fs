@@ -82,7 +82,7 @@ let importOutcomeUnknown =
 /// unknown: it says that, and nothing about the import, whose own outcome
 /// is said by `importStopped` (signal#136 re-review).
 let releaseOutcomeUnknown =
-    "The provider did not say whether the record of which results may be shown was saved. Refresh to see what the store holds."
+    "The provider did not say whether the record of which results may be shown was saved. Refresh to see what the store holds. If newer results are still withheld, import the same links again."
 
 /// What the release record's failure says: an unknown outcome as above; any
 /// other failure as `groupFailure` says it.

@@ -184,9 +184,12 @@
            SIG-VIS-PENDING-002.2). Focus comes here after a change that removes
            its own control (a deleted draft, a hidden version). -->
       <div class="admin-outcome" role="group" aria-label="Outcome" tabindex="-1" data-focus-target="outcome">
-        <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
-        <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
-        <template data-if="hasNotice"><p class="admin-outcome__notice" data-text="notice"></p></template>
+        <!-- Only this view's own latest change (signal#137 review). -->
+        <template data-if="reportOutcome"><div class="admin-outcome__lines">
+          <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
+          <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
+          <template data-if="hasNotice"><p class="admin-outcome__notice" data-text="notice"></p></template>
+        </div></template>
       </div>
       </div>
     </section>
@@ -214,7 +217,7 @@
             <template data-if="canEditDrafts"><button type="button" class="forma-button" data-event="saveDraft" data-bind-disabled="saveDraftDisabled" data-bind-aria-busy="saveDraftBusy" data-bind-aria-disabled="saveDraftBusy" data-text="saveDraftLabel">Save draft</button></template>
             <template data-if="canPublishTemplates"><button type="button" class="forma-button" data-echelon-emphasis="primary" data-event="publishDraft" data-bind-disabled="publishDisabled" data-bind-aria-busy="publishBusy" data-bind-aria-disabled="publishBusy" data-text="publishLabel">Publish</button></template>
           </div>
-          <template data-if="draftHasWarnings"><label><input type="checkbox" data-event="acknowledgeWarnings" value="true" data-bind-checked="acknowledgeWarnings" /> I have read the warnings and accept them</label></template>
+          <template data-if="draftHasWarnings"><div class="draft-ack"><label><input type="checkbox" data-event="acknowledgeWarnings" value="true" data-bind-checked="acknowledgeWarnings" /> I have read the warnings and accept them</label> <span id="draft-warning-summary" data-text="draftWarningSummary"></span> <button type="button" class="forma-button draft-ack__jump" data-echelon-emphasis="tertiary" data-event="draftJumpValidation">See them under Validation</button></div></template>
           <template data-if="confirmingDeleteDraft">
           <div id="delete-draft-confirm" class="forma-stack admin-confirm" role="alertdialog" aria-labelledby="delete-draft-text">
           <p id="delete-draft-text">Delete this draft and its review? Unpublished changes are lost. Published versions are not affected.</p>
@@ -227,10 +230,13 @@
           stays the one announcer (signal#136 review round 2; #133's
           SIG-VIS-PENDING-002.2). It sits directly under the one action group. -->
           <div class="admin-outcome" role="group" aria-label="Outcome" tabindex="-1" data-focus-target="outcome">
-          <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
-          <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
           <template data-if="hasAuthoringProblem"><p class="admin-outcome__notice" data-text="authoringProblem"></p></template>
-          <template data-if="hasNotice"><p class="admin-outcome__notice" data-text="notice"></p></template>
+          <!-- Only this view's own latest change (signal#137 review). -->
+          <template data-if="draftOutcome"><div class="admin-outcome__lines">
+            <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
+            <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
+            <template data-if="hasNotice"><p class="admin-outcome__notice" data-text="notice"></p></template>
+          </div></template>
           </div>
           <nav class="draft-parts" aria-label="Draft parts">
             <ul class="echelon-nav-tabs draft-parts__list">
@@ -529,7 +535,7 @@
           </div>
         </section>
         <section class="echelon-panel draft-panel draft-panel--wide" aria-labelledby="draft-panel-validation">
-          <div class="echelon-panel__header"><h3 id="draft-panel-validation" class="echelon-heading">Validation</h3></div>
+          <div class="echelon-panel__header"><h3 id="draft-panel-validation" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-validation">Validation</h3></div>
           <div class="echelon-panel__body forma-stack">
         <div class="admin-table-scroll" role="region" tabindex="0" aria-labelledby="draft-panel-validation">
         <table id="draft-findings" class="admin-table">
@@ -552,10 +558,13 @@
       <!-- A deleted draft: its outcome, where the draft was. Focus comes here. -->
       <template data-if="hasNoDraft">
         <div class="admin-outcome" role="group" aria-label="Outcome" tabindex="-1" data-focus-target="outcome">
-          <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
-          <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
           <template data-if="hasAuthoringProblem"><p class="admin-outcome__notice" data-text="authoringProblem"></p></template>
-          <template data-if="hasNotice"><p class="admin-outcome__notice" data-text="notice"></p></template>
+          <!-- Only this view's own latest change (signal#137 review). -->
+          <template data-if="draftOutcome"><div class="admin-outcome__lines">
+            <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
+            <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
+            <template data-if="hasNotice"><p class="admin-outcome__notice" data-text="notice"></p></template>
+          </div></template>
         </div>
       </template>
     </section>
@@ -615,10 +624,13 @@
                SIG-VIS-PENDING-002.2). Focus comes here after a change that removes
                its own control (a deleted draft, a hidden version). -->
           <div class="admin-outcome" role="group" aria-label="Outcome" tabindex="-1" data-focus-target="outcome">
-            <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
-            <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
             <template data-if="hasAuthoringProblem"><p class="admin-outcome__notice" data-text="authoringProblem"></p></template>
-            <template data-if="hasNotice"><p class="admin-outcome__notice" data-text="notice"></p></template>
+            <!-- Only this view's own latest change (signal#137 review). -->
+            <template data-if="assessmentsOutcome"><div class="admin-outcome__lines">
+              <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
+              <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
+              <template data-if="hasNotice"><p class="admin-outcome__notice" data-text="notice"></p></template>
+            </div></template>
           </div>
           <ul id="template-drafts">
             <template data-each="draftLinks" data-key="key"><li><span class="echelon-chip" data-bind-data-echelon-tone="lifecycleTone" data-text="lifecycle">Draft</span> · <a data-bind-href="href" data-text="label"></a></li></template>

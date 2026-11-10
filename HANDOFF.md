@@ -184,6 +184,13 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - The empty state: such an import "is not always listed here; when it is, only until the page is refreshed or reopened" (only NeedsReconciliation is counted; part-way, offline and blocked imports show on the persistence line).
 - The release record written after an import has its own unknown-outcome sentence (`AdminWork.releaseStopped`), never "whether the import was saved"; the import's own notice is emitted last so it is the one shown.
 
+### signal#137 review round 2 (WI-0133, 2026-11-10)
+
+- The long views' outcome copies show the persistence, reload and notice lines only for the view's own latest change (`ActivityView`: `draftOutcome` for save, publish, review, approve and delete; `assessmentsOutcome` for hide; `reportOutcome` for a report definition). A retire's line no longer sits in the draft's Outcome group; the shell's persistence line still says it.
+- The warnings' acknowledgement names them from the findings ("1 warning: CODE", `draftWarningSummary`) and has "See them under Validation" (`draftJumpValidation`); Validation is in the draft parts.
+- `outcome-beside-actions.spec.js` runs at 1280 and 390 px; the draft parts wrap on a phone.
+- #136 follow-ups folded in: the release record's sentence adds "If newer results are still withheld, import the same links again."; the obligation adds that blocked items resume only once their template or encoding can be read.
+
 ### signal#137 visual-gate review (WI-0130, 2026-11-10)
 
 - Template header: title, lifecycle chip and the one action group (Delete draft… danger, Submit for review and Approve as reviewed tertiary, Save draft, Publish primary), the warnings' acknowledgement, the delete confirmation and the outcome copy directly under it; no action is left in a panel.

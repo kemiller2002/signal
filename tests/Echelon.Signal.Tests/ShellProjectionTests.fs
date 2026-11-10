@@ -109,7 +109,7 @@ let ``an import whose outcome stays unknown is unresolved work naming its group,
     Assert.Equal("ReconcileUnknownWrite", field "code")
     // What it says is true: no Refresh reconciles it; importing the same
     // links again is the one resolution (signal#136 re-review).
-    Assert.Equal("1 import(s) did not finish or could not be confirmed: import the same links again.", field "text")
+    Assert.Equal("1 import(s) did not finish or could not be confirmed: import the same links again (items blocked by a missing template or an unsupported encoding only once it can be read).", field "text")
     Assert.Equal(key, field "group")
     Assert.Equal(Routes.href (Routes.Imports(key, [])), field "href")
     Assert.Equal("Open the group's imported surveys", field "linkLabel")
@@ -126,8 +126,11 @@ let ``an import whose outcome stays unknown is unresolved work naming its group,
 [<Fact>]
 let ``an unfinished import is described by what resolves it, on the overview and in finalize's refusal`` () =
     let said = AdminState.describeObligation (AdminState.ReconcileUnknownWrite 2)
-    Assert.Equal("2 import(s) did not finish or could not be confirmed: import the same links again.", said)
+    Assert.Equal("2 import(s) did not finish or could not be confirmed: import the same links again (items blocked by a missing template or an unsupported encoding only once it can be read).", said)
     Assert.DoesNotContain("before anything is sent again", said)
+    // Re-importing resumes blocked items only once their template or encoding
+    // can be read (signal#136 follow-up).
+    Assert.Contains("missing template or an unsupported encoding only once it can be read", said)
     // Finalize's refusal (BLOCKED_BY_OBLIGATIONS) names stored part-way and
     // blocked batches with the same sentence.
     Assert.Equal<AdminState.Obligation list>(
@@ -138,7 +141,10 @@ let ``an unfinished import is described by what resolves it, on the overview and
 [<Fact>]
 let ``the release record's unknown outcome says nothing about the import's`` () =
     Assert.Equal(
-        "The provider did not say whether the record of which results may be shown was saved. Refresh to see what the store holds.",
+        "The provider did not say whether the record of which results may be shown was saved. Refresh to see what the store holds. If newer results are still withheld, import the same links again.",
         Echelon.Signal.Application.AdminWork.releaseOutcomeUnknown
     )
-    Assert.DoesNotContain("import", Echelon.Signal.Application.AdminWork.releaseOutcomeUnknown)
+    // Nothing about the import's own outcome; only how to show newer results
+    // if the record did not land (signal#136 follow-up).
+    Assert.DoesNotContain("whether the import was saved", Echelon.Signal.Application.AdminWork.releaseOutcomeUnknown)
+    Assert.EndsWith("If newer results are still withheld, import the same links again.", Echelon.Signal.Application.AdminWork.releaseOutcomeUnknown)
