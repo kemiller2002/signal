@@ -665,12 +665,14 @@ scenario("admin-signed-in", async ({ page, capture }) => {
   // the confirmation, the retirement held, then the status with focus.
   const retireHold = { hold: null };
   await capture.attempt(page, { ...signedIn, id: "admin-group-retiring", title: "Retire accepted results confirmed, retirement in flight (store write held): the confirmation stays, its button busy" }, async () => {
-    await capture.step(page, "rebuild the index, finalize the group, click Retire accepted results…, hold the branch update, confirm", async () => {
+    await capture.step(page, "rebuild the index, close and finalize the group, click Retire accepted results…, hold the branch update, confirm", async () => {
       await area(page, "Storage");
       await page.getByRole("button", { name: "Rebuild the contribution index", exact: true }).click();
       await expect(notice(page)).toContainText("The contribution index was rebuilt", { timeout: STORE_MS });
       await area(page, "Groups");
       await page.locator("#group-list tbody tr a").first().click();
+      await page.locator("#lifecycle").getByRole("button", { name: "Close incomplete", exact: true }).click();
+      await expect(page.locator("#group-phase")).toHaveAttribute("data-phase", "ClosedIncomplete", { timeout: STORE_MS });
       await page.locator("#lifecycle").getByRole("button", { name: "Finalize", exact: true }).click();
       await expect(page.locator("#group-phase")).toHaveAttribute("data-phase", /^Finalized/, { timeout: STORE_MS });
       const retention = page.locator("#group-retention");
