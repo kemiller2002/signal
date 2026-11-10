@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T10:40:18.000Z",
+  "updatedAt": "2026-11-10T10:57:09.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4641,13 +4641,52 @@
     {
       "id": "WI-0128",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-11-10T10:40:18.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/AdminView.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/AdminWork.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/ShellProjectionTests.fs"
+        },
+        {
+          "type": "docs",
+          "path": "HANDOFF.md"
+        }
+      ],
+      "updatedAt": "2026-11-10T10:57:09.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T104018990Z-45455c71"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "e6d8969223aa4478fa5b0607",
+        "recordedAt": "2026-11-10T10:57:05.000Z",
+        "executionId": "EXE-20261110T104018990Z-45455c71",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-admin-shell",
+        "commit": "ba5736c06a81ee34988f54fa99e7bce6e899b16c",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-admin-shell",
+        "remoteCommit": "ba5736c06a81ee34988f54fa99e7bce6e899b16c",
+        "summary": "signal#136 re-review wording fixed; CI green at 828d72c (700 .NET, 192 Playwright), visual-evidence/baseline-828d72c (87 screens, none unreached)",
+        "nextAction": "complete WI-0128, update the signal#136 PR body, merge forward into signal#137",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-10T10:57:09.000Z",
+      "conclusion": "signal#136 re-review wording fixed: the resolution says finalizing does not wait for an unknown-outcome import (an unknown chunk is never stored); the empty state says unfinished or unknown imports are listed only while the page is open, until it is refreshed or reopened; the import's unknown-outcome notice says to import the same links again; .admin-outcome is role=group named Outcome, still not live. CI green at 828d72c: 700/700 .NET, 192/192 Playwright; visual-evidence/baseline-828d72c (87 screens, 576 shots, none unreached)."
     }
   ]
 }
