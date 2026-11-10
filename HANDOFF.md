@@ -152,6 +152,14 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - `ReportBuilder.saved` also compares the template pin.
 - Test knobs added: `Browser.HoldWakes`/`HeldWakes`, `Page.HoldNextCommit(after)`, `Page.ReceiveThrows()`.
 
+## Echelon application layer adopted (WI-0118, SIG-ECHELON-APP-001, 2026-11-10)
+
+- echelon-current 1.39.0 through Conditor 0.10.25 (`upgrade --current`, isolated `--home`, plan `sha256:36cd12ca…`): Echelon theme 1.0.0 -> 1.1.0 only. The upgrade re-locked the theme descriptor; `conditor init` (run once) left the lock byte-identical. `conditor verify` passes.
+- Every page stylesheet (`web/styles.css`, `web/admin/admin.css`, `web/home/home.css`) imports Forma `all.css`, `echelon.css`, `echelon-fonts.css`, `echelon-app.css`, in that order. Fonts are relative to the fonts stylesheet and served by the site (`font-src 'self'`); `assemble-site.mjs` copies the theme's whole `dist/`. No markup changed.
+- Capture tooling on main: `tests/visual/capture-session.mjs` (shared session), `capture-public.spec.js`, `capture-admin.spec.js` (split under SDE-STRUCT-001's 500-line limit), and `audit.mjs`, which audits each captured screen (contrast light/dark, Tab focus, 200% text at 320 px, reduced-motion shimmer, forced-colors shot) into the manifest and README. Run it by pushing to `visual/**` or by dispatch.
+- Evidence: CI on `ddc929e` green (Build: 692/692 .NET, 185/185 Playwright); `visual-evidence/baseline-ddc929e` (85 screens, 540 shots, none unreached; 70 audited, no finding). Start-up screens (fresh contexts) are not audited; the Tab walk starts where focus last was.
+- Next: the staged PR 2 series (landing, admin shell, authoring, respondent, results), stacked on this branch.
+
 ## Modernization audit (WI-0100, 2026-11-08)
 
 - Reports and machine-readable coverage: `docs/modernization/` (start at
