@@ -62,8 +62,10 @@ test("while answering, #activity is the one live region and says what the page s
 });
 
 // The audit's rule (tests/visual/audit.mjs): three or more lines with fewer
-// than four characters a line is a word set as a column of letters.
-const collapsedWords = (page) => page.evaluate(() => {
+// than four characters a line is a word set as a column of letters. With
+// `within`, only text inside elements matching it; with `outside`, only text
+// that is not.
+const collapsedWords = (page, { within = null, outside = null } = {}) => page.evaluate(({ within, outside }) => {
   const found = [];
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
@@ -71,6 +73,8 @@ const collapsedWords = (page) => page.evaluate(() => {
     const parent = node.parentElement;
     if (!text || !parent || parent.closest("code, pre, svg, template, [hidden], .forma-sr-only, .forma-visually-hidden")) continue;
     if (parent.getClientRects().length === 0) continue;
+    if (within && !parent.closest(within)) continue;
+    if (outside && parent.closest(outside)) continue;
     const range = document.createRange();
     range.selectNodeContents(node);
     const lines = new Set([...range.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top))).size;
@@ -78,7 +82,7 @@ const collapsedWords = (page) => page.evaluate(() => {
     if (lines >= 3 && perLine < 4) found.push(`${text.slice(0, 30)} (${lines} lines)`);
   }
   return found;
-});
+}, { within, outside });
 const sideways = (page) => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 
 async function atWidth(page, width, rootFont, link, ready) {
@@ -109,21 +113,38 @@ test("the respondent page (the compound kinds) keeps whole words and does not sc
   await expect(page.locator("#submit-answers")).toBeVisible();
 });
 
-// EXCEPTION (owned by Forma, upstream; found by #139's review; the Forma fix is WI-0139): at
+// The best-worst choices' column names ("Fits best", "Fits least") in
+// Forma's narrow best-worst row: the EXCEPTION below is about them alone.
+const PAIR_CHOICE_NAMES = ".forma-best-worst__row .survey-pair-choice";
+
+// The compound kinds at 320 px with 200% text: apart from the best-worst
+// column names (the EXCEPTION below), every word stays whole and nothing
+// scrolls sideways.
+test("the respondent page (the compound kinds) keeps every other word whole and does not scroll sideways at 320 px with 200% text", async ({ page }) => {
+  await atWidth(page, 320, "200%", "compound", compoundReady);
+  expect(await collapsedWords(page, { outside: PAIR_CHOICE_NAMES })).toEqual([]);
+  expect(await sideways(page)).toBeLessThanOrEqual(0);
+  await expect(page.locator("#submit-answers")).toBeVisible();
+});
+
+// EXCEPTION (owned by Forma, upstream; found by #139's review; the Forma fix
+// is WI-0139; recorded in docs/verification/ui-conformance-2026-10-13.md): at
 // 320 px with 200% text, Forma 1.0.1's narrow best-worst row
 // (.forma-best-worst__row below 44rem: minmax(0, 1fr) then two
-// minmax(2.75rem, auto) columns) leaves the option's own column no width, so
-// "Calm", "Busy" and "Chaotic" are set a letter or two a line and the row
-// runs past the card. Signal does not restyle Forma (its own override of the
-// row's columns was removed), and no wrapper can give the row more than the
-// screen's width. test.fail keeps the defect visible; this test starts
-// failing, and must become an ordinary assertion, as soon as the pinned
-// Forma lays the row out at this width.
-test("EXCEPTION ULI-L05: the compound kinds' best-worst options collapse at 320 px with 200% text", async ({ page }) => {
-  test.fail(true, "Forma 1.0.1 .forma-best-worst__row gives the option no width at 320 px with 200% text (upstream defect)");
+// minmax(2.75rem, auto) columns) leaves its choice columns too narrow for
+// their names, so "Fits best" and "Fits least" are set a few letters a line.
+// Signal does not restyle Forma (its own override of the row's columns was
+// removed), and no wrapper can give the row more than the screen's width.
+// The expected failure covers those names only: the test above holds the rest
+// of the page. test.fail keeps the defect visible; this test starts failing,
+// and must become an ordinary assertion, as soon as the pinned Forma lays the
+// row out at this width.
+test("EXCEPTION ULI-L05: the best-worst column names collapse at 320 px with 200% text", async ({ page }) => {
+  test.fail(true, "Forma 1.0.1 .forma-best-worst__row sets its column names a few letters a line at 320 px with 200% text (upstream defect)");
   await atWidth(page, 320, "200%", "compound", compoundReady);
-  expect(await collapsedWords(page)).toEqual([]);
-  expect(await sideways(page)).toBeLessThanOrEqual(0);
+  // The names are there to be checked: the page shows best-worst rows.
+  await expect(page.locator(PAIR_CHOICE_NAMES).first()).toBeVisible();
+  expect(await collapsedWords(page, { within: PAIR_CHOICE_NAMES })).toEqual([]);
 });
 
 // MUST 1 of #139's review: a scale question is Forma's ordinal scale as
@@ -135,7 +156,8 @@ test("a scale question is Forma's segmented ordinal scale: numbered points, then
   await expect(page.getByRole("group", { name: /Major requirements are expected to be substantially defined/ })).toHaveCount(1);
   const points = scale.locator(".forma-ordinal-scale__options .forma-ordinal-option:visible");
   await expect(points).toHaveCount(5);
-  await expect(points.locator(".forma-ordinal-option__marker")).toHaveText(["1", "2", "3", "4", "5"]);
+  // Each marker is the value stored for its point (0 to 4), as the console shows it.
+  await expect(points.locator(".forma-ordinal-option__marker")).toHaveText(["0", "1", "2", "3", "4"]);
   await expect(points.locator(".forma-ordinal-option__marker").first()).toHaveAttribute("aria-hidden", "true");
   await expect(points.locator(".forma-ordinal-option__label")).toHaveText(["Never or almost never", "Rarely", "Sometimes", "Often", "Almost always"]);
   // Special answers as Forma provides them, inside the same group.
