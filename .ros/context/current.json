@@ -4636,7 +4636,27 @@
       "updatedAt": "2026-11-10T10:40:18.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T104018990Z-45455c71"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "e6d8969223aa4478fa5b0607",
+        "recordedAt": "2026-11-10T10:57:05.000Z",
+        "executionId": "EXE-20261110T104018990Z-45455c71",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-admin-shell",
+        "commit": "ba5736c06a81ee34988f54fa99e7bce6e899b16c",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-admin-shell",
+        "remoteCommit": "ba5736c06a81ee34988f54fa99e7bce6e899b16c",
+        "summary": "signal#136 re-review wording fixed; CI green at 828d72c (700 .NET, 192 Playwright), visual-evidence/baseline-828d72c (87 screens, none unreached)",
+        "nextAction": "complete WI-0128, update the signal#136 PR body, merge forward into signal#137",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
