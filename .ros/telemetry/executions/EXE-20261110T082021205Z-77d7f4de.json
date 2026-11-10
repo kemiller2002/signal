@@ -1394,6 +1394,23 @@
         "name": "step",
         "mechanism": "step-lifecycle"
       }
+    },
+    {
+      "type": "step.completed",
+      "occurredAt": "2026-11-10T10:34:30.000Z",
+      "stepId": "STEP-20261110T082023000Z-921baa13",
+      "actor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": {
+        "type": "ros-cli",
+        "name": "step",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {
@@ -1442,12 +1459,12 @@
       "name": "signal#136 review round 2 fixes",
       "description": null,
       "classification": [],
-      "status": "active",
+      "status": "completed",
       "plannedAt": "2026-11-10T08:20:23.000Z",
       "startedAt": "2026-11-10T08:20:23.000Z",
-      "completedAt": null,
-      "endedAt": null,
-      "updatedAt": "2026-11-10T08:20:23.000Z",
+      "completedAt": "2026-11-10T10:34:30.000Z",
+      "endedAt": "2026-11-10T10:34:30.000Z",
+      "updatedAt": "2026-11-10T10:34:30.000Z",
       "actor": {
         "kind": "agent",
         "id": "anthropic/claude-code",
@@ -1669,6 +1686,19 @@
           "from": null,
           "to": "active",
           "occurredAt": "2026-11-10T08:20:23.000Z",
+          "reason": null,
+          "actor": {
+            "kind": "agent",
+            "id": "anthropic/claude-code",
+            "provider": "anthropic",
+            "model": "unknown",
+            "runtime": "claude-code"
+          }
+        },
+        {
+          "from": "active",
+          "to": "completed",
+          "occurredAt": "2026-11-10T10:34:30.000Z",
           "reason": null,
           "actor": {
             "kind": "agent",
