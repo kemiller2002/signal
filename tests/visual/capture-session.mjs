@@ -126,10 +126,18 @@ export const session = (scenario) => {
   // Every (viewport, scheme) on the page as it stands: the viewport is
   // resized and the colour scheme emulated in place, so a state reached once
   // (a signed-in store, a submitted survey) is photographed six ways.
-  // The pointer left where the last step clicked would photograph a hover
-  // state (signal#135 review: a leftover hover fill on a button). Move it to
-  // the page's top-left corner, outside any control, before each shot.
-  const restPointer = (page) => page.mouse.move(1, 1).catch(() => {});
+  // Before each shot: the pointer rests at the page's top-left corner,
+  // outside any control, so no hover state is photographed; and every
+  // finite transition finishes, so a colour scheme switched for this shot is
+  // photographed settled, not half-way (signal#135 review: the landing's
+  // "See how it works" kept a fill in light shots taken after a dark one,
+  // mid background-colour transition).
+  const restPointer = async (page) => {
+    await page.mouse.move(1, 1).catch(() => {});
+    await page.evaluate(() => Promise.all(document.getAnimations()
+      .filter((animation) => animation.effect?.getTiming().iterations !== Infinity)
+      .map((animation) => animation.finished.catch(() => {})))).catch(() => {});
+  };
 
   // The accessibility audit (tests/visual/audit.mjs) on the page as it
   // stands; a failure of the audit itself is recorded, not thrown.
