@@ -1,0 +1,5639 @@
+{
+  "scenario": "survey",
+  "durationMs": 90973,
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (File not found)"
+  ],
+  "screens": [
+    {
+      "id": "survey-loading",
+      "title": "Survey page while the published survey file is being fetched (fetch held)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAAAFxy8v",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "hold published-templates/6beb132f5815c173.json, open web/survey/#r=AQFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAAAFxy8v",
+          "operation": "survey template fetch",
+          "durationMs": 603,
+          "observed": [
+            {
+              "atMs": 13,
+              "forMs": 32,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 45,
+              "forMs": 442,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 487,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 492,
+              "forMs": null,
+              "shown": [
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Loading the survey…"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-loading/desktop-light-full.png",
+          "shown": [
+            "spinner: \"Loading the survey…\"",
+            "status: \"Loading the survey…\"",
+            "status: \"Loading the survey…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-loading/desktop-dark-full.png",
+          "shown": [
+            "spinner: \"Loading the survey…\"",
+            "status: \"Loading the survey…\"",
+            "status: \"Loading the survey…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-loading/tablet-light-full.png",
+          "shown": [
+            "spinner: \"Loading the survey…\"",
+            "status: \"Loading the survey…\"",
+            "status: \"Loading the survey…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-loading/tablet-dark-full.png",
+          "shown": [
+            "spinner: \"Loading the survey…\"",
+            "status: \"Loading the survey…\"",
+            "status: \"Loading the survey…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-loading/mobile-light-full.png",
+          "shown": [
+            "spinner: \"Loading the survey…\"",
+            "status: \"Loading the survey…\"",
+            "status: \"Loading the survey…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-loading/mobile-dark-full.png",
+          "shown": [
+            "spinner: \"Loading the survey…\"",
+            "status: \"Loading the survey…\"",
+            "status: \"Loading the survey…\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 3,
+            "4.5to7": 1
+          },
+          "lowest": [
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Loading the survey…",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Loading the survey…",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Loading the survey…",
+              "ratio": 16.24,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 4
+          },
+          "lowest": [
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Loading the survey…",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Loading the survey…",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Loading the survey…",
+              "ratio": 15.26,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 0,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": []
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-loading/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 4,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-first-question",
+      "title": "Survey (single page): first question, nothing answered",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAAAFxy8v",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-loading",
+      "steps": [
+        {
+          "action": "release published-templates/6beb132f5815c173.json",
+          "operation": "survey template fetch",
+          "durationMs": 209,
+          "observed": [
+            {
+              "atMs": 2257,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-first-question/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-first-question/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-first-question/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-first-question/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-first-question/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-first-question/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 64,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 60,
+            "4.5to7": 4
+          },
+          "lowest": [
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 5.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Signal demo survey",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "h3.survey-section",
+              "text": "Plan Commitment",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "1.",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "strong",
+              "text": "Major requirements are expected to be substantially defined ",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "2.",
+              "ratio": 14.56,
+              "required": 3
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 64,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 64
+          },
+          "lowest": [
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Signal demo survey",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h3.survey-section",
+              "text": "Plan Commitment",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "1.",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "strong",
+              "text": "Major requirements are expected to be substantially defined ",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "2.",
+              "ratio": 13.68,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 6,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "0",
+            "0",
+            "0",
+            "on",
+            "on",
+            "Submit answers"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-first-question/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 64,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-submit-refused",
+      "title": "Survey (single page): submit refused, each unanswered question marked (validation)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAAAFxy8v",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-first-question",
+      "steps": [
+        {
+          "action": "click Submit with nothing answered",
+          "operation": "submit answers (engine)",
+          "durationMs": 401,
+          "observed": [
+            {
+              "atMs": 6533,
+              "forMs": 237,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 6770,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "alert: \"! Answer the questions before you submit.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-submit-refused/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! Answer the questions before you submit.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-submit-refused/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! Answer the questions before you submit.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-submit-refused/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! Answer the questions before you submit.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-submit-refused/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! Answer the questions before you submit.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-submit-refused/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! Answer the questions before you submit.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-submit-refused/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! Answer the questions before you submit.\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 71,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 62,
+            "4.5to7": 9
+          },
+          "lowest": [
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#q0-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "p#q1-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "p#q2-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "p#q3-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "p#q4-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 5.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Signal demo survey",
+              "ratio": 13.68,
+              "required": 3
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 71,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 71
+          },
+          "lowest": [
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p#q0-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p#q1-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p#q2-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p#q3-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p#q4-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 6,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "0",
+            "0",
+            "0",
+            "on",
+            "on",
+            "Submit answers"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-submit-refused/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 71,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-paged-first-question",
+      "title": "Survey in pages: page 1 of 3, first question",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAABKcuf-",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-submit-refused",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AQFU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAABKcuf- and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 401,
+          "observed": [
+            {
+              "atMs": 12,
+              "forMs": 221,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 232,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 237,
+              "forMs": 136,
+              "shown": [
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 374,
+              "forMs": null,
+              "shown": [
+                "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey in pages",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question/desktop-light-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question/desktop-dark-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question/tablet-light-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question/tablet-dark-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question/mobile-light-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question/mobile-dark-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 41,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 34,
+            "4.5to7": 7
+          },
+          "lowest": [
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-label",
+              "text": "Page 1 of 3",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-section",
+              "text": "· Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "button#page-next.forma-button",
+              "text": "Next",
+              "ratio": 5.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Signal demo survey in pages",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "h3.survey-section",
+              "text": "Plan Commitment",
+              "ratio": 14.56,
+              "required": 3
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 41,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 41
+          },
+          "lowest": [
+            {
+              "element": "button#page-next.forma-button",
+              "text": "Next",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-label",
+              "text": "Page 1 of 3",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-section",
+              "text": "· Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Signal demo survey in pages",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h3.survey-section",
+              "text": "Plan Commitment",
+              "ratio": 13.68,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 3,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "0",
+            "0",
+            "Next"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-paged-first-question/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 41,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-paged-validation",
+      "title": "Survey in pages: Next refused until the page's required questions are answered (mid-survey validation)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAABKcuf-",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-paged-first-question",
+      "steps": [
+        {
+          "action": "click Next with nothing answered",
+          "operation": "page navigation (engine)",
+          "durationMs": 250,
+          "observed": [
+            {
+              "atMs": 3743,
+              "forMs": 109,
+              "shown": [
+                "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 3852,
+              "forMs": null,
+              "shown": [
+                "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+                "alert: \"! 2 required questions on this page need an answer before you go on, because earlier answers cannot be changed after you leave.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey in pages",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-validation/desktop-light-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "alert: \"! 2 required questions on this page need an answer before you go on, because earlier answers cannot be changed after you leave.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-validation/desktop-dark-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "alert: \"! 2 required questions on this page need an answer before you go on, because earlier answers cannot be changed after you leave.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-validation/tablet-light-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "alert: \"! 2 required questions on this page need an answer before you go on, because earlier answers cannot be changed after you leave.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-validation/tablet-dark-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "alert: \"! 2 required questions on this page need an answer before you go on, because earlier answers cannot be changed after you leave.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-validation/mobile-light-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "alert: \"! 2 required questions on this page need an answer before you go on, because earlier answers cannot be changed after you leave.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-validation/mobile-dark-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "alert: \"! 2 required questions on this page need an answer before you go on, because earlier answers cannot be changed after you leave.\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 45,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 36,
+            "4.5to7": 9
+          },
+          "lowest": [
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-label",
+              "text": "Page 1 of 3",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-section",
+              "text": "· Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#q0-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "p#q1-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "button#page-next.forma-button",
+              "text": "Next",
+              "ratio": 5.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Signal demo survey in pages",
+              "ratio": 13.68,
+              "required": 3
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 45,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 45
+          },
+          "lowest": [
+            {
+              "element": "button#page-next.forma-button",
+              "text": "Next",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p#q0-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p#q1-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-label",
+              "text": "Page 1 of 3",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-section",
+              "text": "· Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 3,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "0",
+            "0",
+            "Next"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-paged-validation/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 45,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-paged-mid",
+      "title": "Survey in pages: page 2 of 3 (mid-survey)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAVFAADOdvJq&p=2",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-paged-validation",
+      "steps": [
+        {
+          "action": "answer rows 0-3 and 1-4, click Next",
+          "operation": "page navigation (engine)",
+          "durationMs": 578,
+          "observed": [
+            {
+              "atMs": 8459,
+              "forMs": 253,
+              "shown": [
+                "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+                "alert: \"! 2 required questions on this page need an answer before you go on, because earlier answers cannot be changed after you leave.\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 8712,
+              "forMs": 73,
+              "shown": [
+                "status: \"Page 1 of 3 Plan Commitment 1 of 5 answered\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 8784,
+              "forMs": 71,
+              "shown": [
+                "status: \"Page 1 of 3 Plan Commitment 2 of 5 answered\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 8856,
+              "forMs": null,
+              "shown": [
+                "status: \"Page 2 of 3 Plan Commitment 2 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey in pages",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-mid/desktop-light-full.png",
+          "shown": [
+            "status: \"Page 2 of 3 Plan Commitment 2 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-mid/desktop-dark-full.png",
+          "shown": [
+            "status: \"Page 2 of 3 Plan Commitment 2 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-mid/tablet-light-full.png",
+          "shown": [
+            "status: \"Page 2 of 3 Plan Commitment 2 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-mid/tablet-dark-full.png",
+          "shown": [
+            "status: \"Page 2 of 3 Plan Commitment 2 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-mid/mobile-light-full.png",
+          "shown": [
+            "status: \"Page 2 of 3 Plan Commitment 2 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-mid/mobile-dark-full.png",
+          "shown": [
+            "status: \"Page 2 of 3 Plan Commitment 2 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 28,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 20,
+            "4.5to7": 8
+          },
+          "lowest": [
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-label",
+              "text": "Page 2 of 3",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-section",
+              "text": "· Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "2 of 5 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#q2-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "button#page-next.forma-button",
+              "text": "Next",
+              "ratio": 5.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Signal demo survey in pages",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 28,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 28
+          },
+          "lowest": [
+            {
+              "element": "button#page-next.forma-button",
+              "text": "Next",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p#q2-error.survey-error",
+              "text": "This question needs an answer.",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-label",
+              "text": "Page 2 of 3",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-section",
+              "text": "· Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "2 of 5 answered",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Signal demo survey in pages",
+              "ratio": 13.68,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 3,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "0",
+            "Back",
+            "Next"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-paged-mid/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 28,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-paged-last",
+      "title": "Survey in pages: page 3 of 3, every question answered, ready to submit",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAVFeYClmUgc&p=3",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-paged-mid",
+      "steps": [
+        {
+          "action": "answer row 2-6, click Next, answer rows 3-1 and 4-2",
+          "operation": "page navigation (engine)",
+          "durationMs": 668,
+          "observed": [
+            {
+              "atMs": 14214,
+              "forMs": 310,
+              "shown": [
+                "status: \"Page 2 of 3 Plan Commitment 2 of 5 answered\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 14524,
+              "forMs": 60,
+              "shown": [
+                "status: \"Page 2 of 3 Plan Commitment 3 of 5 answered\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 14584,
+              "forMs": 56,
+              "shown": [
+                "status: \"Page 3 of 3 Working context 3 of 5 answered\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 14640,
+              "forMs": 51,
+              "shown": [
+                "status: \"Page 3 of 3 Working context 4 of 5 answered\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 14691,
+              "forMs": null,
+              "shown": [
+                "status: \"Page 3 of 3 Working context 5 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey in pages",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-last/desktop-light-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-last/desktop-dark-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-last/tablet-light-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-last/tablet-dark-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-last/mobile-light-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-last/mobile-dark-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 21,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 14,
+            "4.5to7": 7
+          },
+          "lowest": [
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-label",
+              "text": "Page 3 of 3",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-section",
+              "text": "· Working context",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Working context",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "5 of 5 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 5.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Signal demo survey in pages",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span",
+              "text": "Yes",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "A mix of both",
+              "ratio": 13.68,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 21,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 21
+          },
+          "lowest": [
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-label",
+              "text": "Page 3 of 3",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-section",
+              "text": "· Working context",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Working context",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "5 of 5 answered",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Signal demo survey in pages",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h3.survey-section",
+              "text": "Working context",
+              "ratio": 13.68,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 3,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "on",
+            "on",
+            "Submit answers"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-paged-last/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 21,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-completion",
+      "title": "Survey: submitted, with the submission link (completion)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQJU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAVFeYCp9OYY",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-paged-last",
+      "steps": [
+        {
+          "action": "click Submit",
+          "operation": "submit answers (engine)",
+          "durationMs": 551,
+          "observed": [
+            {
+              "atMs": 20648,
+              "forMs": null,
+              "shown": [
+                "status: \"Page 3 of 3 Working context 5 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey in pages",
+          "Submitted"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-completion/desktop-light-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-completion/desktop-dark-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-completion/tablet-light-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-completion/tablet-dark-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-completion/mobile-light-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-completion/mobile-dark-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 8,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 5,
+            "4.5to7": 3
+          },
+          "lowest": [
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#submission-disclosure",
+              "text": "Your answers are final. This link contains them; send it to ",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 5.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Signal demo survey in pages",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "h2#submitted-title.echelon-heading",
+              "text": "Submitted",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Signal demo survey in pages",
+              "ratio": 16.24,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-field__label",
+              "text": "Submission link",
+              "ratio": 16.24,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 8,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 8
+          },
+          "lowest": [
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p#submission-disclosure",
+              "text": "Your answers are final. This link contains them; send it to ",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Signal demo survey in pages",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h2#submitted-title.echelon-heading",
+              "text": "Submitted",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-field__label",
+              "text": "Submission link",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Signal demo survey in pages",
+              "ratio": 15.26,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 2,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "http://127.0.0.1:4321/web/survey/#r=AQJU",
+            "Copy link"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-completion/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 8,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-link-copied",
+      "title": "Survey: the submission link copied, its outcome shown and announced by #activity",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQJU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAVFeYCp9OYY",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-completion",
+      "steps": [
+        {
+          "action": "allow the clipboard, click Copy link",
+          "operation": "copy to the clipboard",
+          "durationMs": 565,
+          "observed": [
+            {
+              "atMs": 27396,
+              "forMs": null,
+              "shown": [
+                "status: \"Page 3 of 3 Working context 5 of 5 answered Submission link copied. Send it to the person who invited you.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey in pages",
+          "Submitted"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-link-copied/desktop-light-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered Submission link copied. Send it to the person who invited you.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/survey-link-copied/desktop-light-viewport.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered Submission link copied. Send it to the person who invited you.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-link-copied/desktop-dark-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered Submission link copied. Send it to the person who invited you.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/survey-link-copied/desktop-dark-viewport.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered Submission link copied. Send it to the person who invited you.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-link-copied/tablet-light-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered Submission link copied. Send it to the person who invited you.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/survey-link-copied/tablet-light-viewport.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered Submission link copied. Send it to the person who invited you.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-link-copied/tablet-dark-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered Submission link copied. Send it to the person who invited you.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/survey-link-copied/tablet-dark-viewport.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered Submission link copied. Send it to the person who invited you.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-link-copied/mobile-light-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered Submission link copied. Send it to the person who invited you.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "viewport",
+          "file": "screens/survey-link-copied/mobile-light-viewport.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered Submission link copied. Send it to the person who invited you.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-link-copied/mobile-dark-full.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered Submission link copied. Send it to the person who invited you.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "viewport",
+          "file": "screens/survey-link-copied/mobile-dark-viewport.png",
+          "shown": [
+            "status: \"Page 3 of 3 Working context 5 of 5 answered Submission link copied. Send it to the person who invited you.\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 9,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 5,
+            "4.5to7": 4
+          },
+          "lowest": [
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#submission-disclosure",
+              "text": "Your answers are final. This link contains them; send it to ",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "p#copy-notice",
+              "text": "Submission link copied. Send it to the person who invited yo",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 5.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Signal demo survey in pages",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "h2#submitted-title.echelon-heading",
+              "text": "Submitted",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Signal demo survey in pages",
+              "ratio": 16.24,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-field__label",
+              "text": "Submission link",
+              "ratio": 16.24,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 9,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 9
+          },
+          "lowest": [
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p#submission-disclosure",
+              "text": "Your answers are final. This link contains them; send it to ",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p#copy-notice",
+              "text": "Submission link copied. Send it to the person who invited yo",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Signal demo survey in pages",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h2#submitted-title.echelon-heading",
+              "text": "Submitted",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-field__label",
+              "text": "Submission link",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Signal demo survey in pages",
+              "ratio": 15.26,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 2,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "http://127.0.0.1:4321/web/survey/#r=AQJU",
+            "Copy link"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-link-copied/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 9,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-no-link",
+      "title": "Survey page opened without a link (error)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-link-copied",
+      "steps": [
+        {
+          "action": "open web/survey/ and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 246,
+          "observed": [
+            {
+              "atMs": 11,
+              "forMs": 214,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 225,
+              "forMs": 2,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\"",
+                "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\""
+              ]
+            },
+            {
+              "atMs": 226,
+              "forMs": null,
+              "shown": [
+                "status: \"\"",
+                "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Survey unavailable"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-no-link/desktop-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-no-link/desktop-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-no-link/tablet-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-no-link/tablet-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-no-link/mobile-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-no-link/mobile-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 5,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 5
+          },
+          "lowest": [
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Survey unavailable",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "div.forma-alert__icon",
+              "text": "!",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-refused-message",
+              "text": "This page needs a survey link. Open the link you were sent; ",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Survey unavailable",
+              "ratio": 16.24,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 5,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 5
+          },
+          "lowest": [
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Survey unavailable",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Survey unavailable",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "div.forma-alert__icon",
+              "text": "!",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-refused-message",
+              "text": "This page needs a survey link. Open the link you were sent; ",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 0,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": []
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-no-link/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 5,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-unpublished",
+      "title": "Survey link naming a version this site does not publish (error)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQF1B35lVGmhLQECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAACWrARu",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-no-link",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AQF1B35lVGmhLQECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAACWrARu and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 302,
+          "observed": [
+            {
+              "atMs": 12,
+              "forMs": 218,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 229,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 234,
+              "forMs": 6,
+              "shown": [
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 240,
+              "forMs": null,
+              "shown": [
+                "status: \"\"",
+                "alert: \"! The survey this link belongs to is not published on this site. Ask the person who sent you the link.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Survey unavailable"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-unpublished/desktop-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! The survey this link belongs to is not published on this site. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-unpublished/desktop-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! The survey this link belongs to is not published on this site. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-unpublished/tablet-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! The survey this link belongs to is not published on this site. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-unpublished/tablet-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! The survey this link belongs to is not published on this site. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-unpublished/mobile-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! The survey this link belongs to is not published on this site. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-unpublished/mobile-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! The survey this link belongs to is not published on this site. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 5,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 5
+          },
+          "lowest": [
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Survey unavailable",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "div.forma-alert__icon",
+              "text": "!",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-refused-message",
+              "text": "The survey this link belongs to is not published on this sit",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Survey unavailable",
+              "ratio": 16.24,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 5,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 5
+          },
+          "lowest": [
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Survey unavailable",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Survey unavailable",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "div.forma-alert__icon",
+              "text": "!",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-refused-message",
+              "text": "The survey this link belongs to is not published on this sit",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 0,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": []
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-unpublished/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 5,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-expired",
+      "title": "Expired invitation (error)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AgFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3Akd0AAUAAABE2yUI",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-unpublished",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AgFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3Akd0AAUAAABE2yUI and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 315,
+          "observed": [
+            {
+              "atMs": 11,
+              "forMs": 217,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 229,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 233,
+              "forMs": 64,
+              "shown": [
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 297,
+              "forMs": null,
+              "shown": [
+                "status: \"\"",
+                "alert: \"! This invitation has expired. It could be answered until 31 January 2020. Ask the person who sent it for a new link.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Survey unavailable"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-expired/desktop-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! This invitation has expired. It could be answered until 31 January 2020. Ask the person who sent it for a new link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-expired/desktop-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! This invitation has expired. It could be answered until 31 January 2020. Ask the person who sent it for a new link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-expired/tablet-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! This invitation has expired. It could be answered until 31 January 2020. Ask the person who sent it for a new link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-expired/tablet-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! This invitation has expired. It could be answered until 31 January 2020. Ask the person who sent it for a new link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-expired/mobile-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! This invitation has expired. It could be answered until 31 January 2020. Ask the person who sent it for a new link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-expired/mobile-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! This invitation has expired. It could be answered until 31 January 2020. Ask the person who sent it for a new link.\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 5,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 5
+          },
+          "lowest": [
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Survey unavailable",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "div.forma-alert__icon",
+              "text": "!",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-refused-message",
+              "text": "This invitation has expired. It could be answered until 31 J",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Survey unavailable",
+              "ratio": 16.24,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 5,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 5
+          },
+          "lowest": [
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Survey unavailable",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Survey unavailable",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "div.forma-alert__icon",
+              "text": "!",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-refused-message",
+              "text": "This invitation has expired. It could be answered until 31 J",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 0,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": []
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-expired/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 5,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-test-link",
+      "title": "Test link, marked as a test",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AYFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAADvp9jl",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-expired",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AYFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAADvp9jl and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 404,
+          "observed": [
+            {
+              "atMs": 11,
+              "forMs": 207,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 218,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 223,
+              "forMs": 151,
+              "shown": [
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 374,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-test-link/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-test-link/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-test-link/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-test-link/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-test-link/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-test-link/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 67,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 63,
+            "4.5to7": 4
+          },
+          "lowest": [
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 5.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Signal demo survey",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "h3.survey-section",
+              "text": "Plan Commitment",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "1.",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "strong",
+              "text": "Major requirements are expected to be substantially defined ",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "2.",
+              "ratio": 14.56,
+              "required": 3
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 67,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 67
+          },
+          "lowest": [
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Signal demo survey",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h3.survey-section",
+              "text": "Plan Commitment",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "1.",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "strong",
+              "text": "Major requirements are expected to be substantially defined ",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "2.",
+              "ratio": 13.68,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 6,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "0",
+            "0",
+            "0",
+            "on",
+            "on",
+            "Submit answers"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-test-link/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 67,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-timed",
+      "title": "Timed survey, with its deadline notice",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AgFLBvZxFRxPGgECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3BAHIUq8ABQAAAD65-is",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-test-link",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AQFLBvZxFRxPGgECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAAB1jcP5 and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 466,
+          "observed": [
+            {
+              "atMs": 11,
+              "forMs": 212,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 224,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 229,
+              "forMs": 197,
+              "shown": [
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 426,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered Answer by 10 November 2026, 18:33 UTC (10 minutes from when you first opened this survey; after that, answers can't be changed).\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-timed/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered Answer by 10 November 2026, 18:33 UTC (10 minutes from when you first opened this survey; after that, answers can't be changed).\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-timed/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered Answer by 10 November 2026, 18:33 UTC (10 minutes from when you first opened this survey; after that, answers can't be changed).\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-timed/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered Answer by 10 November 2026, 18:33 UTC (10 minutes from when you first opened this survey; after that, answers can't be changed).\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-timed/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered Answer by 10 November 2026, 18:33 UTC (10 minutes from when you first opened this survey; after that, answers can't be changed).\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-timed/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered Answer by 10 November 2026, 18:33 UTC (10 minutes from when you first opened this survey; after that, answers can't be changed).\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-timed/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered Answer by 10 November 2026, 18:33 UTC (10 minutes from when you first opened this survey; after that, answers can't be changed).\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 65,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 60,
+            "4.5to7": 5
+          },
+          "lowest": [
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#timer-notice",
+              "text": "Answer by 10 November 2026, 18:33 UTC (10 minutes from when ",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 5.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Signal demo survey",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "h3.survey-section",
+              "text": "Plan Commitment",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "1.",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "strong",
+              "text": "Major requirements are expected to be substantially defined ",
+              "ratio": 14.56,
+              "required": 3
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 65,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 65
+          },
+          "lowest": [
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#timer-notice",
+              "text": "Answer by 10 November 2026, 18:33 UTC (10 minutes from when ",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Signal demo survey",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h3.survey-section",
+              "text": "Plan Commitment",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "1.",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "strong",
+              "text": "Major requirements are expected to be substantially defined ",
+              "ratio": 13.68,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 6,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "0",
+            "0",
+            "0",
+            "on",
+            "on",
+            "Submit answers"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-timed/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 65,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-timed-expired",
+      "title": "Timed survey whose enforced timer ran out",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AgFLBvZxFRxPGgECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3BAGRRdwABQAAAOZ9nyk",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-timed",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AgFLBvZxFRxPGgECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3BAGRRdwABQAAAOZ9nyk and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 435,
+          "observed": [
+            {
+              "atMs": 11,
+              "forMs": 213,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 225,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 229,
+              "forMs": 169,
+              "shown": [
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 398,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered Time is up (1 January 2020, 09:10 UTC). Your answers can no longer be changed.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-timed-expired/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered Time is up (1 January 2020, 09:10 UTC). Your answers can no longer be changed.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-timed-expired/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered Time is up (1 January 2020, 09:10 UTC). Your answers can no longer be changed.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-timed-expired/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered Time is up (1 January 2020, 09:10 UTC). Your answers can no longer be changed.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-timed-expired/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered Time is up (1 January 2020, 09:10 UTC). Your answers can no longer be changed.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-timed-expired/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered Time is up (1 January 2020, 09:10 UTC). Your answers can no longer be changed.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-timed-expired/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered Time is up (1 January 2020, 09:10 UTC). Your answers can no longer be changed.\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 65,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 15,
+            "4.5to7": 50
+          },
+          "lowest": [
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#timer-notice",
+              "text": "Time is up (1 January 2020, 09:10 UTC). Your answers can no ",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__marker",
+              "text": "0",
+              "ratio": 4.67,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__label",
+              "text": "Never or almost never",
+              "ratio": 4.67,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__marker",
+              "text": "1",
+              "ratio": 4.67,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__label",
+              "text": "Rarely",
+              "ratio": 4.67,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__marker",
+              "text": "2",
+              "ratio": 4.67,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__label",
+              "text": "Sometimes",
+              "ratio": 4.67,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 65,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 20,
+            "4.5to7": 45
+          },
+          "lowest": [
+            {
+              "element": "span.forma-ordinal-option__marker",
+              "text": "0",
+              "ratio": 6.53,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__label",
+              "text": "Never or almost never",
+              "ratio": 6.53,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__marker",
+              "text": "1",
+              "ratio": 6.53,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__label",
+              "text": "Rarely",
+              "ratio": 6.53,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__marker",
+              "text": "2",
+              "ratio": 6.53,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__label",
+              "text": "Sometimes",
+              "ratio": 6.53,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__marker",
+              "text": "3",
+              "ratio": 6.53,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__label",
+              "text": "Often",
+              "ratio": 6.53,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__marker",
+              "text": "4",
+              "ratio": 6.53,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__label",
+              "text": "Almost always",
+              "ratio": 6.53,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 1,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Submit answers"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-timed-expired/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 65,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-localized",
+      "title": "Survey in the invitation's locale (fr-CA)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AgFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AwVmci1DQbl6AAUAAABuOjjB",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-timed-expired",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AgFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AwVmci1DQbl6AAUAAABuOjjB and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 424,
+          "observed": [
+            {
+              "atMs": 11,
+              "forMs": 220,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 231,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 235,
+              "forMs": 154,
+              "shown": [
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 390,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-localized/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-localized/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-localized/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-localized/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-localized/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-localized/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 64,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 60,
+            "4.5to7": 4
+          },
+          "lowest": [
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 5.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Signal demo survey",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "h3.survey-section",
+              "text": "Plan Commitment",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "1.",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "strong",
+              "text": "Major requirements are expected to be substantially defined ",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "2.",
+              "ratio": 14.56,
+              "required": 3
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 64,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 64
+          },
+          "lowest": [
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Signal demo survey",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h3.survey-section",
+              "text": "Plan Commitment",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "1.",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "strong",
+              "text": "Major requirements are expected to be substantially defined ",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "2.",
+              "ratio": 13.68,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 6,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "0",
+            "0",
+            "0",
+            "on",
+            "on",
+            "Submit answers"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-localized/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 64,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-kinds",
+      "title": "Survey with other answer kinds (numbers, yes/no, checkboxes)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQHXTeESIljFhQECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAYAAADv1Rjl",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-localized",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AQHXTeESIljFhQECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAYAAADv1Rjl and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 418,
+          "observed": [
+            {
+              "atMs": 12,
+              "forMs": 206,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 217,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 222,
+              "forMs": 161,
+              "shown": [
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 383,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Mixed kinds",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-kinds/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-kinds/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-kinds/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-kinds/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-kinds/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-kinds/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 56,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 52,
+            "4.5to7": 4
+          },
+          "lowest": [
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 5.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Mixed kinds",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "h3.survey-section",
+              "text": "Everything",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "1.",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "strong",
+              "text": "We finish what we start.",
+              "ratio": 14.56,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "2.",
+              "ratio": 14.56,
+              "required": 3
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 56,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 56
+          },
+          "lowest": [
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Mixed kinds",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h3.survey-section",
+              "text": "Everything",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "1.",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "strong",
+              "text": "We finish what we start.",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.survey-number",
+              "text": "2.",
+              "ratio": 13.68,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 9,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "0",
+            "on",
+            "on",
+            "on",
+            "on",
+            "on",
+            "on",
+            "0",
+            "Submit answers"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-kinds/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 56,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-compound",
+      "title": "Survey with rankings, allocations, best-worst, ranges and option trees",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQHEy7c7LPyW_AECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAYAAAAAg33I2g",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-kinds",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AQHEy7c7LPyW_AECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAYAAAAAg33I2g and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 403,
+          "observed": [
+            {
+              "atMs": 12,
+              "forMs": 207,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 218,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 223,
+              "forMs": 141,
+              "shown": [
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 364,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 6 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Compound kinds",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-compound/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 6 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-compound/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 6 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-compound/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 6 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-compound/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 6 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-compound/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 6 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-compound/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 6 answered\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 51,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 43,
+            "4.5to7": 8
+          },
+          "lowest": [
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 6 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-field__description",
+              "text": "Number your choices from 1 (first) to 3.",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-field__description",
+              "text": "Share 10 points between the options.",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-field__description",
+              "text": "Choose the one that fits best and the one that fits least.",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-field__description",
+              "text": "Give a range from 0 to 10.",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 5.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Compound kinds",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 51,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 51
+          },
+          "lowest": [
+            {
+              "element": "button#submit-answers.forma-button",
+              "text": "Submit answers",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-field__description",
+              "text": "Number your choices from 1 (first) to 3.",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-field__description",
+              "text": "Share 10 points between the options.",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-field__description",
+              "text": "Choose the one that fits best and the one that fits least.",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-field__description",
+              "text": "Give a range from 0 to 10.",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 6 answered",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Compound kinds",
+              "ratio": 13.68,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 19,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "input",
+            "input",
+            "input",
+            "on",
+            "input",
+            "input",
+            "input",
+            "on",
+            "on",
+            "on",
+            "on",
+            "input",
+            "input",
+            "on",
+            "on",
+            "on",
+            "on",
+            "on",
+            "Submit answers"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [
+          {
+            "element": "label",
+            "text": "Fits best",
+            "lines": 3,
+            "words": 2,
+            "boxWidth": 97,
+            "width": "320@200%"
+          },
+          {
+            "element": "label",
+            "text": "Fits least",
+            "lines": 3,
+            "words": 2,
+            "boxWidth": 97,
+            "width": "320@200%"
+          },
+          {
+            "element": "label",
+            "text": "Fits best",
+            "lines": 3,
+            "words": 2,
+            "boxWidth": 97,
+            "width": "320@200%"
+          },
+          {
+            "element": "label",
+            "text": "Fits least",
+            "lines": 3,
+            "words": 2,
+            "boxWidth": 97,
+            "width": "320@200%"
+          },
+          {
+            "element": "label",
+            "text": "Fits best",
+            "lines": 3,
+            "words": 2,
+            "boxWidth": 97,
+            "width": "320@200%"
+          },
+          {
+            "element": "label",
+            "text": "Fits least",
+            "lines": 3,
+            "words": 2,
+            "boxWidth": 97,
+            "width": "320@200%"
+          }
+        ],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-compound/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 51,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-altered-file",
+      "title": "Survey whose published file was altered: refused (error)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAAAFxy8v",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-compound",
+      "steps": [
+        {
+          "action": "answer published-templates/6beb132f5815c173.json with one altered word",
+          "operation": null,
+          "durationMs": 82,
+          "observed": []
+        },
+        {
+          "action": "open web/survey/#r=AQFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAAAFxy8v and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 396,
+          "observed": [
+            {
+              "atMs": 10,
+              "forMs": 26,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 36,
+              "forMs": 262,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 298,
+              "forMs": 3,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 301,
+              "forMs": 73,
+              "shown": [
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 374,
+              "forMs": null,
+              "shown": [
+                "status: \"\"",
+                "alert: \"! The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Survey unavailable"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-altered-file/desktop-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-altered-file/desktop-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-altered-file/tablet-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-altered-file/tablet-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-altered-file/mobile-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-altered-file/mobile-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"! The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 5,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 5
+          },
+          "lowest": [
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Survey unavailable",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "div.forma-alert__icon",
+              "text": "!",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-refused-message",
+              "text": "The survey file on this site does not match this link (it wa",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Survey unavailable",
+              "ratio": 16.24,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 5,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 5
+          },
+          "lowest": [
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Survey unavailable",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Survey unavailable",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "div.forma-alert__icon",
+              "text": "!",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-refused-message",
+              "text": "The survey file on this site does not match this link (it wa",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 0,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": []
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-altered-file/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 5,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "survey-paged-first-question-pages-site",
+      "title": "Survey in pages, page 1, on the assembled Pages site",
+      "scenario": "survey",
+      "site": "pages",
+      "url": "http://127.0.0.1:4322/signal/web/survey/#r=AQFU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAABKcuf-",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-altered-file",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AQFU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAABKcuf- and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 473,
+          "observed": [
+            {
+              "atMs": 9,
+              "forMs": 24,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 33,
+              "forMs": 281,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 314,
+              "forMs": 7,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 321,
+              "forMs": 126,
+              "shown": [
+                "spinner: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 447,
+              "forMs": null,
+              "shown": [
+                "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey in pages",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question-pages-site/desktop-light-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question-pages-site/desktop-dark-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question-pages-site/tablet-light-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question-pages-site/tablet-dark-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question-pages-site/mobile-light-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question-pages-site/mobile-dark-full.png",
+          "shown": [
+            "status: \"Page 1 of 3 Plan Commitment 0 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 42,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 8,
+            "7plus": 34
+          },
+          "lowest": [
+            {
+              "element": "p.pages-demo-banner",
+              "text": "Demo — data stays in this browser; GitHub sign-in not config",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-label",
+              "text": "Page 1 of 3",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-section",
+              "text": "· Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "button#page-next.forma-button",
+              "text": "Next",
+              "ratio": 5.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1#survey-title.echelon-heading",
+              "text": "Signal demo survey in pages",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 42,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 42
+          },
+          "lowest": [
+            {
+              "element": "button#page-next.forma-button",
+              "text": "Next",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "p.pages-demo-banner",
+              "text": "Demo — data stays in this browser; GitHub sign-in not config",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#survey-version.echelon-eyebrow",
+              "text": "Version 1",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-label",
+              "text": "Page 1 of 3",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span#page-section",
+              "text": "· Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#progress",
+              "text": "0 of 5 answered",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.respondent-bar__survey",
+              "text": "Signal demo survey in pages",
+              "ratio": 13.68,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 3,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "0",
+            "0",
+            "Next"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/survey-paged-first-question-pages-site/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 42,
+            "failures": []
+          }
+        }
+      }
+    }
+  ],
+  "unreached": [],
+  "browserVersion": "153.0.8010.12"
+}
