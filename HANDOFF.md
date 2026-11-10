@@ -166,6 +166,7 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - Composition only in `web/home/home.css`. New test in `experience.spec.js` (one primary action; no form, field, figure or chip).
 - The capture audit's Tab walk now starts at the top of the page.
 - Evidence: CI on `cac77d0` green (692 .NET, 186 Playwright); `visual-evidence/baseline-cac77d0` (85 screens, 540 shots; 70 audited, no finding; 944 focus stops all visible).
+- Continuity gap: WI-0119 completed without a durable checkpoint. `work checkpoint` was refused because the executor's worktree had an untracked `node_modules` symlink (the `.gitignore` pattern `node_modules/` matches directories only), and the refusal was missed before `work complete`. All work was committed and pushed before completion (`3c2cb37`).
 
 ## Modernization audit (WI-0100, 2026-11-08)
 
