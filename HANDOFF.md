@@ -1,5 +1,14 @@
 # Echelon Signal handoff
 
+## Visual refinement review (SIG-VIS-REFINE-20261110, 2026-11-10)
+
+- Review package: `docs/design-review/2026-11-10/review.html`; audit and open visual gates in its `README.md`; functional evidence in `FUNCTIONAL.md`. Manifest inventories screenshots and source checksums, including fresh group comparisons and a PDF.
+- Verified branding authority: `kemiller2002/echelon-design-system` at `a03c5ac`; released Echelon theme 1.1.0 / Forma 1.0.1. The existing owner-approved foundry ledger direction and Signal marks are reused. No shared package or domain code changed.
+- This branch improves assessment/respondent identity, question grouping, primary actions, assessment and group score figures, methodology/lineage surfaces and narrow group/report tables. It does not merge the existing admin (#136) or authoring (#137) branches; their traceable captures are included as clearly labelled fixture evidence. Folio keeps direct table children and screen-only scroll sizing does not alter print sizing.
+- Live baseline: landing, assessment, synthetic respondent link and every discovered admin navigation route. The deployed app has no configured sign-in or data store; populated authenticated screens cannot be verified live. Existing fixture captures must not be called live authenticated evidence.
+- Build and 692 .NET tests pass, as do strict Limen verification and Praxis validation. A clean 186-test Chromium run passed; the subsequent group-only markup change passed its new before/after review test, two affected existing workflows and 22 foundation/binding tests. The separate functional report records chronology and failures that were corrected.
+- Next: independent review of the concrete comparisons, then integrate the existing admin/authoring stack and verify the configured deployment. Whole-application visual acceptance remains open; functional checks do not close it.
+
 ## Objective
 
 Build Signal toward the charter's first bounded outcome (template, live URL,

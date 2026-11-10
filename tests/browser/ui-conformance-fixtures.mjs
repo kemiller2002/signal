@@ -51,7 +51,16 @@ export const question = (page, prompt) => page.getByRole("group", { name: prompt
 export async function answerAll(page, choice) {
   const groups = page.locator("fieldset.forma-ordinal-scale");
   const count = await groups.count();
-  for (let i = 0; i < count; i++) await groups.nth(i).getByRole("radio", { name: choice, exact: true }).check();
+  for (let i = 0; i < count; i++) {
+    const radio = groups.nth(i).getByRole("radio", { name: choice, exact: true });
+    // Use the native keyboard path: Chromium 156 can hit the enclosing
+    // clickable label instead of Forma's transparent 1px input
+    // at fractional layout positions. These tests measure layout, not that
+    // invisible pixel; pointer selection remains covered by assessment.spec.
+    await radio.focus();
+    await radio.press("Space");
+    await expect(radio).toBeChecked();
+  }
   await expect(page.locator("#progress")).toHaveText(`${count} of ${count} answered`);
 }
 

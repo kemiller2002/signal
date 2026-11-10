@@ -71,7 +71,9 @@ test("answering every question shows scored results, and missing data is not zer
     ["Timebox Discipline", "Not scored", "2 of 5 numeric", "Needs at least 3 numeric answers; missing data is not counted as zero."]
   ]);
   await expect(page.locator("#scored-count")).toHaveText("2 of 3 dimensions scored");
-  await expect(page.locator('#results-body tr[data-dimension="D03"] .forma-status-lozenge')).toHaveAttribute("data-state", "unscored");
+  // The score is now a theme figure; its authoritative unscored state and
+  // literal "Not scored" value remain the same.
+  await expect(page.locator('#results-body tr[data-dimension="D03"] [data-state]')).toHaveAttribute("data-state", "unscored");
 
   // Editing keeps the answers; starting over clears them.
   await page.click("#edit-answers");

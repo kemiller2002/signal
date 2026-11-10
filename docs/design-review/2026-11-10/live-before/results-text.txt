@@ -1,0 +1,20 @@
+Demo — data stays in this browser; GitHub sign-in not configured
+
+SIGNAL
+Software Delivery Reality Assessment
+
+SDRA 0.1.0-draft
+
+Results
+3 of 3 dimensions scored
+Dimension	Score (0-100)	Coverage	Note
+Plan Commitment	50.0	5 of 5 numeric	
+Change Responsiveness	50.0	5 of 5 numeric	
+Timebox Discipline	50.0	5 of 5 numeric	
+
+Each dimension score is the mean of its numeric answers (0 = never or almost never, 4 = almost always) divided by 4 and multiplied by 100, rounded to one decimal place. A dimension needs at least 3 numeric answers to be scored. Higher means more of the named trait; it is not inherently better.
+
+Edit answers
+Start over
+
+Print this page for the result report.

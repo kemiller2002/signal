@@ -38,6 +38,21 @@
    printed while it is shown (Print, or Save as PDF). */
 .report-surface { display: block; margin-block-start: 1.5rem; }
 .report-controls a[data-available="false"] { opacity: 0.6; }
+
+/* Group results/scoring composition. Meaning, values, availability and
+   lineage remain engine-owned; surfaces and figures use the released theme. */
+.admin-result-panel { padding: var(--forma-space-5); min-inline-size: 0; }
+.admin-result-panel > figure { margin-inline: 0; min-inline-size: 0; }
+.admin-result-panel code { overflow-wrap: anywhere; }
+/* Keep comparison columns and words intact in a labelled native scroll
+   region. Screen-only: Folio retains print sizing and fragmentation, and
+   its table remains the direct child of ef-print-table. */
+@media screen {
+  .admin-result-scroll { max-inline-size: 100%; min-inline-size: 0; overflow-x: auto; }
+  .admin-result-table { min-inline-size: 36rem; }
+  .admin-result-table :is(th, td) { overflow-wrap: normal; word-break: normal; }
+  .admin-result-table th { white-space: nowrap; }
+}
 @media print {
   .admin:has(> .report-view .report-surface) > :not(.report-view) { display: none !important; }
 }

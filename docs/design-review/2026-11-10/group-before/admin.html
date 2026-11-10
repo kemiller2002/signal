@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="en" data-forma-brand="echelon">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Signal · Administration</title>
+<link rel="icon" href="../brand/signal-mark.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="./admin.css" />
+</head>
+<body>
+<!-- Pre-runtime start-up (EDS-UX-WAIT-001, Forma .forma-startup): painted from
+     this HTML before the WebAssembly engine loads. web-kernel/limen-wasm.js
+     hides it once the kernel runs, or marks a failed or timed-out start. -->
+<div class="forma-startup" id="app-startup" data-forma-state="starting">
+  <span class="forma-app-identity" data-forma-size="64">
+    <span class="forma-app-identity__mark"><svg class="forma-app-identity__variant" data-forma-scheme="light" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="12" fill="#202421"/><path d="M10 22V15L20 10V22Z" fill="#c9a07f"/><path d="M10 40H20L25 28L33 50L39 34L42 40H54" fill="none" stroke="#f2efe7" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></svg><svg class="forma-app-identity__variant" data-forma-scheme="dark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="12" fill="#f2efe7"/><path d="M10 22V15L20 10V22Z" fill="#905831"/><path d="M10 40H20L25 28L33 50L39 34L42 40H54" fill="none" stroke="#202421" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/></svg></span>
+    <span class="forma-app-identity__name">Signal</span>
+  </span>
+  <div class="forma-startup__status" role="status">
+    <p class="forma-spinner">
+      <span class="forma-spinner__indicator" aria-hidden="true"></span>
+      <span class="forma-spinner__label">Starting Signal: loading the administrator console</span>
+    </p>
+    <p class="forma-startup__slow">Still starting. On a slow connection the engine can take up to a minute to download.</p>
+  </div>
+  <div class="forma-startup__problem" role="alert">
+    <p class="forma-startup__problem-title" id="app-startup-problem-title">Signal could not start.</p>
+    <p id="app-startup-problem-detail">The administrator console did not start. Reload this page to try again.</p>
+  </div>
+  <p class="forma-startup__noscript">Signal needs JavaScript and WebAssembly. Turn them on in your browser settings, then reload this page.</p>
+</div>
+<!-- Structure and presentation only (ADM-035). Every value is projected by
+     the F# engine (src/Echelon.Signal.Admin/AdminView.fs) through Limen's
+     data-* bindings, every control sends a named event back to it, and every
+     action is enabled only when the engine's capabilities allow it. No
+     personal data appears: administrators are GitHub account numbers, groups
+     and contributions opaque ids and hashes (ADM-001). -->
+<main class="admin forma-stack">
+  <header class="forma-record-header page-header">
+    <div class="forma-record-header__main">
+      <div class="forma-record-header__title">
+        <div><span class="forma-record-header__type">Signal</span><h1>Administration</h1></div>
+      </div>
+      <p id="principal" data-text="principal"></p>
+    </div>
+    <!-- Every view's address is its state (SIG-LINK-001); this copies it. -->
+    <div class="forma-record-header__actions">
+      <button type="button" class="forma-button" id="copy-link" data-event="copyLink">Copy link</button>
+    </div>
+  </header>
+
+  <!-- Relative links from the engine's route codec (SIG-LINK-002). -->
+  <nav class="forma-navigation-shell" id="areas" aria-label="Administration">
+    <ul class="areas">
+      <template data-each="areas" data-key="href">
+        <li><a data-bind-href="href" data-bind-aria-current="current" data-text="label"></a></li>
+      </template>
+    </ul>
+  </nav>
+
+  <!-- A link that names nothing has its own page (SIG-LINK-007). -->
+  <template data-if="hasProblem">
+    <section id="route-problem" class="forma-stack" role="alert" aria-labelledby="route-problem-title">
+      <h2 id="route-problem-title" data-text="problemTitle"></h2>
+      <p id="route-problem-message" data-text="problemMessage"></p>
+      <p><a id="route-problem-home" data-bind-href="homeHref">Go to the overview</a></p>
+    </section>
+  </template>
+
+  <!-- Assessments: public, no sign-in or dataset needed (DF-SIGNAL-2026-0003 §8). -->
+  <template data-if="viewReports">
+    <section id="reports" class="forma-stack" aria-labelledby="reports-title">
+      <h2 id="reports-title">Report definitions</h2>
+      <p class="forma-field__description">A report definition chooses what a report shows and how; it never changes how results are scored. A version used for a formal snapshot never changes: editing it saves the next version.</p>
+      <template data-if="hasBuilderProblem"><p class="forma-alert" role="alert" data-tone="attention" data-text="builderProblem"></p></template>
+      <ul id="saved-definitions">
+        <template data-each="savedDefinitions" data-key="key"><li><span data-text="label"></span> <button type="button" class="forma-button" data-event="editReportDefinition">Open</button></li></template>
+      </ul>
+      <template data-if="canBuildReports">
+        <form id="new-definition" class="forma-stack" data-event="newReportDefinition">
+          <label>New definition id (lowercase letters, digits, hyphens) <input type="text" data-event="newReportId" data-bind-value="newReportId" /></label>
+          <button type="submit" class="forma-button" data-bind-disabled="busy">Start a definition</button>
+        </form>
+      </template>
+      <template data-if="hasBuilder">
+        <section id="builder" class="forma-stack" aria-labelledby="builder-heading">
+          <h3 id="builder-heading" data-text="builderHeading"></h3>
+          <template data-if="builderUnsaved"><p><strong>Unsaved changes</strong></p></template>
+          <label>Audience
+            <select data-event="reportAudience"><template data-each="builderAudiences" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select>
+          </label>
+          <label>Detail
+            <select data-event="reportDetail"><template data-each="builderDetails" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select>
+          </label>
+          <label>Template
+            <select data-event="reportPin"><template data-each="builderPins" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select>
+          </label>
+          <fieldset class="forma-choice-group">
+            <legend>Blocks, in reading order</legend>
+            <ol id="builder-blocks">
+              <template data-each="builderBlocks" data-key="key">
+                <li><label><input type="checkbox" data-event="reportBlock" data-bind-value="key" data-bind-checked="checked" /> <span data-text="label"></span></label> <button type="button" class="forma-button" data-event="reportBlockUp">Move up</button></li>
+              </template>
+            </ol>
+          </fieldset>
+          <label>Minimum group size <input type="number" min="1" data-event="reportMinimum" data-bind-value="builderMinimum" /></label>
+          <label>Decimal places <input type="number" min="0" max="6" data-event="reportDecimals" data-bind-value="builderDecimals" /></label>
+          <label>Highlights <input type="number" min="0" max="20" data-event="reportHighlights" data-bind-value="builderHighlights" /></label>
+          <label>Check and preview with
+            <select data-event="reportPreviewGroup"><template data-each="builderGroups" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select>
+          </label>
+          <ul id="builder-checks"><template data-each="builderChecks" data-key="key"><li data-text="text"></li></template></ul>
+          <ul id="builder-preview"><template data-each="builderPreview" data-key="key"><li data-text="text"></li></template></ul>
+          <template data-if="canBuildReports"><button type="button" class="forma-button" data-event="saveReportDefinition" data-bind-disabled="saveDefinitionDisabled" data-bind-aria-busy="saveDefinitionBusy" data-bind-aria-disabled="saveDefinitionBusy" data-text="saveDefinitionLabel">Save definition</button></template>
+        </section>
+      </template>
+    </section>
+  </template>
+  <template data-if="viewDraft">
+    <section id="draft" class="forma-stack" aria-labelledby="draft-heading">
+      <template data-if="hasAuthoringProblem"><p class="forma-alert" role="alert" data-tone="attention" data-text="authoringProblem"></p></template>
+      <template data-if="hasDraft">
+        <!-- Exactly one root element per data-if: Limen mounts only the first,
+             so the editor below once rendered as its heading alone (GH-113). -->
+        <div class="forma-stack draft-editor">
+        <h2 id="draft-heading" data-text="draftHeading"></h2>
+        <p><span class="echelon-chip" id="draft-lifecycle" data-bind-data-echelon-tone="draftLifecycleTone" data-text="draftLifecycle">Draft</span> · <span data-text="draftParent"></span><template data-if="draftUnsaved"><span> · <strong>Unsaved changes</strong></span></template></p>
+        <label>Title <input type="text" data-event="draftTitle" data-bind-value="draftTitle" /></label>
+        <label>Description <textarea rows="2" data-event="draftDescription" data-bind-value="draftDescription"></textarea></label>
+        <h3>Sections</h3>
+        <ol id="draft-sections">
+          <template data-each="draftSections" data-key="id">
+            <li>
+              <span data-text="id"></span> <span data-text="title"></span> (<span data-text="questionCount"></span> questions)
+              <button type="button" class="forma-button" data-event="addQuestion">Add the question below here</button>
+              <button type="button" class="forma-button" data-event="removeSection">Remove section</button>
+            </li>
+          </template>
+        </ol>
+        <label>New section title <input type="text" data-event="newSectionTitle" data-bind-value="newSectionTitle" /></label>
+        <button type="button" class="forma-button" data-event="addSection">Add section</button>
+        <label>New question <input type="text" data-event="newQuestionPrompt" data-bind-value="newQuestionPrompt" /></label>
+        <label>Kind <select id="question-kind" data-event="newQuestionKind"><template data-each="questionKinds" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+        <label>Details <input id="question-details" type="text" data-event="newQuestionDetails" data-bind-value="newQuestionDetails" /></label>
+        <p class="forma-field__description" data-text="questionDetailsHint"></p>
+        <h3>Questions</h3>
+        <ol id="draft-questions">
+          <template data-each="draftQuestions" data-key="id">
+            <li><span data-text="section"></span> · <span data-text="id"></span>: <span data-text="prompt"></span> (<span data-text="kind"></span>) <button type="button" class="forma-button" data-event="removeQuestion">Remove</button></li>
+          </template>
+        </ol>
+        <h3>Conditions</h3>
+        <ul id="draft-rules">
+          <template data-each="draftRules" data-key="id">
+            <li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeRule">Remove</button></li>
+          </template>
+        </ul>
+        <label>Show question <input id="rule-question" type="text" data-event="ruleQuestion" data-bind-value="ruleQuestion" /></label>
+        <label>only when question <input id="rule-when" type="text" data-event="ruleWhen" data-bind-value="ruleWhen" /></label>
+        <label>has the answer <input id="rule-answer" type="text" data-event="ruleAnswer" data-bind-value="ruleAnswer" /></label>
+        <button type="button" class="forma-button" data-event="addShowRule">Add condition</button>
+        <h3>Facts</h3>
+        <ul id="draft-facts">
+          <template data-each="draftFacts" data-key="id">
+            <li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeFact">Remove</button></li>
+          </template>
+        </ul>
+        <label>A yes/no fact, true when question or fact <input id="fact-when" type="text" data-event="factWhen" data-bind-value="factWhen" /></label>
+        <label>has the answer <input id="fact-answer" type="text" data-event="factAnswer" data-bind-value="factAnswer" /></label>
+        <button type="button" class="forma-button" data-event="addFact">Add fact</button>
+        <h3>Recommendations</h3>
+        <ul id="draft-recommendations">
+          <template data-each="draftRecommendations" data-key="id">
+            <li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeRecommendation">Remove</button></li>
+          </template>
+        </ul>
+        <label>Recommend when question or fact <input id="recommendation-when" type="text" data-event="recommendationWhen" data-bind-value="recommendationWhen" /></label>
+        <label>has the answer <input id="recommendation-answer" type="text" data-event="recommendationAnswer" data-bind-value="recommendationAnswer" /></label>
+        <label>Priority <select id="recommendation-priority" data-event="recommendationPriority"><template data-each="recommendationPriorities" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+        <label>Title <input id="recommendation-title" type="text" data-event="recommendationTitle" data-bind-value="recommendationTitle" /></label>
+        <label>What to do <textarea id="recommendation-text" rows="2" data-event="recommendationText" data-bind-value="recommendationText"></textarea></label>
+        <button type="button" class="forma-button" data-event="addRecommendation">Add recommendation</button>
+        <h3>Completion</h3>
+        <p id="draft-completion" data-text="draftCompletion"></p>
+        <label>Share of applicable questions that must be answered (%) <input id="minimum-answered" type="text" inputmode="numeric" data-event="minimumAnswered" data-bind-value="minimumAnswered" /></label>
+        <ul id="completion-sections">
+          <template data-each="draftSections" data-key="id">
+            <li><label><input type="checkbox" data-event="sectionRequired" value="true" data-bind-checked="requiredForCompletion" /> Section <span data-text="id"></span> must be fully answered</label></li>
+          </template>
+        </ul>
+        <h3>Validation rules</h3>
+        <ul id="draft-validation">
+          <template data-each="draftValidation" data-key="id">
+            <li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeValidation">Remove</button></li>
+          </template>
+        </ul>
+        <label>Rule <select id="validation-kind" data-event="validationKind"><template data-each="validationKinds" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+        <template data-if="validationIsRange"><div class="forma-stack">
+          <label>Question <input id="validation-question" type="text" data-event="validationQuestion" data-bind-value="validationQuestion" /></label>
+          <label>Lowest <input id="validation-minimum" type="text" inputmode="decimal" data-event="validationMinimum" data-bind-value="validationMinimum" /></label>
+          <label>Highest <input id="validation-maximum" type="text" inputmode="decimal" data-event="validationMaximum" data-bind-value="validationMaximum" /></label>
+        </div>
+          </template>
+        <template data-if="validationIsRequiredWhen"><div class="forma-stack">
+          <label>Question <input id="validation-required-question" type="text" data-event="validationQuestion" data-bind-value="validationQuestion" /></label>
+          <label>is required when question or fact <input id="validation-when" type="text" data-event="validationWhen" data-bind-value="validationWhen" /></label>
+          <label>has the answer <input id="validation-answer" type="text" data-event="validationAnswer" data-bind-value="validationAnswer" /></label>
+        </div>
+          </template>
+        <template data-if="validationIsAnsweredBetween"><div class="forma-stack">
+          <label>Questions, separated by commas <input id="validation-questions" type="text" data-event="validationQuestions" data-bind-value="validationQuestions" /></label>
+          <label>At least <input id="validation-fewest" type="text" inputmode="numeric" data-event="validationMinimum" data-bind-value="validationMinimum" /></label>
+          <label>At most <input id="validation-most" type="text" inputmode="numeric" data-event="validationMaximum" data-bind-value="validationMaximum" /></label>
+        </div>
+          </template>
+        <label>Message the respondent sees <input id="validation-message" type="text" data-event="validationMessage" data-bind-value="validationMessage" /></label>
+        <button type="button" class="forma-button" data-event="addValidation">Add validation rule</button>
+        <h3>Presentation</h3>
+        <label>Questions per page (blank for one page) <input id="items-per-page" type="text" inputmode="numeric" data-event="itemsPerPage" data-bind-value="itemsPerPage" /></label>
+        <label><input id="show-numbers" type="checkbox" data-event="showNumbers" value="true" data-bind-checked="showNumbers" /> Number the questions</label>
+        <label>Progress <select id="progress-mode" data-event="progressMode"><template data-each="progressModes" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+        <label><input id="allow-back" type="checkbox" data-event="allowBack" value="true" data-bind-checked="allowBack" /> Allow going back</label>
+        <label><input id="review-before-submit" type="checkbox" data-event="reviewBeforeSubmit" value="true" data-bind-checked="reviewBeforeSubmit" /> Review answers before submitting</label>
+        <ul id="draft-timers"><template data-each="draftTimers" data-key="id"><li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeTimer">Remove</button></li></template></ul>
+        <p id="timer-help" class="forma-field__description" data-text="timerHelp"></p>
+        <label>Question (blank for the whole survey) <input id="timer-question" type="text" data-event="timerQuestion" data-bind-value="timerQuestion" /></label>
+        <label>Time limit (minutes) <input id="timer-minutes" type="text" inputmode="numeric" data-event="timerMinutes" data-bind-value="timerMinutes" /></label>
+        <label>Warn when this many minutes are left <input id="timer-warning" type="text" inputmode="numeric" data-event="timerWarning" data-bind-value="timerWarning" /></label>
+        <button type="button" class="forma-button" data-event="addTimer">Add time limit</button>
+        <ul id="draft-banks"><template data-each="draftBanks" data-key="id"><li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeBank">Remove</button></li></template></ul>
+        <label>Bank of questions, separated by commas <input id="bank-questions" type="text" data-event="bankQuestions" data-bind-value="bankQuestions" /></label>
+        <label>Each respondent answers <input id="bank-select" type="text" inputmode="numeric" data-event="bankSelect" data-bind-value="bankSelect" /></label>
+        <button type="button" class="forma-button" data-event="addBank">Add question bank</button>
+        <h3>Scoring</h3>
+        <ul id="draft-scoring">
+          <template data-each="draftScoring" data-key="id">
+            <li><label>Section <span data-text="label"></span> <select data-event="sectionScoring">
+              <option value="mean" data-bind-selected="isMean">Mean</option>
+              <option value="median" data-bind-selected="isMedian">Median</option>
+              <option value="sum" data-bind-selected="isSum">Sum</option>
+              <option value="minimum" data-bind-selected="isMinimum">Lowest</option>
+              <option value="maximum" data-bind-selected="isMaximum">Highest</option>
+              <option value="none" data-bind-selected="isNone">Not scored</option>
+            </select></label></li>
+          </template>
+        </ul>
+        <!-- Scoring models, interpretations and the overall score (ALG-004, WI-0081):
+             named built-in choices, each compiling to the engine's scorer algebra. -->
+        <section id="scoring-authoring" class="forma-stack" aria-labelledby="scoring-authoring-heading">
+          <h4 id="scoring-authoring-heading">How sections score</h4>
+          <ul id="scoring-sections"><template data-each="draftSectionScoring" data-key="id"><li data-text="label"></li></template></ul>
+          <label>Section <select id="scoring-section" data-event="scoringSection"><template data-each="scoringSectionChoices" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+          <label>Model <select id="scoring-model" data-event="scoringModel"><template data-each="scoringModels" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+          <label>Weights, one per scored question in order (weighted models) <input id="scoring-weights" type="text" data-event="scoringWeights" data-bind-value="scoringWeights" /></label>
+          <label>Values, one per answer position from the first (mapped model) <input id="scoring-values" type="text" data-event="scoringValues" data-bind-value="scoringValues" /></label>
+          <button type="button" class="forma-button" data-event="applySectionModel">Use this model</button>
+          <label><input type="checkbox" data-event="scoringReverse" value="true" data-bind-checked="scoringReverse" /> Reverse the scale (higher answers score lower)</label>
+          <button type="button" class="forma-button" data-event="applySectionReverse">Apply</button>
+          <label>Special answers count as (blank: left out) <input id="scoring-substitute" type="text" data-event="scoringSubstitute" data-bind-value="scoringSubstitute" /></label>
+          <label>Answers a score needs <input id="scoring-minimum" type="text" inputmode="numeric" data-event="scoringMinimum" data-bind-value="scoringMinimum" /></label>
+          <button type="button" class="forma-button" data-event="applySectionSpecials">Apply</button>
+          <h4>Interpretations</h4>
+          <ul id="draft-interpretations"><template data-each="draftInterpretations" data-key="id"><li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeInterpretation">Remove</button></li></template></ul>
+          <label>Bands on (a section id, or overall) <input id="band-target" type="text" data-event="bandTarget" data-bind-value="bandTarget" /></label>
+          <label>Bands, as "Low 0-40; Medium 40-70; High 70-100" <input id="band-text" type="text" data-event="bandText" data-bind-value="bandText" /></label>
+          <button type="button" class="forma-button" data-event="addBands">Add bands</button>
+          <label>Pass / fail on (a section id, or overall) <input id="pass-target" type="text" data-event="passTarget" data-bind-value="passTarget" /></label>
+          <label>Threshold <input id="pass-threshold" type="text" data-event="passThreshold" data-bind-value="passThreshold" /></label>
+          <label>Direction <select data-event="passDirection"><template data-each="passDirections" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+          <button type="button" class="forma-button" data-event="addPassFail">Add pass / fail</button>
+          <h4>Overall score</h4>
+          <p id="overall-now" data-text="overallNow"></p>
+          <label>Method <select id="overall-method" data-event="overallMethod"><template data-each="overallMethods" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+          <label>Section weights, as "S1=2, S2=1" (weighted sections) <input id="overall-weights" type="text" data-event="overallWeights" data-bind-value="overallWeights" /></label>
+          <label>Threshold and cap (capped average) <input id="overall-threshold" type="text" data-event="overallThreshold" data-bind-value="overallThreshold" /> <input id="overall-cap" type="text" data-event="overallCap" data-bind-value="overallCap" /></label>
+          <label>Direction <select data-event="overallDirection"><template data-each="overallDirections" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
+          <button type="button" class="forma-button" data-event="setOverall">Set the overall score</button>
+        </section>
+        <h3>Translations</h3>
+        <ul id="draft-translations"><template data-each="draftTranslations" data-key="id"><li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeTranslation">Remove</button></li></template></ul>
+        <label>Language tag <input id="translation-locale" type="text" data-event="translationLocale" data-bind-value="translationLocale" /></label>
+        <label>Text to translate (for example question/Q1/prompt) <input id="translation-key" type="text" data-event="translationKey" data-bind-value="translationKey" /></label>
+        <label>Translation <input id="translation-text" type="text" data-event="translationText" data-bind-value="translationText" /></label>
+        <button type="button" class="forma-button" data-event="setTranslation">Set translation</button>
+        <h3>Accessibility text</h3>
+        <ul id="draft-accessibility"><template data-each="draftAccessibility" data-key="id"><li data-text="label"></li></template></ul>
+        <label>Question <input id="accessibility-question" type="text" data-event="accessibilityQuestion" data-bind-value="accessibilityQuestion" /></label>
+        <label>Name read instead of the prompt (optional) <input id="accessibility-name" type="text" data-event="accessibilityName" data-bind-value="accessibilityName" /></label>
+        <label>Description read after the prompt (optional) <input id="accessibility-description" type="text" data-event="accessibilityDescription" data-bind-value="accessibilityDescription" /></label>
+        <button type="button" class="forma-button" data-event="setAccessibility">Set accessibility text</button>
+        <h3>Test fixtures</h3>
+        <ul id="draft-fixtures"><template data-each="draftFixtures" data-key="id"><li><span data-text="name"></span> <button type="button" class="forma-button" data-event="explainFixture">Explain</button></li></template></ul>
+        <!-- How the draft scores a fixture (AUT-006 §63, SCS-017, AST-005): from the one evaluation. -->
+        <template data-if="hasFixtureExplanation">
+          <section id="fixture-explanation" class="forma-stack" aria-labelledby="fixture-explanation-heading">
+            <h4 id="fixture-explanation-heading">How <span data-text="explainingFixture"></span> scores</h4>
+            <ul id="fixture-explanation-lines">
+              <template data-each="fixtureExplanation" data-key="key"><li data-bind-data-kind="kind" data-bind-data-indented="indented" data-text="text"></li></template>
+            </ul>
+          </section>
+        </template>
+        <!-- The draft as a respondent would see it (AUT-003 §§20-22, WI-0081): the survey
+             page's own engine on the draft, as a test artifact. Nothing is stored or sent. -->
+        <section id="draft-preview-area" class="forma-stack" aria-labelledby="draft-preview-heading">
+          <h4 id="draft-preview-heading">Preview</h4>
+          <template data-if="canPreview"><button type="button" class="forma-button" data-event="previewStart">Preview as a respondent</button></template>
+          <!-- One root: Limen mounts only a data-if template's first root element (ULI-A01/L08). -->
+          <template data-if="previewing">
+            <div id="preview-running" class="forma-stack">
+              <p id="preview-notice" role="note">Preview of this draft: a test, not a real response. Nothing you answer here is saved or sent. Timers run from when the dataset was last checked and do not count down.</p>
+              <template data-if="previewRefused"><p id="preview-refused" role="alert" data-text="previewRefusal"></p></template>
+              <template data-if="previewHasProgress"><p id="preview-progress" role="status" data-text="previewProgress"></p></template>
+              <template data-if="previewHasTimer"><p id="preview-timer" role="status" data-text="previewTimerNotice"></p></template>
+              <template data-if="previewHasPages"><p id="preview-page" data-text="previewPageLabel"></p></template>
+              <template data-if="previewReviewing"><p id="preview-review-notice" role="status">Check the answers. Submit them, or go back to change them.</p></template>
+              <div id="preview-rows" class="forma-stack">
+                <template data-each="previewRows" data-key="id">
+                  <div class="survey-row" data-bind-data-row="id">
+                    <h3 class="survey-section" data-bind-hidden="hideSection" data-text="title"></h3>
+                    <p class="survey-question" data-bind-hidden="hideQuestion" data-bind-id="promptId" data-bind-data-component="component" data-bind-data-variant="variant"><span class="survey-number" data-bind-hidden="hideQuestionNumber" data-text="questionNumber"></span> <strong data-text="prompt" data-bind-aria-hidden="promptHidden"></strong><span class="forma-sr-only" data-bind-hidden="hideAccessibleName" data-text="accessibleName"></span> <span class="survey-optional" data-text="optionalMark"></span> <span class="forma-field__description" data-text="help"></span></p>
+                    <p class="forma-sr-only" data-bind-hidden="hideAccessibleDescription" data-bind-id="descriptionId" data-text="accessibleDescription"></p>
+                    <p class="survey-error" data-bind-hidden="hideError" data-bind-id="errorId" data-text="error"></p>
+                    <p class="forma-selection-status" role="status" data-bind-hidden="hideSelectionStatus" data-text="selectionStatus"></p>
+                    <div class="survey-review" data-bind-hidden="hideReview">
+                      <p class="survey-review-prompt"><span data-bind-hidden="hideQuestionNumber" data-text="questionNumber"></span> <span data-text="prompt"></span></p>
+                      <p class="survey-review-answer" data-text="answerText"></p>
+                    </div>
+                    <label class="forma-special-choice" data-bind-hidden="hideOption">
+                      <input type="radio" data-event="previewAnswered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="group" data-bind-checked="checked" data-bind-disabled="locked" />
+                      <span data-text="label"></span>
+                    </label>
+                    <label class="forma-special-choice" data-bind-hidden="hideToggle">
+                      <input type="checkbox" data-event="previewToggled" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-checked="checked" data-bind-disabled="locked" />
+                      <span data-text="label"></span>
+                    </label>
+                    <label class="forma-field" data-bind-hidden="hideNumber">
+                      <span class="forma-field__label" data-text="label"></span>
+                      <input type="number" inputmode="decimal" data-event="previewNumbered" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-value="numberValue" data-bind-min="numberMin" data-bind-max="numberMax" data-bind-step="numberStep" data-bind-disabled="locked" />
+                    </label>
+                    <div class="forma-cluster" data-bind-hidden="hidePair">
+                      <span data-text="label"></span>
+                      <label><input type="radio" data-event="previewPickedBest" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="groupBest" data-bind-checked="bestChecked" data-bind-disabled="locked" /> Fits best</label>
+                      <label><input type="radio" data-event="previewPickedWorst" data-bind-aria-describedby="describedBy" data-bind-aria-required="required" data-bind-aria-invalid="invalid" data-bind-name="groupWorst" data-bind-checked="worstChecked" data-bind-disabled="locked" /> Fits least</label>
+                    </div>
+                  </div>
+                </template>
+              </div>
+              <template data-if="previewHasRefusal"><p id="preview-submit-refusal" role="alert" data-text="previewSubmitRefusal"></p></template>
+              <template data-if="previewSubmitted"><p id="preview-submitted" role="status">Submitted in the preview: nothing was sent.</p></template>
+              <div class="forma-cluster">
+                <template data-if="previewCanBack"><button type="button" class="forma-button" data-event="previewBack">Back</button></template>
+                <template data-if="previewHasNext"><button type="button" class="forma-button" data-event="previewNext">Next</button></template>
+                <template data-if="previewReviewing"><button type="button" class="forma-button" data-event="previewReviewClosed">Change answers</button></template>
+                <template data-if="previewIsLastPage"><button type="button" class="forma-button" data-event="previewSubmit" data-text="previewSubmitLabel"></button></template>
+                <button type="button" class="forma-button" data-event="previewKeep">Keep these answers as a fixture</button>
+                <button type="button" class="forma-button" data-event="previewClose">Close the preview</button>
+              </div>
+              <ul id="preview-explanation-lines">
+                <template data-each="previewExplanation" data-key="key"><li data-bind-data-kind="kind" data-bind-data-indented="indented" data-text="text"></li></template>
+              </ul>
+            </div>
+          </template>
+        </section>
+        <button type="button" class="forma-button" data-event="addFixture">Add a fixture: every answer at the midpoint</button>
+        <h3>Validation</h3>
+        <table id="draft-findings">
+          <thead><tr><th scope="col">Severity</th><th scope="col">Code</th><th scope="col">Finding</th></tr></thead>
+          <tbody><template data-each="draftFindings" data-key="key"><tr><td data-text="severity"></td><td data-text="code"></td><td data-text="message"></td></tr></template></tbody>
+        </table>
+        <p id="draft-preview" data-text="draftPreview"></p>
+        <template data-if="draftHasWarnings"><label><input type="checkbox" data-event="acknowledgeWarnings" value="true" data-bind-checked="acknowledgeWarnings" /> I have read the warnings and accept them</label></template>
+        <template data-if="canEditDrafts"><button type="button" class="forma-button" data-event="saveDraft" data-bind-disabled="saveDraftDisabled" data-bind-aria-busy="saveDraftBusy" data-bind-aria-disabled="saveDraftBusy" data-text="saveDraftLabel">Save draft</button></template>
+        <template data-if="canDeleteDraft"><button type="button" class="forma-button" data-event="deleteDraft" data-bind-disabled="busy">Delete draft…</button></template>
+        <template data-if="confirmingDeleteDraft">
+          <div id="delete-draft-confirm" class="forma-stack" role="alertdialog" aria-labelledby="delete-draft-text">
+            <p id="delete-draft-text">Delete this draft and its review? Unpublished changes are lost. Published versions are not affected.</p>
+            <button type="button" class="forma-button" data-event="confirmDeleteDraft" data-bind-disabled="confirmDeleteDisabled" data-bind-aria-busy="confirmDeleteBusy" data-bind-aria-disabled="confirmDeleteBusy" data-text="confirmDeleteLabel">Delete draft</button>
+            <button type="button" class="forma-button" data-event="cancelDeleteDraft" data-bind-disabled="busy">Keep it</button>
+          </div>
+        </template>
+        <h3>Review</h3>
+        <p id="draft-review" data-text="draftReview"></p>
+        <template data-if="canRequestReview"><button type="button" class="forma-button" data-event="requestReview" data-bind-disabled="requestReviewDisabled" data-bind-aria-busy="requestReviewBusy" data-bind-aria-disabled="requestReviewBusy" data-text="requestReviewLabel">Submit for review</button></template>
+        <template data-if="canApproveReview"><button type="button" class="forma-button" data-event="approveReview" data-bind-disabled="approveReviewDisabled" data-bind-aria-busy="approveReviewBusy" data-bind-aria-disabled="approveReviewBusy" data-text="approveReviewLabel">Approve as reviewed</button></template>
+        <template data-if="canPublishTemplates"><button type="button" class="forma-button" data-event="publishDraft" data-bind-disabled="publishDisabled" data-bind-aria-busy="publishBusy" data-bind-aria-disabled="publishBusy" data-text="publishLabel">Publish</button></template>
+      </div>
+      </template>
+      <template data-if="hasNoDraft"><p>There is no draft of <span data-text="draftSurvey"></span>. Start one or derive one from a published version under Assessments.</p></template>
+    </section>
+  </template>
+  <template data-if="viewAssessments">
+    <section id="assessments" class="forma-stack" aria-labelledby="assessments-title">
+      <h2 id="assessments-title">Assessments</h2>
+      <ul id="catalog-assessments">
+        <template data-each="catalogAssessments" data-key="href"><li><a data-bind-href="href" data-text="label"></a></li></template>
+      </ul>
+      <template data-if="canEditDrafts">
+        <form id="new-draft" class="forma-stack" data-event="startDraft">
+          <h3>Start a survey</h3>
+          <label>Survey identifier <input type="text" data-event="newDraftSurvey" data-bind-value="newDraftSurvey" /></label>
+          <label>Title <input type="text" data-event="newDraftTitle" data-bind-value="newDraftTitle" /></label>
+          <button type="submit" class="forma-button" data-bind-disabled="busy">Start draft</button>
+        </form>
+      </template>
+      <template data-if="hasAuthoringProblem"><p id="authoring-problem" class="forma-alert" role="alert" data-tone="attention" data-text="authoringProblem"></p></template>
+      <template data-if="hasStoredTemplates">
+        <section id="stored-templates" class="forma-stack" aria-labelledby="stored-templates-title">
+          <h3 id="stored-templates-title">Published in this dataset</h3>
+          <ul id="template-versions">
+            <template data-each="templateVersions" data-key="key">
+              <li><span class="echelon-chip" data-bind-data-echelon-tone="lifecycleTone" data-text="lifecycle">Published</span> · <span data-text="label"></span> · <span data-text="status"></span> · <span data-text="groups"></span>
+                <button type="button" class="forma-button" data-event="downloadSiteFile" data-bind-disabled="busy">For the respondent site</button>
+                <button type="button" class="forma-button" data-event="testLinks">Test links</button></li>
+            </template>
+          </ul>
+          <template data-if="hasTestLinks">
+            <section id="test-links" class="forma-stack" aria-labelledby="test-links-title">
+              <h4 id="test-links-title" data-text="testLinksTitle"></h4>
+              <p class="forma-field__description">Each link opens the survey page marked as a test, so you can try this version on a phone, in another browser or by email. What it submits is marked as a test, and a production import refuses it. The version's file must be on the respondent site first.</p>
+              <ul>
+                <template data-each="testLinks" data-key="key">
+                  <li><a data-bind-href="href" data-text="label" target="_blank" rel="noopener noreferrer"></a></li>
+                </template>
+              </ul>
+            </section>
+          </template>
+          <p id="site-file-help" class="forma-field__description">Respondents' links open the survey from the respondent site, which reads each published version from its own copy. "For the respondent site" saves that copy, named for the version; commit it unchanged to the site repository's published-templates/ folder. The survey page refuses a copy that has been changed.</p>
+          <ul id="template-actions">
+            <template data-each="templateActions" data-key="key">
+              <li>
+                <span data-text="label"></span>
+                <template data-if="canDerive"><button type="button" class="forma-button" data-event="deriveDraft" data-bind-disabled="busy">Derive a draft</button></template>
+                <template data-if="canHide"><button type="button" class="forma-button" data-event="hideVersion" data-bind-disabled="hideDisabled" data-bind-aria-busy="hideBusy" data-bind-aria-disabled="hideBusy" data-text="hideLabel">Hide from new groups</button></template>
+              </li>
+            </template>
+          </ul>
+          <ul id="template-drafts">
+            <template data-each="draftLinks" data-key="key"><li><span class="echelon-chip" data-bind-data-echelon-tone="lifecycleTone" data-text="lifecycle">Draft</span> · <a data-bind-href="href" data-text="label"></a></li></template>
+          </ul>
+        </section>
+      </template>
+      <template data-if="hasAssessment">
+        <section id="assessment" class="forma-stack">
+          <h3><a id="assessment-title" data-bind-href="assessmentHref" data-text="assessmentTitle"></a></h3>
+          <nav aria-label="Sections">
+            <ul id="assessment-sections">
+              <template data-each="assessmentSections" data-key="id">
+                <li><a data-bind-href="href" data-bind-aria-current="current"><span data-text="id"></span> <span data-text="label"></span></a></li>
+              </template>
+            </ul>
+          </nav>
+          <template data-if="hasSection">
+            <section id="section" class="forma-stack">
+              <h4 id="section-label" data-text="sectionLabel"></h4>
+              <ol id="section-questions">
+                <template data-each="sectionQuestions" data-key="id">
+                  <li><a data-bind-href="href" data-bind-aria-current="current"><span data-text="id"></span>: <span data-text="prompt"></span></a></li>
+                </template>
+              </ol>
+            </section>
+          </template>
+          <template data-if="hasQuestion">
+            <section id="question" class="forma-stack" aria-label="Question">
+              <p><strong id="question-id" data-text="questionId"></strong></p>
+              <blockquote id="question-prompt" data-text="questionPrompt"></blockquote>
+              <p>Answered on a five-point frequency scale, with "don't know", "not observed" and "not applicable", which are not counted as zero.</p>
+            </section>
+          </template>
+        </section>
+      </template>
+    </section>
+  </template>
+
+  <template data-if="hasOperationalFault">
+    <aside class="forma-fault forma-fault--inline" id="operational-fault" role="alert">
+      <p class="forma-fault__title"><strong data-text="operationalFaultTitle"></strong></p>
+      <p class="forma-fault__message" data-text="operationalFaultMessage"></p>
+      <p class="forma-fault-reference">Reference <code data-text="operationalFaultReference"></code></p>
+    </aside>
+  </template>
+
+  <!-- What runs now and what the store last said about a change
+       (SIG-VIS-PENDING-001, -002), beside the notice and the status where the
+       person acts. #activity is the page's one live region for operations:
+       always in the page, it announces each start and each settle once, the
+       notice's sentence included, so the notice below is not a second live
+       region. The running control says so itself (aria-busy, its
+       present-participle label); focus comes here when that control went away. -->
+  <div id="activity" class="activity" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" data-focus-target="activity">
+    <template data-if="operationRunning">
+      <div id="operation-pending" class="echelon-loading" data-bind-data-persistence="persistenceState">
+        <p class="forma-spinner"><span class="forma-spinner__indicator" aria-hidden="true"></span><span class="forma-spinner__label" data-text="operationText"></span></p>
+      </div>
+    </template>
+    <template data-if="hasPersistence">
+      <p id="persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p>
+    </template>
+    <template data-if="reloadOwed">
+      <p id="reload-owed" data-text="reloadText"></p>
+    </template>
+    <span class="forma-visually-hidden" data-text="noticeAnnouncement"></span>
+  </div>
+
+  <!-- Domain refusals and infrastructure notices: a sentence, with the stable
+       code as technical detail (ADM-031). Announced through #activity above. -->
+  <template data-if="hasNotice">
+    <aside id="notice" class="forma-alert" data-tone="attention">
+      <p id="notice-message" data-text="notice"></p>
+      <details><summary>Technical detail</summary><code id="notice-code" data-text="noticeCode"></code></details>
+      <button type="button" class="forma-button" data-event="dismissNotice">Dismiss</button>
+    </aside>
+  </template>
+
+  <template data-if="screenLoading">
+    <div id="loading" class="echelon-loading" role="status">
+      <p class="forma-spinner"><span class="forma-spinner__indicator" aria-hidden="true"></span><span class="forma-spinner__label">Loading the deployment's configuration…</span></p>
+    </div>
+  </template>
+
+  <template data-if="screenMisconfigured">
+    <section id="misconfigured" class="forma-stack" role="alert">
+      <h2>This deployment is not configured correctly</h2>
+      <p data-text="configurationProblem"></p>
+    </section>
+  </template>
+
+  <template data-if="screenUnconfigured">
+    <section id="unconfigured" class="forma-stack">
+      <h2>No data store is configured</h2>
+      <p>This deployment configures no storage profile, so there is nothing to administer. Configure a profile, an identity exchange and a dataset in <code>signal.deployment.json</code>.</p>
+    </section>
+  </template>
+
+  <template data-if="screenSignIn">
+    <section id="sign-in" class="forma-stack" aria-labelledby="sign-in-title">
+      <h2 id="sign-in-title">Sign in with GitHub</h2>
+      <form class="forma-stack" data-event="signIn">
+        <fieldset class="forma-choice-group">
+          <legend>Keep me signed in</legend>
+          <label><input type="radio" name="retention" value="page" id="retention-page" data-event="retention" data-bind-checked="retentionPage" /> On this page only</label>
+          <label><input type="radio" name="retention" value="tab" id="retention-tab" data-event="retention" data-bind-checked="retentionTab" /> In this tab until I close it</label>
+        </fieldset>
+        <p id="retention-disclosure" data-text="retentionDisclosure"></p>
+        <button type="submit" class="forma-button" id="sign-in-button" data-bind-aria-busy="signInAriaBusy" data-bind-aria-disabled="signInAriaBusy" data-text="signInLabel">Sign in</button>
+      </form>
+    </section>
+  </template>
+
+  <template data-if="screenDatasets">
+    <section id="datasets" class="forma-stack">
+      <h2>Datasets</h2>
+      <ul>
+        <template data-each="datasets" data-key="id">
+          <li><button type="button" class="forma-button" data-event="openDataset" data-bind-disabled="openDisabled" data-bind-aria-busy="openBusy" data-bind-aria-disabled="openBusy" data-text="openLabel"></button></li>
+        </template>
+      </ul>
+      <button type="button" class="forma-button" data-event="signOut">Sign out</button>
+    </section>
+  </template>
+
+  <template data-if="screenDataset">
+    <section id="dataset" class="forma-stack">
+      <!-- Status: credential, read-only and offline state (ADM-033, ADM-056, ADM-070). -->
+      <div id="status" class="forma-operation-status" role="status">
+        <p><strong data-text="datasetLabel"></strong> · <span id="credential" data-text="credential"></span></p>
+        <template data-if="readOnly"><p id="read-only">Read-only. <span data-text="readOnlyReasons"></span></p></template>
+        <template data-if="offline"><p id="offline">Offline: what is shown was last verified <span data-text="lastVerified"></span> and may be out of date. Changes are unavailable and nothing is queued.</p></template>
+        <button type="button" class="forma-button" data-event="refresh" data-bind-disabled="refreshDisabled" data-bind-aria-busy="refreshBusy" data-bind-aria-disabled="refreshBusy" data-text="refreshLabel">Refresh</button>
+        <button type="button" class="forma-button" data-event="signOut">Sign out</button>
+      </div>
+
+      <template data-if="viewOverview">
+        <section id="overview" class="forma-stack">
+          <h2>Overview</h2>
+          <p><span data-text="groupsWaiting"></span> group(s) waiting for imports · <span data-text="groupsComplete"></span> complete</p>
+          <h3>Unresolved work</h3>
+          <ul id="obligations">
+            <template data-each="obligations" data-key="code"><li data-text="text"></li></template>
+          </ul>
+        </section>
+      </template>
+
+      <template data-if="viewGroups">
+        <section id="groups" class="forma-stack">
+          <h2>Groups</h2>
+          <!-- Typed filters, held in the address (SIG-LINK-001, SIG-LINK-008). -->
+          <fieldset id="group-filters" class="forma-choice-group">
+            <legend>Filter</legend>
+            <template data-each="statusFilters" data-key="key">
+              <label><input type="checkbox" data-event="filterStatus" data-bind-value="key" data-bind-checked="checked" /> <span data-text="label"></span></label>
+            </template>
+            <template data-each="modeFilters" data-key="key">
+              <label><input type="checkbox" data-event="filterMode" data-bind-value="key" data-bind-checked="checked" /> <span data-text="label"></span></label>
+            </template>
+            <label>Survey
+              <select id="survey-filter" data-event="filterSurvey">
+                <template data-each="surveyFilters" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template>
+              </select>
+            </label>
+          </fieldset>
+          <table id="group-list">
+            <thead><tr><th>Group</th><th>Survey</th><th>Identity</th><th>Accepted</th><th>State</th></tr></thead>
+            <tbody>
+              <template data-each="groups" data-key="key">
+                <tr>
+                  <td><a data-bind-href="href" data-text="key"></a></td>
+                  <td data-text="survey"></td><td data-text="mode"></td><td data-text="progress"></td><td><span class="echelon-chip" data-bind-data-echelon-tone="phaseTone" data-bind-data-phase="phase" data-text="phaseLabel"></span></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+
+          <template data-if="canCreateGroup">
+            <form id="new-group" class="forma-stack" data-event="createGroup">
+              <h3>New group</h3>
+              <label>Template
+                <select data-event="newGroupTemplate">
+                  <template data-each="catalog" data-key="hash"><option data-bind-value="hash" data-bind-selected="selected" data-text="label"></option></template>
+                </select>
+              </label>
+              <label><input type="checkbox" data-event="newGroupMode" value="identified" data-bind-checked="newGroupIdentified" /> Identified (one submission per invited instance)</label>
+              <label>Expected surveys <input type="number" min="1" data-event="newGroupExpected" data-bind-value="newGroupExpected" /></label>
+              <label>Minimum reportable count <input type="number" min="1" data-event="newGroupMinimum" data-bind-value="newGroupMinimum" /></label>
+              <button type="submit" class="forma-button" data-bind-disabled="createGroupDisabled" data-bind-aria-busy="createGroupBusy" data-bind-aria-disabled="createGroupBusy" data-text="createGroupLabel">Create group</button>
+            </form>
+          </template>
+
+        </section>
+      </template>
+
+      <!-- One root element per data-if (Limen mounts exactly one): a bare
+           nested <template> as the root is left mounted when the outer
+           condition turns false, so the group view stayed on other areas
+           (GH-113, ULI-L08). -->
+      <template data-if="viewGroupTabs">
+        <div class="group-view">
+        <template data-if="hasGroup">
+            <section id="group" class="forma-stack">
+              <h2>Group <code id="group-key" data-text="groupKey"></code></h2>
+              <p><span data-text="groupProgress"></span> · <span id="group-phase" class="echelon-chip" tabindex="-1" data-focus-target="group-phase" data-bind-data-echelon-tone="groupPhaseTone" data-bind-data-phase="groupPhase" data-text="groupPhaseLabel"></span></p>
+              <template data-if="hasWithheld"><p id="withheld" class="forma-alert" role="status" data-tone="attention" data-text="withheldNotice"></p></template>
+              <nav aria-label="Group" id="group-tabs">
+                <ul class="areas">
+                  <li><a id="tab-group" data-bind-href="groupHref" data-bind-aria-current="viewGroup">Overview</a></li>
+                  <li><a id="tab-results" data-bind-href="resultsHref" data-bind-aria-current="viewResults">Results</a></li>
+                  <li><a id="tab-scoring" data-bind-href="scoringHref" data-bind-aria-current="viewScoring">Scoring</a></li>
+                  <li><a id="tab-imports" data-bind-href="importsHref" data-bind-aria-current="viewImports">Imported surveys</a></li>
+                  <li><a id="tab-report" data-bind-href="reportHref" data-bind-aria-current="viewReport">Report</a></li>
+                </ul>
+              </nav>
+              <template data-if="viewGroup">
+              <section id="group-overview" class="forma-stack">
+              <table>
+                <thead><tr><th>Section</th><th>Mean</th></tr></thead>
+                <tbody><template data-each="sections" data-key="id"><tr><td data-text="id"></td><td data-text="score"></td></tr></template></tbody>
+              </table>
+              <p>Report state: <code id="report-fragment" data-text="reportFragment"></code></p>
+              <div class="forma-stack" id="lifecycle">
+                <template data-if="canClose"><button type="button" class="forma-button" data-event="closeGroup" data-bind-disabled="closeDisabled" data-bind-aria-busy="closeBusy" data-bind-aria-disabled="closeBusy" data-text="closeLabel">Close incomplete</button></template>
+                <template data-if="canReopen"><button type="button" class="forma-button" data-event="reopenGroup" data-bind-disabled="reopenDisabled" data-bind-aria-busy="reopenBusy" data-bind-aria-disabled="reopenBusy" data-text="reopenLabel">Reopen</button></template>
+                <template data-if="canFinalize"><button type="button" class="forma-button" data-event="finalizeGroup" data-bind-disabled="finalizeDisabled" data-bind-aria-busy="finalizeBusy" data-bind-aria-disabled="finalizeBusy" data-text="finalizeLabel">Finalize</button></template>
+                <template data-if="canSeal"><button type="button" class="forma-button" data-event="sealGroup" data-bind-disabled="sealDisabled" data-bind-aria-busy="sealBusy" data-bind-aria-disabled="sealBusy" data-text="sealLabel">Seal</button></template>
+              </div>
+              <!-- Retention (ADM-045, ADM-064, WI-0077): retiring a finalized
+                   group's accepted results, confirmed first; the claim the
+                   notice makes is only what the store proved. -->
+              <section id="group-retention" class="forma-stack" aria-labelledby="group-retention-heading">
+                <h3 id="group-retention-heading">Retention</h3>
+                <template data-if="sourcesRetired"><p id="sources-retired" tabindex="-1" data-focus-target="sources-retired">Accepted results retired. <span data-text="sourcesRetiredText"></span></p></template>
+                <template data-if="canRetireSources"><button type="button" id="retire-sources" class="forma-button" data-event="retireSources" data-bind-disabled="busy" data-focus-target="retire-sources">Retire accepted results…</button></template>
+                <template data-if="confirmingRetire">
+                  <div id="retire-confirm" class="forma-stack" role="alertdialog" aria-labelledby="retire-confirm-text">
+                    <p id="retire-confirm-text" data-text="retireWarning"></p>
+                    <button type="button" class="forma-button" data-event="confirmRetire" data-bind-disabled="confirmRetireDisabled" data-bind-aria-busy="confirmRetireBusy" data-bind-aria-disabled="confirmRetireBusy" data-text="confirmRetireLabel">Retire accepted results</button>
+                    <button type="button" class="forma-button" data-event="cancelRetire" data-bind-disabled="busy">Keep them</button>
+                  </div>
+                </template>
+              </section>
+              </section>
+              </template>
+              <template data-if="viewResults">
+              <!-- Charts compiled and validated in F# (ADM-015..017): meters for the
+                   marks, a symbol beside every colour, and the same data as text. -->
+              <section id="exploration" class="forma-stack" aria-label="Exploration">
+                <div class="explore-controls">
+                  <label><input type="checkbox" data-event="exploreSort" value="value" data-bind-checked="exploreByValue" /> Sort by value</label>
+                  <label><input type="checkbox" data-event="exploreDisplay" value="percent" data-bind-checked="explorePercent" /> Distribution as percentages</label>
+                  <button type="button" class="forma-button" data-event="exploreSection">All sections</button>
+                </div>
+                <figure id="section-chart">
+                  <figcaption data-text="chartDescription"></figcaption>
+                  <table class="chart">
+                    <thead><tr><th>Section</th><th>Mean</th><th>Bar</th></tr></thead>
+                    <tbody>
+                      <template data-each="chart" data-key="key">
+                        <tr data-bind-data-pattern="pattern">
+                          <th scope="row"><button type="button" class="forma-button" data-event="exploreSection" data-text="category"></button></th>
+                          <td><span aria-hidden="true" data-text="symbol"></span> <span data-text="value"></span></td>
+                          <td><meter min="0" max="1" data-bind-value="position" data-bind-hidden="unavailable" data-bind-aria-label="value"></meter></td>
+                        </tr>
+                      </template>
+                    </tbody>
+                  </table>
+                  <p class="chart-warnings" data-text="chartWarnings"></p>
+                </figure>
+                <template data-if="hasDistribution">
+                  <figure id="distribution-chart">
+                    <figcaption data-text="distributionDescription"></figcaption>
+                    <table class="chart">
+                      <thead><tr><th>Scores</th><th>Respondents</th><th>Bar</th></tr></thead>
+                      <tbody>
+                        <template data-each="distribution" data-key="key">
+                          <tr><th scope="row" data-text="category"></th><td data-text="value"></td><td><meter min="0" max="1" data-bind-value="position" data-bind-hidden="unavailable"></meter></td></tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </figure>
+                </template>
+              </section>
+              </template>
+              <template data-if="viewScoring">
+              <section id="scoring" class="forma-stack" aria-label="Scoring">
+                <p>Calculated measures, not the canonical result.</p>
+                <ul class="areas" id="scoring-sections">
+                  <template data-each="scoringSections" data-key="id"><li><a data-bind-href="href" data-bind-aria-current="current" data-text="id"></a></li></template>
+                </ul>
+                <table id="scoring-measures">
+                  <thead><tr><th>Section</th><th>Measure</th><th>Value</th></tr></thead>
+                  <tbody><template data-each="scoringMeasures" data-key="key"><tr><td data-text="section"></td><td data-text="measure"></td><td data-text="value"></td></tr></template></tbody>
+                </table>
+                <p>Lineage: <code id="lineage" data-text="lineage"></code></p>
+                <template data-if="hasLateSubmissions"><p id="late-submissions" role="status" data-text="lateSubmissions"></p></template>
+              </section>
+              </template>
+              <template data-if="viewImports">
+              <section id="imports" class="forma-stack" aria-label="Imported surveys">
+              <template data-if="canInvite">
+                <section id="invitations" class="forma-stack" aria-labelledby="invitations-title">
+                  <h3 id="invitations-title">Invite respondents</h3>
+                  <p class="forma-field__description">Each link is one invitation to this group. The links carry no name or e-mail address; for an identified group, keep your own record of which link went to whom. Signal does not store the links.</p>
+                  <label>How many links <input id="invite-count" type="number" min="1" max="500" data-event="inviteCount" data-bind-value="inviteCount" /></label>
+                  <label>Language (optional, e.g. fr-CA) <input id="invite-locale" type="text" data-event="inviteLocale" data-bind-value="inviteLocale" /></label>
+                  <label>Last day to answer (optional) <input id="invite-expires" type="date" data-event="inviteExpires" data-bind-value="inviteExpires" /></label>
+                  <button type="button" class="forma-button" id="issue-invitations" data-event="issueInvitations" data-bind-disabled="inviteDisabled" data-bind-aria-busy="inviteBusy" data-bind-aria-disabled="inviteBusy" data-text="inviteLabel">Create links</button>
+                  <template data-if="hasInvitations">
+                    <div class="forma-stack">
+                      <p id="invitation-summary" role="status" data-text="invitationSummary"></p>
+                      <ol id="invitation-links"><template data-each="invitationLinks" data-key="key"><li><code data-text="link"></code></li></template></ol>
+                      <button type="button" class="forma-button" id="save-invitations" data-event="saveInvitations">Save the links</button>
+                    </div>
+                  </template>
+                </section>
+              </template>
+              <template data-if="canImport">
+                <form id="import" class="forma-stack" data-event="import">
+                  <label>Completed survey links, one per line
+                    <textarea rows="6" data-event="importText" data-bind-value="importText"></textarea>
+                  </label>
+                  <label><input type="checkbox" data-event="importOrigin" value="file" data-bind-checked="importFile" /> These came from a text file</label>
+                  <button type="submit" class="forma-button" data-bind-disabled="importDisabled" data-bind-aria-busy="importBusy" data-bind-aria-disabled="importBusy" data-text="importLabel">Import</button>
+                </form>
+              </template>
+
+              <fieldset id="outcome-filters" class="forma-choice-group">
+                <legend>Show</legend>
+                <template data-each="outcomeFilters" data-key="key">
+                  <label><input type="checkbox" data-event="filterOutcome" data-bind-value="key" data-bind-checked="checked" /> <span data-text="label"></span></label>
+                </template>
+              </fieldset>
+              <table id="imported-surveys">
+                <thead><tr><th>Artifact</th><th>Outcome</th></tr></thead>
+                <tbody><template data-each="importedSurveys" data-key="artifact"><tr><td><code data-text="artifact"></code></td><td data-text="outcome"></td></tr></template></tbody>
+              </table>
+              <section id="last-import" aria-label="Last import">
+                <!-- ADM-008's separate views of the last batch, by outcome. -->
+                <details id="importPending"><summary>Pending</summary><ul><template data-each="importPending" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
+                <details id="importAccepted"><summary>Accepted</summary><ul><template data-each="importAccepted" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
+                <details id="importDuplicate"><summary>Duplicates</summary><ul><template data-each="importDuplicate" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
+                <details id="importRejected"><summary>Rejected</summary><ul><template data-each="importRejected" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
+                <details id="importReconciliation"><summary>Requiring reconciliation</summary><ul><template data-each="importReconciliation" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
+                <details id="importBlockedTemplate"><summary>Blocked by a missing template</summary><ul><template data-each="importBlockedTemplate" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
+                <details id="importBlockedEncoding"><summary>Blocked by an unsupported encoding</summary><ul><template data-each="importBlockedEncoding" data-key="artifact"><li><code data-text="artifact"></code> <span data-text="outcome"></span></li></template></ul></details>
+                <p><strong data-text="batchStatus"></strong> <span data-text="batchCounts"></span></p>
+                <table>
+                  <thead><tr><th>Artifact</th><th>Outcome</th></tr></thead>
+                  <tbody><template data-each="importItems" data-key="artifact"><tr><td><code data-text="artifact"></code></td><td data-text="outcome"></td></tr></template></tbody>
+                </table>
+              </section>
+              </section>
+              </template>
+            </section>
+        </template>
+        </div>
+      </template>
+
+      <template data-if="viewCompare">
+        <section id="compare" class="forma-stack" aria-labelledby="compare-title">
+          <h2 id="compare-title">Compare groups</h2>
+          <fieldset id="compare-groups" class="forma-choice-group">
+            <legend>Groups</legend>
+            <template data-each="compareGroups" data-key="key">
+              <label><input type="checkbox" data-event="compareGroup" data-bind-value="key" data-bind-checked="checked" /> <code data-text="key"></code> <span data-text="survey"></span></label>
+            </template>
+          </fieldset>
+          <label>Section
+            <select id="compare-section" data-event="compareSection">
+              <option value="">All sections</option>
+              <template data-each="compareSections" data-key="id"><option data-bind-value="id" data-bind-selected="selected" data-text="id"></option></template>
+            </select>
+          </label>
+          <p id="compare-reason" data-text="compareReason"></p>
+          <table id="compare-rows">
+            <thead><tr><th>Section</th><th>Group</th><th>Mean</th></tr></thead>
+            <tbody><template data-each="compareRows" data-key="key"><tr><td data-text="section"></td><td><code data-text="group"></code></td><td data-text="score"></td></tr></template></tbody>
+          </table>
+        </section>
+      </template>
+
+      <template data-if="viewAdministrators">
+        <section id="administrators" class="forma-stack">
+          <h2>Administrators</h2>
+          <table>
+            <thead><tr><th>Account</th><th>Capabilities</th><th></th></tr></thead>
+            <tbody>
+              <template data-each="administrators" data-key="id">
+                <tr>
+                  <td data-text="id"></td><td data-text="capabilities"></td>
+                  <td><button type="button" class="forma-button" data-event="removeAdministrator" data-bind-disabled="removeDisabled" data-bind-aria-busy="removeBusy" data-bind-aria-disabled="removeBusy" data-text="removeLabel">Remove</button></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+          <template data-if="canManageAdministrators">
+            <form id="admit" class="forma-stack" data-event="admit">
+              <label>GitHub account number <input type="text" inputmode="numeric" data-event="admitAccount" data-bind-value="admitAccount" /></label>
+              <label>Grant
+                <select data-event="admitGrant">
+                  <option value="analyst">Analyst</option>
+                  <option value="importer">Importer</option>
+                  <option value="draftEditor">Draft editor</option>
+                  <option value="reviewer">Reviewer</option>
+                  <option value="publisher">Publisher</option>
+                  <option value="administrator">Administrator</option>
+                </select>
+              </label>
+              <button type="submit" class="forma-button" data-bind-disabled="admitDisabled" data-bind-aria-busy="admitBusy" data-bind-aria-disabled="admitBusy" data-text="admitLabel">Admit</button>
+            </form>
+          </template>
+        </section>
+      </template>
+
+      <template data-if="viewStorage">
+        <section id="storage" class="forma-stack">
+          <h2>Storage</h2>
+          <p id="verification" data-text="verification"></p>
+          <template data-if="canRepairIndex"><button type="button" class="forma-button" data-event="rebuildIndex" data-bind-disabled="rebuildIndexDisabled" data-bind-aria-busy="rebuildIndexBusy" data-bind-aria-disabled="rebuildIndexBusy" data-text="rebuildIndexLabel">Rebuild the contribution index</button></template>
+          <!-- The dataset's lifecycle (ADM-045, WI-0077). -->
+          <section id="dataset-lifecycle" class="forma-stack" aria-labelledby="dataset-lifecycle-heading">
+            <h3 id="dataset-lifecycle-heading" tabindex="-1" data-focus-target="dataset-lifecycle">Lifecycle</h3>
+            <p>State: <code id="dataset-lifecycle-state" data-text="datasetLifecycle"></code>. <span data-text="datasetLifecycleText"></span></p>
+            <template data-if="canManageLifecycle">
+              <ul class="forma-stack" id="lifecycle-targets">
+                <template data-each="lifecycleTargets" data-key="target">
+                  <li><button type="button" class="forma-button" data-event="datasetTransition" data-bind-disabled="targetDisabled" data-bind-aria-busy="targetBusy" data-bind-aria-disabled="targetBusy" data-text="targetLabel"></button> <span data-text="targetMeaning"></span></li>
+                </template>
+              </ul>
+            </template>
+          </section>
+          <p>Capabilities now: <code id="capabilities" data-text="capabilityList"></code></p>
+        </section>
+      </template>
+    </section>
+  </template>
+
+  <!-- A group's report (WI-0062): ReportData from the engine, rendered by
+       Folio's print components without recomputation. The family and
+       language are the route's, so the link opens this report; printing
+       prints only the report (Print, or Save as PDF). -->
+  <template data-if="viewReport">
+    <section id="report-controls" class="forma-stack report-controls" aria-label="Report options">
+      <nav aria-label="Report family">
+        <ul class="areas" id="report-families">
+          <template data-each="reportFamilies" data-key="id">
+            <li><a data-bind-href="href" data-bind-aria-current="current" data-bind-data-available="available" data-text="label"></a></li>
+          </template>
+        </ul>
+      </nav>
+      <nav aria-label="Report language">
+        <ul class="areas" id="report-locales">
+          <template data-each="reportLocales" data-key="id">
+            <li><a data-bind-href="href" data-bind-aria-current="current" data-bind-lang="id" data-text="label"></a></li>
+          </template>
+        </ul>
+      </nav>
+      <template data-if="reportWithheld">
+        <p id="report-withheld" role="status">This report is not available for this group. <span data-text="reportWithheldReason"></span></p>
+      </template>
+      <p class="forma-field__description">To keep a copy, print this page or save it as PDF: only the report is printed.</p>
+      <section id="report-snapshots" class="forma-stack" aria-labelledby="report-snapshots-title">
+        <h2 id="report-snapshots-title">Formal snapshots</h2>
+        <p class="forma-field__description">A snapshot keeps this report exactly as it is now, with what produced it. Opening it later never shows newer data.</p>
+        <template data-if="canTakeSnapshot"><button type="button" class="forma-button" id="take-snapshot" data-event="takeSnapshot" data-bind-disabled="snapshotDisabled" data-bind-aria-busy="snapshotBusy" data-bind-aria-disabled="snapshotBusy" data-text="snapshotLabel">Take a snapshot</button></template>
+        <ul id="snapshots">
+          <template data-each="reportSnapshots" data-key="key">
+            <li>
+              <span data-text="label"></span> · <span data-text="intact"></span>
+              <template data-if="canExport"><span class="forma-cluster">
+                <button type="button" class="forma-button" data-event="exportReportJson" data-bind-disabled="jsonDisabled" data-bind-aria-busy="jsonBusy" data-bind-aria-disabled="jsonBusy" data-text="jsonLabel">Report (JSON)</button>
+                <button type="button" class="forma-button" data-event="exportSectionsCsv" data-bind-disabled="csvDisabled" data-bind-aria-busy="csvBusy" data-bind-aria-disabled="csvBusy" data-text="csvLabel">Sections (CSV)</button>
+                <button type="button" class="forma-button" data-event="exportLineage" data-bind-disabled="lineageDisabled" data-bind-aria-busy="lineageBusy" data-bind-aria-disabled="lineageBusy" data-text="lineageLabel">Lineage</button>
+              </span>
+              </template>
+            </li>
+          </template>
+        </ul>
+      </section>
+    </section>
+  </template>
+  <!-- One root element per data-if, as for the group view above: the report
+       surface stayed mounted, and printable, after leaving the report. -->
+  <template data-if="hasReport">
+    <div class="report-view">
+    <template data-if="viewReport">
+      <ef-print-document class="report-surface" id="report" data-bind-lang="reportLang" data-bind-dir="reportDir">
+        <ef-print-title-page>
+          <header>
+            <p data-text="reportFamily"></p>
+            <h1 id="report-title" data-text="reportTitle"></h1>
+            <p><span data-text="reportGroupLabel"></span> <code data-text="reportGroup"></code></p>
+            <p><span data-text="reportGeneratedLabel"></span> <span id="report-generated" data-text="reportGenerated"></span> · <span id="report-status" data-text="reportStatus"></span></p>
+          </header>
+        </ef-print-title-page>
+        <ef-print-toc>
+          <nav aria-labelledby="report-contents-title">
+            <h2 id="report-contents-title" data-text="reportContentsLabel"></h2>
+            <ol id="report-contents"><template data-each="reportContents" data-key="key"><li data-text="title"></li></template></ol>
+          </nav>
+        </ef-print-toc>
+        <template data-if="reportHasSummary">
+          <ef-print-section><section><h2 data-text="reportTitleSummary"></h2><p id="report-summary" data-text="reportSummary"></p>
+            <ul id="report-warnings"><template data-each="reportWarnings" data-key="code"><li data-bind-data-code="code" data-text="text"></li></template></ul></section></ef-print-section>
+        </template>
+        <template data-if="reportHasResponseCounts">
+          <ef-print-section><section><h2 data-text="reportTitleResponseCounts"></h2>
+            <dl id="report-counts"><template data-each="reportCounts" data-key="key"><div><dt data-text="label"></dt><dd data-bind-data-count="key" data-text="value"></dd></div></template></dl>
+          </section></ef-print-section>
+        </template>
+        <template data-if="reportHasOverallResult">
+          <ef-print-section><section><h2 data-text="reportTitleOverallResult"></h2>
+            <ef-print-metric><p id="report-overall" data-text="reportOverall"></p></ef-print-metric></section></ef-print-section>
+        </template>
+        <template data-if="reportHasSectionResults">
+          <ef-print-section><section><h2 data-text="reportTitleSectionResults"></h2>
+            <ef-print-table><table id="report-sections">
+              <thead><tr><template data-each="reportColumns" data-key="key"><th scope="col" data-text="label"></th></template></tr></thead>
+              <tbody><template data-each="reportSections" data-key="key"><tr><th scope="row" data-text="section"></th><td data-text="mean"></td><td data-text="median"></td><td data-text="range"></td><td data-text="scored"></td><td data-text="unscored"></td></tr></template></tbody>
+            </table></ef-print-table></section></ef-print-section>
+        </template>
+        <template data-if="reportHasGroupDistributions">
+          <ef-print-section><section><h2 data-text="reportTitleGroupDistributions"></h2>
+            <ef-print-table><table id="report-spread">
+              <tbody><template data-each="reportSections" data-key="key"><tr><th scope="row" data-text="section"></th><td data-text="median"></td><td data-text="range"></td></tr></template></tbody>
+            </table></ef-print-table></section></ef-print-section>
+        </template>
+        <template data-if="reportHasStrengths">
+          <ef-print-section><section><h2 data-text="reportTitleStrengths"></h2><ul><template data-each="reportStrengths" data-key="key"><li data-text="text"></li></template></ul></section></ef-print-section>
+        </template>
+        <template data-if="reportHasWeaknesses">
+          <ef-print-section><section><h2 data-text="reportTitleWeaknesses"></h2><ul><template data-each="reportWeaknesses" data-key="key"><li data-text="text"></li></template></ul></section></ef-print-section>
+        </template>
+        <template data-if="reportHasRecommendations">
+          <ef-print-section><section><h2 data-text="reportTitleRecommendations"></h2>
+            <ul id="report-recommendations"><template data-each="reportRecommendations" data-key="key"><li><strong data-text="title"></strong> <span data-text="priority"></span> · <span data-text="frequency"></span></li></template></ul></section></ef-print-section>
+        </template>
+        <template data-if="reportHasCoverageAndConfidence">
+          <ef-print-section><section><h2 data-text="reportTitleCoverageAndConfidence"></h2>
+            <dl id="report-coverage"><template data-each="reportCoverage" data-key="key"><div><dt data-text="label"></dt><dd data-text="value"></dd></div></template></dl></section></ef-print-section>
+        </template>
+        <template data-if="reportHasComparisons">
+          <ef-print-section><section><h2 data-text="reportTitleComparisons"></h2>
+            <ul id="report-comparisons"><template data-each="reportComparisons" data-key="key"><li><span data-text="label"></span> (<span data-text="baseline"></span>): <span data-text="delta"></span></li></template></ul></section></ef-print-section>
+        </template>
+        <template data-if="reportHasRoleBreakdown">
+          <ef-print-section><section><h2 data-text="reportTitleRoleBreakdown"></h2><ul><template data-each="reportRoles" data-key="key"><li><span data-text="role"></span>: <span data-text="count"></span></li></template></ul></section></ef-print-section>
+        </template>
+        <template data-if="reportHasMethodology">
+          <ef-print-section><section><h2 data-text="reportTitleMethodology"></h2><ul id="report-methodology"><template data-each="reportMethodology" data-key="key"><li data-text="text"></li></template></ul></section></ef-print-section>
+        </template>
+        <template data-if="reportHasAuditMetadata">
+          <ef-print-section><section><h2 data-text="reportTitleAuditMetadata"></h2>
+            <dl id="report-audit"><template data-each="reportAudit" data-key="key"><div><dt data-text="label"></dt><dd><code data-text="value"></code></dd></div></template></dl></section></ef-print-section>
+        </template>
+      </ef-print-document>
+    </template>
+    </div>
+  </template>
+</main>
+<script type="module" src="./admin.js"></script>
+<script src="../../web-kernel/startup-watchdog.js"></script>
+</body>
+</html>

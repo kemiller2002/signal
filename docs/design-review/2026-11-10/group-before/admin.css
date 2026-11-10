@@ -1,0 +1,43 @@
+/* The administrator page. Forma (pinned @echelon-foundry/design-system) owns
+   tokens, foundations and components; the Echelon theme (pinned
+   @echelon-foundry/echelon-theme, after Forma) supplies Echelon colours,
+   then its self-hosted fonts, then its application layer. All from the
+   installed packages, never copies. */
+@import "../../node_modules/@echelon-foundry/design-system/dist/all.css";
+@import "../../node_modules/@echelon-foundry/echelon-theme/dist/echelon.css";
+@import "../../node_modules/@echelon-foundry/echelon-theme/dist/echelon-fonts.css";
+@import "../../node_modules/@echelon-foundry/echelon-theme/dist/echelon-app.css";
+@import "../../node_modules/@echelon-foundry/print-components/src/styles/print.css" print;
+@import "../../web-kernel/page.css";
+
+/* Chart marks: a pattern beside every colour, so colour is never the only
+   carrier (ADM-017). Values and positions come from the engine. */
+.chart meter { inline-size: 100%; min-block-size: 1rem; }
+.chart tr[data-pattern="diagonal"] meter { background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgb(0 0 0 / 0.25) 4px 6px); }
+.chart tr[data-pattern="dots"] meter { background-image: radial-gradient(rgb(0 0 0 / 0.3) 1px, transparent 1.5px); background-size: 6px 6px; }
+.chart tr[data-pattern="cross"] meter { background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgb(0 0 0 / 0.2) 4px 5px), repeating-linear-gradient(-45deg, transparent 0 4px, rgb(0 0 0 / 0.2) 4px 5px); }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+@media (forced-colors: active) { .chart meter { forced-color-adjust: auto; } }
+
+/* Focus the page moves itself (limen.focus, `data-focus-target`) after an
+   operation answers is shown on :focus, not only :focus-visible: a browser
+   may treat programmatic focus after a pointer click as not visible, which
+   would leave the person no indicator of where focus went
+   (SIG-VIS-PENDING-002). Forma's own focus-ring tokens, in both themes: the
+   ring against the page surface is #171a18 on #f2efe7 (light) and #f2efe7 on
+   #171a18 (dark), about 15:1 either way; the offset leaves the surface as a
+   gap between element and ring. */
+[data-focus-target]:focus {
+  outline: var(--forma-focus-ring-width, 3px) solid var(--forma-color-focus-ring);
+  outline-offset: var(--forma-focus-ring-offset, 2px);
+  box-shadow: none;
+  scroll-margin: 0.5rem;
+}
+
+/* A group's report (WI-0062): a document on screen, and the only thing
+   printed while it is shown (Print, or Save as PDF). */
+.report-surface { display: block; margin-block-start: 1.5rem; }
+.report-controls a[data-available="false"] { opacity: 0.6; }
+@media print {
+  .admin:has(> .report-view .report-surface) > :not(.report-view) { display: none !important; }
+}

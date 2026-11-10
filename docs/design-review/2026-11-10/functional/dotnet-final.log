@@ -1,0 +1,9 @@
+  Echelon.Signal.Engine -> /workspace/signal-current/src/Echelon.Signal.Engine/bin/Release/net10.0/Echelon.Signal.Engine.dll
+  Echelon.Signal.Admin -> /workspace/signal-current/src/Echelon.Signal.Admin/bin/Release/net10.0/Echelon.Signal.Admin.dll
+  Echelon.Signal.Application -> /workspace/signal-current/src/Echelon.Signal.Application/bin/Release/net10.0/Echelon.Signal.Application.dll
+  Echelon.Signal.Tests -> /workspace/signal-current/tests/Echelon.Signal.Tests/bin/Release/net10.0/Echelon.Signal.Tests.dll
+Test run for /workspace/signal-current/tests/Echelon.Signal.Tests/bin/Release/net10.0/Echelon.Signal.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+Results File: /workspace/signal-current/tests/Echelon.Signal.Tests/TestResults/visual-refinement-final.trx
+
+Passed!  - Failed:     0, Passed:   692, Skipped:     0, Total:   692, Duration: 49 s - Echelon.Signal.Tests.dll (net10.0)

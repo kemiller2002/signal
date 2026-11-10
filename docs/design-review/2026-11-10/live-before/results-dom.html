@@ -1,0 +1,254 @@
+<!DOCTYPE html><html lang="en" data-forma-brand="echelon" data-kernel="running"><head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signal · Assessment</title>
+<link rel="icon" href="./brand/signal-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="./pages.css">
+</head>
+<body>
+<p class="pages-demo-banner" role="note" data-pages-banner="">Demo — data stays in this browser; GitHub sign-in not configured</p>
+<!-- Pre-runtime start-up (EDS-UX-WAIT-001, Forma .forma-startup): painted from
+     this HTML before the WebAssembly engine loads. web-kernel/limen-wasm.js
+     hides it once the kernel runs, or marks a failed or timed-out start. -->
+<div class="forma-startup" id="app-startup" data-forma-state="starting" hidden="">
+  <span class="forma-app-identity" data-forma-size="64">
+    <span class="forma-app-identity__mark"><svg class="forma-app-identity__variant" data-forma-scheme="light" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="12" fill="#202421"></rect><path d="M10 22V15L20 10V22Z" fill="#c9a07f"></path><path d="M10 40H20L25 28L33 50L39 34L42 40H54" fill="none" stroke="#f2efe7" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"></path></svg><svg class="forma-app-identity__variant" data-forma-scheme="dark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="12" fill="#f2efe7"></rect><path d="M10 22V15L20 10V22Z" fill="#905831"></path><path d="M10 40H20L25 28L33 50L39 34L42 40H54" fill="none" stroke="#202421" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"></path></svg></span>
+    <span class="forma-app-identity__name">Signal</span>
+  </span>
+  <div class="forma-startup__status" role="status">
+    <p class="forma-spinner">
+      <span class="forma-spinner__indicator" aria-hidden="true"></span>
+      <span class="forma-spinner__label">Starting Signal: loading the assessment engine</span>
+    </p>
+    <p class="forma-startup__slow">Still starting. On a slow connection the engine can take up to a minute to download.</p>
+  </div>
+  <div class="forma-startup__problem" role="alert">
+    <p class="forma-startup__problem-title" id="app-startup-problem-title">Signal could not start.</p>
+    <p id="app-startup-problem-detail">The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.</p>
+  </div>
+  <p class="forma-startup__noscript">Signal needs JavaScript and WebAssembly. Turn them on in your browser settings, then reload this page.</p>
+</div>
+<!-- Structure and presentation only. Every value below is projected by the F#
+     engine (src/Echelon.Signal.Engine) through Limen's data-* bindings, and
+     every control sends a named event back to it. Forma owns presentation (its
+     CSS and the inert <forma-*> authoring wrappers around native HTML); Folio
+     owns the print surface. Neither decides anything: Signal owns meaning. -->
+<main class="app forma-stack">
+  <header class="forma-record-header page-header">
+    <div class="forma-record-header__main">
+      <div class="forma-record-header__title">
+        <div><span class="forma-record-header__type">Signal</span><h1 data-text="assessmentTitle">Software Delivery Reality Assessment</h1></div>
+      </div>
+      <p id="assessment-version" data-text="assessmentVersion">SDRA 0.1.0-draft</p>
+    </div>
+  </header>
+
+  <!-- Unexpected operational failure (Aegis) is its own presentation. An
+       expected refusal (questions still unanswered) is an ordinary alert. -->
+  <!--if:hasOperationalFault-->
+
+  <!-- Saved answers in the link that could not be restored, and a link the
+       browser would not update: ordinary notices, not operational faults. -->
+  <!--if:hasNotice-->
+  <!--if:hasUrlNotice-->
+
+  <!--if:responding-->
+
+  <!--if:reviewing--><section id="results" class="forma-stack" aria-labelledby="results-title">
+      <div class="forma-cluster results-header">
+        <h2 id="results-title">Results</h2>
+        <span class="forma-status-lozenge" id="scored-count" role="status" data-text="scoredCount">3 of 3 dimensions scored</span>
+      </div>
+      <forma-data-grid class="forma-component-tag">
+        <div class="forma-data-grid" role="region" tabindex="0" aria-labelledby="results-title">
+          <table>
+            <thead>
+              <tr><th scope="col">Dimension</th><th scope="col">Score (0-100)</th><th scope="col">Coverage</th><th scope="col">Note</th></tr>
+            </thead>
+            <tbody id="results-body">
+              <!--each:results--><tr data-bind-data-dimension="id" data-dimension="D01">
+                  <td data-label="Dimension" data-text="dimension">Plan Commitment</td>
+                  <td data-label="Score"><span class="forma-status-lozenge" data-bind-data-state="scoreState" data-text="score" data-state="scored">50.0</span></td>
+                  <td data-label="Coverage" data-text="coverage">5 of 5 numeric</td>
+                  <td data-label="Note" data-text="note"></td>
+                </tr><tr data-bind-data-dimension="id" data-dimension="D02">
+                  <td data-label="Dimension" data-text="dimension">Change Responsiveness</td>
+                  <td data-label="Score"><span class="forma-status-lozenge" data-bind-data-state="scoreState" data-text="score" data-state="scored">50.0</span></td>
+                  <td data-label="Coverage" data-text="coverage">5 of 5 numeric</td>
+                  <td data-label="Note" data-text="note"></td>
+                </tr><tr data-bind-data-dimension="id" data-dimension="D03">
+                  <td data-label="Dimension" data-text="dimension">Timebox Discipline</td>
+                  <td data-label="Score"><span class="forma-status-lozenge" data-bind-data-state="scoreState" data-text="score" data-state="scored">50.0</span></td>
+                  <td data-label="Coverage" data-text="coverage">5 of 5 numeric</td>
+                  <td data-label="Note" data-text="note"></td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+      </forma-data-grid>
+      <p id="methodology" class="forma-field__description" data-text="methodology">Each dimension score is the mean of its numeric answers (0 = never or almost never, 4 = almost always) divided by 4 and multiplied by 100, rounded to one decimal place. A dimension needs at least 3 numeric answers to be scored. Higher means more of the named trait; it is not inherently better.</p>
+      <div class="forma-cluster">
+        <button id="edit-answers" type="button" data-event="editRequested">Edit answers</button>
+        <button id="start-over" type="button" data-event="restarted">Start over</button>
+        <!--if:canSubmit-->
+      </div>
+      <p class="forma-field__description">Print this page for the result report.</p>
+    </section>
+
+  <!-- A finalized submission: sealed, with the link the respondent sends. An
+       anonymous link carries a fresh identifier and no invitation. -->
+  <!--if:submitted-->
+
+  <!-- Folio's print surface: the same projected results and answers, as a
+       report. It adds no meaning and never rescores. -->
+  <ef-print-document class="print-surface">
+    <ef-print-header>
+      <header>
+        <p>Signal result report</p>
+        <h1 data-text="assessmentTitle">Software Delivery Reality Assessment</h1>
+        <p data-text="assessmentVersion">SDRA 0.1.0-draft</p>
+      </header>
+    </ef-print-header>
+    <ef-print-section>
+      <section>
+        <h2>Results at a glance</h2>
+        <ef-print-table>
+          <table>
+            <thead>
+              <tr><th scope="col">Dimension</th><th scope="col">Score (0-100)</th><th scope="col">Coverage</th><th scope="col">Note</th></tr>
+            </thead>
+            <tbody>
+              <!--each:results--><tr>
+                  <td data-text="dimension">Plan Commitment</td>
+                  <td data-text="score">50.0</td>
+                  <td data-text="coverage">5 of 5 numeric</td>
+                  <td data-text="note"></td>
+                </tr><tr>
+                  <td data-text="dimension">Change Responsiveness</td>
+                  <td data-text="score">50.0</td>
+                  <td data-text="coverage">5 of 5 numeric</td>
+                  <td data-text="note"></td>
+                </tr><tr>
+                  <td data-text="dimension">Timebox Discipline</td>
+                  <td data-text="score">50.0</td>
+                  <td data-text="coverage">5 of 5 numeric</td>
+                  <td data-text="note"></td>
+                </tr>
+            </tbody>
+          </table>
+        </ef-print-table>
+      </section>
+    </ef-print-section>
+    <ef-print-section>
+      <section>
+        <h2>Result integrity</h2>
+        <p><span data-text="scoredCount">3 of 3 dimensions scored</span> · <span data-text="progress">15 of 15 answered</span></p>
+        <h2>Scoring and methodology</h2>
+        <p data-text="methodology">Each dimension score is the mean of its numeric answers (0 = never or almost never, 4 = almost always) divided by 4 and multiplied by 100, rounded to one decimal place. A dimension needs at least 3 numeric answers to be scored. Higher means more of the named trait; it is not inherently better.</p>
+      </section>
+    </ef-print-section>
+    <ef-print-section>
+      <section>
+        <h2>Responses</h2>
+        <ef-print-table>
+          <table>
+            <thead>
+              <tr><th scope="col">#</th><th scope="col">Dimension</th><th scope="col">Statement</th><th scope="col">Answer</th></tr>
+            </thead>
+            <tbody>
+              <!--each:items--><tr>
+                  <td data-text="number">1</td>
+                  <td data-text="dimension">Plan Commitment</td>
+                  <td data-text="prompt">Major requirements are expected to be substantially defined before implementation begins.</td>
+                  <td data-text="answerLabel">Sometimes</td>
+                </tr><tr>
+                  <td data-text="number">2</td>
+                  <td data-text="dimension">Plan Commitment</td>
+                  <td data-text="prompt">Release scope is committed well before the work needed to deliver it is complete.</td>
+                  <td data-text="answerLabel">Sometimes</td>
+                </tr><tr>
+                  <td data-text="number">3</td>
+                  <td data-text="dimension">Plan Commitment</td>
+                  <td data-text="prompt">Changes discovered after implementation begins normally require formal change approval.</td>
+                  <td data-text="answerLabel">Sometimes</td>
+                </tr><tr>
+                  <td data-text="number">4</td>
+                  <td data-text="dimension">Plan Commitment</td>
+                  <td data-text="prompt">Design, build, test, and release milestones are managed against an upfront baseline plan.</td>
+                  <td data-text="answerLabel">Sometimes</td>
+                </tr><tr>
+                  <td data-text="number">5</td>
+                  <td data-text="dimension">Plan Commitment</td>
+                  <td data-text="prompt">Delivery success is judged primarily by conformance to the original scope/schedule plan.</td>
+                  <td data-text="answerLabel">Sometimes</td>
+                </tr><tr>
+                  <td data-text="number">6</td>
+                  <td data-text="dimension">Change Responsiveness</td>
+                  <td data-text="prompt">New customer or operational evidence can change upcoming priorities through the normal process.</td>
+                  <td data-text="answerLabel">Sometimes</td>
+                </tr><tr>
+                  <td data-text="number">7</td>
+                  <td data-text="dimension">Change Responsiveness</td>
+                  <td data-text="prompt">The team can clarify or renegotiate planned scope when it learns something important.</td>
+                  <td data-text="answerLabel">Sometimes</td>
+                </tr><tr>
+                  <td data-text="number">8</td>
+                  <td data-text="dimension">Change Responsiveness</td>
+                  <td data-text="prompt">Findings from implementation regularly change what the team plans to do next.</td>
+                  <td data-text="answerLabel">Sometimes</td>
+                </tr><tr>
+                  <td data-text="number">9</td>
+                  <td data-text="dimension">Change Responsiveness</td>
+                  <td data-text="prompt">Stakeholder feedback can alter priorities without waiting for a major project phase boundary.</td>
+                  <td data-text="answerLabel">Sometimes</td>
+                </tr><tr>
+                  <td data-text="number">10</td>
+                  <td data-text="dimension">Change Responsiveness</td>
+                  <td data-text="prompt">Planning is revisited often enough that newly learned information can materially affect near-term work.</td>
+                  <td data-text="answerLabel">Sometimes</td>
+                </tr><tr>
+                  <td data-text="number">11</td>
+                  <td data-text="dimension">Timebox Discipline</td>
+                  <td data-text="prompt">Work is organized in consistent short iterations or timeboxes.</td>
+                  <td data-text="answerLabel">Sometimes</td>
+                </tr><tr>
+                  <td data-text="number">12</td>
+                  <td data-text="dimension">Timebox Discipline</td>
+                  <td data-text="prompt">Each iteration has a shared outcome or goal rather than only a collection of assigned tasks.</td>
+                  <td data-text="answerLabel">Sometimes</td>
+                </tr><tr>
+                  <td data-text="number">13</td>
+                  <td data-text="dimension">Timebox Discipline</td>
+                  <td data-text="prompt">Planning, inspection/review, and improvement happen on a consistent iteration cadence.</td>
+                  <td data-text="answerLabel">Sometimes</td>
+                </tr><tr>
+                  <td data-text="number">14</td>
+                  <td data-text="dimension">Timebox Discipline</td>
+                  <td data-text="prompt">The team aims to produce usable, integrated work by the end of each iteration.</td>
+                  <td data-text="answerLabel">Sometimes</td>
+                </tr><tr>
+                  <td data-text="number">15</td>
+                  <td data-text="dimension">Timebox Discipline</td>
+                  <td data-text="prompt">Work that has not met the team's completion/quality criteria is not counted as finished merely because the iteration ended.</td>
+                  <td data-text="answerLabel">Sometimes</td>
+                </tr>
+            </tbody>
+          </table>
+        </ef-print-table>
+      </section>
+    </ef-print-section>
+    <ef-print-footer>
+      <footer>
+        <span>Signal · <span data-text="assessmentVersion">SDRA 0.1.0-draft</span></span>
+        <ef-print-page-number></ef-print-page-number>
+      </footer>
+    </ef-print-footer>
+  </ef-print-document>
+</main>
+<script type="module" src="./main.js"></script>
+<script src="../web-kernel/startup-watchdog.js"></script>
+
+
+</body></html>

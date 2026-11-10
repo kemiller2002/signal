@@ -1,0 +1,247 @@
+{
+  "screens": [
+    {
+      "route": "",
+      "text": "Demo \u2014 data stays in this browser; GitHub sign-in not configured\n\nSIGNAL\nAdministration\n\nCopy link\nOverview\nGroups\nCompare\nAssessments\nReports\nAdministrators\nStorage\nNo data store is configured\n\nThis deployment configures no storage profile, so there is nothing to administer. Configure a profile, an identity exchange and a dataset in signal.deployment.json.",
+      "links": [
+        {
+          "text": "Overview",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/"
+        },
+        {
+          "text": "Groups",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/groups"
+        },
+        {
+          "text": "Compare",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/compare"
+        },
+        {
+          "text": "Assessments",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/assessments"
+        },
+        {
+          "text": "Reports",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/reports"
+        },
+        {
+          "text": "Administrators",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/administrators"
+        },
+        {
+          "text": "Storage",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/storage"
+        }
+      ]
+    },
+    {
+      "route": "groups",
+      "text": "Demo \u2014 data stays in this browser; GitHub sign-in not configured\n\nSIGNAL\nAdministration\n\nCopy link\nOverview\nGroups\nCompare\nAssessments\nReports\nAdministrators\nStorage\nNo data store is configured\n\nThis deployment configures no storage profile, so there is nothing to administer. Configure a profile, an identity exchange and a dataset in signal.deployment.json.",
+      "links": [
+        {
+          "text": "Overview",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/"
+        },
+        {
+          "text": "Groups",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/groups"
+        },
+        {
+          "text": "Compare",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/compare"
+        },
+        {
+          "text": "Assessments",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/assessments"
+        },
+        {
+          "text": "Reports",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/reports"
+        },
+        {
+          "text": "Administrators",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/administrators"
+        },
+        {
+          "text": "Storage",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/storage"
+        }
+      ]
+    },
+    {
+      "route": "compare",
+      "text": "Demo \u2014 data stays in this browser; GitHub sign-in not configured\n\nSIGNAL\nAdministration\n\nCopy link\nOverview\nGroups\nCompare\nAssessments\nReports\nAdministrators\nStorage\nNo data store is configured\n\nThis deployment configures no storage profile, so there is nothing to administer. Configure a profile, an identity exchange and a dataset in signal.deployment.json.",
+      "links": [
+        {
+          "text": "Overview",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/"
+        },
+        {
+          "text": "Groups",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/groups"
+        },
+        {
+          "text": "Compare",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/compare"
+        },
+        {
+          "text": "Assessments",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/assessments"
+        },
+        {
+          "text": "Reports",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/reports"
+        },
+        {
+          "text": "Administrators",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/administrators"
+        },
+        {
+          "text": "Storage",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/storage"
+        }
+      ]
+    },
+    {
+      "route": "assessments",
+      "text": "Demo \u2014 data stays in this browser; GitHub sign-in not configured\n\nSIGNAL\nAdministration\n\nCopy link\nOverview\nGroups\nCompare\nAssessments\nReports\nAdministrators\nStorage\nAssessments\nSoftware Delivery Reality Assessment (SDRA 0.1.0-draft)",
+      "links": [
+        {
+          "text": "Overview",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/"
+        },
+        {
+          "text": "Groups",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/groups"
+        },
+        {
+          "text": "Compare",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/compare"
+        },
+        {
+          "text": "Assessments",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/assessments"
+        },
+        {
+          "text": "Reports",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/reports"
+        },
+        {
+          "text": "Administrators",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/administrators"
+        },
+        {
+          "text": "Storage",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/storage"
+        },
+        {
+          "text": "Software Delivery Reality Assessment (SDRA 0.1.0-draft)",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/assessments/SDRA/versions/0.1.0-draft"
+        }
+      ]
+    },
+    {
+      "route": "reports",
+      "text": "Demo \u2014 data stays in this browser; GitHub sign-in not configured\n\nSIGNAL\nAdministration\n\nCopy link\nOverview\nGroups\nCompare\nAssessments\nReports\nAdministrators\nStorage\nReport definitions\n\nA report definition chooses what a report shows and how; it never changes how results are scored. A version used for a formal snapshot never changes: editing it saves the next version.\n\nNo data store is configured\n\nThis deployment configures no storage profile, so there is nothing to administer. Configure a profile, an identity exchange and a dataset in signal.deployment.json.",
+      "links": [
+        {
+          "text": "Overview",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/"
+        },
+        {
+          "text": "Groups",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/groups"
+        },
+        {
+          "text": "Compare",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/compare"
+        },
+        {
+          "text": "Assessments",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/assessments"
+        },
+        {
+          "text": "Reports",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/reports"
+        },
+        {
+          "text": "Administrators",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/administrators"
+        },
+        {
+          "text": "Storage",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/storage"
+        }
+      ]
+    },
+    {
+      "route": "administrators",
+      "text": "Demo \u2014 data stays in this browser; GitHub sign-in not configured\n\nSIGNAL\nAdministration\n\nCopy link\nOverview\nGroups\nCompare\nAssessments\nReports\nAdministrators\nStorage\nNo data store is configured\n\nThis deployment configures no storage profile, so there is nothing to administer. Configure a profile, an identity exchange and a dataset in signal.deployment.json.",
+      "links": [
+        {
+          "text": "Overview",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/"
+        },
+        {
+          "text": "Groups",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/groups"
+        },
+        {
+          "text": "Compare",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/compare"
+        },
+        {
+          "text": "Assessments",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/assessments"
+        },
+        {
+          "text": "Reports",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/reports"
+        },
+        {
+          "text": "Administrators",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/administrators"
+        },
+        {
+          "text": "Storage",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/storage"
+        }
+      ]
+    },
+    {
+      "route": "storage",
+      "text": "Demo \u2014 data stays in this browser; GitHub sign-in not configured\n\nSIGNAL\nAdministration\n\nCopy link\nOverview\nGroups\nCompare\nAssessments\nReports\nAdministrators\nStorage\nNo data store is configured\n\nThis deployment configures no storage profile, so there is nothing to administer. Configure a profile, an identity exchange and a dataset in signal.deployment.json.",
+      "links": [
+        {
+          "text": "Overview",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/"
+        },
+        {
+          "text": "Groups",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/groups"
+        },
+        {
+          "text": "Compare",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/compare"
+        },
+        {
+          "text": "Assessments",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/assessments"
+        },
+        {
+          "text": "Reports",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/reports"
+        },
+        {
+          "text": "Administrators",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/administrators"
+        },
+        {
+          "text": "Storage",
+          "href": "https://signal.echelonfoundry.com/web/admin/#/storage"
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

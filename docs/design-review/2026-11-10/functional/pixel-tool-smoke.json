@@ -1,0 +1,264 @@
+{
+  "kind": "pixel regression screen, not visual acceptance",
+  "screens": [
+    {
+      "file": "assessment-320-text200.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "assessment-desktop-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "assessment-desktop-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "assessment-forced-colors.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "assessment-mobile-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "assessment-mobile-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "assessment-narrow-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "assessment-narrow-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "assessment-tablet-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "assessment-tablet-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "respondent-320-text200.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "respondent-audit-forced.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "respondent-desktop-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "respondent-desktop-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "respondent-forced-colors.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "respondent-keyboard.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "respondent-mobile-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "respondent-mobile-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "respondent-narrow-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "respondent-narrow-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "respondent-tablet-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "respondent-tablet-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "results-320-text200.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "results-audit-forced.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "results-desktop-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "results-desktop-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "results-forced-colors.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "results-mobile-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "results-mobile-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "results-narrow-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "results-narrow-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "results-tablet-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "results-tablet-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "submitted-320-text200.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "submitted-desktop-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "submitted-desktop-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "submitted-forced-colors.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "submitted-mobile-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "submitted-mobile-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "submitted-narrow-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "submitted-narrow-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "submitted-tablet-dark.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    },
+    {
+      "file": "submitted-tablet-light.png",
+      "pass": true,
+      "changedPixels": 0,
+      "fraction": 0.0
+    }
+  ],
+  "pass": true
+}
