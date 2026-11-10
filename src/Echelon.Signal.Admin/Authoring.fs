@@ -262,6 +262,7 @@ let draftParts =
       "presentation", "Presentation"
       "translations", "Translations"
       "fixtures", "Test fixtures"
+      "validation", "Validation"
       "review", "Review" ]
 
 /// The page events the authoring screens own.

@@ -204,9 +204,9 @@ test("SIG-ECHELON-APP-002 (WI-0130): the draft's actions are one group in its he
 
   // The parts: each moves focus to its heading, in view; the address stays.
   const parts = head.getByRole("navigation", { name: "Draft parts" }).getByRole("button");
-  await expect(parts).toHaveText(["Questions", "Conditions", "Scoring", "Presentation", "Translations", "Test fixtures", "Review"]);
+  await expect(parts).toHaveText(["Questions", "Conditions", "Scoring", "Presentation", "Translations", "Test fixtures", "Validation", "Review"]);
   const address = page.url();
-  for (const [part, heading] of [["Scoring", "Scoring"], ["Test fixtures", "Test fixtures"], ["Review", "Review"], ["Questions", "Questions"]]) {
+  for (const [part, heading] of [["Scoring", "Scoring"], ["Test fixtures", "Test fixtures"], ["Validation", "Validation"], ["Review", "Review"], ["Questions", "Questions"]]) {
     await parts.filter({ hasText: part }).click();
     const target = draft.getByRole("heading", { level: 3, name: heading, exact: true });
     await expect(target).toBeFocused();
@@ -227,6 +227,22 @@ test("SIG-ECHELON-APP-002 (WI-0130): the draft's actions are one group in its he
   await draft.getByRole("textbox", { name: "New question", exact: true }).press("Tab");
   await draft.getByRole("button", { name: "Add the question below here" }).click();
   await expect(page.locator("#draft-questions li")).toHaveCount(1);
+
+  // The warnings' acknowledgement names them, from the findings themselves,
+  // and leads to them under Validation (signal#137 review).
+  const warningCodes = await page.locator("#draft-findings tbody tr").filter({ has: page.locator("td", { hasText: /^Warning$/ }) }).locator("td:nth-child(2)").allTextContents();
+  expect(warningCodes.length).toBeGreaterThan(0);
+  const summary = warningCodes.length === 1 ? `1 warning: ${warningCodes[0]}` : `${warningCodes.length} warnings: ${warningCodes.join(", ")}`;
+  const ack = head.locator(".draft-ack");
+  await expect(ack.getByRole("checkbox", { name: "I have read the warnings and accept them" })).toBeVisible();
+  await expect(ack.locator("#draft-warning-summary")).toHaveText(summary);
+  await ack.getByRole("button", { name: "See them under Validation", exact: true }).click();
+  const validation = draft.getByRole("heading", { level: 3, name: "Validation", exact: true });
+  await expect(validation).toBeFocused();
+  await expect(validation).toBeInViewport();
+  await expect(page.locator("#draft-findings")).toContainText(warningCodes[0]);
+  expect(page.url()).toBe(address);
+
   await page.setViewportSize({ width: 320, height: 900 });
   await page.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
   const collapsed = await page.locator("#draft-questions").evaluate((list) => {

@@ -118,6 +118,8 @@ let private onNamedEvent (model: Model) (name: string) (key: string option) (val
         match key with
         | Some part when Authoring.draftParts |> List.exists (fst >> (=) part) -> model, [ Focus $"draft-part-{part}" ]
         | _ -> model, []
+    // Beside the warnings' acknowledgement: to the findings it acknowledges.
+    | "draftJumpValidation" -> model, [ Focus "draft-part-validation" ]
     | "navigate" ->
         // A location the page names (`/groups`), as a link would.
         match key |> Option.map (RouteCodec.parse codec Router.allowAll) with

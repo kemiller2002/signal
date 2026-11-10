@@ -190,6 +190,13 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - `#activity` is the page's one live region (polite, not atomic): the loading spinner and label, the answered count, review, timer, each question's selection guidance, a link notice and the copy outcome. What it announces is shown, not live, where it belongs. Refusals and faults stay alerts; the start-up screen's own status (before the engine) is unchanged.
 - #133's survey-loading assertions moved from `pending-states.spec.js` into `respondent.spec.js` with every assertion kept; the one change is where the status role sits (on `#activity`, which holds `#loading`, instead of on `#loading`).
 
+### signal#137 review round 2 (WI-0133, 2026-11-10)
+
+- The long views' outcome copies show the persistence, reload and notice lines only for the view's own latest change (`ActivityView`: `draftOutcome` for save, publish, review, approve and delete; `assessmentsOutcome` for hide; `reportOutcome` for a report definition). A retire's line no longer sits in the draft's Outcome group; the shell's persistence line still says it.
+- The warnings' acknowledgement names them from the findings ("1 warning: CODE", `draftWarningSummary`) and has "See them under Validation" (`draftJumpValidation`); Validation is in the draft parts.
+- `outcome-beside-actions.spec.js` runs at 1280 and 390 px; the draft parts wrap on a phone.
+- #136 follow-ups folded in: the release record's sentence adds "If newer results are still withheld, import the same links again."; the obligation adds that blocked items resume only once their template or encoding can be read.
+
 ### signal#137 visual-gate review (WI-0130, 2026-11-10)
 
 - Template header: title, lifecycle chip and the one action group (Delete draft… danger, Submit for review and Approve as reviewed tertiary, Save draft, Publish primary), the warnings' acknowledgement, the delete confirmation and the outcome copy directly under it; no action is left in a panel.

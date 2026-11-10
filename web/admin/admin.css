@@ -262,10 +262,11 @@
   padding-inline: 0.75rem 0;
   border-inline-start: 3px solid var(--echelon-accent-rule);
 }
-.admin .admin-outcome:not(:has(> p)) { display: none; }
-.admin .admin-outcome > p { margin: 0; max-inline-size: none; }
-.admin .admin-outcome > :is(.admin-outcome__persistence, .admin-outcome__reload) { color: var(--echelon-text-secondary); }
-.admin .admin-outcome > .admin-outcome__notice { color: var(--forma-color-text-primary); }
+.admin .admin-outcome:not(:has(p)) { display: none; }
+.admin .admin-outcome :is(p) { margin: 0; max-inline-size: none; }
+.admin .admin-outcome__lines { display: grid; gap: 0.25rem; }
+.admin .admin-outcome :is(.admin-outcome__persistence, .admin-outcome__reload) { color: var(--echelon-text-secondary); }
+.admin .admin-outcome .admin-outcome__notice { color: var(--forma-color-text-primary); }
 
 /* The activity line sits under the dataset's title, part of the shell. */
 .admin .activity > :is(p, div) { margin: 0; }
@@ -322,7 +323,7 @@
 .draft-head__title > * { margin: 0; }
 .draft-head h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); overflow-wrap: anywhere; }
 .draft-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
-.draft-head > :is(label, .admin-confirm, .admin-outcome, .draft-parts) { grid-column: 1 / -1; }
+.draft-head > :is(label, .draft-ack, .admin-confirm, .admin-outcome, .draft-parts) { grid-column: 1 / -1; }
 @media (min-width: 64rem) {
   .draft-head { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
   .draft-actions { justify-content: flex-end; }
@@ -418,12 +419,10 @@
   .draft-editor .draft-panel > :is(.echelon-panel__header, .echelon-panel__body) { padding-inline: 0.875rem; }
   .draft-editor { gap: 1rem; }
 }
-/* On a narrow screen the parts stay one row that scrolls sideways in place,
-   rather than wrapping into several. */
+/* On a narrow screen the parts wrap onto further rows, as the route tabs do
+   (signal#137 review: a sideways-scrolling row cut "Presentation" off). */
 @media (max-width: 48rem) {
-  .draft-parts__list { flex-wrap: nowrap; overflow-x: auto; }
-  .draft-parts__list > li { flex: 0 0 auto; }
-  .admin .draft-parts__link { white-space: nowrap; overflow-wrap: normal; }
+  .admin .draft-parts__link { padding-inline: 0.5rem; }
 }
 /* A phone (and 320 px with 200% text): Remove goes under the question, so
    the question keeps the row's width (the audit found it set four letters a
@@ -432,3 +431,8 @@
   .draft-question { grid-template-columns: minmax(0, 1fr); }
   .draft-question > .forma-button { grid-column: 1; grid-row: auto; justify-self: start; }
 }
+/* The warnings' acknowledgement names them and leads to them (signal#137
+   review): the checkbox, the warnings' codes, and a way to Validation. */
+.draft-ack { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; }
+.draft-ack > label { display: inline-flex; align-items: center; gap: 0.5rem; }
+#draft-warning-summary { color: var(--echelon-text-secondary); font-family: var(--forma-primitive-font-family-mono); font-size: 0.875rem; overflow-wrap: anywhere; }

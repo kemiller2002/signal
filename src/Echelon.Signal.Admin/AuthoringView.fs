@@ -195,6 +195,20 @@ let project (model: Model) : (string * ViewValue) list =
       )
       "draftPasses", flag (report |> Option.exists _.Passes)
       "draftHasWarnings", flag (report |> Option.exists (fun r -> not r.Warnings.IsEmpty))
+      // The warnings named beside their acknowledgement, from the report's own
+      // findings (signal#137 review): "1 warning: CODE", "2 warnings: A, B".
+      "draftWarningSummary",
+      text (
+          report
+          |> Option.map (fun r ->
+              match r.Warnings |> List.map _.Code with
+              | [] -> ""
+              | [ code ] -> $"1 warning: {code}"
+              | codes ->
+                  let listed = String.concat ", " codes
+                  $"{codes.Length} warnings: {listed}")
+          |> Option.defaultValue ""
+      )
       "acknowledgeWarnings", flag (editor |> Option.exists _.AcknowledgeWarnings)
       // Review before publication (AUT-006 §§64-65).
       "draftReview", text (survey |> Option.bind (fun s -> model.Templates.Reviews |> Map.tryFind s) |> Option.defaultValue "Not saved yet")

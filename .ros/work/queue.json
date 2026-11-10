@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 133,
+  "nextSeq": 134,
   "items": [
     {
       "id": "WI-0001",
@@ -3184,6 +3184,27 @@
       "attachments": [],
       "createdAt": "2026-11-10T11:26:57.614Z",
       "updatedAt": "2026-11-10T11:26:57.614Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0133",
+      "title": "SIG-ECHELON-APP-002 (c) signal#137 review round 2: outcome copy only for the view's own changes, warnings named beside their acknowledgement with Validation in the parts, 390 px outcome pass, parts wrap; #136 follow-ups (release record and blocked-item wording)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-10T12:30:32.260Z",
+      "updatedAt": "2026-11-10T12:50:42.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
