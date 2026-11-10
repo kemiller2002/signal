@@ -5134,7 +5134,27 @@
       "updatedAt": "2026-11-10T18:53:25.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T185325983Z-ef91c0e5"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "8b05c546aec68e77044a13a5",
+        "recordedAt": "2026-11-10T18:54:15.000Z",
+        "executionId": "EXE-20261110T185325983Z-ef91c0e5",
+        "repository": "echelon-signal",
+        "branch": "fix/results-follow-up",
+        "commit": "37761689b0e39a4c7df3b1702e4155c7b487eae6",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "fix/results-follow-up",
+        "remoteCommit": "37761689b0e39a4c7df3b1702e4155c7b487eae6",
+        "summary": "Six signal#140 should-fixes implemented with tests at 3776168; PR #142 (draft) open; capture on visual/results-follow-up",
+        "nextAction": "Check CI and the capture screens; complete with evidence",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
