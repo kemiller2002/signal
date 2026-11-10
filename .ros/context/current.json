@@ -4442,7 +4442,27 @@
       "updatedAt": "2026-11-10T06:01:00.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T060101778Z-8a6fd575"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "07ea12025e94061fc0705ee4",
+        "recordedAt": "2026-11-10T07:27:44.000Z",
+        "executionId": "EXE-20261110T060101778Z-8a6fd575",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-admin-shell",
+        "commit": "5dbd286c8a74b7bcd59e2913d6560e5b81d72a75",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-admin-shell",
+        "remoteCommit": "5dbd286c8a74b7bcd59e2913d6560e5b81d72a75",
+        "summary": "Admin shell and dashboard in the foundry ledger direction plus the #134/#135 review follow-ups; CI green on d2ab83d (693 .NET, 191 Playwright); visual-evidence/baseline-d2ab83d, 85 screens audited, no finding. WI-0119 notes: its completion event recorded paths [node_modules]; commit 3c2cb37 says checkpoint though none exists.",
+        "nextAction": "Owner review of PR #136; then PR 2c (authoring)",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
