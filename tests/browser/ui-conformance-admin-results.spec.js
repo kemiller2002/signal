@@ -1,8 +1,9 @@
 // A group's results, scoring and report in the "foundry ledger" direction
 // (SIG-ECHELON-APP-002 (e), WI-0123) against the test-only fake GitHub store.
-// Their figures keep whole words and numbers on a narrow screen: each table
-// scrolls in a labelled, focusable region instead of setting "Mean",
-// "Section" or "75.0" a few letters a line (the capture's audit found them at
+// Their figures keep whole words and numbers on a narrow screen: each wide
+// table scrolls in a labelled, focusable region, and the report's tables turn
+// into named cards, instead of setting "Mean", "Section" or "75.0" a few
+// letters a line (the capture's audit found them at
 // 390 px and at 320 px with 200% text). Scoring says how its figures were
 // derived; the report view has one primary action.
 import { test, expect } from "./support.js";
@@ -141,11 +142,26 @@ test("SIG-ECHELON-APP-002 (WI-0123): with an imported response, the means are dr
 
   await groupTab(page, "Report");
   const sections = page.locator(".report-table").filter({ has: page.locator("#report-sections") });
-  await expectScrollRegion(sections, await page.locator("#report-section-results-title").innerText());
+  const table = page.getByRole("table", { name: await page.locator("#report-section-results-title").innerText() });
   const body = sections.locator("tbody tr");
   await expect(body).toHaveCount(3);
+  // signal#140 review: the cards' grid and `display: contents` would drop
+  // the table's semantics, so its roles are explicit; at every width it is
+  // still a table of a header row and three section rows, each a row header
+  // and five cells. It never scrolls sideways, so its box is not a
+  // focusable region at any width.
+  for (const [width, text] of [[1280, "100%"], [834, "100%"], [390, "100%"], [320, "200%"]]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.evaluate((size) => { document.documentElement.style.fontSize = size; }, text);
+    await expect(table.getByRole("row")).toHaveCount(4);
+    await expect(table.getByRole("columnheader")).toHaveCount(6);
+    await expect(table.getByRole("rowheader")).toHaveText(["D01 Plan Commitment", "D02 Change Responsiveness", "D03 Timebox Discipline"]);
+    await expect(table.getByRole("cell")).toHaveCount(15);
+    expect(await sections.evaluate((box) => box.scrollWidth - box.clientWidth), `report table at ${width} px, ${text} text`).toBeLessThanOrEqual(0);
+  }
+  await page.evaluate(() => { document.documentElement.style.removeProperty("font-size"); });
+  await expect(page.locator(".report-table[tabindex], .report-table[role]")).toHaveCount(0);
   await page.setViewportSize({ width: 390, height: 900 });
-  expect(await sections.evaluate((region) => region.scrollWidth - region.clientWidth)).toBeLessThanOrEqual(0);
   // Every figure in every row names its column, in the report's language.
   for (const row of await body.all()) {
     const labels = await row.locator("td").evaluateAll((cells) => cells.map((cell) => cell.getAttribute("data-label")));
@@ -154,6 +170,21 @@ test("SIG-ECHELON-APP-002 (WI-0123): with an imported response, the means are dr
   // The column headings are not shown as a row to be cut off; each card's
   // section name is its heading.
   await expect(sections.locator("thead")).toHaveCSS("position", "absolute");
+  // A card's heading starts where its figures do: the card's padding is its
+  // only inset (signal#140 review).
+  for (const row of await body.all()) {
+    const inset = await row.evaluate((tr) => {
+      const range = document.createRange();
+      range.selectNodeContents(tr.querySelector("th"));
+      const style = getComputedStyle(tr);
+      return range.getClientRects()[0].left - (tr.getBoundingClientRect().left + parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft));
+    });
+    expect(Math.abs(inset)).toBeLessThanOrEqual(1);
+  }
+  // A Recommendations block with nothing to recommend says so, not a heading
+  // over nothing (signal#140 review).
+  await expect(page.locator("#report-recommendations-none")).toHaveText("None");
+  await expect(page.locator("#report-recommendations")).toBeHidden();
   await page.setViewportSize({ width: 1280, height: 900 });
   await expect(sections.locator("thead")).not.toHaveCSS("position", "absolute");
 });

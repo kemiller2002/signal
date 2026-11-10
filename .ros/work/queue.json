@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 143,
+  "nextSeq": 144,
   "items": [
     {
       "id": "WI-0001",
@@ -3394,6 +3394,27 @@
       "attachments": [],
       "createdAt": "2026-11-10T16:46:30.655Z",
       "updatedAt": "2026-11-10T16:46:30.655Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0143",
+      "title": "Results follow-up: report table semantics, per-scale markers, card inset, empty recommendations, dead page rule, suppressed wording",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-10T18:53:17.346Z",
+      "updatedAt": "2026-11-10T18:53:20.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

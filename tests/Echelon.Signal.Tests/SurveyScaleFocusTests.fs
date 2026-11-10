@@ -143,18 +143,21 @@ let ``focus moves to the submitted heading where the kernel offers the focus pac
     Assert.DoesNotContain(effects plain, fun e -> e.["kind"].GetValue<string>() = "Capability")
 
 [<Fact>]
-let ``a point's marker is its stored value beside a worded label, and a numeric label's own number`` () =
-    // A worded point: the stored value as its marker, the words beside it.
-    Assert.Equal(("0", false), GenericSessionView.pointShown 0 "Never or almost never")
-    Assert.Equal(("4", false), GenericSessionView.pointShown 4 "Almost always")
-    // A numeric label is the marker, shown once: the label's number, not the stored value.
-    Assert.Equal(("7", true), GenericSessionView.pointShown 7 "7")
-    Assert.Equal(("10", true), GenericSessionView.pointShown 10 " 10 ")
-    Assert.Equal(("1", true), GenericSessionView.pointShown 0 "1")
-    Assert.Equal(("-2", true), GenericSessionView.pointShown 0 "-2")
-    Assert.Equal(("0", false), GenericSessionView.pointShown 0 "1 (never)")
+let ``a scale's markers are its labels' numbers only when every label is a number`` () =
+    // Worded points: the stored values as markers, the words beside them.
+    Assert.Equal<(string * bool) list>([ "0", false; "1", false ], GenericSessionView.pointsShown [ "Never or almost never"; "Rarely" ])
+    // Every label a number: each is its marker, shown once.
+    Assert.Equal<(string * bool) list>([ "0", true; "1", true; "10", true ], GenericSessionView.pointsShown [ "0"; "1"; " 10 " ])
+    Assert.Equal<(string * bool) list>([ "-2", true; "-1", true ], GenericSessionView.pointsShown [ "-2"; "-1" ])
+    // signal#140 review: one worded label decides the whole scale, so it never
+    // mixes the label's numbers with stored values: "1" to "4", then "5 Always",
+    // is numbered 0 to 4, every label beside its marker.
+    Assert.Equal<(string * bool) list>(
+        [ "0", false; "1", false; "2", false; "3", false; "4", false ],
+        GenericSessionView.pointsShown [ "1"; "2"; "3"; "4"; "5 Always" ]
+    )
 
-let private numericScale (points: int) (labels: string list) : Template.Question =
+let private numericScaleOf (points: int) (labels: string list) : Template.Question =
     { Id = "Q1"
       Prompt = "How likely are you to recommend the team?"
       HelpText = None
@@ -167,24 +170,33 @@ let private numericScale (points: int) (labels: string list) : Template.Question
       Required = true
       Tags = [] }
 
-let private fieldOf (name: string) (fields: (string * View.Scalar) list) = fields |> List.find (fst >> (=) name) |> snd
+let private fieldOfScale (name: string) (fields: (string * View.Scalar) list) = fields |> List.find (fst >> (=) name) |> snd
+
+[<Fact>]
+let ``a 5-point scale labelled "1" to "4" then "5 Always" shows stored values beside every label`` () =
+    let fields = GenericSessionView.scaleFields 0 (numericScaleOf 5 [ "1"; "2"; "3"; "4"; "5 Always" ]) None
+
+    for n in 0..4 do
+        Assert.Equal(View.Text(string n), fieldOfScale $"s{n}Marker" fields)
+        Assert.Equal(View.Flag false, fieldOfScale $"hideS{n}Label" fields)
+        Assert.Equal(View.Text "true", fieldOfScale $"s{n}MarkerHidden" fields)
 
 [<Fact>]
 let ``an 11-point 0 to 10 rating shows each number once, as its marker`` () =
-    let fields = GenericSessionView.scaleFields 0 (numericScale 11 [ for i in 0..10 -> string i ]) None
-    Assert.Equal(View.Text "forma-ordinal-scale forma-ordinal-scale--11", fieldOf "scaleClass" fields)
+    let fields = GenericSessionView.scaleFields 0 (numericScaleOf 11 [ for i in 0..10 -> string i ]) None
+    Assert.Equal(View.Text "forma-ordinal-scale forma-ordinal-scale--11", fieldOfScale "scaleClass" fields)
 
     for n in 0..10 do
-        Assert.Equal(View.Text(string n), fieldOf $"s{n}Marker" fields)
-        Assert.Equal(View.Flag true, fieldOf $"hideS{n}Label" fields)
+        Assert.Equal(View.Text(string n), fieldOfScale $"s{n}Marker" fields)
+        Assert.Equal(View.Flag true, fieldOfScale $"hideS{n}Label" fields)
         // The marker names the point: it is not hidden from assistive technology.
-        Assert.Equal(View.Text "false", fieldOf $"s{n}MarkerHidden" fields)
+        Assert.Equal(View.Text "false", fieldOfScale $"s{n}MarkerHidden" fields)
 
 [<Fact>]
 let ``a 1 to 10 rating shows its labels' numbers, never the stored 0 to 9`` () =
-    let fields = GenericSessionView.scaleFields 0 (numericScale 10 [ for i in 1..10 -> string i ]) None
-    Assert.Equal(View.Text "forma-ordinal-scale forma-ordinal-scale--10", fieldOf "scaleClass" fields)
+    let fields = GenericSessionView.scaleFields 0 (numericScaleOf 10 [ for i in 1..10 -> string i ]) None
+    Assert.Equal(View.Text "forma-ordinal-scale forma-ordinal-scale--10", fieldOfScale "scaleClass" fields)
 
     for n in 0..9 do
-        Assert.Equal(View.Text(string (n + 1)), fieldOf $"s{n}Marker" fields)
-        Assert.Equal(View.Flag true, fieldOf $"hideS{n}Label" fields)
+        Assert.Equal(View.Text(string (n + 1)), fieldOfScale $"s{n}Marker" fields)
+        Assert.Equal(View.Flag true, fieldOfScale $"hideS{n}Label" fields)

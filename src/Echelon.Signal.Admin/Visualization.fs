@@ -208,9 +208,14 @@ let private text (unit: Unit) (value: float) =
     | Score0To100 -> value.ToString("0.0", Globalization.CultureInfo.InvariantCulture)
     | Count -> value.ToString("0", Globalization.CultureInfo.InvariantCulture)
 
+/// A value withheld by the privacy policy, in the words the report uses
+/// ("Withheld to protect anonymity"), with the minimum it is below.
+let suppressedText (minimum: int) = $"""{ReportLabels.label "en" "suppressed"} (below {minimum})"""
+
 let private reason =
     function
-    | Suppressed(minimum, _) -> $"suppressed below {minimum}"
+    // The report's own words for it (ReportLabels "suppressed"), with the minimum.
+    | Suppressed(minimum, _) -> suppressedText minimum
     | InsufficientSample(required, found) -> $"needs {required}, has {found}"
     | NotRetained _ -> "not retained"
     | other -> $"unavailable ({other})"

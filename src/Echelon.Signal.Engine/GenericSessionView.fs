@@ -157,15 +157,22 @@ let private choiceRows (qi: int) (q: Question) (answer: AnswerState option) (hel
            // A scale's choices are on its question's row (`scaleFields`).
            row $"{qi}-{ci}" "option" (common label @ [ "checked", flag (answer = Some state); "hideRow", flag (scalePoints q).IsSome ])))
 
-/// A point as the scale shows it (signal#141 review). A label that is
-/// purely a number (a 0 to 10 or 1 to 10 rating) is the point's marker, and
-/// is not shown again beside it: one number, the label's. Any other label is
-/// shown beside a marker that is the value stored for the point (point n is
-/// stored as n, as the console and the export show it).
-let pointShown (n: int) (label: string) =
-    match Int32.TryParse(label.Trim(), Globalization.NumberStyles.AllowLeadingSign, Globalization.CultureInfo.InvariantCulture) with
-    | true, _ -> label.Trim(), true
-    | _ -> string n, false
+/// A label that is purely a number ("7", "-2").
+let private numeric (label: string) =
+    fst (Int32.TryParse(label.Trim(), Globalization.NumberStyles.AllowLeadingSign, Globalization.CultureInfo.InvariantCulture))
+
+/// A scale's points as it shows them, decided once for the whole scale
+/// (signal#140 review): when every point's label is purely a number (a 0 to
+/// 10 or 1 to 10 rating), each label is its point's marker and is not shown
+/// again beside it, one number, the label's. Otherwise every marker is the
+/// value stored for its point (point n is stored as n, as the console and the
+/// export show it), beside its label, so a scale never mixes the two
+/// ("1" to "4" then "5 Always" is numbered 0 to 4).
+let pointsShown (labels: string list) : (string * bool) list =
+    if not labels.IsEmpty && labels |> List.forall numeric then
+        labels |> List.map (fun label -> label.Trim(), true)
+    else
+        labels |> List.mapi (fun n _ -> string n, false)
 
 /// A scale question's row as Forma's ordinal scale: one slot per point,
 /// numbered, then its special answers, all one radio group. Each input's
@@ -176,16 +183,15 @@ let scaleFields (qi: int) (q: Question) (answer: AnswerState option) =
     | Some points ->
         let options = choices q
         let specials = options |> List.skip points
+        let pointChoices = options |> List.take points
+        let shown = pointChoices |> List.map snd |> pointsShown
 
         [ "hideScale", flag false
           "scaleGroup", text $"q{qi}-scale"
           "scaleClass", text $"forma-ordinal-scale forma-ordinal-scale--{points}"
           "hideSpecials", flag specials.IsEmpty ]
-        @ (options
-           |> List.take points
-           |> List.mapi (fun n (state, label) ->
-               let marker, repeats = pointShown n label
-
+        @ (List.zip pointChoices shown
+           |> List.mapi (fun n ((state, label), (marker, repeats)) ->
                [ $"s{n}Label", text label
                  $"s{n}Marker", text marker
                  // The marker is decorative beside its label, and the point's

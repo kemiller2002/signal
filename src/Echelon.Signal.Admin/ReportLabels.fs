@@ -46,6 +46,7 @@ let private table: (string * (string * string * string * string)) list =
       "notApplicable", ("Not applicable", "Nicht zutreffend", "Sans objet", "لا ينطبق")
       "insufficientResponses", ("Too few responses", "Zu wenige Antworten", "Trop peu de réponses", "عدد الردود غير كافٍ")
       "suppressed", ("Withheld to protect anonymity", "Zum Schutz der Anonymität zurückgehalten", "Masqué pour protéger l'anonymat", "محجوب لحماية الهوية")
+      "none", ("None", "Keine", "Aucune", "لا يوجد")
       "notComparable", ("Not comparable", "Nicht vergleichbar", "Non comparable", "غير قابل للمقارنة")
       "low-coverage", ("Many answers are not numeric; coverage is low.", "Viele Antworten sind nicht numerisch; die Abdeckung ist gering.", "Beaucoup de réponses ne sont pas numériques ; la couverture est faible.", "كثير من الإجابات غير رقمية؛ التغطية منخفضة.")
       "low-response-count", ("Few responses were received.", "Es gingen wenige Antworten ein.", "Peu de réponses ont été reçues.", "وصل عدد قليل من الردود.")

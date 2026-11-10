@@ -168,7 +168,7 @@ let private analysisRows (group: OpenedGroup) =
     let show =
         function
         | Analysis.Value v -> v.ToString("0.0#", Globalization.CultureInfo.InvariantCulture)
-        | Analysis.Unavailable(Analysis.Suppressed(minimum, _)) -> $"suppressed below {minimum}"
+        | Analysis.Unavailable(Analysis.Suppressed(minimum, _)) -> Visualization.suppressedText minimum
         | Analysis.Unavailable(Analysis.InsufficientSample(required, found)) -> $"needs {required} scores, has {found}"
         | Analysis.Unavailable reason -> $"unavailable: %A{reason}"
 

@@ -1224,18 +1224,21 @@
         </template>
         <template data-if="reportHasSectionResults">
           <ef-print-section><section><h2 id="report-section-results-title" data-text="reportTitleSectionResults"></h2>
-            <!-- On a narrow screen each row is a card that names its figures
-                 (no sideways scroll, no header cut off); print keeps Folio's
-                 table. -->
-            <div class="report-table" role="region" tabindex="0" aria-labelledby="report-section-results-title"><ef-print-table><table id="report-sections" class="report-cards">
-              <thead><tr><template data-each="reportColumns" data-key="key"><th scope="col" data-text="label"></th></template></tr></thead>
-              <tbody><template data-each="reportSections" data-key="key"><tr><th scope="row" data-text="section"></th><td data-bind-data-label="meanLabel" data-text="mean"></td><td data-bind-data-label="medianLabel" data-text="median"></td><td data-bind-data-label="rangeLabel" data-text="range"></td><td data-bind-data-label="scoredLabel" data-text="scored"></td><td data-bind-data-label="unscoredLabel" data-text="unscored"></td></tr></template></tbody>
+            <!-- Where its box is narrow each row is a card that names its
+                 figures; where it is wide the cells wrap between words. It
+                 never scrolls sideways, so it is not a focusable region. The
+                 roles are explicit: a card's grid and `display: contents`
+                 would otherwise drop the table's semantics (signal#140
+                 review). Print keeps Folio's table. -->
+            <div class="report-table"><ef-print-table><table id="report-sections" class="report-cards" role="table" aria-labelledby="report-section-results-title">
+              <thead role="rowgroup"><tr role="row"><template data-each="reportColumns" data-key="key"><th scope="col" role="columnheader" data-text="label"></th></template></tr></thead>
+              <tbody role="rowgroup"><template data-each="reportSections" data-key="key"><tr role="row"><th scope="row" role="rowheader" data-text="section"></th><td role="cell" data-bind-data-label="meanLabel" data-text="mean"></td><td role="cell" data-bind-data-label="medianLabel" data-text="median"></td><td role="cell" data-bind-data-label="rangeLabel" data-text="range"></td><td role="cell" data-bind-data-label="scoredLabel" data-text="scored"></td><td role="cell" data-bind-data-label="unscoredLabel" data-text="unscored"></td></tr></template></tbody>
             </table></ef-print-table></div></section></ef-print-section>
         </template>
         <template data-if="reportHasGroupDistributions">
           <ef-print-section><section><h2 id="report-group-distributions-title" data-text="reportTitleGroupDistributions"></h2>
-            <div class="report-table" role="region" tabindex="0" aria-labelledby="report-group-distributions-title"><ef-print-table><table id="report-spread" class="report-cards">
-              <tbody><template data-each="reportSections" data-key="key"><tr><th scope="row" data-text="section"></th><td data-bind-data-label="medianLabel" data-text="median"></td><td data-bind-data-label="rangeLabel" data-text="range"></td></tr></template></tbody>
+            <div class="report-table"><ef-print-table><table id="report-spread" class="report-cards" role="table" aria-labelledby="report-group-distributions-title">
+              <tbody role="rowgroup"><template data-each="reportSections" data-key="key"><tr role="row"><th scope="row" role="rowheader" data-text="section"></th><td role="cell" data-bind-data-label="medianLabel" data-text="median"></td><td role="cell" data-bind-data-label="rangeLabel" data-text="range"></td></tr></template></tbody>
             </table></ef-print-table></div></section></ef-print-section>
         </template>
         <template data-if="reportHasStrengths">
@@ -1246,7 +1249,8 @@
         </template>
         <template data-if="reportHasRecommendations">
           <ef-print-section><section><h2 data-text="reportTitleRecommendations"></h2>
-            <ul id="report-recommendations"><template data-each="reportRecommendations" data-key="key"><li><strong data-text="title"></strong> <span data-text="priority"></span> · <span data-text="frequency"></span></li></template></ul></section></ef-print-section>
+            <template data-if="reportRecommendationsNone"><p id="report-recommendations-none" data-text="reportNone"></p></template>
+            <ul id="report-recommendations" data-bind-hidden="reportRecommendationsNone"><template data-each="reportRecommendations" data-key="key"><li><strong data-text="title"></strong> <span data-text="priority"></span> · <span data-text="frequency"></span></li></template></ul></section></ef-print-section>
         </template>
         <template data-if="reportHasCoverageAndConfidence">
           <ef-print-section><section><h2 data-text="reportTitleCoverageAndConfidence"></h2>
