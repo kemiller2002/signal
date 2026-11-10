@@ -204,7 +204,9 @@ let project (model: Model) : (string * ViewValue) list =
               match r.Warnings |> List.map _.Code with
               | [] -> ""
               | [ code ] -> $"1 warning: {code}"
-              | codes -> $"{codes.Length} warnings: {String.concat ", " codes}")
+              | codes ->
+                  let listed = String.concat ", " codes
+                  $"{codes.Length} warnings: {listed}")
           |> Option.defaultValue ""
       )
       "acknowledgeWarnings", flag (editor |> Option.exists _.AcknowledgeWarnings)

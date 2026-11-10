@@ -359,6 +359,8 @@ let ``the draft's warnings are named beside their acknowledgement, from its own 
     let expected =
         match warnings with
         | [ code ] -> $"1 warning: {code}"
-        | codes -> $"{codes.Length} warnings: {String.concat ", " codes}"
+        | codes ->
+            let listed = String.concat ", " codes
+            $"{codes.Length} warnings: {listed}"
     Assert.NotEmpty(warnings)
     Assert.Equal(expected, page.Text "draftWarningSummary")
