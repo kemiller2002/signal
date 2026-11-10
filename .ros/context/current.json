@@ -4582,7 +4582,27 @@
       "updatedAt": "2026-11-10T08:20:20.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T082021205Z-77d7f4de"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "995256255128ed11bf707836",
+        "recordedAt": "2026-11-10T10:34:44.000Z",
+        "executionId": "EXE-20261110T082021205Z-77d7f4de",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-admin-shell",
+        "commit": "9ed06a73ced4a0d137e0954a58124f7e022704f5",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-admin-shell",
+        "remoteCommit": "9ed06a73ced4a0d137e0954a58124f7e022704f5",
+        "summary": "signal#136 review round 2 fixed: outcome beside long views' actions with focus there, truthful unresolved-work wording and resume guidance, obligation page-flow test and capture; CI green at 5803d35 (700 .NET, 192 Playwright), visual-evidence/baseline-5803d35",
+        "nextAction": "complete WI-0127, update the signal#136 PR body, merge forward into signal#137 and report",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
