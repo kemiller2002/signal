@@ -5,6 +5,7 @@
 // Runs against the checkout and (project "pages") the assembled Pages site.
 import { readFileSync } from "node:fs";
 import { test, expect, expectConsoleError } from "./support.js";
+import { pick } from "./survey-answers.mjs";
 
 const links = JSON.parse(readFileSync(new URL("./fixtures/survey-links.json", import.meta.url), "utf8"));
 
@@ -20,8 +21,6 @@ async function open(page, link) {
   await expect(page.locator("html")).toHaveAttribute("data-kernel", "running");
 }
 
-// Each row holds every input kind, hidden but the one it shows; name the input by its event.
-const pick = (page, row) => page.locator(`[data-row="${row}"] input[data-event="answered"]`);
 
 test("a published survey is fetched from the site, answered and submitted", async ({ page }) => {
   const seen = requests(page);

@@ -6,6 +6,7 @@
 import { expect, test } from "@playwright/test";
 import { INVITATION, links, origin } from "../browser/ui-conformance-fixtures.mjs";
 import { FRAMEWORK, SITES, fresh, kernelRunning, scenario } from "./capture-session.mjs";
+import { pick } from "../browser/survey-answers.mjs";
 
 // Independent scenarios: one that stops part way does not skip the others.
 test.describe.configure({ timeout: 45 * 60_000 });
@@ -182,7 +183,6 @@ scenario("assessment", async ({ page, capture }) => {
 // ---------------------------------------------------------------------------
 // The respondent survey (web/survey/) with the site's published demo surveys.
 
-const pick = (page, row) => page.locator(`[data-row="${row}"] input[data-event="answered"]`);
 const openSurvey = async (page, capture, link, site = SITES.checkout) =>
   capture.step(page, `open ${link} and wait for the kernel`, async () => { await fresh(page, `${site.base}${link}`); await kernelRunning(page); }, { operation: "engine start-up + survey template fetch" });
 

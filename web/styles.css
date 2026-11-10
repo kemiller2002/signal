@@ -47,22 +47,6 @@
 }
 .respondent-progress > p { margin: 0; }
 
-/* The card is the theme's panel, a grid; Forma's stack aligns a grid's
-   tracks to the start, which sized its one column to its content and set the
-   compound kinds' column labels ("Fits best", "Calm") a few letters a line at
-   320 px with 200% text. The column fills the card instead. */
-.respondent-card {
-  padding: clamp(1.25rem, 4vw, 2rem);
-  grid-template-columns: minmax(0, 1fr);
-  justify-content: stretch;
-}
-/* On a phone, and at 320 px with 200% text, the card gives its padding to
-   the answers, so "Not observed" keeps whole words (the respondent test's
-   collapse check). */
-@media (max-width: 30rem) {
-  .respondent-card { padding: 0.75rem; }
-}
-
 
 /* Back stays at the start; the one forward action sits at the end. */
 .respondent-nav > :last-child { margin-inline-start: auto; }
@@ -100,6 +84,17 @@
   overflow-wrap: break-word;
 }
 .respondent-card .survey-section { margin: 0; }
+/* Focus moves to the page's first heading on a new page, and to the
+   submitted heading (tabindex -1): moved by script, so the ring shows
+   whatever moved it, in Forma's focus colours. */
+.respondent-card .survey-section:focus,
+#submitted-title:focus {
+  outline: 3px solid var(--forma-color-focus-ring);
+  outline-offset: 4px;
+}
+/* The submission link is read only, not unavailable: a solid border, since
+   Forma's dashed read-only border read as disabled on the dark scheme. */
+#submission-link { border-style: solid; }
 /* The prompt is in the display face; its optional mark and guidance after
    it stay in the body face, the guidance on its own line. */
 .respondent-card .survey-question > :is(.survey-optional, span:last-child) {
@@ -109,24 +104,3 @@
 .respondent-card .survey-question > span:last-child:not(:empty) { display: block; margin-block-start: 0.35rem; }
 .respondent-progress #progress { color: var(--echelon-text-secondary); }
 
-/* A best-worst row on a phone (and at 320 px with 200% text): the option
-   takes the whole row and "Fits best" and "Fits least" share the row below
-   in two equal columns, so the option is never squeezed to a few letters a
-   line and the columns still line up from row to row (ULI-L09). */
-@media (max-width: 30rem) {
-  .respondent-pair {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 0.75rem;
-    padding-inline: 0.25rem;
-  }
-  .respondent-pair > :first-child { grid-column: 1 / -1; }
-  /* Each choice gives its padding to its name; the column gap keeps the two
-     names apart (ULI-L04), so "Fits best" and "Fits least" wrap between
-     words, not inside them, at 320 px with 200% text. Both stay on one row,
-     level with each other (ULI-L01). */
-  .respondent-pair .survey-pair-choice { padding-inline: 0; }
-}
-/* At 320 px the card's padding goes to the answers too. */
-@media (max-width: 22.5rem) {
-  .respondent-card { padding-inline: 0.25rem; }
-}

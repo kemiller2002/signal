@@ -4,9 +4,9 @@
 // that page's answers; an edited start is refused.
 import { readFileSync } from "node:fs";
 import { test, expect } from "./support.js";
+import { pick } from "./survey-answers.mjs";
 
 const links = JSON.parse(readFileSync(new URL("./fixtures/timer-links.json", import.meta.url), "utf8"));
-const pick = (page, row) => page.locator(`[data-row="${row}"] input[data-event="answered"]`);
 const payloadOf = (url) => Buffer.from(new URL(url).hash.split("#r=")[1].split("&")[0].replaceAll("-", "+").replaceAll("_", "/"), "base64");
 
 async function open(page, link) {

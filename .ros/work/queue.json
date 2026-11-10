@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 138,
+  "nextSeq": 141,
   "items": [
     {
       "id": "WI-0001",
@@ -3289,6 +3289,69 @@
       "attachments": [],
       "createdAt": "2026-11-10T13:07:20.511Z",
       "updatedAt": "2026-11-10T13:07:20.511Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0138",
+      "title": "SIG-ECHELON-APP-002 (d) signal#139 review: scale questions as Forma's ordinal scale, no Signal override of Forma's best-worst row or the theme panel (EXCEPTION for the narrow best-worst row) and a guard for it, focus and page announcement on a new page, selection guidance only on change, solid read-only link border",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-10T15:15:23.134Z",
+      "updatedAt": "2026-11-10T15:15:28.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0139",
+      "title": "Forma: the narrow best-worst row (.forma-best-worst__row below 44rem) leaves the option's column no width at 320 px with 200% text, so options are set a letter or two a line and the row overflows; fix in Forma, then make Signal's EXCEPTION test in tests/browser/respondent.spec.js an ordinary assertion (signal#139 review)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T15:15:23.635Z",
+      "updatedAt": "2026-11-10T15:15:23.635Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0140",
+      "title": "The administrator's draft preview shows scale questions as a list of choices; give it Forma's ordinal scale as the survey page has it (signal#139 follow-up)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T15:15:24.046Z",
+      "updatedAt": "2026-11-10T15:15:24.046Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

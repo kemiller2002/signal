@@ -196,9 +196,11 @@ test("ULI-A02/A05: survey answers, best-worst picks and pages change what the pa
   await expect(page.getByRole("alert")).toContainText("required questions on this page need an answer");
   await expect(pageLabel).toHaveText("Page 1 of 3");
   await expect(page.getByRole("button", { name: "Back" })).toHaveCount(0);
-  // Recovery. The two questions share a scale, so each is reached by its row.
-  await page.locator('[data-row="0-3"]').getByRole("radio").check();
-  await page.locator('[data-row="1-4"]').getByRole("radio").check();
+  // Recovery. The two questions share a scale's labels, so each is reached
+  // by its own group, named by its prompt (Forma's ordinal scale).
+  const firstScale = page.getByRole("group", { name: /Major requirements are expected/ });
+  await firstScale.getByRole("radio", { name: "Often", exact: true }).check();
+  await page.getByRole("group", { name: /Release scope is committed/ }).getByRole("radio", { name: "Almost always", exact: true }).check();
   await expectActionOutcome(page, {
     action: { role: "button", name: "Next" },
     outcome: { kind: "visible", target: { role: "button", name: "Back" }, expected: true }
@@ -206,7 +208,7 @@ test("ULI-A02/A05: survey answers, best-worst picks and pages change what the pa
   await expect(pageLabel).toHaveText("Page 2 of 3");
   await page.getByRole("button", { name: "Back" }).click();
   await expect(pageLabel).toHaveText("Page 1 of 3");
-  await expect(page.locator('[data-row="0-3"]').getByRole("radio")).toBeChecked();
+  await expect(firstScale.getByRole("radio", { name: "Often", exact: true })).toBeChecked();
 });
 
 // --- Navigation reaches real destinations (ULI-A01, ULI-L06) --------------

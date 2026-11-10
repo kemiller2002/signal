@@ -30,6 +30,11 @@ type State =
       NextCorrelation: int
       UrlNotice: string option
       CopyNotice: string option
+      /// The packs the handshake selected (`limen.focus`, where offered).
+      Selected: Contract list
+      /// The question whose selection guidance the respondent's last action
+      /// changed, announced in #activity (and no other's).
+      Guidance: int option
       Edge: Wire.Edge }
 
 let initialWith (edge: Wire.Edge) =
@@ -41,6 +46,8 @@ let initialWith (edge: Wire.Edge) =
       NextCorrelation = 1
       UrlNotice = None
       CopyNotice = None
+      Selected = []
+      Guidance = None
       Edge = edge }
 
 let initial = initialWith Wire.secureEdge
@@ -60,8 +67,20 @@ let submissionLink (state: State) =
     | Some location, Some r when r.Phase = Submitted -> location.Origin + location.Path + location.Query + fragment r
     | _ -> ""
 
+/// The selection guidance #activity announces: only the question the
+/// respondent just changed, so opening a page reads no list of guidance.
+let private guidanceNotice (state: State) =
+    state.Guidance |> Option.map (GenericSessionView.selectionStatus state.Session) |> Option.defaultValue ""
+
 let render (state: State) (effects: Effect list) (handshake: Handshake option) =
-    encode (GenericSessionView.view state.Session @ Wire.wireView state.UrlNotice state.CopyNotice (submissionLink state) @ faultView state.Fault) effects handshake
+    encodeSelecting
+        state.Selected
+        (GenericSessionView.view state.Session
+         @ [ "guidanceNotice", View.Value(View.Text(guidanceNotice state)) ]
+         @ Wire.wireView state.UrlNotice state.CopyNotice (submissionLink state)
+         @ faultView state.Fault)
+        effects
+        handshake
 
 let private correlation (prefix: string) (state: State) =
     $"{prefix}-{state.NextCorrelation}", { state with NextCorrelation = state.NextCorrelation + 1 }
@@ -92,6 +111,45 @@ let private synchronize (newEntry: bool) (state: State) =
         [ effect ]
     | _ -> state, []
 
+/// Where the respondent is: the page, whether the review shows, and the phase.
+let private place (session: Session) =
+    match session with
+    | Responding r ->
+        let page, _, _ = GenericPaging.current r.Published.Form.Content r.Answers r.Position
+        Some(page, r.Reviewing, r.Phase)
+    | Fetching _
+    | Refused _ -> None
+
+/// Focus follows the respondent to a new page, the review or the submitted
+/// screen (SIG-ECHELON-APP-002 (d)), since the control that moved them is
+/// gone or is no longer what it was (Next becomes Submit): to the first
+/// heading of the card, or the submitted heading. Only where the kernel
+/// offers the focus pack; elsewhere #activity still says where they are.
+let private refocus (before: Session) (state: State) =
+    let was = place before
+    let now = place state.Session
+
+    if was.IsNone || was = now || not (List.contains Limen.focus state.Selected) then
+        state, []
+    else
+        let target =
+            match now with
+            | Some(_, _, Submitted) -> "submitted"
+            | _ -> "page-start"
+
+        let id, state = correlation "focus" state
+        { state with Pending = state.Pending.Add id }, [ FocusOn(id, target) ]
+
+/// The question a toggle names (`<question>-t<option>`): its guidance is
+/// what the respondent's action changed.
+let private guided (name: string) (key: string) =
+    match name, key.Split '-' with
+    | "toggled", [| q; _ |] ->
+        match System.Int32.TryParse q with
+        | true, qi -> Some qi
+        | _ -> None
+    | _ -> None
+
 let private fetched (outcome: HttpOutcome) =
     match outcome with
     | HttpResponded(200, body) ->
@@ -119,7 +177,11 @@ let private message (state: State) (name: string) (key: string) (value: string) 
         | Some(questionId, optionId) -> Toggled(questionId, optionId, value <> "")
         | None -> raise (MalformedInput("$.event.key", $"an option of this survey, not '{key}'"))
     | "answered", Some r ->
-        match choiceFor r key with
+        // A scale's options (Forma's ordinal scale) sit on their question's
+        // row: the key names the question and the value the choice.
+        let named = if key.Contains '-' then key else $"{key}-{value}"
+
+        match choiceFor r named with
         | Some(questionId, answer) -> Chose(questionId, answer)
         | None -> raise (MalformedInput("$.event.key", $"a choice of this survey, not '{key}'"))
     | "pageNext", Some _ -> Turned GenericPaging.Next
@@ -139,7 +201,8 @@ let private step (state: State) (inbound: Inbound) =
                 | Some l -> open' { state with Location = location } l.Hash
                 | None -> state, []
 
-            state, effects, offer |> Option.map answer
+            let selected = offer |> Option.map (selecting [ Limen.focus ]) |> Option.defaultValue []
+            { state with Selected = selected }, effects, offer |> Option.map answer
         | Event(name, _, _) when name = Wire.CopyRequested ->
             match submissionLink state with
             | "" -> state, [], None
@@ -149,9 +212,14 @@ let private step (state: State) (inbound: Inbound) =
         | Event(name, key, value) ->
             // The time first, so a survey timer is judged at this moment.
             let ticked = { state with Session = update (Ticked(state.Edge.Now())) state.Session }
-            let state = { ticked with Session = update (message ticked name (defaultArg key "") (defaultArg value "")) ticked.Session }
+            let state =
+                { ticked with
+                    Session = update (message ticked name (defaultArg key "") (defaultArg value "")) ticked.Session
+                    Guidance = guided name (defaultArg key "") }
+
             let state, effects = synchronize (name = "pageNext" || name = "pageBack") state
-            state, effects, None
+            let state, moved = refocus ticked.Session state
+            state, effects @ moved, None
         | LocationChanged location ->
             match state.Session with
             | Responding r when fragment r = location.Hash -> { state with Location = Some location }, [], None
@@ -160,10 +228,12 @@ let private step (state: State) (inbound: Inbound) =
             // rewritten to them.
             | Responding r when r.Phase = Answering && isOwnLink r location.Hash ->
                 let page = GenericPaging.pageIn location.Hash |> Option.defaultValue 0
-                let state = { state with Location = Some location; Session = update (Reached page) state.Session }
+                let before = state.Session
+                let state = { state with Location = Some location; Session = update (Reached page) state.Session; Guidance = None }
 
                 let state, effects = synchronize false state
-                state, effects, None
+                let state, moved = refocus before state
+                state, effects @ moved, None
             | _ ->
                 // A different link in the same tab: start again from it.
                 let state, effects = open' { state with Location = Some location; UrlNotice = None; CopyNotice = None } location.Hash
@@ -180,6 +250,10 @@ let private step (state: State) (inbound: Inbound) =
 
             state, effects, None
         | HttpResult(id, _) -> raise (MalformedInput("$.result.correlationId", $"the pending catalog request, not '{id}'"))
+        | FocusResult(id, _) when not (state.Pending.Contains id) ->
+            raise (MalformedInput("$.result.correlationId", $"a pending focus move, not '{id}'"))
+        // Focus is a convenience: where it did not move, #activity has said where the respondent is.
+        | FocusResult(id, _) -> { state with Pending = state.Pending.Remove id }, [], None
         | ClipboardResult(id, _) when not (state.Pending.Contains id) ->
             raise (MalformedInput("$.result.correlationId", $"a pending clipboard write, not '{id}'"))
         | ClipboardResult(id, outcome) ->
