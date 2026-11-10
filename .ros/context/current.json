@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T05:59:45.000Z",
+  "updatedAt": "2026-11-10T11:37:41.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4432,6 +4432,300 @@
       ],
       "completedAt": "2026-11-10T05:59:45.000Z",
       "conclusion": "Landing page ported from the approved mockup; CI green on cac77d0; capture audit clean"
+    },
+    {
+      "id": "WI-0120",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "web/admin/index.html"
+        },
+        {
+          "type": "implementation",
+          "path": "web/admin/admin.css"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/AdminView.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "tests/visual/capture-session.mjs"
+        },
+        {
+          "type": "implementation",
+          "path": "tests/visual/audit.mjs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/ui-conformance-admin.spec.js"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/ui-conformance-layout.spec.js"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/FoundationsConformanceTests.fs"
+        },
+        {
+          "type": "documentation",
+          "path": "HANDOFF.md"
+        }
+      ],
+      "updatedAt": "2026-11-10T07:27:58.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T060101778Z-8a6fd575"
+      ],
+      "latestCheckpoint": {
+        "id": "07ea12025e94061fc0705ee4",
+        "recordedAt": "2026-11-10T07:27:44.000Z",
+        "executionId": "EXE-20261110T060101778Z-8a6fd575",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-admin-shell",
+        "commit": "5dbd286c8a74b7bcd59e2913d6560e5b81d72a75",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-admin-shell",
+        "remoteCommit": "5dbd286c8a74b7bcd59e2913d6560e5b81d72a75",
+        "summary": "Admin shell and dashboard in the foundry ledger direction plus the #134/#135 review follow-ups; CI green on d2ab83d (693 .NET, 191 Playwright); visual-evidence/baseline-d2ab83d, 85 screens audited, no finding. WI-0119 notes: its completion event recorded paths [node_modules]; commit 3c2cb37 says checkpoint though none exists.",
+        "nextAction": "Owner review of PR #136; then PR 2c (authoring)",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-10T07:27:58.000Z",
+      "conclusion": "Admin shell and dashboard in the foundry ledger direction with the #134/#135 review follow-ups; CI green on d2ab83d; capture audit clean on all 85 screens. WI-0119 record notes: its completion event recorded paths [node_modules] (untracked symlink) and commit 3c2cb37 says checkpoint though none exists."
+    },
+    {
+      "id": "WI-0125",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "web/admin/index.html"
+        },
+        {
+          "type": "implementation",
+          "path": "web/admin/admin.css"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/AdminView.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/RetentionScreen.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/ShellProjectionTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/ui-conformance-admin.spec.js"
+        },
+        {
+          "type": "implementation",
+          "path": "tests/visual/audit.mjs"
+        },
+        {
+          "type": "documentation",
+          "path": "docs/verification/ui-conformance-2026-10-13.md"
+        },
+        {
+          "type": "documentation",
+          "path": "HANDOFF.md"
+        }
+      ],
+      "updatedAt": "2026-11-10T08:13:40.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T073808571Z-d06c19eb"
+      ],
+      "latestCheckpoint": {
+        "id": "7a832643510ef2aa9afad023",
+        "recordedAt": "2026-11-10T08:13:36.000Z",
+        "executionId": "EXE-20261110T073808571Z-d06c19eb",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-admin-shell",
+        "commit": "5a271be61724c23fcfddd198514941dc27050a95",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-admin-shell",
+        "remoteCommit": "5a271be61724c23fcfddd198514941dc27050a95",
+        "summary": "signal#136 review round fixed: notice layout, retention note, per-group obligations with paths, shell order, danger emphasis, filter labels, audit collapse check; CI green on 8d48eae (699 .NET, 191 Playwright); visual-evidence/baseline-8d48eae",
+        "nextAction": "Re-review of #136; merge it into #137 (authoring) and fix the draft table collapse there",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-10T08:13:40.000Z",
+      "conclusion": "signal#136 review round fixed; CI green on 8d48eae; shell screens audit-clean; remaining collapses are in #137 and 2e views"
+    },
+    {
+      "id": "WI-0127",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/AdminView.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "web/admin/index.html"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/outcome-beside-actions.spec.js"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/ShellProjectionTests.fs"
+        },
+        {
+          "type": "docs",
+          "path": "HANDOFF.md"
+        }
+      ],
+      "updatedAt": "2026-11-10T10:34:58.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T082021205Z-77d7f4de"
+      ],
+      "latestCheckpoint": {
+        "id": "995256255128ed11bf707836",
+        "recordedAt": "2026-11-10T10:34:44.000Z",
+        "executionId": "EXE-20261110T082021205Z-77d7f4de",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-admin-shell",
+        "commit": "9ed06a73ced4a0d137e0954a58124f7e022704f5",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-admin-shell",
+        "remoteCommit": "9ed06a73ced4a0d137e0954a58124f7e022704f5",
+        "summary": "signal#136 review round 2 fixed: outcome beside long views' actions with focus there, truthful unresolved-work wording and resume guidance, obligation page-flow test and capture; CI green at 5803d35 (700 .NET, 192 Playwright), visual-evidence/baseline-5803d35",
+        "nextAction": "complete WI-0127, update the signal#136 PR body, merge forward into signal#137 and report",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-10T10:34:58.000Z",
+      "conclusion": "signal#136 review round 2 fixed. Long views (draft editor, Assessments, report builder) show a non-live copy of the outcome beside their actions; #activity stays the one announcer; deleted-draft and hidden-version focus moves to that copy. Unresolved work is worded truthfully (only imports on this page are listed; finalizing checks all stored imports) and says to import exactly the same links again to resume, also on the Imported surveys tab; follow-up WI-0126 reads stored batches. ShellProjectionTests renders an obligation through an unknown-outcome import. CI green at 5803d35: 700/700 .NET, 192/192 Playwright; visual-evidence/baseline-5803d35 (87 screens, 576 shots, none unreached)."
+    },
+    {
+      "id": "WI-0128",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/AdminView.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/AdminWork.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/ShellProjectionTests.fs"
+        },
+        {
+          "type": "docs",
+          "path": "HANDOFF.md"
+        }
+      ],
+      "updatedAt": "2026-11-10T10:57:09.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T104018990Z-45455c71"
+      ],
+      "latestCheckpoint": {
+        "id": "e6d8969223aa4478fa5b0607",
+        "recordedAt": "2026-11-10T10:57:05.000Z",
+        "executionId": "EXE-20261110T104018990Z-45455c71",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-admin-shell",
+        "commit": "ba5736c06a81ee34988f54fa99e7bce6e899b16c",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-admin-shell",
+        "remoteCommit": "ba5736c06a81ee34988f54fa99e7bce6e899b16c",
+        "summary": "signal#136 re-review wording fixed; CI green at 828d72c (700 .NET, 192 Playwright), visual-evidence/baseline-828d72c (87 screens, none unreached)",
+        "nextAction": "complete WI-0128, update the signal#136 PR body, merge forward into signal#137",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-10T10:57:09.000Z",
+      "conclusion": "signal#136 re-review wording fixed: the resolution says finalizing does not wait for an unknown-outcome import (an unknown chunk is never stored); the empty state says unfinished or unknown imports are listed only while the page is open, until it is refreshed or reopened; the import's unknown-outcome notice says to import the same links again; .admin-outcome is role=group named Outcome, still not live. CI green at 828d72c: 700/700 .NET, 192/192 Playwright; visual-evidence/baseline-828d72c (87 screens, 576 shots, none unreached)."
+    },
+    {
+      "id": "WI-0129",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/AdminState.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/AdminWork.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/ShellProjectionTests.fs"
+        },
+        {
+          "type": "docs",
+          "path": "HANDOFF.md"
+        }
+      ],
+      "updatedAt": "2026-11-10T11:37:41.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T112002759Z-fb458ce3"
+      ],
+      "latestCheckpoint": {
+        "id": "5cb8e2380a270a8b521018bb",
+        "recordedAt": "2026-11-10T11:37:37.000Z",
+        "executionId": "EXE-20261110T112002759Z-fb458ce3",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-admin-shell",
+        "commit": "4ec7dcf8f8babe8bde954e3fce417112bc75c5f0",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-admin-shell",
+        "remoteCommit": "4ec7dcf8f8babe8bde954e3fce417112bc75c5f0",
+        "summary": "signal#136 second re-review fixed; CI green at 96f4faf1 (702 .NET, 192 Playwright), visual-evidence/baseline-96f4faf (87 screens, none unreached)",
+        "nextAction": "complete WI-0129, update the signal#136 PR body, merge forward into signal#137",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-10T11:37:41.000Z",
+      "conclusion": "signal#136 second re-review fixed: the unfinished-import obligation says 'did not finish or could not be confirmed: import the same links again' (overview and finalize's refusal); the empty state says such an import is not always listed, and when it is only until a refresh or reopen; the release record has its own unknown-outcome sentence, the import's notice shown last. CI green at 96f4faf1: 702/702 .NET, 192/192 Playwright; visual-evidence/baseline-96f4faf (87 screens, 576 shots, none unreached)."
     }
   ]
 }

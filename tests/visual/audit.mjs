@@ -14,9 +14,15 @@
 // - text200: 200% text at 320 CSS px (the root font size doubled through the
 //   CSSOM, which the pages' style-src 'self' allows) and the horizontal
 //   overflow it causes, with the widest offenders outside scroll containers.
+// - collapsedText: text whose box is narrower than its words (more line
+//   boxes, fewer than four characters a line), at 1440, 834 and 390 px and
+//   at 320 px with 200% text.
 // - reducedMotion: running infinite animations under prefers-reduced-motion,
 //   by name (the Echelon skeleton shimmer must be none).
-// - forcedColors: a viewport screenshot with forced-colors: active.
+// - forcedColors: a viewport screenshot with forced-colors: active, and the
+//   text contrast measured again in the system palette.
+// Contrast records every measured element's ratio as bands and the lowest
+// ten, and accounts for the effective opacity of the text.
 //
 // The pure helpers are exported for the planning test.
 
@@ -81,7 +87,9 @@ const measureText = () => {
         px: parseFloat(s.fontSize),
         weight: Number(s.fontWeight) || 400,
         exempt: hidden(el) || !!el.closest(":disabled, [aria-disabled='true'], .forma-sr-only, .forma-visually-hidden"),
-        opacity: Number(s.opacity)
+        // The element's effective opacity (its own and every ancestor's),
+        // which fades its text toward what is under it.
+        opacity: (() => { let o = 1; for (let e = el; e; e = e.parentElement) o *= Number(getComputedStyle(e).opacity); return o; })()
       };
     });
 };
@@ -95,11 +103,17 @@ export const contrastFindings = (measured) => {
   const unmeasurable = rows.filter((m) => !m.bg);
   const checked = rows.filter((m) => m.bg).map((m) => {
     const bg = compose(m.bg);
-    const ratio = contrastRatio(over(m.fg, bg), bg);
+    const fg = [m.fg[0], m.fg[1], m.fg[2], (m.fg[3] ?? 1) * (m.opacity ?? 1)];
+    const ratio = contrastRatio(over(fg, bg), bg);
     return { element: m.element, text: m.text, ratio: Math.round(ratio * 100) / 100, required: required(m.px, m.weight) };
   });
   const failures = checked.filter((c) => c.ratio < c.required);
-  return { checked: checked.length, unmeasurable: unmeasurable.length, failures: dedupe(failures) };
+  // Every measured element's ratio, summarised: how many fall in each band,
+  // and the lowest ten with their elements, so a pass shows its margin.
+  const band = (r) => (r < 3 ? "below3" : r < 4.5 ? "3to4.5" : r < 7 ? "4.5to7" : "7plus");
+  const bands = checked.reduce((acc, c) => ({ ...acc, [band(c.ratio)]: (acc[band(c.ratio)] ?? 0) + 1 }), {});
+  const lowest = [...checked].sort((a, b) => a.ratio - b.ratio).slice(0, 10);
+  return { checked: checked.length, unmeasurable: unmeasurable.length, failures: dedupe(failures), bands, lowest };
 };
 
 const dedupe = (rows) => [...new Map(rows.map((r) => [`${r.element}|${r.text}|${r.ratio}`, r])).values()].slice(0, 25);
@@ -138,6 +152,38 @@ const overflowAt200 = () => {
     .map((el) => `${el.tagName.toLowerCase()}${el.id ? `#${el.id}` : ""} right=${Math.round(el.getBoundingClientRect().right)} "${(el.textContent || "").trim().slice(0, 30)}"`);
   return { overflow: root.scrollWidth - width, offenders };
 };
+
+// In the page: text whose box is narrower than its words, so a word breaks
+// across lines (the notice's "Technical detail" collapsed into a column of
+// letters at 834 px, signal#136 review). A text node set over at least three
+// lines with fewer than four characters a line is collapsed (a word that
+// only wraps, at 200% text on a phone, is not). Identifiers set in
+// code (keys, links, hashes), which may break anywhere by design, and
+// visually hidden text are left out.
+const collapsedText = () => {
+  const found = [];
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    const text = node.textContent.trim();
+    const parent = node.parentElement;
+    if (!text || !parent || parent.closest("code, pre, svg, template, [hidden], .forma-sr-only, .forma-visually-hidden")) continue;
+    if (parent.getClientRects().length === 0) continue;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    const lines = new Set([...range.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top))).size;
+    const words = text.split(/\s+/).filter((w) => w.length > 1).length;
+    const perLine = text.replace(/\s/g, "").length / Math.max(lines, 1);
+    const box = parent.getBoundingClientRect().width;
+    if (box >= 2 && lines >= 3 && perLine < 4) {
+      found.push({ element: `${parent.tagName.toLowerCase()}${parent.id ? `#${parent.id}` : ""}`, text: text.slice(0, 40), lines, words, boxWidth: Math.round(box) });
+    }
+  }
+  return found.slice(0, 10);
+};
+
+// Collapsed text at each width checked, as the findings it records.
+export const collapseFindings = (byWidth) =>
+  byWidth.flatMap(({ width, found }) => found.map((item) => ({ ...item, width })));
 
 const infiniteAnimations = () =>
   document.getAnimations()
@@ -182,10 +228,21 @@ export const auditPage = async (page, { screenshot }) => {
   await page.evaluate(() => document.activeElement?.blur?.());
   result.keyboard = keyboardFindings(stops);
 
+  // Text narrower than its words, at the capture's widths and at 320 px with
+  // 200% text.
+  const byWidth = [];
+  for (const width of [1440, 834, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.waitForTimeout(100);
+    byWidth.push({ width: `${width}`, found: await page.evaluate(collapsedText) });
+  }
+
   await page.setViewportSize({ width: 320, height: 900 });
   await page.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
   await page.waitForTimeout(150);
   result.text200at320 = await page.evaluate(overflowAt200);
+  byWidth.push({ width: "320@200%", found: await page.evaluate(collapsedText) });
+  result.collapsedText = collapseFindings(byWidth);
   await page.evaluate(() => { document.documentElement.style.removeProperty("font-size"); });
   await page.setViewportSize({ width: 1440, height: 900 });
 
@@ -195,7 +252,12 @@ export const auditPage = async (page, { screenshot }) => {
   result.reducedMotion = { infinite: names, shimmer: names.filter((n) => /shimmer/.test(n)).length };
   await page.emulateMedia({ reducedMotion: "no-preference", forcedColors: "active" });
   await page.waitForTimeout(100);
-  result.forcedColors = await screenshot().then((file) => ({ file }), (error) => ({ error: String(error).slice(0, 200) }));
+  // Forced colours: the screenshot for review, and an assertion that every
+  // measured text still contrasts with what is under it in the system palette.
+  const forcedContrast = contrastFindings(await page.evaluate(measureText));
+  result.forcedColors = await screenshot().then(
+    (file) => ({ file, contrast: { checked: forcedContrast.checked, failures: forcedContrast.failures } }),
+    (error) => ({ error: String(error).slice(0, 200), contrast: { checked: forcedContrast.checked, failures: forcedContrast.failures } }));
   await page.emulateMedia({ forcedColors: "none" });
   return result;
 };
@@ -205,5 +267,8 @@ export const auditSummary = (audit) => !audit ? "not audited" : [
   `contrast ${audit.contrastLight.failures.length}/${audit.contrastLight.checked} light, ${audit.contrastDark.failures.length}/${audit.contrastDark.checked} dark below AA`,
   `focus ${audit.keyboard.stops - audit.keyboard.withoutIndicator.length}/${audit.keyboard.stops} visible`,
   `200% text @320 overflow ${audit.text200at320.overflow}px`,
-  `reduced-motion shimmer ${audit.reducedMotion.shimmer}`
+  `reduced-motion shimmer ${audit.reducedMotion.shimmer}`,
+  ...(audit.collapsedText ? [`text narrower than its words ${audit.collapsedText.length}`] : []),
+  ...(audit.forcedColors?.contrast ? [`forced colors ${audit.forcedColors.contrast.failures.length}/${audit.forcedColors.contrast.checked} below AA`] : []),
+  ...(audit.contrastLight.lowest?.length ? [`lowest ratio ${Math.min(audit.contrastLight.lowest[0].ratio, audit.contrastDark.lowest?.[0]?.ratio ?? Infinity)}:1`] : [])
 ].join("; ");

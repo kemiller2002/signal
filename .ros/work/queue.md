@@ -135,7 +135,13 @@
 | WI-0117 | SIG-VIS-PENDING-003: second review round on PR #133: faults tied to the running operation, focus beside the change, visible :focus ring, defect keeps settled state (WI-0114), pin edits during save, definite retire test | complete | signal, accessibility | high |
 | WI-0118 | SIG-ECHELON-APP-001: adopt echelon-current 1.39.0 (Echelon theme 1.1.0) and load the Echelon application layer and fonts on every page; capture tooling onto main | complete | signal, design-system | high |
 | WI-0119 | SIG-ECHELON-APP-002 (a): landing page in the foundry ledger direction | complete |  | medium |
-| WI-0120 | SIG-ECHELON-APP-002 (b): administrator shell and dashboard (app bar, route tabs, panels) | captured |  | medium |
+| WI-0120 | SIG-ECHELON-APP-002 (b): administrator shell and dashboard (app bar, route tabs, panels) | complete |  | medium |
 | WI-0121 | SIG-ECHELON-APP-002 (c): authoring in the foundry ledger direction | captured |  | medium |
 | WI-0122 | SIG-ECHELON-APP-002 (d): respondent page (no admin chrome, one primary action, truthful progress) | captured |  | medium |
 | WI-0123 | SIG-ECHELON-APP-002 (e): results (score figures, How this was calculated panel) | captured |  | medium |
+| WI-0124 | Remove administrator acts without a confirmation: the Administrators area's Remove button removes the account at once (follow-up from the signal#136 review; not fixed there) | captured |  | medium |
+| WI-0125 | SIG-ECHELON-APP-002 (b) review fixes on signal#136: notice layout, retention note, per-group obligations with paths, shell order, danger on destructive lifecycle targets, filter labels, audit collapse check | complete |  | medium |
+| WI-0126 | Derive unreconciled imports from stored batch records when a dataset is opened or refreshed: today DatasetReady and RosterChanged summarise groups with GroupAdmin.summary 0 None, so interrupted imports from before the page opened are not listed under Unresolved work (follow-up from the signal#136 review) | captured |  | medium |
+| WI-0127 | SIG-ECHELON-APP-002 (b) review round 2 on signal#136: outcome beside the actions on long views, truthful unresolved-work wording and resume guidance, obligation page-flow test and capture | complete |  | medium |
+| WI-0128 | SIG-ECHELON-APP-002 (b) signal#136 re-review wording: finalizing does not wait for an unknown import, empty-state scope until refresh, import notice resume wording, outcome group name | complete |  | medium |
+| WI-0129 | SIG-ECHELON-APP-002 (b) signal#136 second re-review: unfinished-import obligation wording, empty-state reach, release record's own unknown-outcome sentence | complete |  | medium |

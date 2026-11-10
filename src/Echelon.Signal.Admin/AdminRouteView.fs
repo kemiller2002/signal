@@ -238,8 +238,8 @@ let project (model: Model) (group: GroupSummary option) : View =
       "scoringHref", text (href (Scoring(key, None)))
       "importsHref", text (href (Imports(key, [])))
       "reportHref", text (href (Report(key, defaultFamily, defaultLocale)))
-      "statusFilters", Items(statusValues |> List.map (fun s -> [ "key", Text s; "label", Text s; "checked", Flag(List.contains s filter.Status) ]))
-      "modeFilters", Items(modeValues |> List.map (fun m -> [ "key", Text m; "label", Text m; "checked", Flag(List.contains m filter.Mode) ]))
+      "statusFilters", Items(statusValues |> List.map (fun s -> [ "key", Text s; "label", Text(StateTones.filterLabel s); "checked", Flag(List.contains s filter.Status) ]))
+      "modeFilters", Items(modeValues |> List.map (fun m -> [ "key", Text m; "label", Text(StateTones.filterLabel m); "checked", Flag(List.contains m filter.Mode) ]))
       "surveyFilters",
       Items(([ "" ] @ (model.Catalog |> List.map _.SurveyIdentifier |> List.distinct)) |> List.map (fun s -> [ "value", Text s; "label", Text(if s = "" then "Any survey" else s); "selected", Flag(filter.Survey = (if s = "" then None else Some s)) ]))
       "scoringSections",

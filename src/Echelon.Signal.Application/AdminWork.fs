@@ -71,6 +71,33 @@ let groupFailure (failure: GroupStore.GroupFailure) =
         )
     | GroupStore.LifecycleRefused refusal -> AdminApp.Failed(notice (GroupLifecycle.refusalCode refusal) "That is not possible for this group now." false)
 
+
+/// An import stopped because the provider did not say whether a chunk was
+/// saved is not checked and resent, as the provider's general sentence says:
+/// it is resumed by importing the same links again (signal#136 re-review).
+let importOutcomeUnknown =
+    "The provider did not say whether the import was saved. " + AdminView.resumeImport
+
+/// The release record written after an import, whose own outcome is
+/// unknown: it says that, and nothing about the import, whose own outcome
+/// is said by `importStopped` (signal#136 re-review).
+let releaseOutcomeUnknown =
+    "The provider did not say whether the record of which results may be shown was saved. Refresh to see what the store holds."
+
+/// What the release record's failure says: an unknown outcome as above; any
+/// other failure as `groupFailure` says it.
+let releaseStopped (failure: GroupStore.GroupFailure) =
+    match failure with
+    | GroupStore.Storage meaning when meaning.Code = "SIGNAL.STORAGE.OUTCOME_UNKNOWN" -> AdminApp.Failed(notice meaning.Code releaseOutcomeUnknown true)
+    | other -> groupFailure other
+
+/// What an import that stopped says: an unknown outcome is resumed with the
+/// same links; any other failure as `groupFailure` says it.
+let importStopped (failure: GroupStore.GroupFailure) =
+    match failure with
+    | GroupStore.Storage meaning when meaning.Code = "SIGNAL.STORAGE.OUTCOME_UNKNOWN" -> AdminApp.Failed(notice meaning.Code importOutcomeUnknown true)
+    | other -> groupFailure other
+
 let actorOf (env: Env) (model: AdminApp.Model) : Store.Actor option =
     model.Principal
     |> Option.map (fun principal ->

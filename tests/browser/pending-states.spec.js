@@ -77,6 +77,18 @@ async function expectFocusedHere(target) {
   expect(ring.color).toBe(ring.token);
 }
 
+// Where an element is in the document (not the viewport), so a focus move
+// can be checked against the action that caused it.
+const pageTop = (locator) => locator.evaluate((element) => element.getBoundingClientRect().top + window.scrollY);
+
+// Focus moved to the outcome shown beside the actions (signal#136 review
+// round 2): on screen, ringed, and within 400px of where the action was,
+// not at the top of a long page where #activity announces it.
+async function expectFocusedBeside(target, actionTop) {
+  await expectFocusedHere(target);
+  expect(Math.abs((await pageTop(target)) - actionTop)).toBeLessThanOrEqual(400);
+}
+
 // One accepted result in a new group: a respondent answers an invitation
 // and its submission link is imported.
 async function groupWithOneResult(page, context) {
@@ -225,11 +237,13 @@ test("a group transition in flight: only its own button is busy, the others foll
   await expect(activity(page)).not.toBeFocused();
 });
 
-test("delete draft keeps its confirmation, busy, until it is answered; then focus goes to the status", async ({ page }) => {
+test("delete draft keeps its confirmation, busy, until it is answered; then focus goes to the outcome beside it", async ({ page }) => {
   const store = await signInWithStore(page);
   const draft = await startDraft(page);
   await saveDraft(page, draft);
   await draft.getByRole("button", { name: "Delete draft…", exact: true }).click();
+  // The destructive confirmation carries danger emphasis (SIG-ECHELON-APP-002).
+  await expect(draft.getByRole("button", { name: "Delete draft", exact: true })).toHaveAttribute("data-echelon-emphasis", "danger");
 
   const hold = store.holdNext("PATCH", REF_UPDATE);
   await draft.getByRole("button", { name: "Delete draft", exact: true }).click();
@@ -244,8 +258,17 @@ test("delete draft keeps its confirmation, busy, until it is answered; then focu
   hold.release();
   await expect(draft.getByRole("button", { name: "Deleting draft", exact: true })).toHaveCount(0, { timeout: STORE_STEP_MS });
   await expect(activity(page).locator("#persistence")).toHaveText("The draft is deleted: the store confirmed it.");
-  // Nothing is left beside it: focus goes to the status region, on screen.
-  await expectFocusedHere(activity(page));
+  // Nothing is left beside it: focus goes to the outcome shown in the draft's
+  // place, under "There is no draft" (a copy, not a live region; #activity
+  // announced it). The editor closed, so it is not measured against the button.
+  const outcome = page.locator("#draft .admin-outcome");
+  await expect(outcome).toContainText("The draft is deleted: the store confirmed it.");
+  // A named group (signal#136 re-review), never a live region.
+  await expect(outcome).toHaveAttribute("role", "group");
+  await expect(outcome).toHaveAccessibleName("Outcome");
+  await expect(outcome).not.toHaveAttribute("aria-live");
+  await expectFocusedHere(outcome);
+  await expect(activity(page)).not.toBeFocused();
 });
 
 test("retire keeps its confirmation, busy, until its commit is answered; then the results are retired and focus is on them", async ({ page, context }) => {
@@ -263,6 +286,8 @@ test("retire keeps its confirmation, busy, until its commit is answered; then th
   await expect(page.locator("#group-phase")).toHaveAttribute("data-phase", /^Finalized/, { timeout: STORE_STEP_MS });
   const retention = page.locator("#group-retention");
   await retention.getByRole("button", { name: "Retire accepted results…", exact: true }).click();
+  // The destructive confirmation carries danger emphasis (SIG-ECHELON-APP-002).
+  await expect(retention.getByRole("button", { name: "Retire accepted results", exact: true })).toHaveAttribute("data-echelon-emphasis", "danger");
 
   // The retirement's own commit (its branch update), held: with a result to
   // retire it is always made, so the outcome below is the only one.
@@ -428,6 +453,7 @@ test("chips carry the authoritative state as a tone and a plain label, apart fro
   await expect(version).toContainText("Published · Team pulse (PULSE 1)");
   const hold = store.holdNext("PATCH", REF_UPDATE);
   const actions = page.locator("#template-actions");
+  const actionTop = await pageTop(actions.getByRole("button", { name: "Hide from new groups", exact: true }));
   await actions.getByRole("button", { name: "Hide from new groups", exact: true }).click();
   await hold.reached;
   const hiding = actions.getByRole("button", { name: "Hiding from new groups", exact: true });
@@ -436,7 +462,13 @@ test("chips carry the authoritative state as a tone and a plain label, apart fro
   hold.release();
   await expect(version.locator(".echelon-chip")).toHaveText("Hidden", { timeout: STORE_STEP_MS });
   await expect(version.locator(".echelon-chip")).toHaveAttribute("data-echelon-tone", "closed");
-  await expectFocusedHere(activity(page));
+  // The button went away: focus is on the outcome beside the versions, near
+  // where the button was (signal#136 review round 2), not the distant status.
+  const outcome = page.locator("#assessments .admin-outcome");
+  await expect(outcome).toContainText("PULSE version 1 is hidden from new groups");
+  await expect(outcome).toHaveAccessibleName("Outcome");
+  await expectFocusedBeside(outcome, actionTop);
+  await expect(activity(page)).not.toBeFocused();
 });
 
 test("an export in flight: its own button is busy, the other exports wait, and the file arrives", async ({ page }) => {

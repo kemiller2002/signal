@@ -268,11 +268,16 @@ let ``the administrator page binds only what its engine projects, and sends only
     // AdminRouteView, AuthoringView), a version's hide button (hide*;
     // AuthoringView) and a snapshot's export buttons (json*, csv*, lineage*;
     // AdminReportView, once a snapshot is taken).
+    // An unresolved item's path and resolution (SIG-ECHELON-APP-002 (b):
+    // linkLabel, resolution) need unreconciled work like its code and text;
+    // ShellProjectionTests projects them directly and renders one through a
+    // page flow whose import outcome stays unknown.
     let emptyListFields =
         set [ "code"; "text"; "title"; "priority"; "frequency"; "label"; "baseline"; "delta"; "role"; "count"; "canDerive"; "canHide"; "questionCount"; "name"; "severity"; "message"; "intact"; "canExport"; "kind"; "link"; "requiredForCompletion"
               "isMean"; "isMedian"; "isSum"; "isMinimum"; "isMaximum"; "isNone"
               "lifecycle"; "lifecycleTone"; "hideBusy"; "hideDisabled"; "hideLabel"
-              "jsonBusy"; "jsonDisabled"; "jsonLabel"; "csvBusy"; "csvDisabled"; "csvLabel"; "lineageBusy"; "lineageDisabled"; "lineageLabel" ]
+              "jsonBusy"; "jsonDisabled"; "jsonLabel"; "csvBusy"; "csvDisabled"; "csvLabel"; "lineageBusy"; "lineageDisabled"; "lineageLabel"
+              "linkLabel"; "resolution" ]
     Assert.Empty(Set.difference bound (Set.union seen emptyListFields))
 
     // Every event the page sends is one the engine handles (an unknown one fails loudly).

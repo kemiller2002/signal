@@ -69,12 +69,52 @@ let private matches (filter: GroupFilter) (group: GroupSummary) =
     && (filter.Mode.IsEmpty || List.contains (if group.Mode = IdentifiedGroup then "identified" else "anonymous") filter.Mode)
     && (filter.Survey |> Option.forall ((=) group.SurveyIdentifier))
 
+/// The dataset's unresolved work, one item per obligation per group: two
+/// groups with the same obligation are two items, each naming its group
+/// (never merged, which would undercount).
+let obligationsOf (groups: (string * int * int) list) =
+    groups
+    |> List.collect (fun (key, unreconciled, problems) ->
+        [ if unreconciled > 0 then key, AdminState.ReconcileUnknownWrite unreconciled
+          if problems > 0 then key, AdminState.RepairCorruptRecords problems ])
+
 let private obligations (dataset: DatasetSummary) =
-    dataset.Groups
-    |> List.collect (fun g ->
-        [ if g.UnreconciledBatches > 0 then AdminState.ReconcileUnknownWrite g.UnreconciledBatches
-          if not g.Problems.IsEmpty then AdminState.RepairCorruptRecords g.Problems.Length ])
-    |> List.distinct
+    dataset.Groups |> List.map (fun g -> g.Key, g.UnreconciledBatches, g.Problems.Length) |> obligationsOf
+
+/// How an interrupted import is resumed. Batches are identified by the exact
+/// set of links they carry, so only the same links, imported again, resume
+/// one; the engine skips what it already decided and counts nothing twice.
+/// Finalizing does not reliably wait for it: a chunk whose outcome is unknown
+/// is never stored, so an import of 25 links or fewer leaves either its whole
+/// batch or nothing in the store, and `unfinishedBatches` finds nothing
+/// (signal#136 re-review).
+let resumeImport =
+    "Import exactly the same completed-survey links again to resume: Signal finishes what was interrupted, skips what it already decided and never counts a link twice. Resume before finalizing the group: finalizing does not wait for it."
+
+/// Says truthfully how far the overview's unresolved work reaches: record
+/// problems are read with the dataset, but of the page's own imports only
+/// one whose outcome is unknown is counted (AdminGroupWork.import);
+/// part-way, offline and blocked ones show only on the persistence line, and
+/// a refresh or a reopen summarises groups without any (WI-0126 would read
+/// stored batches instead).
+let noUnresolvedWork =
+    "No unresolved work found. An import that did not finish, or whose outcome Signal could not confirm, is not always listed here; when it is, only until the page is refreshed or reopened."
+
+/// Where the person goes to resolve an obligation, and what resolves it: a
+/// path through the console, never an action the console does not have.
+let obligationPath (group: string) (obligation: AdminState.Obligation) =
+    match obligation with
+    | AdminState.ReconcileUnknownWrite _ ->
+        href (Imports(group, [])),
+        "Open the group's imported surveys",
+        resumeImport
+    | AdminState.RebuildDerivedProjection ->
+        href Storage, "Open Storage", "Resolved by rebuilding the contribution index in Storage."
+    | AdminState.RepairCorruptRecords _ ->
+        href Storage,
+        "Open Storage",
+        "Resolved when the records are repaired in the store; until then they are never counted and the group cannot be finalized. Storage shows the store's verification."
+    | _ -> href Overview, "Open the overview", "Resolved outside the group's pages."
 
 let private glyph =
     function
@@ -252,9 +292,27 @@ let project (model: Model) : View =
       "obligations",
       Items(
           dataset
-          |> Option.map (obligations >> List.map (fun o -> [ "code", Text(AdminState.obligationCode o); "text", Text(AdminState.describeObligation o) ]))
+          |> Option.map (
+              obligations
+              >> List.map (fun (group, o) ->
+                  let link, label, resolution = obligationPath group o
+                  [ "key", Text $"{AdminState.obligationCode o}:{group}"
+                    "code", Text(AdminState.obligationCode o)
+                    "text", Text(AdminState.describeObligation o)
+                    "group", Text group
+                    "href", Text link
+                    "linkLabel", Text label
+                    "resolution", Text resolution ])
+          )
           |> Option.defaultValue []
       )
+      "resumeImport", text resumeImport
+      "noUnresolvedWork", text noUnresolvedWork
+      // Whether the dataset, once read, has unresolved work: the overview's
+      // attention cue, and its plain "nothing unresolved" line, come from the
+      // same list, never from a guess (SIG-ECHELON-APP-002).
+      "hasObligations", flag (dataset |> Option.map (obligations >> List.isEmpty >> not) |> Option.defaultValue false)
+      "noObligations", flag (dataset |> Option.map (obligations >> List.isEmpty) |> Option.defaultValue false)
       "groupsWaiting", number (dataset |> Option.map (fun d -> d.Groups |> List.filter (fun g -> g.Phase = AdminState.GroupReady || g.Phase = AdminState.GroupPartial) |> List.length) |> Option.defaultValue 0)
       "groupsComplete", number (dataset |> Option.map (fun d -> d.Groups |> List.filter (fun g -> g.Phase = AdminState.GroupComplete) |> List.length) |> Option.defaultValue 0)
       // Groups (ADM-007, ADM-032).

@@ -168,6 +168,55 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - Evidence: CI on `cac77d0` green (692 .NET, 186 Playwright); `visual-evidence/baseline-cac77d0` (85 screens, 540 shots; 70 audited, no finding; 944 focus stops all visible).
 - Continuity gap: WI-0119 completed without a durable checkpoint. `work checkpoint` was refused because the executor's worktree had an untracked `node_modules` symlink (the `.gitignore` pattern `node_modules/` matches directories only), and the refusal was missed before `work complete`. All work was committed and pushed before completion (`3c2cb37`).
 
+### Administrator shell and dashboard (WI-0120, SIG-ECHELON-APP-002 (b), 2026-11-10)
+
+- `web/admin/index.html`: the Echelon application bar (mark, h1 "Administration" as its context, `#principal`, Copy link) replaces the record header; areas and group tabs are `.echelon-nav-tabs` (one row from 48rem, a list below); the dataset status is the view's title; the overview's unresolved work is a panel with attention only when `hasObligations` (new, `AdminView`), an explicit line when `noObligations`, and the two counts as figures; panels throughout the shell views; Create group and Sign in primary; the retire confirmation's button danger. `#activity`, the notice and #133's focus targets unchanged.
+- Review follow-ups of #134/#135: admin `code` in IBM Plex Mono; Manrope and Newsreader preloaded on every page; `.gitignore` `node_modules` (symlinks too); capture rests the pointer before each shot and audits the start-up screens; audit counts opacity, records ratio bands and the lowest ten, and checks contrast under forced colors.
+- WI-0119 record notes (no history rewritten): its completion event recorded `"paths":["node_modules"]` (the untracked symlink), and commit `3c2cb37` is titled "checkpoint and complete WI-0119" although no durable checkpoint exists (see the WI-0119 entry above).
+- CI caught two layout regressions on `2b0444f` (tabs wrapping at 768 px; nowrap tab names overflowing at 320 px), fixed in `e9eed4e`.
+- Admin tables keep whole words and scroll in their region on a phone (`d2ab83d`).
+- Evidence: CI on `d2ab83d` green (693 .NET, 191 Playwright); `visual-evidence/baseline-d2ab83d` (85 screens, 540 shots, all 85 audited, no finding; 959 focus stops, all visible).
+- The improved audit on `e9eed4e` found admin panels overflowing with 200% text at 320 px (fixed in `afee558`, now also asserted by the shell test), an unavailable report link at 2.42:1 from an old `opacity: 0.6` (secondary colour now), and light shots taken mid colour-transition after a dark one (the capture now waits for finite animations, `98532cc`).
+
+### signal#136 second re-review (WI-0129, 2026-11-10)
+
+- `AdminState.describeObligation` (ReconcileUnknownWrite): "N import(s) did not finish or could not be confirmed: import the same links again." True on the overview and in finalize's BLOCKED_BY_OBLIGATIONS refusal (stored part-way or blocked batches); a Refresh reconciles nothing.
+- The empty state: such an import "is not always listed here; when it is, only until the page is refreshed or reopened" (only NeedsReconciliation is counted; part-way, offline and blocked imports show on the persistence line).
+- The release record written after an import has its own unknown-outcome sentence (`AdminWork.releaseStopped`), never "whether the import was saved"; the import's own notice is emitted last so it is the one shown.
+
+### signal#136 re-review wording (WI-0128, 2026-11-10)
+
+- Finalizing does **not** wait for an unknown-outcome import: the chunk is never stored, so an import of 25 links or fewer leaves the whole batch or nothing, and `unfinishedBatches` finds nothing. The resolution now says "Resume before finalizing the group: finalizing does not wait for it." (`AdminView.resumeImport`, overview and both places on Imported surveys).
+- The empty state says an import that did not finish or whose outcome is unknown is listed only while the page is open, until it is refreshed or reopened (`AdminView.noUnresolvedWork`). WI-0126 stays the fix.
+- An import's unknown-outcome notice says how to resume (`AdminWork.importStopped`), not the provider's general "it is checked before anything is sent again".
+- `.admin-outcome` is `role="group"` named "Outcome"; still not live.
+
+### signal#136 review round 2 (WI-0127, 2026-11-10)
+
+- **Outcome beside the actions on long views.** It restores #133's SIG-VIS-PENDING-002.2.
+  - The shell keeps #activity and #notice at the top of `<main>`.
+  - The draft editor (between Save/Delete and Review/Publish, and in the draft's place once it is deleted), Assessments (after the versions' Hide buttons) and the report builder now show `.admin-outcome`: a non-live copy of the persistence line, the reload line, the editor's refusal and the notice.
+  - #activity stays the one announcer.
+  - Deleted-draft and hidden-version focus moves to that copy (`data-focus-target="outcome"`), not to #activity.
+  - Tests: `tests/browser/outcome-beside-actions.spec.js`; `pending-states.spec.js` (delete draft, and hide focus within 400 px of the Hide button); `OperationsFollowUpTests` (Focus "outcome").
+- **Unresolved work is stated truthfully.**
+  - On open and refresh, groups are summarised with `GroupAdmin.summary 0 None`. An import whose outcome is unknown is therefore listed only when it happens on this page.
+  - The empty state now says so, and that finalizing still checks every stored import (`AdminView.noUnresolvedWork`).
+  - The resolution now says to import exactly the same links again (`AdminView.resumeImport`, also shown on the Imported surveys tab). Batches are identified by their exact link set.
+  - Follow-up WI-0126 will read stored batches on open and refresh.
+- **Page-flow test.** `ShellProjectionTests` renders an obligation through an import whose commit stays unknown. The AdminLinkTests comment now cites it.
+- **New captures:**
+  - `admin-overview-unresolved`;
+  - `admin-assessments-version-hidden`;
+  - viewport shots of `admin-draft-saved`, `admin-publish-refused` and `admin-draft-deleted`, scrolled to their action (the capture `anchor` field).
+
+### signal#136 review round (WI-0125, 2026-11-10)
+
+- REQUEST_CHANGES at `977ffb9` (visual gate). Fixed in `4227355` and `8d48eae`: the notice's "Technical detail" no longer collapses at 834 px; the Retention panel says why nothing can be retired (`RetentionScreen.retentionNote`); unresolved work is one item per obligation per group with its group, a path (the group's imported surveys, or Storage) and what resolves it (`AdminView.obligationsOf`, `obligationPath`; `ShellProjectionTests`); order is dataset title, activity, notice, then tabs; danger on Delete draft's confirmation and the Retire / Delete from active state targets; group filters labelled as the chips; `admin.areas` declared top from 768, left below.
+- `tests/visual/audit.mjs` flags text narrower than a word (3+ lines, under 4 characters a line) at 1440, 834, 390 and 320 px with 200% text. Shell screens are clean on `8d48eae`; it still reports the draft findings table (authoring, #137) and the group results, scoring and report tables (results, 2e) at 390 / 320@200%, to be fixed in those PRs.
+- Follow-up WI-0124: Remove administrator has no confirmation.
+- Evidence: CI on `8d48eae` green (699 .NET, 191 Playwright); `visual-evidence/baseline-8d48eae`.
+
 ## Modernization audit (WI-0100, 2026-11-08)
 
 - Reports and machine-readable coverage: `docs/modernization/` (start at

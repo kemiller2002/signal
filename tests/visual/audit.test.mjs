@@ -2,7 +2,7 @@
 // alpha composition and the findings it records.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { compose, contrastFindings, contrastRatio, keyboardFindings, required } from "./audit.mjs";
+import { collapseFindings, compose, contrastFindings, contrastRatio, keyboardFindings, required } from "./audit.mjs";
 
 test("contrast ratios match WCAG's definition", () => {
   assert.equal(Math.round(contrastRatio([0, 0, 0], [255, 255, 255]) * 100) / 100, 21);
@@ -38,4 +38,24 @@ test("focus stops without an indicator or out of document order are findings", (
   assert.equal(found.stops, 3);
   assert.deepEqual(found.withoutIndicator, ['button "Two"']);
   assert.deepEqual(found.outOfDocumentOrder, ['a "Three"']);
+});
+
+test("opacity fades text toward its background, and every ratio is summarised", () => {
+  const rows = [
+    { element: "p", text: "faded", fg: [23, 26, 24, 1], bg: [[242, 239, 231, 1]], px: 16, weight: 400, exempt: false, opacity: 0.3 },
+    { element: "p", text: "solid", fg: [23, 26, 24, 1], bg: [[242, 239, 231, 1]], px: 16, weight: 400, exempt: false, opacity: 1 }
+  ];
+  const found = contrastFindings(rows);
+  assert.deepEqual(found.failures.map((f) => f.text), ["faded"]);
+  assert.equal(found.lowest[0].text, "faded");
+  assert.equal(found.bands["7plus"], 1);
+  assert.equal((found.bands.below3 ?? 0) + (found.bands["3to4.5"] ?? 0), 1);
+});
+
+test("collapsed text is recorded with the width it collapsed at", () => {
+  const found = collapseFindings([
+    { width: "1440", found: [] },
+    { width: "834", found: [{ element: "summary", text: "Technical detail", lines: 14, words: 2, boxWidth: 9 }] }
+  ]);
+  assert.deepEqual(found, [{ element: "summary", text: "Technical detail", lines: 14, words: 2, boxWidth: 9, width: "834" }]);
 });

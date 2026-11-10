@@ -126,12 +126,44 @@ export const session = (scenario) => {
   // Every (viewport, scheme) on the page as it stands: the viewport is
   // resized and the colour scheme emulated in place, so a state reached once
   // (a signed-in store, a submitted survey) is photographed six ways.
+  // Before each shot: the pointer rests at the page's top-left corner,
+  // outside any control, so no hover state is photographed; and every
+  // finite transition finishes, so a colour scheme switched for this shot is
+  // photographed settled, not half-way (signal#135 review: the landing's
+  // "See how it works" kept a fill in light shots taken after a dark one,
+  // mid background-colour transition).
+  const restPointer = async (page) => {
+    await page.mouse.move(1, 1).catch(() => {});
+    await page.evaluate(() => Promise.all(document.getAnimations()
+      .filter((animation) => animation.effect?.getTiming().iterations !== Infinity)
+      .map((animation) => animation.finished.catch(() => {})))).catch(() => {});
+  };
+
+  // The accessibility audit (tests/visual/audit.mjs) on the page as it
+  // stands; a failure of the audit itself is recorded, not thrown.
+  const audit = (page, screen) => {
+    const forced = shotPath(screen.id, "desktop", "forced-colors", "viewport");
+    return auditPage(page, {
+      screenshot: async () => {
+        mkdirSync(dirname(join(OUT, forced)), { recursive: true });
+        await page.screenshot({ path: join(OUT, forced), caret: "hide" });
+        return forced;
+      }
+    }).catch((error) => ({ error: String(error).slice(0, 300) }));
+  };
+
   const shoot = async (page, screen) => {
     const shots = [];
     for (const { viewport, scheme } of matrix()) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await page.emulateMedia({ colorScheme: scheme });
       await settle(page);
+      await restPointer(page);
+      // A screen about something beside an action (signal#136 review round
+      // 2: the outcome beside Save and Publish, focus beside a hidden
+      // version) names it: each viewport shot is scrolled to it, as the
+      // person who acted would see it, rather than wherever the resize left it.
+      if (screen.anchor) await page.locator(screen.anchor).first().scrollIntoViewIfNeeded().catch(() => {});
       for (const extent of screen.extents ?? ["full"]) {
         const file = shotPath(screen.id, viewport.id, scheme, extent);
         mkdirSync(dirname(join(OUT, file)), { recursive: true });
@@ -141,19 +173,10 @@ export const session = (scenario) => {
     }
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.emulateMedia({ colorScheme: "light" });
-    // The accessibility audit (tests/visual/audit.mjs, SIG-ECHELON-APP-001.7)
-    // on the same state; a failure of the audit itself is recorded, not thrown.
-    const forced = shotPath(screen.id, "desktop", "forced-colors", "viewport");
-    const audit = await auditPage(page, {
-      screenshot: async () => {
-        mkdirSync(dirname(join(OUT, forced)), { recursive: true });
-        await page.screenshot({ path: join(OUT, forced), caret: "hide" });
-        return forced;
-      }
-    }).catch((error) => ({ error: String(error).slice(0, 300) }));
+    const audited = await audit(page, screen);
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.emulateMedia({ colorScheme: "light", reducedMotion: "no-preference", forcedColors: "none" });
-    await record(page, screen, shots, audit);
+    await record(page, screen, shots, audited);
   };
 
   // Every (viewport, scheme) in a fresh context created at that size and
@@ -162,6 +185,7 @@ export const session = (scenario) => {
   const shootFresh = async (browser, screen, reach) => {
     const shots = [];
     let last = null;
+    let audited = null;
     for (const { viewport, scheme } of matrix()) {
       const browserContext = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height }, colorScheme: scheme });
       const page = await preparePage(await browserContext.newPage());
@@ -169,11 +193,15 @@ export const session = (scenario) => {
         pending = [];
         const verified = await reach(page);
         await settle(page);
+        await restPointer(page);
         const file = shotPath(screen.id, viewport.id, scheme, "full");
         mkdirSync(dirname(join(OUT, file)), { recursive: true });
         await page.screenshot({ path: join(OUT, file), fullPage: true, caret: "hide" });
         shots.push({ viewport: viewport.id, scheme, extent: "full", file, shown: await lastSnapshot(page), verified: verified ?? null });
         last = { page: await context(page), url: page.url(), steps: pending };
+        // Start-up states are audited once, in the desktop light context,
+        // after they are photographed (signal#134 review).
+        if (viewport.id === "desktop" && scheme === "light") audited = await audit(page, screen);
       } finally {
         await browserContext.close();
       }
@@ -181,7 +209,7 @@ export const session = (scenario) => {
     screens.push({
       id: screen.id, title: screen.title, scenario, site: screen.site ?? "checkout", url: last?.url ?? null,
       auth: screen.auth ?? AUTH.none, reachedFrom: null, steps: last?.steps ?? [], notes: screen.notes ?? null,
-      page: last?.page ?? null, shots
+      page: last?.page ?? null, shots, audit: audited
     });
     pending = [];
   };

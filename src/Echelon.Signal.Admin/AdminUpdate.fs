@@ -440,7 +440,9 @@ let private closeConfirmation (operation: Operations.Operation) (model: Model) =
 /// a group with nothing to retire) back on the button that starts it. A
 /// group or dataset transition lands on the state it changed. A deleted
 /// draft or hidden version leaves nothing beside it, so focus goes to the
-/// status region, which otherwise only announces.
+/// outcome shown beside the actions it was made with (.admin-outcome; the
+/// status region #activity, which announces it, sits at the top of the page,
+/// out of view on a long one: signal#136 review round 2).
 let private focusAfter (operation: Operations.Operation) (outcome: Operations.Outcome) (model: Model) =
     let retiredShown =
         match groupKey model, model.Dataset with
@@ -453,7 +455,7 @@ let private focusAfter (operation: Operations.Operation) (outcome: Operations.Ou
     | Operations.Operation.TransitionGroup _, _ -> [ Focus "group-phase" ]
     | Operations.Operation.TransitionDataset _, _ -> [ Focus "dataset-lifecycle" ]
     | Operations.Operation.DeleteDraft, _
-    | Operations.Operation.HideVersion _, _ -> [ Focus "activity" ]
+    | Operations.Operation.HideVersion _, _ -> [ Focus "outcome" ]
     | _ -> []
 
 /// The next model and the effects to perform.

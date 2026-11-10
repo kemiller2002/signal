@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 124,
+  "nextSeq": 130,
   "items": [
     {
       "id": "WI-0001",
@@ -2928,10 +2928,10 @@
       "description": null,
       "tags": [],
       "priority": "medium",
-      "status": "captured",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-10T05:45:35.539Z",
-      "updatedAt": "2026-11-10T05:45:35.539Z",
+      "updatedAt": "2026-11-10T07:27:58.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -2995,6 +2995,132 @@
       "attachments": [],
       "createdAt": "2026-11-10T05:45:37.548Z",
       "updatedAt": "2026-11-10T05:45:37.548Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0124",
+      "title": "Remove administrator acts without a confirmation: the Administrators area's Remove button removes the account at once (follow-up from the signal#136 review; not fixed there)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T07:38:02.905Z",
+      "updatedAt": "2026-11-10T07:38:02.905Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0125",
+      "title": "SIG-ECHELON-APP-002 (b) review fixes on signal#136: notice layout, retention note, per-group obligations with paths, shell order, danger on destructive lifecycle targets, filter labels, audit collapse check",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-10T07:38:03.388Z",
+      "updatedAt": "2026-11-10T08:13:40.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0126",
+      "title": "Derive unreconciled imports from stored batch records when a dataset is opened or refreshed: today DatasetReady and RosterChanged summarise groups with GroupAdmin.summary 0 None, so interrupted imports from before the page opened are not listed under Unresolved work (follow-up from the signal#136 review)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T08:20:16.065Z",
+      "updatedAt": "2026-11-10T08:20:16.065Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0127",
+      "title": "SIG-ECHELON-APP-002 (b) review round 2 on signal#136: outcome beside the actions on long views, truthful unresolved-work wording and resume guidance, obligation page-flow test and capture",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-10T08:20:16.599Z",
+      "updatedAt": "2026-11-10T10:34:58.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0128",
+      "title": "SIG-ECHELON-APP-002 (b) signal#136 re-review wording: finalizing does not wait for an unknown import, empty-state scope until refresh, import notice resume wording, outcome group name",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-10T10:40:08.821Z",
+      "updatedAt": "2026-11-10T10:57:09.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0129",
+      "title": "SIG-ECHELON-APP-002 (b) signal#136 second re-review: unfinished-import obligation wording, empty-state reach, release record's own unknown-outcome sentence",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-10T11:20:01.413Z",
+      "updatedAt": "2026-11-10T11:37:41.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

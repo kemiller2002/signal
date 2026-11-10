@@ -128,6 +128,22 @@ let ``every page is branded Echelon, loading the theme after Forma`` () =
     let theme = readRepoFile "node_modules/@echelon-foundry/echelon-theme/dist/echelon.css"
     Assert.Contains("[data-forma-brand=\"echelon\"]", theme)
 
+/// Each page preloads the Echelon body and display faces, the same files the
+/// fonts stylesheet names (same address, so nothing is fetched twice), from
+/// the site itself: the font no longer waits for the stylesheet's @import chain.
+[<Fact>]
+let ``every page preloads the Echelon body and display faces from the site`` () =
+    for page, _ in pages do
+        let html = readRepoFile page
+
+        for font in [ "manrope-latin-wght-normal.woff2"; "newsreader-latin-wght-normal.woff2" ] do
+            let preload =
+                Regex.Match(html, $"<link rel=\"preload\" href=\"([^\"]*/node_modules/@echelon-foundry/echelon-theme/dist/fonts/{Regex.Escape font})\" as=\"font\" type=\"font/woff2\" crossorigin />")
+
+            Assert.True(preload.Success, $"{page} does not preload {font}")
+            let dir = Path.GetDirectoryName(repoFile page)
+            Assert.True(File.Exists(Path.GetFullPath(Path.Combine(dir, preload.Groups[1].Value))), $"{page}: {font} is not installed at the preloaded address")
+
 /// The Echelon fonts are self-hosted (owner decision 2026-11-09): every font
 /// the theme's fonts stylesheet names is a relative address that resolves to
 /// an installed WOFF2 file beside it, so the pages' `font-src 'self'` holds

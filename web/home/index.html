@@ -7,6 +7,10 @@
 <meta name="description" content="Signal is a survey and assessment engine: published templates fix what each question means, respondents' answers live in their own link, and administrators get deterministic, traceable results." />
 <link rel="icon" href="../brand/signal-mark.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="./home.css" />
+<!-- The Echelon body and display faces, fetched in parallel with the stylesheets
+     rather than after their @import chain (font-src 'self'). -->
+<link rel="preload" href="../../node_modules/@echelon-foundry/echelon-theme/dist/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="../../node_modules/@echelon-foundry/echelon-theme/dist/fonts/newsreader-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
 </head>
 <body>
 <!-- Landing page (EDS-UX-LANDING-001; "foundry ledger" direction, owner-approved
