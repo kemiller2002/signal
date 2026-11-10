@@ -2790,10 +2790,10 @@
         "visual"
       ],
       "priority": "medium",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-10T03:05:30.327Z",
-      "updatedAt": "2026-11-10T04:39:00Z",
+      "updatedAt": "2026-11-10T04:53:11Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
@@ -2862,10 +2862,10 @@
         "accessibility"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-10T04:39:00Z",
-      "updatedAt": "2026-11-10T04:39:00Z",
+      "updatedAt": "2026-11-10T04:53:11Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
