@@ -3138,10 +3138,10 @@
       "description": null,
       "tags": [],
       "priority": "medium",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-10T11:26:56.764Z",
-      "updatedAt": "2026-11-10T11:27:06.000Z",
+      "updatedAt": "2026-11-10T12:24:14.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

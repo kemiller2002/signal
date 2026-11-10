@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T11:37:41.000Z",
+  "updatedAt": "2026-11-10T12:24:14.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4780,10 +4780,31 @@
     {
       "id": "WI-0130",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-11-10T11:27:07.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "web/admin/index.html"
+        },
+        {
+          "type": "implementation",
+          "path": "web/admin/admin.css"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/AdminUpdate.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/ui-conformance-admin-draft.spec.js"
+        },
+        {
+          "type": "docs",
+          "path": "HANDOFF.md"
+        }
+      ],
+      "updatedAt": "2026-11-10T12:24:14.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T112708013Z-587f2c82"
       ],
@@ -4806,7 +4827,9 @@
           "status": "verified",
           "mechanism": "git-remote-observation"
         }
-      }
+      },
+      "completedAt": "2026-11-10T12:24:14.000Z",
+      "conclusion": "signal#137 visual-gate review done. The draft has a template header (title, lifecycle chip, one action group: Delete draft… danger, Submit for review and Approve as reviewed tertiary, Save draft, Publish primary) with the acknowledgement, delete confirmation and outcome copy under it; draft parts (Questions … Review) move focus to their headings without changing the route; fields fill their column up to 40rem; question rows show the question, section and kind tags and a tertiary Remove named for the question; panels two to a row from 50rem. Heights (capture, admin-draft-edited): desktop 10805 -> 7256 px, tablet 10836 -> 7950 px, phone 11900 -> 12118 px (follow-up WI-0131). Audit: no finding on any draft screen. CI green at 6bbf9166: 702/702 .NET, 195/195 Playwright; visual-evidence/baseline-6bbf916 (87 screens, 576 shots, none unreached). Follow-ups WI-0131, WI-0132."
     }
   ]
 }
