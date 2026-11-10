@@ -59,9 +59,9 @@ for (const width of VIEWPORT_WIDTHS) {
   test(`ULI-L01/L05: administration areas share an edge and stay inside the page gutter at ${width} CSS px`, async ({ page }) => {
     await open(page, "/web/admin/#/assessments", width);
     const scope = page.getByRole("navigation", { name: "Administration" });
-    // Route tabs (SIG-ECHELON-APP-002): one row from 40rem, sharing a top
+    // Route tabs (SIG-ECHELON-APP-002): one row from 48rem, sharing a top
     // edge; on a phone they recompose into a list, sharing a left edge.
-    await expectPeerAlignment(page, { ruleId: "ULI-L01", id: "admin.areas", edge: width >= 640 ? "top" : "left",
+    await expectPeerAlignment(page, { ruleId: "ULI-L01", id: "admin.areas", edge: width >= 768 ? "top" : "left",
       peers: AREAS.map(([name]) => ({ role: "link", name })) }, { scope });
     // The page has a gutter (the defect fixed under GH-104: text ran to the
     // viewport edge). Measured from the page heading, not a coordinate.

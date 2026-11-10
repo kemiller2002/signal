@@ -57,12 +57,18 @@
   padding: 0;
   list-style: none;
 }
-.admin .echelon-nav-tabs li { display: flex; }
-.admin .echelon-nav-tabs a { white-space: nowrap; }
+.admin .echelon-nav-tabs li { display: flex; min-inline-size: 0; }
+/* A long (translated) area name wraps inside its tab, never off the page. */
+.admin .echelon-nav-tabs a { min-inline-size: 0; overflow-wrap: anywhere; }
+/* Between a phone and a wide screen the seven areas keep one row by
+   tightening each tab's inline padding. */
+@media (min-width: 48rem) and (max-width: 63.99rem) {
+  .admin .echelon-nav-tabs a { padding-inline: 0.5rem; }
+}
 
 /* On a phone the seven areas recompose into a list rather than wrapping
    into ragged rows; the current area keeps its bronze rule, at its start. */
-@media (max-width: 39.99rem) {
+@media (max-width: 47.99rem) {
   .admin-areas .echelon-nav-tabs { flex-direction: column; gap: 0; }
   .admin-areas .echelon-nav-tabs a {
     flex: 1;
