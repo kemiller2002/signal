@@ -4020,7 +4020,27 @@
       "updatedAt": "2026-11-09T23:43:12.000Z",
       "telemetryExecutionIds": [
         "EXE-20261109T234312679Z-27426994"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "cde6d762af45a3ca63dd7e89",
+        "recordedAt": "2026-11-09T23:55:15.000Z",
+        "executionId": "EXE-20261109T234312679Z-27426994",
+        "repository": "echelon-signal",
+        "branch": "visual/baseline-capture",
+        "commit": "8ae1c0796543195654326fa5237581ab2e10b789",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "visual/baseline-capture",
+        "remoteCommit": "8ae1c0796543195654326fa5237581ab2e10b789",
+        "summary": "Capture script, observer, manifest builder, unit tests and visual-capture workflow pushed to visual/baseline-capture; landing and start-up scenarios verified locally",
+        "nextAction": "Watch the Visual capture run, fix until it succeeds, fetch the evidence branch and inspect images",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }

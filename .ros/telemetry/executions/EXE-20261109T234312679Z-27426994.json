@@ -1433,6 +1433,23 @@
         "mechanism": "json"
       },
       "eventId": "TEVT-9b48f2f61f2789fd39e6a040"
+    },
+    {
+      "type": "step.completed",
+      "occurredAt": "2026-11-10T00:04:30.000Z",
+      "stepId": "STEP-20261109T234316000Z-b0a6e8aa",
+      "actor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": {
+        "type": "ros-cli",
+        "name": "step",
+        "mechanism": "step-lifecycle"
+      }
     }
   ],
   "repository": {
@@ -1485,12 +1502,12 @@
       "classification": [
         "implementation"
       ],
-      "status": "active",
+      "status": "completed",
       "plannedAt": "2026-11-09T23:43:16.000Z",
       "startedAt": "2026-11-09T23:43:16.000Z",
-      "completedAt": null,
-      "endedAt": null,
-      "updatedAt": "2026-11-09T23:43:16.000Z",
+      "completedAt": "2026-11-10T00:04:30.000Z",
+      "endedAt": "2026-11-10T00:04:30.000Z",
+      "updatedAt": "2026-11-10T00:04:30.000Z",
       "actor": {
         "kind": "agent",
         "id": "anthropic/claude-code",
@@ -1712,6 +1729,19 @@
           "from": null,
           "to": "active",
           "occurredAt": "2026-11-09T23:43:16.000Z",
+          "reason": null,
+          "actor": {
+            "kind": "agent",
+            "id": "anthropic/claude-code",
+            "provider": "anthropic",
+            "model": "unknown",
+            "runtime": "claude-code"
+          }
+        },
+        {
+          "from": "active",
+          "to": "completed",
+          "occurredAt": "2026-11-10T00:04:30.000Z",
           "reason": null,
           "actor": {
             "kind": "agent",
