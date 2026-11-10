@@ -2706,6 +2706,31 @@
       },
       "source": "review",
       "sourceReference": "kemiller2002/signal#131"
+    },
+    {
+      "id": "WI-0111",
+      "title": "SIG-VIS-PENDING-001: per-action pending state, spinner loading regions and group-phase/template-lifecycle chip data under the approved visual refinement",
+      "description": null,
+      "tags": [
+        "signal",
+        "visual",
+        "accessibility"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-10T01:32:49.000Z",
+      "updatedAt": "2026-11-10T01:32:49.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "intake",
+      "sourceReference": ".praxis/inbox/documents/2026-11-09-SIG-VIS-PENDING-001-per-action-pending-states.md"
     }
   ]
 }
