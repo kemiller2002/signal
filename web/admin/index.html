@@ -182,7 +182,7 @@
            #activity stays the one announcer (signal#136 review round 2; #133's
            SIG-VIS-PENDING-002.2). Focus comes here after a change that removes
            its own control (a deleted draft, a hidden version). -->
-      <div class="admin-outcome" tabindex="-1" data-focus-target="outcome">
+      <div class="admin-outcome" role="group" aria-label="Outcome" tabindex="-1" data-focus-target="outcome">
         <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
         <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
         <template data-if="hasNotice"><p class="admin-outcome__notice" data-text="notice"></p></template>
@@ -456,7 +456,7 @@
              (at the top of this long page) stays the one announcer (signal#136
              review round 2; #133's SIG-VIS-PENDING-002.2). It sits between Save
              and Publish so either one's outcome is on screen beside it. -->
-        <div class="admin-outcome" tabindex="-1" data-focus-target="outcome">
+        <div class="admin-outcome" role="group" aria-label="Outcome" tabindex="-1" data-focus-target="outcome">
           <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
           <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
           <template data-if="hasAuthoringProblem"><p class="admin-outcome__notice" data-text="authoringProblem"></p></template>
@@ -472,7 +472,7 @@
       <template data-if="hasNoDraft"><p>There is no draft of <span data-text="draftSurvey"></span>. Start one or derive one from a published version under Assessments.</p></template>
       <!-- A deleted draft: its outcome, where the draft was. Focus comes here. -->
       <template data-if="hasNoDraft">
-        <div class="admin-outcome" tabindex="-1" data-focus-target="outcome">
+        <div class="admin-outcome" role="group" aria-label="Outcome" tabindex="-1" data-focus-target="outcome">
           <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
           <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
           <template data-if="hasAuthoringProblem"><p class="admin-outcome__notice" data-text="authoringProblem"></p></template>
@@ -532,7 +532,7 @@
                #activity stays the one announcer (signal#136 review round 2; #133's
                SIG-VIS-PENDING-002.2). Focus comes here after a change that removes
                its own control (a deleted draft, a hidden version). -->
-          <div class="admin-outcome" tabindex="-1" data-focus-target="outcome">
+          <div class="admin-outcome" role="group" aria-label="Outcome" tabindex="-1" data-focus-target="outcome">
             <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
             <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
             <template data-if="hasAuthoringProblem"><p class="admin-outcome__notice" data-text="authoringProblem"></p></template>

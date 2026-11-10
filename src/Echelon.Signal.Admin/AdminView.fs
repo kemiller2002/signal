@@ -84,16 +84,20 @@ let private obligations (dataset: DatasetSummary) =
 /// How an interrupted import is resumed. Batches are identified by the exact
 /// set of links they carry, so only the same links, imported again, resume
 /// one; the engine skips what it already decided and counts nothing twice.
+/// Finalizing does not reliably wait for it: a chunk whose outcome is unknown
+/// is never stored, so an import of 25 links or fewer leaves either its whole
+/// batch or nothing in the store, and `unfinishedBatches` finds nothing
+/// (signal#136 re-review).
 let resumeImport =
-    "Import exactly the same completed-survey links again to resume: Signal finishes what was interrupted, skips what it already decided and never counts a link twice. Until then the group cannot be finalized."
+    "Import exactly the same completed-survey links again to resume: Signal finishes what was interrupted, skips what it already decided and never counts a link twice. Resume before finalizing the group: finalizing does not wait for it."
 
 /// Says truthfully how far the overview's unresolved work reaches: record
-/// problems are read with the dataset, but an import whose outcome is unknown
-/// is known only when it happens on this page (WI-0126 would read stored
-/// batches instead).
-/// Finalizing a group still checks every stored import.
+/// problems are read with the dataset, but an import that did not finish or
+/// whose outcome is unknown is known only from the page's own import, and a
+/// refresh or a reopen summarises groups without it (WI-0126 would read
+/// stored batches instead).
 let noUnresolvedWork =
-    "No unresolved work found. An import whose outcome Signal could not confirm appears here only when it happens on this page; finalizing a group still checks every import stored for it."
+    "No unresolved work found. An import that did not finish, or whose outcome Signal could not confirm, is listed here only while this page is open, until it is refreshed or reopened."
 
 /// Where the person goes to resolve an obligation, and what resolves it: a
 /// path through the console, never an action the console does not have.

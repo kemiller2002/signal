@@ -263,7 +263,9 @@ test("delete draft keeps its confirmation, busy, until it is answered; then focu
   // announced it). The editor closed, so it is not measured against the button.
   const outcome = page.locator("#draft .admin-outcome");
   await expect(outcome).toContainText("The draft is deleted: the store confirmed it.");
-  await expect(outcome).not.toHaveAttribute("role");
+  // A named group (signal#136 re-review), never a live region.
+  await expect(outcome).toHaveAttribute("role", "group");
+  await expect(outcome).toHaveAccessibleName("Outcome");
   await expect(outcome).not.toHaveAttribute("aria-live");
   await expectFocusedHere(outcome);
   await expect(activity(page)).not.toBeFocused();
@@ -464,6 +466,7 @@ test("chips carry the authoritative state as a tone and a plain label, apart fro
   // where the button was (signal#136 review round 2), not the distant status.
   const outcome = page.locator("#assessments .admin-outcome");
   await expect(outcome).toContainText("PULSE version 1 is hidden from new groups");
+  await expect(outcome).toHaveAccessibleName("Outcome");
   await expectFocusedBeside(outcome, actionTop);
   await expect(activity(page)).not.toBeFocused();
 });

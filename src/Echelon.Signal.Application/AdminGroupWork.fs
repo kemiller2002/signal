@@ -90,10 +90,10 @@ let import (catalog: TemplateCatalog.Loaded) (actor: Store.Actor) (group: GroupS
         | Error failure -> return [ engine (groupFailure failure) ]
         | Ok imported ->
             let unreconciled = if imported.Summary.Status = Intake.NeedsReconciliation then 1 else 0
-            let stopped = imported.StoppedBecause |> Option.map (groupFailure >> engine) |> Option.toList
+            let stopped = imported.StoppedBecause |> Option.map (importStopped >> engine) |> Option.toList
             let! released = Releases.record actor now imported.Group
             let! fresh = GroupStore.openGroup resolve group.Config.Group now group.Dataset
-            let failures = [ released |> Result.map ignore; fresh |> Result.map ignore ] |> List.choose (function Error f -> Some(engine (groupFailure f)) | Ok() -> None)
+            let failures = [ released |> Result.map ignore; fresh |> Result.map ignore ] |> List.choose (function Error f -> Some(engine (importStopped f)) | Ok() -> None)
             let current = fresh |> Result.defaultValue imported.Group
             return GroupReady(current, Some imported, unreconciled) :: stopped @ failures
     }

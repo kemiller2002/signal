@@ -178,6 +178,13 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - Evidence: CI on `d2ab83d` green (693 .NET, 191 Playwright); `visual-evidence/baseline-d2ab83d` (85 screens, 540 shots, all 85 audited, no finding; 959 focus stops, all visible).
 - The improved audit on `e9eed4e` found admin panels overflowing with 200% text at 320 px (fixed in `afee558`, now also asserted by the shell test), an unavailable report link at 2.42:1 from an old `opacity: 0.6` (secondary colour now), and light shots taken mid colour-transition after a dark one (the capture now waits for finite animations, `98532cc`).
 
+### signal#136 re-review wording (WI-0128, 2026-11-10)
+
+- Finalizing does **not** wait for an unknown-outcome import: the chunk is never stored, so an import of 25 links or fewer leaves the whole batch or nothing, and `unfinishedBatches` finds nothing. The resolution now says "Resume before finalizing the group: finalizing does not wait for it." (`AdminView.resumeImport`, overview and both places on Imported surveys).
+- The empty state says an import that did not finish or whose outcome is unknown is listed only while the page is open, until it is refreshed or reopened (`AdminView.noUnresolvedWork`). WI-0126 stays the fix.
+- An import's unknown-outcome notice says how to resume (`AdminWork.importStopped`), not the provider's general "it is checked before anything is sent again".
+- `.admin-outcome` is `role="group"` named "Outcome"; still not live.
+
 ### signal#136 review round 2 (WI-0127, 2026-11-10)
 
 - **Outcome beside the actions on long views.** It restores #133's SIG-VIS-PENDING-002.2.
