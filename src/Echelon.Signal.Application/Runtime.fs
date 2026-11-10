@@ -51,9 +51,11 @@ let mutable private adminState = AdminWire.initial
 
 /// One kernel message for the administrator page (web/admin/index.html).
 let dispatchAdmin (messageJson: string) =
-    let next, reply = AdminWire.handle aegis.Value adminEnv adminState messageJson
-    adminState <- next
-    reply
+    let handled = AdminWire.handle aegis.Value adminEnv adminState messageJson
+    // The settled state is kept before a defect is re-raised (WI-0114).
+    adminState <- handled.State
+    handled.Defect |> Option.iter _.Throw()
+    handled.Reply
 
 // ---- The survey page (web/survey/) -----------------------------------------------------------
 

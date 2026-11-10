@@ -111,7 +111,7 @@
           </label>
           <ul id="builder-checks"><template data-each="builderChecks" data-key="key"><li data-text="text"></li></template></ul>
           <ul id="builder-preview"><template data-each="builderPreview" data-key="key"><li data-text="text"></li></template></ul>
-          <template data-if="canBuildReports"><button type="button" class="forma-button" data-event="saveReportDefinition" data-bind-disabled="busy">Save definition</button></template>
+          <template data-if="canBuildReports"><button type="button" class="forma-button" data-event="saveReportDefinition" data-bind-disabled="saveDefinitionDisabled" data-bind-aria-busy="saveDefinitionBusy" data-bind-aria-disabled="saveDefinitionBusy" data-text="saveDefinitionLabel">Save definition</button></template>
         </section>
       </template>
     </section>
@@ -124,7 +124,7 @@
              so the editor below once rendered as its heading alone (GH-113). -->
         <div class="forma-stack draft-editor">
         <h2 id="draft-heading" data-text="draftHeading"></h2>
-        <p><span data-text="draftParent"></span><template data-if="draftUnsaved"><span> · <strong>Unsaved changes</strong></span></template></p>
+        <p><span class="echelon-chip" id="draft-lifecycle" data-bind-data-echelon-tone="draftLifecycleTone" data-text="draftLifecycle">Draft</span> · <span data-text="draftParent"></span><template data-if="draftUnsaved"><span> · <strong>Unsaved changes</strong></span></template></p>
         <label>Title <input type="text" data-event="draftTitle" data-bind-value="draftTitle" /></label>
         <label>Description <textarea rows="2" data-event="draftDescription" data-bind-value="draftDescription"></textarea></label>
         <h3>Sections</h3>
@@ -369,20 +369,20 @@
         </table>
         <p id="draft-preview" data-text="draftPreview"></p>
         <template data-if="draftHasWarnings"><label><input type="checkbox" data-event="acknowledgeWarnings" value="true" data-bind-checked="acknowledgeWarnings" /> I have read the warnings and accept them</label></template>
-        <template data-if="canEditDrafts"><button type="button" class="forma-button" data-event="saveDraft" data-bind-disabled="busy">Save draft</button></template>
+        <template data-if="canEditDrafts"><button type="button" class="forma-button" data-event="saveDraft" data-bind-disabled="saveDraftDisabled" data-bind-aria-busy="saveDraftBusy" data-bind-aria-disabled="saveDraftBusy" data-text="saveDraftLabel">Save draft</button></template>
         <template data-if="canDeleteDraft"><button type="button" class="forma-button" data-event="deleteDraft" data-bind-disabled="busy">Delete draft…</button></template>
         <template data-if="confirmingDeleteDraft">
           <div id="delete-draft-confirm" class="forma-stack" role="alertdialog" aria-labelledby="delete-draft-text">
             <p id="delete-draft-text">Delete this draft and its review? Unpublished changes are lost. Published versions are not affected.</p>
-            <button type="button" class="forma-button" data-event="confirmDeleteDraft" data-bind-disabled="busy">Delete draft</button>
-            <button type="button" class="forma-button" data-event="cancelDeleteDraft">Keep it</button>
+            <button type="button" class="forma-button" data-event="confirmDeleteDraft" data-bind-disabled="confirmDeleteDisabled" data-bind-aria-busy="confirmDeleteBusy" data-bind-aria-disabled="confirmDeleteBusy" data-text="confirmDeleteLabel">Delete draft</button>
+            <button type="button" class="forma-button" data-event="cancelDeleteDraft" data-bind-disabled="busy">Keep it</button>
           </div>
         </template>
         <h3>Review</h3>
         <p id="draft-review" data-text="draftReview"></p>
-        <template data-if="canRequestReview"><button type="button" class="forma-button" data-event="requestReview" data-bind-disabled="busy">Submit for review</button></template>
-        <template data-if="canApproveReview"><button type="button" class="forma-button" data-event="approveReview" data-bind-disabled="busy">Approve as reviewed</button></template>
-        <template data-if="canPublishTemplates"><button type="button" class="forma-button" data-event="publishDraft" data-bind-disabled="busy">Publish</button></template>
+        <template data-if="canRequestReview"><button type="button" class="forma-button" data-event="requestReview" data-bind-disabled="requestReviewDisabled" data-bind-aria-busy="requestReviewBusy" data-bind-aria-disabled="requestReviewBusy" data-text="requestReviewLabel">Submit for review</button></template>
+        <template data-if="canApproveReview"><button type="button" class="forma-button" data-event="approveReview" data-bind-disabled="approveReviewDisabled" data-bind-aria-busy="approveReviewBusy" data-bind-aria-disabled="approveReviewBusy" data-text="approveReviewLabel">Approve as reviewed</button></template>
+        <template data-if="canPublishTemplates"><button type="button" class="forma-button" data-event="publishDraft" data-bind-disabled="publishDisabled" data-bind-aria-busy="publishBusy" data-bind-aria-disabled="publishBusy" data-text="publishLabel">Publish</button></template>
       </div>
       </template>
       <template data-if="hasNoDraft"><p>There is no draft of <span data-text="draftSurvey"></span>. Start one or derive one from a published version under Assessments.</p></template>
@@ -408,7 +408,7 @@
           <h3 id="stored-templates-title">Published in this dataset</h3>
           <ul id="template-versions">
             <template data-each="templateVersions" data-key="key">
-              <li><span data-text="label"></span> · <span data-text="status"></span> · <span data-text="groups"></span>
+              <li><span class="echelon-chip" data-bind-data-echelon-tone="lifecycleTone" data-text="lifecycle">Published</span> · <span data-text="label"></span> · <span data-text="status"></span> · <span data-text="groups"></span>
                 <button type="button" class="forma-button" data-event="downloadSiteFile" data-bind-disabled="busy">For the respondent site</button>
                 <button type="button" class="forma-button" data-event="testLinks">Test links</button></li>
             </template>
@@ -430,12 +430,12 @@
               <li>
                 <span data-text="label"></span>
                 <template data-if="canDerive"><button type="button" class="forma-button" data-event="deriveDraft" data-bind-disabled="busy">Derive a draft</button></template>
-                <template data-if="canHide"><button type="button" class="forma-button" data-event="hideVersion" data-bind-disabled="busy">Hide from new groups</button></template>
+                <template data-if="canHide"><button type="button" class="forma-button" data-event="hideVersion" data-bind-disabled="hideDisabled" data-bind-aria-busy="hideBusy" data-bind-aria-disabled="hideBusy" data-text="hideLabel">Hide from new groups</button></template>
               </li>
             </template>
           </ul>
           <ul id="template-drafts">
-            <template data-each="draftLinks" data-key="key"><li><a data-bind-href="href" data-text="label"></a></li></template>
+            <template data-each="draftLinks" data-key="key"><li><span class="echelon-chip" data-bind-data-echelon-tone="lifecycleTone" data-text="lifecycle">Draft</span> · <a data-bind-href="href" data-text="label"></a></li></template>
           </ul>
         </section>
       </template>
@@ -479,10 +479,32 @@
     </aside>
   </template>
 
+  <!-- What runs now and what the store last said about a change
+       (SIG-VIS-PENDING-001, -002), beside the notice and the status where the
+       person acts. #activity is the page's one live region for operations:
+       always in the page, it announces each start and each settle once, the
+       notice's sentence included, so the notice below is not a second live
+       region. The running control says so itself (aria-busy, its
+       present-participle label); focus comes here when that control went away. -->
+  <div id="activity" class="activity" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" data-focus-target="activity">
+    <template data-if="operationRunning">
+      <div id="operation-pending" class="echelon-loading" data-bind-data-persistence="persistenceState">
+        <p class="forma-spinner"><span class="forma-spinner__indicator" aria-hidden="true"></span><span class="forma-spinner__label" data-text="operationText"></span></p>
+      </div>
+    </template>
+    <template data-if="hasPersistence">
+      <p id="persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p>
+    </template>
+    <template data-if="reloadOwed">
+      <p id="reload-owed" data-text="reloadText"></p>
+    </template>
+    <span class="forma-visually-hidden" data-text="noticeAnnouncement"></span>
+  </div>
+
   <!-- Domain refusals and infrastructure notices: a sentence, with the stable
-       code as technical detail (ADM-031). -->
+       code as technical detail (ADM-031). Announced through #activity above. -->
   <template data-if="hasNotice">
-    <aside id="notice" class="forma-alert" role="status" data-tone="attention">
+    <aside id="notice" class="forma-alert" data-tone="attention">
       <p id="notice-message" data-text="notice"></p>
       <details><summary>Technical detail</summary><code id="notice-code" data-text="noticeCode"></code></details>
       <button type="button" class="forma-button" data-event="dismissNotice">Dismiss</button>
@@ -490,7 +512,9 @@
   </template>
 
   <template data-if="screenLoading">
-    <p id="loading" role="status">Loading the deployment's configuration…</p>
+    <div id="loading" class="echelon-loading" role="status">
+      <p class="forma-spinner"><span class="forma-spinner__indicator" aria-hidden="true"></span><span class="forma-spinner__label">Loading the deployment's configuration…</span></p>
+    </div>
   </template>
 
   <template data-if="screenMisconfigured">
@@ -517,7 +541,7 @@
           <label><input type="radio" name="retention" value="tab" id="retention-tab" data-event="retention" data-bind-checked="retentionTab" /> In this tab until I close it</label>
         </fieldset>
         <p id="retention-disclosure" data-text="retentionDisclosure"></p>
-        <button type="submit" class="forma-button" id="sign-in-button" data-bind-disabled="signInBusy">Sign in</button>
+        <button type="submit" class="forma-button" id="sign-in-button" data-bind-aria-busy="signInAriaBusy" data-bind-aria-disabled="signInAriaBusy" data-text="signInLabel">Sign in</button>
       </form>
     </section>
   </template>
@@ -527,7 +551,7 @@
       <h2>Datasets</h2>
       <ul>
         <template data-each="datasets" data-key="id">
-          <li><button type="button" class="forma-button" data-event="openDataset" data-bind-disabled="opening" data-text="label"></button></li>
+          <li><button type="button" class="forma-button" data-event="openDataset" data-bind-disabled="openDisabled" data-bind-aria-busy="openBusy" data-bind-aria-disabled="openBusy" data-text="openLabel"></button></li>
         </template>
       </ul>
       <button type="button" class="forma-button" data-event="signOut">Sign out</button>
@@ -541,7 +565,7 @@
         <p><strong data-text="datasetLabel"></strong> · <span id="credential" data-text="credential"></span></p>
         <template data-if="readOnly"><p id="read-only">Read-only. <span data-text="readOnlyReasons"></span></p></template>
         <template data-if="offline"><p id="offline">Offline: what is shown was last verified <span data-text="lastVerified"></span> and may be out of date. Changes are unavailable and nothing is queued.</p></template>
-        <button type="button" class="forma-button" data-event="refresh" data-bind-disabled="busy">Refresh</button>
+        <button type="button" class="forma-button" data-event="refresh" data-bind-disabled="refreshDisabled" data-bind-aria-busy="refreshBusy" data-bind-aria-disabled="refreshBusy" data-text="refreshLabel">Refresh</button>
         <button type="button" class="forma-button" data-event="signOut">Sign out</button>
       </div>
 
@@ -580,7 +604,7 @@
               <template data-each="groups" data-key="key">
                 <tr>
                   <td><a data-bind-href="href" data-text="key"></a></td>
-                  <td data-text="survey"></td><td data-text="mode"></td><td data-text="progress"></td><td data-text="phase"></td>
+                  <td data-text="survey"></td><td data-text="mode"></td><td data-text="progress"></td><td><span class="echelon-chip" data-bind-data-echelon-tone="phaseTone" data-bind-data-phase="phase" data-text="phaseLabel"></span></td>
                 </tr>
               </template>
             </tbody>
@@ -597,7 +621,7 @@
               <label><input type="checkbox" data-event="newGroupMode" value="identified" data-bind-checked="newGroupIdentified" /> Identified (one submission per invited instance)</label>
               <label>Expected surveys <input type="number" min="1" data-event="newGroupExpected" data-bind-value="newGroupExpected" /></label>
               <label>Minimum reportable count <input type="number" min="1" data-event="newGroupMinimum" data-bind-value="newGroupMinimum" /></label>
-              <button type="submit" class="forma-button" data-bind-disabled="busy">Create group</button>
+              <button type="submit" class="forma-button" data-bind-disabled="createGroupDisabled" data-bind-aria-busy="createGroupBusy" data-bind-aria-disabled="createGroupBusy" data-text="createGroupLabel">Create group</button>
             </form>
           </template>
 
@@ -613,7 +637,7 @@
         <template data-if="hasGroup">
             <section id="group" class="forma-stack">
               <h2>Group <code id="group-key" data-text="groupKey"></code></h2>
-              <p><span data-text="groupProgress"></span> · <span id="group-phase" data-text="groupPhase"></span></p>
+              <p><span data-text="groupProgress"></span> · <span id="group-phase" class="echelon-chip" tabindex="-1" data-focus-target="group-phase" data-bind-data-echelon-tone="groupPhaseTone" data-bind-data-phase="groupPhase" data-text="groupPhaseLabel"></span></p>
               <template data-if="hasWithheld"><p id="withheld" class="forma-alert" role="status" data-tone="attention" data-text="withheldNotice"></p></template>
               <nav aria-label="Group" id="group-tabs">
                 <ul class="areas">
@@ -632,23 +656,23 @@
               </table>
               <p>Report state: <code id="report-fragment" data-text="reportFragment"></code></p>
               <div class="forma-stack" id="lifecycle">
-                <template data-if="canClose"><button type="button" class="forma-button" data-event="closeGroup">Close incomplete</button></template>
-                <template data-if="canReopen"><button type="button" class="forma-button" data-event="reopenGroup">Reopen</button></template>
-                <template data-if="canFinalize"><button type="button" class="forma-button" data-event="finalizeGroup">Finalize</button></template>
-                <template data-if="canSeal"><button type="button" class="forma-button" data-event="sealGroup">Seal</button></template>
+                <template data-if="canClose"><button type="button" class="forma-button" data-event="closeGroup" data-bind-disabled="closeDisabled" data-bind-aria-busy="closeBusy" data-bind-aria-disabled="closeBusy" data-text="closeLabel">Close incomplete</button></template>
+                <template data-if="canReopen"><button type="button" class="forma-button" data-event="reopenGroup" data-bind-disabled="reopenDisabled" data-bind-aria-busy="reopenBusy" data-bind-aria-disabled="reopenBusy" data-text="reopenLabel">Reopen</button></template>
+                <template data-if="canFinalize"><button type="button" class="forma-button" data-event="finalizeGroup" data-bind-disabled="finalizeDisabled" data-bind-aria-busy="finalizeBusy" data-bind-aria-disabled="finalizeBusy" data-text="finalizeLabel">Finalize</button></template>
+                <template data-if="canSeal"><button type="button" class="forma-button" data-event="sealGroup" data-bind-disabled="sealDisabled" data-bind-aria-busy="sealBusy" data-bind-aria-disabled="sealBusy" data-text="sealLabel">Seal</button></template>
               </div>
               <!-- Retention (ADM-045, ADM-064, WI-0077): retiring a finalized
                    group's accepted results, confirmed first; the claim the
                    notice makes is only what the store proved. -->
               <section id="group-retention" class="forma-stack" aria-labelledby="group-retention-heading">
                 <h3 id="group-retention-heading">Retention</h3>
-                <template data-if="sourcesRetired"><p id="sources-retired">Accepted results retired. <span data-text="sourcesRetiredText"></span></p></template>
-                <template data-if="canRetireSources"><button type="button" class="forma-button" data-event="retireSources">Retire accepted results…</button></template>
+                <template data-if="sourcesRetired"><p id="sources-retired" tabindex="-1" data-focus-target="sources-retired">Accepted results retired. <span data-text="sourcesRetiredText"></span></p></template>
+                <template data-if="canRetireSources"><button type="button" id="retire-sources" class="forma-button" data-event="retireSources" data-bind-disabled="busy" data-focus-target="retire-sources">Retire accepted results…</button></template>
                 <template data-if="confirmingRetire">
                   <div id="retire-confirm" class="forma-stack" role="alertdialog" aria-labelledby="retire-confirm-text">
                     <p id="retire-confirm-text" data-text="retireWarning"></p>
-                    <button type="button" class="forma-button" data-event="confirmRetire" data-bind-disabled="busy">Retire accepted results</button>
-                    <button type="button" class="forma-button" data-event="cancelRetire">Keep them</button>
+                    <button type="button" class="forma-button" data-event="confirmRetire" data-bind-disabled="confirmRetireDisabled" data-bind-aria-busy="confirmRetireBusy" data-bind-aria-disabled="confirmRetireBusy" data-text="confirmRetireLabel">Retire accepted results</button>
+                    <button type="button" class="forma-button" data-event="cancelRetire" data-bind-disabled="busy">Keep them</button>
                   </div>
                 </template>
               </section>
@@ -717,7 +741,7 @@
                   <label>How many links <input id="invite-count" type="number" min="1" max="500" data-event="inviteCount" data-bind-value="inviteCount" /></label>
                   <label>Language (optional, e.g. fr-CA) <input id="invite-locale" type="text" data-event="inviteLocale" data-bind-value="inviteLocale" /></label>
                   <label>Last day to answer (optional) <input id="invite-expires" type="date" data-event="inviteExpires" data-bind-value="inviteExpires" /></label>
-                  <button type="button" class="forma-button" id="issue-invitations" data-event="issueInvitations" data-bind-disabled="busy">Create links</button>
+                  <button type="button" class="forma-button" id="issue-invitations" data-event="issueInvitations" data-bind-disabled="inviteDisabled" data-bind-aria-busy="inviteBusy" data-bind-aria-disabled="inviteBusy" data-text="inviteLabel">Create links</button>
                   <template data-if="hasInvitations">
                     <div class="forma-stack">
                       <p id="invitation-summary" role="status" data-text="invitationSummary"></p>
@@ -733,7 +757,7 @@
                     <textarea rows="6" data-event="importText" data-bind-value="importText"></textarea>
                   </label>
                   <label><input type="checkbox" data-event="importOrigin" value="file" data-bind-checked="importFile" /> These came from a text file</label>
-                  <button type="submit" class="forma-button" data-bind-disabled="busy">Import</button>
+                  <button type="submit" class="forma-button" data-bind-disabled="importDisabled" data-bind-aria-busy="importBusy" data-bind-aria-disabled="importBusy" data-text="importLabel">Import</button>
                 </form>
               </template>
 
@@ -801,7 +825,7 @@
               <template data-each="administrators" data-key="id">
                 <tr>
                   <td data-text="id"></td><td data-text="capabilities"></td>
-                  <td><button type="button" class="forma-button" data-event="removeAdministrator" data-bind-disabled="busy">Remove</button></td>
+                  <td><button type="button" class="forma-button" data-event="removeAdministrator" data-bind-disabled="removeDisabled" data-bind-aria-busy="removeBusy" data-bind-aria-disabled="removeBusy" data-text="removeLabel">Remove</button></td>
                 </tr>
               </template>
             </tbody>
@@ -819,7 +843,7 @@
                   <option value="administrator">Administrator</option>
                 </select>
               </label>
-              <button type="submit" class="forma-button" data-bind-disabled="busy">Admit</button>
+              <button type="submit" class="forma-button" data-bind-disabled="admitDisabled" data-bind-aria-busy="admitBusy" data-bind-aria-disabled="admitBusy" data-text="admitLabel">Admit</button>
             </form>
           </template>
         </section>
@@ -829,15 +853,15 @@
         <section id="storage" class="forma-stack">
           <h2>Storage</h2>
           <p id="verification" data-text="verification"></p>
-          <template data-if="canRepairIndex"><button type="button" class="forma-button" data-event="rebuildIndex">Rebuild the contribution index</button></template>
+          <template data-if="canRepairIndex"><button type="button" class="forma-button" data-event="rebuildIndex" data-bind-disabled="rebuildIndexDisabled" data-bind-aria-busy="rebuildIndexBusy" data-bind-aria-disabled="rebuildIndexBusy" data-text="rebuildIndexLabel">Rebuild the contribution index</button></template>
           <!-- The dataset's lifecycle (ADM-045, WI-0077). -->
           <section id="dataset-lifecycle" class="forma-stack" aria-labelledby="dataset-lifecycle-heading">
-            <h3 id="dataset-lifecycle-heading">Lifecycle</h3>
+            <h3 id="dataset-lifecycle-heading" tabindex="-1" data-focus-target="dataset-lifecycle">Lifecycle</h3>
             <p>State: <code id="dataset-lifecycle-state" data-text="datasetLifecycle"></code>. <span data-text="datasetLifecycleText"></span></p>
             <template data-if="canManageLifecycle">
               <ul class="forma-stack" id="lifecycle-targets">
                 <template data-each="lifecycleTargets" data-key="target">
-                  <li><button type="button" class="forma-button" data-event="datasetTransition" data-bind-disabled="busy" data-text="targetLabel"></button> <span data-text="targetMeaning"></span></li>
+                  <li><button type="button" class="forma-button" data-event="datasetTransition" data-bind-disabled="targetDisabled" data-bind-aria-busy="targetBusy" data-bind-aria-disabled="targetBusy" data-text="targetLabel"></button> <span data-text="targetMeaning"></span></li>
                 </template>
               </ul>
             </template>
@@ -875,15 +899,15 @@
       <section id="report-snapshots" class="forma-stack" aria-labelledby="report-snapshots-title">
         <h2 id="report-snapshots-title">Formal snapshots</h2>
         <p class="forma-field__description">A snapshot keeps this report exactly as it is now, with what produced it. Opening it later never shows newer data.</p>
-        <template data-if="canTakeSnapshot"><button type="button" class="forma-button" id="take-snapshot" data-event="takeSnapshot" data-bind-disabled="busy">Take a snapshot</button></template>
+        <template data-if="canTakeSnapshot"><button type="button" class="forma-button" id="take-snapshot" data-event="takeSnapshot" data-bind-disabled="snapshotDisabled" data-bind-aria-busy="snapshotBusy" data-bind-aria-disabled="snapshotBusy" data-text="snapshotLabel">Take a snapshot</button></template>
         <ul id="snapshots">
           <template data-each="reportSnapshots" data-key="key">
             <li>
               <span data-text="label"></span> · <span data-text="intact"></span>
               <template data-if="canExport"><span class="forma-cluster">
-                <button type="button" class="forma-button" data-event="exportReportJson">Report (JSON)</button>
-                <button type="button" class="forma-button" data-event="exportSectionsCsv">Sections (CSV)</button>
-                <button type="button" class="forma-button" data-event="exportLineage">Lineage</button>
+                <button type="button" class="forma-button" data-event="exportReportJson" data-bind-disabled="jsonDisabled" data-bind-aria-busy="jsonBusy" data-bind-aria-disabled="jsonBusy" data-text="jsonLabel">Report (JSON)</button>
+                <button type="button" class="forma-button" data-event="exportSectionsCsv" data-bind-disabled="csvDisabled" data-bind-aria-busy="csvBusy" data-bind-aria-disabled="csvBusy" data-text="csvLabel">Sections (CSV)</button>
+                <button type="button" class="forma-button" data-event="exportLineage" data-bind-disabled="lineageDisabled" data-bind-aria-busy="lineageBusy" data-bind-aria-disabled="lineageBusy" data-text="lineageLabel">Lineage</button>
               </span>
               </template>
             </li>

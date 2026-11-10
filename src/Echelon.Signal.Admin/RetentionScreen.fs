@@ -80,18 +80,25 @@ let update (can: AdminState.AdminCapability -> bool) (selected: GroupSummary opt
     let refuse code message =
         { model with Notice = Some { Code = code; Message = message; Infrastructure = false } }, []
 
-    let busy effects = { model with Busy = true; Notice = None; RetireConfirm = None }, effects
+    // A person's activation: starts the operation, or is ignored while one
+    // runs (the guard in `Operations`), so a second click never queues a write.
+    let busy operation effects =
+        match Operations.start operation model.Activity with
+        // The retirement's confirmation stays open, its button busy, until it
+        // is answered; the page closes it then (SIG-VIS-PENDING-002).
+        | Some activity -> { model with Activity = activity; Notice = None }, effects
+        | None -> model, []
 
     match name, model.Dataset, selected with
     | "datasetTransition", Some dataset, _ ->
         match ofId value with
         | Some target when not (can AdminState.CanManageLifecycle) ->
             refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" $"Moving the dataset to '{Retention.stateId target}' needs ManageStorage and a credential that can write."
-        | Some target when offered dataset.Lifecycle |> List.contains target -> busy [ TransitionDataset target ]
+        | Some target when offered dataset.Lifecycle |> List.contains target -> busy (Operations.Operation.TransitionDataset target) [ TransitionDataset target ]
         | _ -> refuse "SIGNAL.LIFECYCLE.ILLEGAL_TRANSITION" $"The dataset cannot move from '{Retention.stateId dataset.Lifecycle}' to '{value}' here."
     | "retireSources", _, Some group when group.SourcesRetired.IsSome -> refuse "SIGNAL.RETENTION.ALREADY_RETIRED" "This group's accepted results were already retired."
     | "retireSources", _, Some group when can AdminState.CanRetireSources -> { model with RetireConfirm = Some group.Key; Notice = None }, []
-    | "confirmRetire", _, Some group when model.RetireConfirm = Some group.Key && can AdminState.CanRetireSources -> busy [ RetireSources group.Key ]
+    | "confirmRetire", _, Some group when model.RetireConfirm = Some group.Key && can AdminState.CanRetireSources -> busy Operations.Operation.RetireSources [ RetireSources group.Key ]
     | ("retireSources" | "confirmRetire"), _, Some _ ->
         refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "Retiring accepted results needs ManageStorage, a writable store and a finalized or sealed group."
     | "cancelRetire", _, _ -> { model with RetireConfirm = None }, []

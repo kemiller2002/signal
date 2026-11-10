@@ -74,8 +74,13 @@
     </forma-alert>
   </template>
 
+  <!-- Reading the published version over the network (SIG-VIS-PENDING-001):
+       Forma's spinner with its visible label, in a status region the
+       Echelon theme styles as .echelon-loading. -->
   <template data-if="loading">
-    <p id="loading" role="status">Loading the survey…</p>
+    <div id="loading" class="echelon-loading" role="status">
+      <p class="forma-spinner"><span class="forma-spinner__indicator" aria-hidden="true"></span><span class="forma-spinner__label">Loading the survey…</span></p>
+    </div>
   </template>
 
   <!-- Missing, damaged, altered or different template: refused, never replaced. -->

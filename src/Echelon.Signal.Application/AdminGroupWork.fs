@@ -54,7 +54,21 @@ let create (env: Env) (catalog: TemplateCatalog.Loaded) (actor: Store.Actor) (op
             | Ok() ->
                 match! GroupStore.openGroup (TemplateCatalog.resolver catalog) group now opened with
                 | Ok created -> return [ GroupReady(created, None, 0) ]
-                | Error failure -> return [ engine (groupFailure failure) ]
+                // Created, then not read back: one notice keeps both facts, and
+                // it confirms the creation (SIG-VIS-PENDING-001, -002).
+                | Error failure ->
+                    let why =
+                        match groupFailure failure with
+                        | AdminApp.Failed problem -> problem.Message
+                        | AdminApp.WentOffline reason -> reason
+                        | _ -> "it could not be read"
+
+                    return
+                        [ engine (
+                              AdminApp.Noted(
+                                  notice "SIGNAL.GROUP.CREATED_NOT_READ" $"The group {GroupRecord.groupKey group} was created, but it could not be read back: {why} Refresh to open it." false
+                              )
+                          ) ]
         | _ -> return [ engine (AdminApp.Failed(notice "SIGNAL.ADMIN.TEMPLATE_UNAVAILABLE" "Choose a template from the catalog." false)) ]
     }
 

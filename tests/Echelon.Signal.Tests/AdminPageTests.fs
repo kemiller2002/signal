@@ -31,7 +31,7 @@ let configured =
 let local = """{"environment":"local","environmentName":"local"}"""
 
 let offer =
-    $"""{{"protocol":{{"major":1,"minor":4}},"contract":{{"unit":"limen.core","version":1,"fingerprint":"{Limen.core.Fingerprint}"}},"capabilities":[{{"id":"{AdminProtocol.schedule.Id}","version":1,"fingerprint":"{AdminProtocol.schedule.Fingerprint}"}},{{"id":"{AdminProtocol.host.Id}","version":1,"fingerprint":"{AdminProtocol.host.Fingerprint}"}},{{"id":"{AdminProtocol.files.Id}","version":1,"fingerprint":"{AdminProtocol.files.Fingerprint}"}}]}}"""
+    $"""{{"protocol":{{"major":1,"minor":4}},"contract":{{"unit":"limen.core","version":1,"fingerprint":"{Limen.core.Fingerprint}"}},"capabilities":[{{"id":"{AdminProtocol.schedule.Id}","version":1,"fingerprint":"{AdminProtocol.schedule.Fingerprint}"}},{{"id":"{AdminProtocol.host.Id}","version":1,"fingerprint":"{AdminProtocol.host.Fingerprint}"}},{{"id":"{AdminProtocol.files.Id}","version":1,"fingerprint":"{AdminProtocol.files.Fingerprint}"}},{{"id":"{AdminProtocol.focus.Id}","version":1,"fingerprint":"{AdminProtocol.focus.Fingerprint}"}}]}}"""
 
 let initialize (query: string) (hash: string) =
     $"""{{"kind":"Initialize","protocolVersion":1,"capabilities":["Http","Storage","Clipboard","Navigation"],"location":{{"origin":"http://127.0.0.1:4321","path":"/web/admin/index.html","query":"{query}","hash":"{hash}"}},"handshake":{offer}}}"""
@@ -51,6 +51,9 @@ type Browser(configuration: string option) =
     member val Navigations = List<string>()
     /// Files handed over to save: name, media type and text.
     member val Downloads = List<string * string * string>()
+    /// While set, timer wakes are held, unanswered, in `HeldWakes` (a held operation).
+    member val HoldWakes = false with get, set
+    member val HeldWakes = List<string>()
 
     member this.Exchange (url: string) (body: string) =
         let at (offset: TimeSpan) = start.UtcDateTime.Add(offset).ToString("yyyy-MM-ddTHH:mm:ssZ")
@@ -106,7 +109,8 @@ type Browser(configuration: string option) =
                 | "limen.files", "download" -> this.Downloads.Add((arg "fileName", arg "mimeType", arg "data")); """{"kind":"Downloaded"}"""
                 | _, _ -> """{"kind":"Done"}"""
 
-            Some $"""{{"kind":"EffectResult","result":{{"kind":"CapabilityResult","correlationId":"{id}","capability":"{field "capability"}","version":1,"outcome":{{"kind":"Completed","result":{result}}}}}}}"""
+            let reply = $"""{{"kind":"EffectResult","result":{{"kind":"CapabilityResult","correlationId":"{id}","capability":"{field "capability"}","version":1,"outcome":{{"kind":"Completed","result":{result}}}}}}}"""
+            if field "capability" = "limen.schedule" && this.HoldWakes then (this.HeldWakes.Add reply; None) else Some reply
         | "Clipboard" ->
             this.Copied.Add(field "text")
             Some $"""{{"kind":"EffectResult","result":{{"kind":"ClipboardResult","correlationId":"{id}","outcome":{{"kind":"Success"}}}}}}"""
@@ -122,6 +126,21 @@ type Browser(configuration: string option) =
 type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
     let keys = ref 0
     let bridge = Bridge.Bridge<AdminWork.Outcome>()
+    // Faults a test arranges (SIG-VIS-PENDING-002): the store unreachable from
+    // a point on, an action once the next commit landed, an exception inside
+    // the next write, commits whose outcome stays unknown, the next commit
+    // held on a timer wake (then an action), and a cross-tab receive that throws.
+    let offlineNow = ref false
+    let afterCommit = ref (0, (fun () -> ()))
+    let faultNextWrite = ref false
+    let stillUnknown = ref false
+    let holdNextCommit: (unit -> unit) option ref = ref None
+    let receiveThrows = ref false
+    let reachable () = reachable () && not offlineNow.Value
+    let held () = match holdNextCommit.Value with Some after -> (holdNextCommit.Value <- None; async.Bind(bridge.Call(Bridge.Sleep 1), fun _ -> async.Return(after ()))) | None -> async.Return()
+
+    let unknownPending () : PendingReconciliation =
+        { IdempotencyKey = (match IdempotencyKey.create "op-still-unknown-0001" with Ok key -> key | Error e -> failwith $"%A{e}"); Base = ChangeToken "still-unknown"; Candidate = None; Revisions = Map.empty }
 
     let backend: Store.Backend =
         let offline () = async.Return(Error(StorageFailure.ProviderFailed("AEGIS.NETWORK.UNAVAILABLE", true, "offline")))
@@ -133,33 +152,52 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
                 { real with
                     Read = fun ns p -> if reachable () then real.Read ns p else offline ()
                     List = fun ns p -> if reachable () then real.List ns p else offline ()
-                    Commit = fun o -> if reachable () then real.Commit o else offline ()
+                    Commit =
+                        fun o ->
+                            if not (reachable ()) then
+                                offline ()
+                            elif stillUnknown.Value then
+                                async.Return(Error(StorageFailure.OutcomeUnknown(unknownPending ())))
+                            else
+                                async {
+                                    do! held ()
+                                    let! result = real.Commit o
+                                    let count, landed = afterCommit.Value
+                                    afterCommit.Value <- (max 0 (count - 1), landed)
+                                    if count = 1 then landed ()
+                                    return result
+                                }
+                    Reconcile = fun ns pending -> if stillUnknown.Value then async.Return(Ok(ReconcileOutcome.StillUnknown pending)) else real.Reconcile ns pending
                     ChangeToken = fun ns -> if reachable () then real.ChangeToken ns else offline ()
                     NamespaceState = fun ns -> if reachable () then real.NamespaceState ns else offline () }
           Resolve =
             fun location ->
                 if reachable () then
-                    async.Return(
-                        Ok
-                            { Identity = { Provider = "github"; Subject = "583231"; Login = Some "octocat"; Kind = IdentityKind.User }
-                              RepositoryId = "R_1"
-                              Repository = location.Repository
-                              Visibility = RepositoryVisibility.Private
-                              CanRead = true
-                              CanWrite = true
-                              Archived = false
-                              Branch = BranchAccess.Writable }
-                    )
+                    let identity = { Provider = "github"; Subject = "583231"; Login = Some "octocat"; Kind = IdentityKind.User }
+                    async.Return(Ok { Identity = identity; RepositoryId = "R_1"; Repository = location.Repository; Visibility = RepositoryVisibility.Private; CanRead = true; CanWrite = true; Archived = false; Branch = BranchAccess.Writable })
                 else
                     async.Return(Error(Credential.Unreachable "offline")) }
 
     let env: AdminWork.Env =
         { Now = fun () -> start
-          NewKey = fun prefix -> $"{prefix}-{Threading.Interlocked.Increment keys:D6}"
+          NewKey =
+            fun prefix ->
+                // A planted operational failure inside the next write's work (its
+                // operation context): an exception, not an answer. (A programming
+                // defect is re-raised by Aegis and fails loudly instead.)
+                if prefix = "op" && faultNextWrite.Value then
+                    faultNextWrite.Value <- false
+                    raise (Json.CapabilityFailed("signal.store", "planted: the operation threw"))
+
+                $"{prefix}-{Threading.Interlocked.Increment keys:D6}"
           RandomBytes = fun count -> Array.init count (fun i -> byte (i + keys.Value))
           Bridge = bridge
           Backend = fun _ _ -> backend
-          Identity = Identity.create
+          Identity =
+            fun config ports ->
+                let client = Identity.create config ports
+                let planted () = raise (Json.CapabilityFailed("fides", "planted: the receive threw"))
+                { client with Receive = fun message -> if receiveThrows.Value then async { return planted () } else client.Receive message }
           Catalog =
             [ { Hash = Canonical.templateHash Pilot.assessment
                 SurveyIdentifier = Pilot.assessment.Id
@@ -176,9 +214,11 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
     /// Sends a message and answers every request until none is left.
     member this.Send(message: string) =
         let rec pump (message: string) =
-            let next, reply = AdminWire.handle aegis env state message
-            state <- next
-            let node = JsonNode.Parse reply
+            let handled = AdminWire.handle aegis env state message
+            // As the runtime does: keep the settled state, then re-raise a defect (WI-0114).
+            state <- handled.State
+            handled.Defect |> Option.iter _.Throw()
+            let node = JsonNode.Parse handled.Reply
             view <- node["view"]
 
             for effect in node["effects"].AsArray() do
@@ -197,6 +237,17 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
     member _.Text(name: string) = view[name].GetValue<string>()
     member _.Items(name: string) = view[name].AsArray() |> Seq.map (fun item -> item.AsObject()) |> List.ofSeq
     member _.ViewText = view.ToJsonString()
+    /// The engine's model as the wire holds it now, for pure update tests
+    /// that start from a real signed-in page (OperationsTests).
+    member _.Model = state.Model
+    // Arranged faults: offline from now on; `action` once the `count`th commit
+    // from now landed; the next write throws; commits stay unknown.
+    member _.GoOffline() = offlineNow.Value <- true
+    member _.AfterCommits(count: int, action: unit -> unit) = afterCommit.Value <- (count, action)
+    member _.FaultNextWrite() = faultNextWrite.Value <- true
+    member _.CommitsStayUnknown(on: bool) = stillUnknown.Value <- on
+    member _.HoldNextCommit(after: unit -> unit) = holdNextCommit.Value <- Some after
+    member _.ReceiveThrows() = receiveThrows.Value <- true
 
 let openPage (configuration: string option) =
     let browser = Browser(configuration)
@@ -253,20 +304,25 @@ let ``a dataset already opening is not opened a second time, and its button says
     let principal = { Access.PrincipalId = "github:583231"; Access.Kind = Access.Human; Access.DisplayName = "octocat" }
     let config = (Deployment.parse configured |> Result.toOption).Value
     let ready = { AdminApp.initial [] with Principal = Some principal; Deployment = Some config }
-    let opening' = { ready with Busy = true }
+    // The page-wide busy flag became per-action pending state (SIG-VIS-PENDING-001):
+    // "opening" is now the dataset's own open operation in flight.
+    let opening' = { ready with Activity = (Operations.start (Operations.Operation.OpenDataset "ds_engagement") Operations.idle).Value }
 
     let _, effects = AdminUpdate.update (AdminApp.Ui("openDataset", Some "ds_engagement", "")) opening'
     Assert.Empty(effects)
     let _, effects = AdminUpdate.update (AdminApp.Ui("openDataset", Some "ds_engagement", "")) ready
     Assert.Equal<AdminApp.Effect list>([ AdminApp.OpenDataset "ds_engagement" ], effects)
 
-    let opening (model: AdminApp.Model) =
-        match AdminView.project model |> List.pick (fun (name, value) -> if name = "datasets" then Some value else None) with
-        | View.Items [ row ] -> row |> List.pick (fun (field, value) -> if field = "opening" then Some value else None)
+    let field (name: string) (model: AdminApp.Model) =
+        match AdminView.project model |> List.pick (fun (key, value) -> if key = "datasets" then Some value else None) with
+        | View.Items [ row ] -> row |> List.pick (fun (key, value) -> if key = name then Some value else None)
         | other -> failwithf "unexpected datasets projection %A" other
 
-    Assert.Equal(View.Flag true, opening opening')
-    Assert.Equal(View.Flag false, opening ready)
+    // Its button says so: busy, with its own label, and not merely disabled.
+    Assert.Equal(View.Text "true", field "openBusy" opening')
+    Assert.Equal(View.Text "Opening Engagement", field "openLabel" opening')
+    Assert.Equal(View.Text "false", field "openBusy" ready)
+    Assert.Equal(View.Text "Engagement", field "openLabel" ready)
 
 // ---- Groups, imports and the lifecycle -----------------------------------------------------------
 

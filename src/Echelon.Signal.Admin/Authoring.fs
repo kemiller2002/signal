@@ -384,7 +384,9 @@ let update (listing: TemplateListing.Listing) (survey: string option) (name: str
         | None -> fail "Open a draft first."
     | "confirmDeleteDraft", _ ->
         match editor, screen.ConfirmDelete with
-        | Some e, Some s when s = e.Draft.SurveyId -> { screen with ConfirmDelete = None; Problem = None }, [ DeleteDraft s ]
+        // The confirmation stays open, its button busy, until the deletion
+        // is answered (SIG-VIS-PENDING-002); the page closes it then.
+        | Some e, Some s when s = e.Draft.SurveyId -> { screen with Problem = None }, [ DeleteDraft s ]
         | _ -> fail "Choose Delete draft first."
     | "cancelDeleteDraft", _ -> { screen with ConfirmDelete = None }, []
     | "hideVersion", Some hash ->
@@ -393,10 +395,12 @@ let update (listing: TemplateListing.Listing) (survey: string option) (name: str
         | None -> fail "That version is not in the catalog."
     | _ -> screen, []
 
-/// After a save: the editor's draft is what is stored.
-let saved (survey: string) (screen: Screen) =
+/// After a save: `stored` is what was sent and is now stored. An edit made
+/// while it was saving stays in the editor and stays unsaved
+/// (SIG-VIS-PENDING-002).
+let saved (stored: Draft) (screen: Screen) =
     match screen.Editor with
-    | Some e when e.Draft.SurveyId = survey -> { screen with Editor = Some { e with Unsaved = false } }
+    | Some e when e.Draft.SurveyId = stored.SurveyId -> { screen with Editor = Some { e with Unsaved = e.Draft <> stored } }
     | _ -> screen
 
 /// After publication: the editor closes; the next edit starts from the stored draft.

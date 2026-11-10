@@ -51,6 +51,7 @@
     <Compile Include="Retention.fs" />
     <Compile Include="GovernanceRecord.fs" />
     <Compile Include="TemplateListing.fs" />
+    <Compile Include="StateTones.fs" />
     <Compile Include="QuestionKinds.fs" />
     <Compile Include="RuleAuthoring.fs" />
     <Compile Include="ScoringPreview.fs" />
@@ -64,7 +65,9 @@
     <Compile Include="Routes.fs" />
     <Compile Include="AdminNavigation.fs" />
     <Compile Include="AdminTypes.fs" />
+    <Compile Include="Operations.fs" />
     <Compile Include="AdminApp.fs" />
+    <Compile Include="ActivityView.fs" />
     <Compile Include="RetentionScreen.fs" />
     <Compile Include="AdminUpdate.fs" />
     <Compile Include="AdminRouteView.fs" />

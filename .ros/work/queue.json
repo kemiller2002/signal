@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 110,
+  "nextSeq": 117,
   "items": [
     {
       "id": "WI-0001",
@@ -2706,6 +2706,176 @@
       },
       "source": "review",
       "sourceReference": "kemiller2002/signal#131"
+    },
+    {
+      "id": "WI-0111",
+      "title": "SIG-VIS-PENDING-001: per-action pending state, spinner loading regions and group-phase/template-lifecycle chip data under the approved visual refinement",
+      "description": null,
+      "tags": [
+        "signal",
+        "visual",
+        "accessibility"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-10T01:32:49.000Z",
+      "updatedAt": "2026-11-10T02:24:28.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "intake",
+      "sourceReference": ".praxis/inbox/documents/2026-11-09-SIG-VIS-PENDING-001-per-action-pending-states.md"
+    },
+    {
+      "id": "WI-0112",
+      "title": "SIG-VIS-PENDING-002: review follow-ups to WI-0111 (PR #133): busy confirmations and focus, one live region, operation faults settle unknown, edits during save, reconcile before resend, tests, human phase labels",
+      "description": null,
+      "tags": [
+        "signal",
+        "visual",
+        "accessibility"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-10T02:52:19.000Z",
+      "updatedAt": "2026-11-10T04:06:27.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "review",
+      "sourceReference": "kemiller2002/signal#133"
+    },
+    {
+      "id": "WI-0113",
+      "title": "Admin console: edits made while a draft is being published are discarded when the editor closes on DraftPublished; keep or warn (follow-up to SIG-VIS-PENDING-002)",
+      "description": null,
+      "tags": [
+        "signal",
+        "visual"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T03:05:29.937Z",
+      "updatedAt": "2026-11-10T03:05:29.937Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0114",
+      "title": "Admin console: a programming defect inside an operation is re-raised by Aegis (fails loudly) and leaves the operation pending until reload; decide whether the wire should settle it unknown before re-raising (follow-up to SIG-VIS-PENDING-002)",
+      "description": null,
+      "tags": [
+        "signal",
+        "visual"
+      ],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-10T03:05:30.327Z",
+      "updatedAt": "2026-11-10T04:53:11Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0115",
+      "title": "Admin console: verify #activity live-region announcements and focus moves with real screen readers (NVDA, VoiceOver); only structure is tested (follow-up to SIG-VIS-PENDING-002)",
+      "description": null,
+      "tags": [
+        "signal",
+        "visual"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T03:05:30.741Z",
+      "updatedAt": "2026-11-10T03:05:30.741Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0116",
+      "title": "Admin console: a created group that cannot be read back reports one notice but no longer marks the store offline when the read failed for connectivity (follow-up to SIG-VIS-PENDING-002)",
+      "description": null,
+      "tags": [
+        "signal",
+        "visual"
+      ],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T03:05:31.113Z",
+      "updatedAt": "2026-11-10T03:05:31.113Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0117",
+      "title": "SIG-VIS-PENDING-003: second review round on PR #133: faults tied to the running operation, focus beside the change, visible :focus ring, defect keeps settled state (WI-0114), pin edits during save, definite retire test",
+      "description": null,
+      "tags": [
+        "signal",
+        "accessibility"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-10T04:39:00Z",
+      "updatedAt": "2026-11-10T04:53:11Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "review",
+      "sourceReference": "kemiller2002/signal#133@771c98f"
     }
   ]
 }

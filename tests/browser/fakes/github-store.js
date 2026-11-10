@@ -18,6 +18,12 @@
 // next matching request with the given response (default 503), or aborts it
 // when response is "abort", so a test can prove a failure is reported
 // honestly and that the next attempt recovers.
+//
+// Delay injection: `holdNext(method, pathPattern)` holds the next matching
+// request until the test calls the returned `release()`; `reached` resolves
+// once that request has arrived. A test can then look at the page while the
+// operation is in flight (SIG-VIS-PENDING-001), and the request is answered
+// normally afterwards. Release well within the request's own timeout.
 import { createHash } from "node:crypto";
 
 const sha1 = (data) => createHash("sha1").update(data).digest("hex");
@@ -37,6 +43,7 @@ export class FakeGitHubStore {
     this.trees = new Map(); // sha -> Map(name -> { type: "blob" | "tree", sha })
     this.commits = new Map(); // sha -> { tree, parents, message }
     this.failures = [];
+    this.holds = [];
     this.requests = [];
     const emptyTree = this.#storeTree(new Map());
     this.head = this.#storeCommit({ tree: emptyTree, parents: [], message: "Initial commit" });
@@ -72,6 +79,13 @@ export class FakeGitHubStore {
 
   failNext(method, pattern, response = { status: 503, body: { message: "Service Unavailable" } }) {
     this.failures.push({ method, pattern, response });
+  }
+
+  holdNext(method, pattern) {
+    const gate = Promise.withResolvers();
+    const arrival = Promise.withResolvers();
+    this.holds.push({ method, pattern, gate: gate.promise, arrived: arrival.resolve });
+    return { reached: arrival.promise, release: gate.resolve };
   }
 
   async install(page) {
@@ -154,6 +168,13 @@ export class FakeGitHubStore {
     const url = new URL(request.url());
     const path = decodeURIComponent(url.pathname);
     this.requests.push(`${method} ${path}${url.search}`);
+
+    const hold = this.holds.findIndex((h) => h.method === method && h.pattern.test(path));
+    if (hold >= 0) {
+      const [{ gate, arrived }] = this.holds.splice(hold, 1);
+      arrived();
+      await gate;
+    }
 
     const failure = this.failures.findIndex((f) => f.method === method && f.pattern.test(path));
     if (failure >= 0) {

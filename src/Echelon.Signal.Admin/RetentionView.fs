@@ -32,10 +32,10 @@ let project (model: Model) (selected: GroupSummary option) : (string * ViewValue
               RetentionScreen.offered d.Lifecycle
               |> List.map (fun target ->
                   [ "target", Text(Retention.stateId target)
-                    "targetLabel", Text(RetentionScreen.targetLabel target)
-                    "targetMeaning", Text(RetentionScreen.stateLabel target)
-                    // The row's button binds within the row (GH-113).
-                    "busy", Flag model.Busy ]))
+                    "targetMeaning", Text(RetentionScreen.stateLabel target) ]
+                  // The row's button binds within the row (GH-113): its label,
+                  // and whether it or another operation runs.
+                  @ ActivityView.fields model.Activity "target" (Operations.Operation.TransitionDataset target) (RetentionScreen.targetLabel target)))
           |> Option.defaultValue []
       )
       // The open group's accepted results (ADM-045, ADM-064).
@@ -43,4 +43,5 @@ let project (model: Model) (selected: GroupSummary option) : (string * ViewValue
       "sourcesRetiredText", text (retired |> Option.map RetentionScreen.reconstructionLabel |> Option.defaultValue "")
       "canRetireSources", flag (retired.IsNone && not confirming && can.Contains AdminState.CanRetireSources)
       "confirmingRetire", flag (retired.IsNone && confirming && can.Contains AdminState.CanRetireSources)
-      "retireWarning", text RetentionScreen.retireWarning ]
+      "retireWarning", text RetentionScreen.retireWarning
+      yield! ActivityView.control model.Activity "confirmRetire" Operations.Operation.RetireSources "Retire accepted results" ]

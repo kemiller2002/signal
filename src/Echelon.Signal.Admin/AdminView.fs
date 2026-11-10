@@ -49,6 +49,9 @@ let private groupItem (model: Model) (group: GroupSummary) =
       "mode", Text(if group.Mode = IdentifiedGroup then "Identified" else "Anonymous")
       "progress", Text $"{group.Accepted} of {group.Expected}"
       "phase", Text(AdminState.phaseName group.Phase)
+      // The phase's chip tone (SIG-VIS-PENDING-001), from the phase itself.
+      "phaseTone", Text(StateTones.toneId (StateTones.ofPhase group.Phase))
+      "phaseLabel", Text(StateTones.phaseLabel group.Phase)
       "status", Text(GroupLifecycle.statusName group.Status)
       "href", Text(href (Group group.Key))
       "resultsHref", Text(href (Results(group.Key, defaultResults)))
@@ -201,6 +204,8 @@ let project (model: Model) : View =
         | Credential.Online -> false, ""
 
     let current = screen model
+    let activity = model.Activity
+    let control = ActivityView.control activity
 
     [ "screen", text current
       "screenLoading", flag (current = "loading")
@@ -212,11 +217,15 @@ let project (model: Model) : View =
       "screenPublic", flag (current = "public")
       "configurationProblem", text (defaultArg model.ConfigurationProblem "")
       "signInBusy", flag (model.SignIn = Credential.SigningIn)
+      // The sign-in button while the provider's round trip or the exchange runs.
+      "signInAriaBusy", text (if model.SignIn = Credential.SigningIn then "true" else "false")
+      "signInLabel", text (if model.SignIn = Credential.SigningIn then "Signing in" else "Sign in")
       "retentionPage", flag (model.Retention = Credential.ThisPage)
       "retentionTab", flag (model.Retention = Credential.ThisTab)
       "retentionDisclosure", text (Credential.disclosure model.Retention)
       "principal", text (model.Principal |> Option.map (fun p -> p.PrincipalId) |> Option.defaultValue "")
-      "busy", flag model.Busy
+      yield! ActivityView.project model
+      yield! control "refresh" Operations.Operation.Refresh "Refresh"
       // Status bar: credential, connectivity and staleness (ADM-033, ADM-056, ADM-070).
       "credential", text (dataset |> Option.map (fun d -> credentialText d.Credential) |> Option.defaultValue "")
       "credentialState", text (dataset |> Option.map (fun d -> Credential.stateCode d.Credential) |> Option.defaultValue "")
@@ -233,7 +242,9 @@ let project (model: Model) : View =
       "datasets",
       Items(
           model.Deployment
-          |> Option.map (fun c -> c.Datasets |> List.map (fun d -> [ "id", Text d.Id; "label", Text d.Label; "opening", Flag model.Busy ]))
+          |> Option.map (fun c ->
+              c.Datasets
+              |> List.map (fun d -> [ "id", Text d.Id; "label", Text d.Label ] @ ActivityView.fieldsWith activity "open" (Operations.Operation.OpenDataset d.Id) d.Label $"Opening {d.Label}"))
           |> Option.defaultValue []
       )
       "datasetLabel", text (dataset |> Option.map _.Label |> Option.defaultValue "")
@@ -257,10 +268,13 @@ let project (model: Model) : View =
       "newGroupIdentified", flag (model.NewGroup.Mode = IdentifiedGroup)
       "newGroupExpected", text (string model.NewGroup.Expected)
       "newGroupMinimum", text (string model.NewGroup.Minimum)
+      yield! control "createGroup" Operations.Operation.CreateGroup "Create group"
       // The open group (ADM-007, ADM-008, ADM-066).
       "hasGroup", flag selected.IsSome
       "groupKey", text (selected |> Option.map _.Key |> Option.defaultValue "")
       "groupPhase", text (selected |> Option.map (_.Phase >> AdminState.phaseName) |> Option.defaultValue "")
+      "groupPhaseLabel", text (selected |> Option.map (_.Phase >> StateTones.phaseLabel) |> Option.defaultValue "")
+      "groupPhaseTone", text (selected |> Option.map (_.Phase >> StateTones.ofPhase >> StateTones.toneId) |> Option.defaultValue "")
       "groupProgress", text (selected |> Option.map (fun g -> $"{g.Accepted} of {g.Expected} accepted") |> Option.defaultValue "")
       // ARX-009: newer responses are shown only once they cannot be singled out by difference.
       "hasWithheld", flag (selected |> Option.exists (fun g -> g.Withheld > 0))
@@ -296,6 +310,7 @@ let project (model: Model) : View =
       "inviteCount", text model.Invite.Count
       "inviteLocale", text model.Invite.Locale
       "inviteExpires", text model.Invite.Expires
+      yield! control "invite" Operations.Operation.IssueInvitations "Create links"
       yield!
           (let issued = model.Issued |> Option.filter (fun i -> Some i.Group = (selected |> Option.map _.Key))
 
@@ -307,6 +322,7 @@ let project (model: Model) : View =
       "canImport", enabled AdminState.CanImportBatch
       "importText", text model.ImportText
       "importFile", flag (model.ImportOrigin = ResultRecord.ImportedTextFile)
+      yield! control "import" Operations.Operation.ImportArtifacts "Import"
       "batchStatus", text (selected |> Option.bind _.LastBatch |> Option.map (_.Status >> Intake.statusName) |> Option.defaultValue "")
       "batchCounts",
       text (
@@ -323,6 +339,10 @@ let project (model: Model) : View =
       "canReopen", enabled AdminState.CanReopenGroup
       "canFinalize", enabled AdminState.CanFinalizeGroup
       "canSeal", enabled AdminState.CanSealGroup
+      yield! control "close" (Operations.Operation.TransitionGroup "close") "Close incomplete"
+      yield! control "reopen" (Operations.Operation.TransitionGroup "reopen") "Reopen"
+      yield! control "finalize" (Operations.Operation.TransitionGroup "finalize") "Finalize"
+      yield! control "seal" (Operations.Operation.TransitionGroup "seal") "Seal"
       // Administrators (ADM-052): by account number, with what each holds.
       "administrators",
       Items(
@@ -332,14 +352,16 @@ let project (model: Model) : View =
               |> Map.toList
               |> List.map (fun (id, m) ->
                   [ "id", Text id
-                    "capabilities", Text(allCapabilities |> List.filter m.Capabilities.Contains |> List.map capabilityName |> String.concat ", ")
-                    // A row's button binds within the row (GH-113).
-                    "busy", Flag model.Busy ]))
+                    "capabilities", Text(allCapabilities |> List.filter m.Capabilities.Contains |> List.map capabilityName |> String.concat ", ") ]
+                  // A row's button binds within the row (GH-113).
+                  @ ActivityView.fields activity "remove" (Operations.Operation.RemoveAdministrator id) "Remove"))
           |> Option.defaultValue []
       )
       "canManageAdministrators", enabled AdminState.CanManageAdministrators
       "admitAccount", text model.Admit.Account
+      yield! control "admit" Operations.Operation.Admit "Admit"
       "canRepairIndex", enabled AdminState.CanRepairIndex
+      yield! control "rebuildIndex" Operations.Operation.RebuildIndex "Rebuild the contribution index"
       // The conflict workspace (ADM-062).
       "hasConflict", flag model.Conflict.IsSome
       "conflictFields",

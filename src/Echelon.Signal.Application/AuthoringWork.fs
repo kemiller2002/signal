@@ -27,7 +27,7 @@ let save (env: Env) (catalog: TemplateCatalog.Loaded) (actor: Store.Actor) (open
         let revision = catalog.Revisions |> Map.tryFind draft.SurveyId
 
         match! TemplateStore.saveDraft actor now opened revision draft with
-        | Ok() -> return! reloaded env now opened [ AdminApp.DraftSaved draft.SurveyId; AdminApp.Noted(notice "SIGNAL.AUTHORING.SAVED" $"The draft of {draft.SurveyId} was saved." false) ]
+        | Ok() -> return! reloaded env now opened [ AdminApp.DraftSaved draft; AdminApp.Noted(notice "SIGNAL.AUTHORING.SAVED" $"The draft of {draft.SurveyId} was saved." false) ]
         | Error failure -> return [ ToEngine(storeFailure failure) ]
     }
 

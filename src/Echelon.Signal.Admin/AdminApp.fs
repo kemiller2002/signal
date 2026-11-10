@@ -57,7 +57,9 @@ type Model =
       Connectivity: Credential.Connectivity
       LastVerified: DateTimeOffset option
       Notice: Notice option
-      Busy: bool
+      /// The operation in flight and the latest change's outcome
+      /// (SIG-VIS-PENDING-001; it replaces the page-wide busy flag).
+      Activity: Operations.Activity
       Conflict: Conflicts.Conflict option
       /// The group whose results are about to be retired, waiting for the
       /// person to confirm (WI-0077).
@@ -90,7 +92,7 @@ let initial (catalog: CatalogEntry list) =
       Connectivity = Credential.Online
       LastVerified = None
       Notice = None
-      Busy = false
+      Activity = Operations.idle
       Conflict = None
       RetireConfirm = None
       CallbackQuery = [] }
@@ -135,6 +137,10 @@ type Effect =
     | RememberReturn of target: string
     | RecallReturn
     | ForgetReturn
+    /// Move focus to the element named `data-focus-target` (Limen's focus
+    /// pack), when the control that started an operation went away
+    /// (SIG-VIS-PENDING-002).
+    | Focus of target: string
 
 /// What happens to the page.
 [<NoComparison>]
@@ -146,8 +152,8 @@ type Msg =
     | DatasetOpened of DatasetSummary * at: DateTimeOffset
     /// The templates new groups can start from (built in and stored), and the stored listing.
     | CatalogLoaded of CatalogEntry list * TemplateListing.Listing
-    /// A draft was stored, or published as a version.
-    | DraftSaved of survey: string
+    /// A draft was stored (the draft as it was sent), or published as a version.
+    | DraftSaved of Echelon.Signal.Engine.Drafts.Draft
     | DraftDeleted of survey: string
     | SnapshotsLoaded of SnapshotSummary list
     | LibraryLoaded of ReportLibrary.Library
@@ -168,6 +174,40 @@ type Msg =
     | LinkCopied of succeeded: bool
     /// A page event: its name, key and value (`data-event`).
     | Ui of name: string * key: string option * value: string
+    /// The operation in flight ended in an exception, not an answer: whether
+    /// it took effect is not known (SIG-VIS-PENDING-002). The fault itself is
+    /// presented through Aegis by the wire.
+    | OperationFaulted
+
+/// What a message says about the operation in flight, if it answers it:
+/// the first answer settles it. These are the messages that cleared the
+/// page-wide busy flag; the guard (`Operations`) keeps one operation in
+/// flight, so the first answer is its own. A download's or a copy's result
+/// (a file handed to the browser, the clipboard) answers no operation.
+let answer (running: Operations.Operation) (msg: Msg) : Operations.Outcome option =
+    let handedToBrowser (notice: Notice) =
+        List.contains notice.Code [ "SIGNAL.REPORT.EXPORTED"; "SIGNAL.REPORT.NOT_SAVED"; "SIGNAL.REPORT.NO_DOWNLOADS" ]
+
+    match msg with
+    | OperationFaulted -> Some Operations.Unknown
+    | Failed notice
+    | Noted notice when handedToBrowser notice -> None
+    | Failed notice when notice.Code = Operations.OutcomeUnknownCode -> Some Operations.Unknown
+    | Failed notice -> Some(Operations.NotDone notice.Code)
+    | WentOffline _ -> Some(Operations.NotDone "SIGNAL.STORAGE.OFFLINE")
+    | ConflictFound _ -> Some(Operations.NotDone "SIGNAL.STORAGE.CONFLICT")
+    | GroupUpdated group when running = Operations.Operation.ImportArtifacts -> Some(Operations.imported group.UnreconciledBatches group.LastBatch)
+    | DatasetOpened _
+    | GroupUpdated _
+    | InvitationsIssued _
+    | DraftSaved _
+    | DraftPublished _
+    | DraftDeleted _
+    | DefinitionSaved _
+    | ExportReady _
+    | SnapshotsLoaded _
+    | Noted _ -> Some Operations.Confirmed
+    | _ -> None
 
 /// The group the current view is about, if any.
 let groupKey (model: Model) =

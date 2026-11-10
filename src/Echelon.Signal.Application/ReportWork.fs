@@ -102,7 +102,8 @@ let take (catalog: TemplateCatalog.Loaded) (actor: Store.Actor) (model: AdminApp
                         | Error f -> return [ ToEngine(failure f) ]
                         | Ok snapshot ->
                             let! reloaded = load now opened
-                            return reloaded @ [ ToEngine(AdminApp.Noted(notice "SIGNAL.REPORT.SNAPSHOT_TAKEN" $"Snapshot {snapshot.SnapshotId} was taken of {snapshot.Accepted} response(s)." false)) ]
+                            // Confirmed first: the snapshot is stored whether or not the reread succeeds.
+                            return ToEngine(AdminApp.Noted(notice "SIGNAL.REPORT.SNAPSHOT_TAKEN" $"Snapshot {snapshot.SnapshotId} was taken of {snapshot.Accepted} response(s)." false)) :: reloaded
         | _ -> return [ ToEngine(AdminApp.Failed(notice "SIGNAL.REPORT.NO_REPORT" "Open a group's report first." false)) ]
     }
 
@@ -113,7 +114,8 @@ let saveDefinition (actor: Store.Actor) (opened: Store.Opened) (definition: Repo
         | Error f -> return [ ToEngine(failure f) ]
         | Ok entry ->
             let! reloaded = load now opened
-            return reloaded @ [ ToEngine(AdminApp.DefinitionSaved entry); ToEngine(AdminApp.Noted(notice "SIGNAL.REPORT.DEFINITION_SAVED" $"Report definition {entry.Definition.Id} was saved as version {entry.Definition.Version}." false)) ]
+            // Confirmed first: the definition is stored whether or not the reread succeeds.
+            return [ ToEngine(AdminApp.DefinitionSaved entry); ToEngine(AdminApp.Noted(notice "SIGNAL.REPORT.DEFINITION_SAVED" $"Report definition {entry.Definition.Id} was saved as version {entry.Definition.Version}." false)) ] @ reloaded
     }
 
 let private mimeOf (file: string) =

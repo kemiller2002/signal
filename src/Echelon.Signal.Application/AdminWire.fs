@@ -7,6 +7,7 @@
 module Echelon.Signal.Application.AdminWire
 
 open System
+open System.Runtime.ExceptionServices
 open System.Text.Json.Nodes
 open Aegis
 open Fides.Client
@@ -15,94 +16,20 @@ open Echelon.Signal.Application.Json
 open Echelon.Signal.Application.Boundary
 open Echelon.Signal.Application.AdminProtocol
 open Echelon.Signal.Application.AdminWork
+open Echelon.Signal.Application.AdminWireState
 
-type Purpose =
-    | Navigation
-    | Copying
-    | ReturnTarget
-    | Downloading
-    | Configuration
-    | BridgeCall
-
-[<NoComparison; NoEquality>]
-type State =
-    { Model: AdminApp.Model option
-      Origin: string
-      Path: string
-      Query: string
-      Capabilities: CapabilityOffer list
-      Effects: string list
-      Pending: Map<string, Purpose>
-      Sequence: int
-      Fault: FaultView option
-      Client: FidesClient option
-      Opened: Store.Opened option
-      /// The open dataset's template catalog (built-in templates when none is open).
-      Catalog: TemplateCatalog.Loaded
-      /// The open dataset's formal report snapshots (WI-0075).
-      Snapshots: ReportLibrary.Snapshot list
-      Groups: Map<string, GroupStore.OpenedGroup> }
-
-let initial =
-    { Model = None
-      Origin = ""
-      Path = "/"
-      Query = ""
-      Capabilities = []
-      Effects = []
-      Pending = Map.empty
-      Sequence = 0
-      Fault = None
-      Client = None
-      Opened = None
-      Catalog = TemplateCatalog.builtIn []
-      Snapshots = []
-      Groups = Map.empty }
-
-let private negotiated (offer: CapabilityOffer) (state: State) = List.contains offer state.Capabilities
-
-/// The deployment's configuration document, beside the page.
-let configurationUrl (state: State) =
-    let folder = state.Path.Substring(0, state.Path.LastIndexOf '/' + 1)
-    state.Origin + folder + "signal.deployment.json"
-
-[<Literal>]
-let RequestTimeoutMs = 15000
-
-/// The tab-storage key that carries a sign-in's return target across the
-/// identity provider's round trip (SIG-LINK-006).
-[<Literal>]
-let ReturnTargetKey = "signal.admin.returnTo"
-
-let private page (state: State) (hash: string) : Limen.Routing.PageLocation =
-    { Origin = state.Origin; Path = state.Path; Query = state.Query; Hash = hash }
-
-let private kernelRequest (state: State) (id: string) (call: Bridge.KernelCall) =
-    let hostCall operation arguments =
-        if negotiated host state then
-            Some(Host(id, operation, arguments))
-        else
-            raise (CapabilityFailed("signal.host", "Sign-in needs the signal.host pack, which the kernel did not offer"))
-
-    match call with
-    | Bridge.Http(method, url, headers, body, timeoutMs, responseHeaders) -> Some(Http(id, method, url, headers, body, timeoutMs, responseHeaders))
-    | Bridge.DeviceGet key -> Some(StorageGet(id, key))
-    | Bridge.DeviceSet(key, value) -> Some(StorageSet(id, key, value))
-    | Bridge.DeviceRemove key -> Some(StorageRemove(id, key))
-    | Bridge.TabGet key -> hostCall "tabGet" [ "key", key ]
-    | Bridge.TabSet(key, value) -> hostCall "tabSet" [ "key", key; "value", value ]
-    | Bridge.TabRemove key -> hostCall "tabRemove" [ "key", key ]
-    | Bridge.Leave url -> hostCall "leave" [ "url", url ]
-    | Bridge.ReplaceAddress url -> hostCall "replaceAddress" [ "url", url ]
-    | Bridge.Announce message -> hostCall "broadcast" [ "message", message ]
-    | Bridge.Sleep milliseconds when negotiated schedule state -> Some(Wake(id, milliseconds))
-    | Bridge.Sleep _ -> None
+type Purpose = AdminWireState.Purpose
+type State = AdminWireState.State
+let initial = AdminWireState.initial
 
 /// Starts the work an engine effect asks for; its outcome arrives later as
 /// `Outcome`s through the bridge. Effects the kernel performs directly
 /// become Limen requests.
 let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State * Request list =
+    // Background work (identity, sign-in, sign-out, local answers) versus the
+    // running operation's own work, whose failure alone settles it.
     let start (work: Async<Outcome list>) = env.Bridge.Start work
+    let operate (work: Async<Outcome list>) = env.Bridge.StartOperation work
     let model = state.Model |> Option.defaultValue (AdminApp.initial env.Catalog)
     let now = env.Now()
     let mint purpose (state: State) =
@@ -112,13 +39,13 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
 
     let withDataset (work: Store.Actor -> Store.Opened -> Async<Outcome list>) =
         match actorOf env model, state.Opened with
-        | Some actor, Some opened -> start (work actor opened)
-        | _ -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NO_DATASET" "Open a dataset first." false)) ])
+        | Some actor, Some opened -> operate (work actor opened)
+        | _ -> operate (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NO_DATASET" "Open a dataset first." false)) ])
 
     let withGroup (key: string) (work: Store.Actor -> GroupStore.OpenedGroup -> Async<Outcome list>) =
         match actorOf env model, state.Groups.TryFind key with
-        | Some actor, Some group -> start (work actor group)
-        | _ -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NO_GROUP" "That group is not open." false)) ])
+        | Some actor, Some group -> operate (work actor group)
+        | _ -> operate (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NO_GROUP" "That group is not open." false)) ])
 
     match effect with
     | AdminApp.ReadConfiguration when List.contains "Http" state.Effects ->
@@ -166,8 +93,8 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
         | Some config, Some actor, Some client ->
             let backend = env.Backend (fun () -> Some(Identity.tokens client)) (fun () -> client.ReportUnauthorized())
             let pinned = state.Opened |> Option.filter (fun o -> o.DatasetId = datasetId) |> Option.map _.RepositoryId
-            start (AdminGroupWork.openDataset env state.Catalog backend config actor pinned datasetId now)
-        | _ -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NOT_SIGNED_IN" "Sign in first." false)) ])
+            operate (AdminGroupWork.openDataset env state.Catalog backend config actor pinned datasetId now)
+        | _ -> operate (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NOT_SIGNED_IN" "Sign in first." false)) ])
 
         state, []
     | AdminApp.CreateGroup(templateHash, mode, expected, minimum) ->
@@ -189,8 +116,8 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
         match model.Deployment, actorOf env model, state.Client, state.Opened with
         | Some config, Some actor, Some client, Some opened ->
             let backend = env.Backend (fun () -> Some(Identity.tokens client)) (fun () -> client.ReportUnauthorized())
-            start (RetentionWork.transition env state.Catalog backend config actor opened target now)
-        | _ -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NOT_SIGNED_IN" "Sign in and open the dataset first." false)) ])
+            operate (RetentionWork.transition env state.Catalog backend config actor opened target now)
+        | _ -> operate (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ADMIN.NOT_SIGNED_IN" "Sign in and open the dataset first." false)) ])
 
         state, []
     | AdminApp.RetireSources key ->
@@ -220,7 +147,7 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
     | AdminApp.ExportSnapshot(id, file) ->
         match state.Snapshots |> List.tryFind (fun s -> s.SnapshotId = id) with
         | Some snapshot -> withDataset (fun actor opened -> ReportWork.export actor opened snapshot file now)
-        | None -> start (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.REPORT.NO_SUCH_SNAPSHOT" "That snapshot is not in this dataset." false)) ])
+        | None -> operate (async.Return [ ToEngine(AdminApp.Failed(notice "SIGNAL.REPORT.NO_SUCH_SNAPSHOT" "That snapshot is not in this dataset." false)) ])
 
         state, []
     | AdminApp.SaveReportDefinition(definition, pins) ->
@@ -244,6 +171,16 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
                 | Error(Store.Failed meaning) -> return [ ToEngine(AdminApp.Failed(notice meaning.Code meaning.Message true)) ]
                 | Error Store.ConflictPersists ->
                     return [ ToEngine(AdminApp.Failed(notice "SIGNAL.STORAGE.CONFLICT" "The administrators changed elsewhere and the change no longer applies; it was not saved." false)) ]
+                // Unknown, not refused: the provider could not say whether it
+                // landed. The page sends no change until a reload has shown what
+                // the store holds (`Operations.Reconcile`, ARX-015).
+                | Error(Store.OutcomeStillUnknown _) ->
+                    return
+                        [ ToEngine(
+                              AdminApp.Failed(
+                                  notice Echelon.Signal.Admin.Operations.OutcomeUnknownCode "The provider did not say whether the change to the administrators was saved. Refresh to check what the store holds; no change is sent until then." true
+                              )
+                          ) ]
                 | Error other -> return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ACCESS.REFUSED" $"%A{other}" false)) ]
             })
 
@@ -283,6 +220,12 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
     | AdminApp.RememberReturn _
     | AdminApp.RecallReturn
     | AdminApp.ForgetReturn -> state, []
+    // Focus moves only where the kernel offers the focus pack; elsewhere the
+    // status still says what happened.
+    | AdminApp.Focus target when negotiated focus state ->
+        let id, state = mint Focusing state
+        state, [ Focus(id, target) ]
+    | AdminApp.Focus _ -> state, []
 
 // ---- The loop ---------------------------------------------------------------------------------
 
@@ -336,9 +279,8 @@ let rec private advance (env: Env) (state: State) (msg: AdminApp.Msg) (sent: Req
 /// and engine messages. A wait the kernel cannot time is answered at once.
 and private settle (env: Env) (state: State) (sent: Request list) =
     match env.Bridge.Drain() with
-    | Result.Error error -> raise error
-    | Ok([], []) -> state, sent
-    | Ok(calls, finished) ->
+    | [], [], [] -> state, sent
+    | calls, finished, failed ->
         let state, made, untimed =
             calls
             |> List.fold
@@ -351,12 +293,24 @@ and private settle (env: Env) (state: State) (sent: Request list) =
         untimed |> List.iter (fun id -> env.Bridge.Answer id Bridge.Done |> ignore)
         let state, sent = if untimed.IsEmpty then state, sent @ made else settle env state (sent @ made)
 
-        finished
-        |> List.fold
-            (fun (state, sent) outcome ->
-                let state, messages = absorb env state outcome
-                messages |> List.fold (fun (state, sent) msg -> advance env state msg sent) (state, sent))
-            (state, sent)
+        let state, sent =
+            finished
+            |> List.fold
+                (fun (state, sent) outcome ->
+                    let state, messages = absorb env state outcome
+                    messages |> List.fold (fun (state, sent) msg -> advance env state msg sent) (state, sent))
+                (state, sent)
+
+        // Every failure is presented through Aegis by `handle`. Only the
+        // running operation's own work settles it, as unknown (it may have
+        // written before it failed), after every other message of this drain
+        // was applied; a failed sign-out or cross-tab receive leaves the
+        // operation running and the guard in place (SIG-VIS-PENDING-002).
+        let state = { state with Faults = state.Faults @ (failed |> List.map _.Error) }
+
+        match failed |> List.exists (fun failure -> failure.Work = Bridge.Work.Operation) with
+        | false -> state, sent
+        | true -> advance env state AdminApp.OperationFaulted sent
 
 let private take (id: string) (state: State) =
     match state.Pending.TryFind id with
@@ -367,8 +321,8 @@ let private answerBridge (env: Env) (id: string) (answer: Bridge.KernelAnswer) =
     if not (env.Bridge.Answer id answer) then
         raise (CapabilityFailed("correlation", $"A result for {id}, which no operation is waiting on"))
 
-/// Pure apart from `env`: (state, message) -> (state, reply).
-let step (env: Env) (state: State) (inbound: Inbound) =
+/// Pure apart from `env`: (state, message) -> (state, requests, handshake answer).
+let private run (env: Env) (state: State) (inbound: Inbound) : State * Request list * Handshake option =
     match inbound with
     | Initialize(protocolVersion, effects, origin, path, query, rawQuery, hash, offer) ->
         if protocolVersion <> 1 then
@@ -377,7 +331,7 @@ let step (env: Env) (state: State) (inbound: Inbound) =
             raise (CapabilityFailed("Http", "The administrator page needs the kernel's Navigation, Http and Storage effects"))
 
         match answer offer with
-        | Rejected _ as handshake -> state, encode (view state) [] (Some handshake)
+        | Rejected _ as handshake -> state, [], Some handshake
         | Accepted(_, _, capabilities) as handshake ->
             let started =
                 { state with
@@ -390,7 +344,7 @@ let step (env: Env) (state: State) (inbound: Inbound) =
                     Effects = effects }
 
             let next, sent = advance env started (AdminApp.Started(page started hash, query)) []
-            next, encode (view next) sent (Some handshake)
+            next, sent, Some handshake
     | other ->
         let state, msg =
             match other with
@@ -476,15 +430,46 @@ let step (env: Env) (state: State) (inbound: Inbound) =
             | Some msg -> advance env state msg []
             | None -> settle env state []
 
-        next, encode (view next) sent None
+        next, sent, None
 
-/// Handles one kernel message under the Aegis boundary. A fault leaves the
-/// state as it was and is shown until the next message.
-let handle (aegis: AegisConfig) (env: Env) (state: State) (messageJson: string) =
-    let cleared = { state with Fault = None }
+/// Pure apart from `env`: (state, message) -> (state, reply).
+let step (env: Env) (state: State) (inbound: Inbound) =
+    let next, sent, handshake = run env state inbound
+    next, encode (view next) sent handshake
 
-    match capture aegis "Signal.Admin.dispatch" (fun () -> step env cleared (decode messageJson)) with
-    | Ok result -> result
+/// What handling one kernel message gave: the state to keep, the reply, and
+/// a programming defect to re-raise once that state is kept.
+[<NoComparison; NoEquality>]
+type Handled =
+    { State: State
+      Reply: string
+      Defect: ExceptionDispatchInfo option }
+
+/// Handles one kernel message under the Aegis boundary. A fault in handling
+/// the message leaves the state as it was and is shown until the next
+/// message. A fault inside an operation keeps everything else the message
+/// did: the operation was already settled as unknown, and the fault is
+/// presented through Aegis here. A programming defect inside an operation is
+/// still re-raised (Aegis fails loud), but as `Defect`, after the settled
+/// state: the caller keeps that state first, so the page is never left
+/// running an operation that already ended (WI-0114).
+let handle (aegis: AegisConfig) (env: Env) (state: State) (messageJson: string) : Handled =
+    let cleared = { state with Fault = None; Faults = [] }
+
+    match capture aegis "Signal.Admin.dispatch" (fun () -> run env cleared (decode messageJson)) with
+    | Ok(next, sent, handshake) ->
+        let next, defect =
+            match next.Faults with
+            | [] -> next, None
+            | error :: _ ->
+                try
+                    match capture aegis "Signal.Admin.operation" (fun () -> (raise error: unit)) with
+                    | Result.Error fault -> { next with Fault = Some fault; Faults = [] }, None
+                    | Ok() -> { next with Faults = [] }, None
+                with defect ->
+                    { next with Faults = [] }, Some(ExceptionDispatchInfo.Capture defect)
+
+        { State = next; Reply = encode (view next) sent handshake; Defect = defect }
     | Result.Error fault ->
         let faulted = { state with Fault = Some fault }
-        faulted, encode (view faulted) [] None
+        { State = faulted; Reply = encode (view faulted) [] None; Defect = None }
