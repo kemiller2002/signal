@@ -108,7 +108,8 @@
 
       <form id="answers" class="forma-stack" data-event="resultsRequested">
         <template data-each="items" data-key="id">
-          <section class="forma-question echelon-panel" data-bind-data-item="id" data-bind-data-answer-state="answerState">
+          <div class="echelon-panel"><div class="echelon-panel__body">
+          <section class="forma-question" data-bind-data-item="id" data-bind-data-answer-state="answerState">
             <header class="forma-question__header">
               <span class="forma-question__number" aria-hidden="true" data-text="number"></span>
               <p class="forma-question__help" data-text="dimension"></p>
@@ -160,6 +161,7 @@
               </fieldset>
             </div>
           </section>
+          </div></div>
         </template>
         <div class="forma-cluster">
           <button class="forma-button" data-echelon-emphasis="primary" id="see-results" type="submit">See results</button>
@@ -169,7 +171,8 @@
   </template>
 
   <template data-if="reviewing">
-    <section id="results" class="forma-stack echelon-panel respondent-panel" aria-labelledby="results-title">
+    <section id="results" class="forma-stack" aria-labelledby="results-title">
+      <div class="echelon-panel respondent-panel forma-stack">
       <div class="forma-cluster results-header">
         <h2 class="echelon-heading" id="results-title">Results</h2>
         <span class="forma-status-lozenge" id="scored-count" role="status" data-text="scoredCount"></span>
@@ -199,6 +202,7 @@
           <p id="methodology" data-text="methodology"></p>
         </div>
       </aside>
+      </div>
       <div class="forma-cluster">
         <button class="forma-button" id="edit-answers" type="button" data-event="editRequested">Edit answers</button>
         <button class="forma-button" id="start-over" type="button" data-event="restarted">Start over</button>

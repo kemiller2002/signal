@@ -4442,7 +4442,27 @@
       "updatedAt": "2026-11-10T11:01:50.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T110150614Z-4baebf7e"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "ff092be222b7e7b12d306172",
+        "recordedAt": "2026-11-10T11:22:50.000Z",
+        "executionId": "EXE-20261110T110150614Z-4baebf7e",
+        "repository": "echelon-signal",
+        "branch": "feat/signal-visual-refinement-review",
+        "commit": "98ffa04747f57f8ca9c64f683a4ac475f6a2b0ff",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/signal-visual-refinement-review",
+        "remoteCommit": "98ffa04747f57f8ca9c64f683a4ac475f6a2b0ff",
+        "summary": "Respondent/results refinement, verified brand audit and five-screen comparison package pushed in draft PR 138; 692 .NET tests and local accessibility checks pass",
+        "nextAction": "Finish the full local Chromium suite, record its result, and keep final visual acceptance pending owner review",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
