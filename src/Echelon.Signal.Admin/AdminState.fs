@@ -176,7 +176,11 @@ let describeObligation (obligation: Obligation) =
     match obligation with
     | ConfigureDurableStore -> "Configure where this deployment keeps its data."
     | ResolveTemplate reason -> $"A group's template cannot be resolved: {reason}."
-    | ReconcileUnknownWrite batches -> $"{batches} import(s) need reconciling before anything is sent again."
+    // True on the overview (an import on this page whose outcome is unknown)
+    // and in finalize's refusal (a stored batch stopped part-way or blocked):
+    // the one resolution is importing the same links again (signal#136
+    // re-review); a Refresh does not reconcile it.
+    | ReconcileUnknownWrite batches -> $"{batches} import(s) did not finish or could not be confirmed: import the same links again."
     | ResolveConcurrentModification what -> $"{what} changed elsewhere and needs a decision."
     | RepairCorruptRecords problems -> $"{problems} stored record(s) cannot be used and need repair."
     | RebuildDerivedProjection -> "The derived index is out of date; rebuild it."

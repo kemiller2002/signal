@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T11:00:46.000Z",
+  "updatedAt": "2026-11-10T11:20:02.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4726,6 +4726,17 @@
       },
       "completedAt": "2026-11-10T10:57:09.000Z",
       "conclusion": "signal#136 re-review wording fixed: the resolution says finalizing does not wait for an unknown-outcome import (an unknown chunk is never stored); the empty state says unfinished or unknown imports are listed only while the page is open, until it is refreshed or reopened; the import's unknown-outcome notice says to import the same links again; .admin-outcome is role=group named Outcome, still not live. CI green at 828d72c: 700/700 .NET, 192/192 Playwright; visual-evidence/baseline-828d72c (87 screens, 576 shots, none unreached)."
+    },
+    {
+      "id": "WI-0129",
+      "type": "task",
+      "state": "active",
+      "semanticState": "active",
+      "evidence": [],
+      "updatedAt": "2026-11-10T11:20:02.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T112002759Z-fb458ce3"
+      ]
     }
   ]
 }

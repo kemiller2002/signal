@@ -92,7 +92,7 @@ let ``an import whose outcome stays unknown is unresolved work naming its group,
     Assert.True(page.Flag "noObligations", page.ViewText)
     Assert.Equal(AdminView.noUnresolvedWork, page.Text "noUnresolvedWork")
     Assert.Equal(
-        "No unresolved work found. An import that did not finish, or whose outcome Signal could not confirm, is listed here only while this page is open, until it is refreshed or reopened.",
+        "No unresolved work found. An import that did not finish, or whose outcome Signal could not confirm, is not always listed here; when it is, only until the page is refreshed or reopened.",
         page.Text "noUnresolvedWork"
     )
 
@@ -107,6 +107,9 @@ let ``an import whose outcome stays unknown is unresolved work naming its group,
     let item = page.Items "obligations" |> List.exactlyOne
     let field (name: string) = item[name].GetValue<string>()
     Assert.Equal("ReconcileUnknownWrite", field "code")
+    // What it says is true: no Refresh reconciles it; importing the same
+    // links again is the one resolution (signal#136 re-review).
+    Assert.Equal("1 import(s) did not finish or could not be confirmed: import the same links again.", field "text")
     Assert.Equal(key, field "group")
     Assert.Equal(Routes.href (Routes.Imports(key, [])), field "href")
     Assert.Equal("Open the group's imported surveys", field "linkLabel")
@@ -119,3 +122,23 @@ let ``an import whose outcome stays unknown is unresolved work naming its group,
     Assert.Equal(Echelon.Signal.Application.AdminWork.importOutcomeUnknown, page.Text "notice")
     Assert.StartsWith("The provider did not say whether the import was saved. Import exactly the same completed-survey links again to resume", page.Text "notice")
     Assert.DoesNotContain("checked before anything is sent again", page.Text "notice")
+
+[<Fact>]
+let ``an unfinished import is described by what resolves it, on the overview and in finalize's refusal`` () =
+    let said = AdminState.describeObligation (AdminState.ReconcileUnknownWrite 2)
+    Assert.Equal("2 import(s) did not finish or could not be confirmed: import the same links again.", said)
+    Assert.DoesNotContain("before anything is sent again", said)
+    // Finalize's refusal (BLOCKED_BY_OBLIGATIONS) names stored part-way and
+    // blocked batches with the same sentence.
+    Assert.Equal<AdminState.Obligation list>(
+        [ AdminState.ReconcileUnknownWrite 3 ],
+        AdminState.ofGroup [ GroupLifecycle.ReconcileUnknownImport 3 ]
+    )
+
+[<Fact>]
+let ``the release record's unknown outcome says nothing about the import's`` () =
+    Assert.Equal(
+        "The provider did not say whether the record of which results may be shown was saved. Refresh to see what the store holds.",
+        Echelon.Signal.Application.AdminWork.releaseOutcomeUnknown
+    )
+    Assert.DoesNotContain("import", Echelon.Signal.Application.AdminWork.releaseOutcomeUnknown)
