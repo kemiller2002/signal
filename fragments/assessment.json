@@ -1,0 +1,586 @@
+{
+  "scenario": "assessment",
+  "durationMs": 24397,
+  "consoleErrors": [],
+  "screens": [
+    {
+      "id": "assessment-first-questions",
+      "title": "Assessment page (web/): the questions, nothing answered",
+      "scenario": "assessment",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "open http://127.0.0.1:4321/web/index.html and wait for the kernel",
+          "operation": "engine start-up",
+          "durationMs": 330,
+          "observed": [
+            {
+              "atMs": 8,
+              "forMs": 15,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\""
+              ]
+            },
+            {
+              "atMs": 24,
+              "forMs": 298,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine\""
+              ]
+            },
+            {
+              "atMs": 322,
+              "forMs": null,
+              "shown": [
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": [
+          "Software Delivery Reality Assessment",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-first-questions/desktop-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-first-questions/desktop-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-first-questions/tablet-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-first-questions/tablet-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-first-questions/mobile-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-first-questions/mobile-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "assessment-results-refused",
+      "title": "Assessment page: \"See results\" refused with 14 questions unanswered (validation)",
+      "scenario": "assessment",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html#r=AQCV3vb9UTM28AAPQAAAAAAAAAAbsYVx",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "assessment-first-questions",
+      "steps": [
+        {
+          "action": "answer CORE-001 with 3",
+          "operation": null,
+          "durationMs": 426,
+          "observed": []
+        },
+        {
+          "action": "click See results",
+          "operation": "see results (engine)",
+          "durationMs": 385,
+          "observed": []
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": [
+          "Software Delivery Reality Assessment",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-results-refused/desktop-light-full.png",
+          "shown": [
+            "alert: \"! 14 questions still need an answer. \"Don't know\", \"Not observed\" and \"Not applicable\" are answers too.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-results-refused/desktop-dark-full.png",
+          "shown": [
+            "alert: \"! 14 questions still need an answer. \"Don't know\", \"Not observed\" and \"Not applicable\" are answers too.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-results-refused/tablet-light-full.png",
+          "shown": [
+            "alert: \"! 14 questions still need an answer. \"Don't know\", \"Not observed\" and \"Not applicable\" are answers too.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-results-refused/tablet-dark-full.png",
+          "shown": [
+            "alert: \"! 14 questions still need an answer. \"Don't know\", \"Not observed\" and \"Not applicable\" are answers too.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-results-refused/mobile-light-full.png",
+          "shown": [
+            "alert: \"! 14 questions still need an answer. \"Don't know\", \"Not observed\" and \"Not applicable\" are answers too.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-results-refused/mobile-dark-full.png",
+          "shown": [
+            "alert: \"! 14 questions still need an answer. \"Don't know\", \"Not observed\" and \"Not applicable\" are answers too.\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "assessment-results",
+      "title": "Assessment page: scored results, one dimension not scored (results and scoring)",
+      "scenario": "assessment",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html#r=AQCV3vb9UTM28AAPRERFZERnhEDoPIpj",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "assessment-results-refused",
+      "steps": [
+        {
+          "action": "answer every question with 3, then CORE-006=4, CORE-007/011 don't know, CORE-012 not observed, CORE-013 not applicable",
+          "operation": null,
+          "durationMs": 1082,
+          "observed": []
+        },
+        {
+          "action": "click See results",
+          "operation": "see results (engine)",
+          "durationMs": 408,
+          "observed": []
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": [
+          "Software Delivery Reality Assessment",
+          "Results"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-results/desktop-light-full.png",
+          "shown": [
+            "status: \"2 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-results/desktop-dark-full.png",
+          "shown": [
+            "status: \"2 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-results/tablet-light-full.png",
+          "shown": [
+            "status: \"2 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-results/tablet-dark-full.png",
+          "shown": [
+            "status: \"2 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-results/mobile-light-full.png",
+          "shown": [
+            "status: \"2 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-results/mobile-dark-full.png",
+          "shown": [
+            "status: \"2 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "assessment-invitation",
+      "title": "Assessment invitation link: the questions, nothing answered",
+      "scenario": "assessment",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html#r=AQSV3vb9UTM28AoLDA0ODxAREhMUFRYXGBlkZWZnaGlqa2xtbm9wcXJzAA8AAAAAAAAAAGf0i7E",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "assessment-results",
+      "steps": [
+        {
+          "action": "open the anonymous invitation /web/index.html#r=AQSV3vb9UTM28AoLDA0ODxAREhMUFRYXGBlkZWZnaGlqa2xtbm9wcXJzAA8AAAAAAAAAAGf0i7E",
+          "operation": "engine start-up",
+          "durationMs": 187,
+          "observed": [
+            {
+              "atMs": 8,
+              "forMs": 162,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine\""
+              ]
+            },
+            {
+              "atMs": 170,
+              "forMs": null,
+              "shown": [
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": [
+          "Software Delivery Reality Assessment",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation/desktop-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation/desktop-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation/tablet-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation/tablet-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation/mobile-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation/mobile-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "assessment-invitation-results",
+      "title": "Assessment invitation: results before submitting",
+      "scenario": "assessment",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html#r=AQSV3vb9UTM28AoLDA0ODxAREhMUFRYXGBlkZWZnaGlqa2xtbm9wcXJzAA9EREREREREQK5-ZCg",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "assessment-invitation",
+      "steps": [
+        {
+          "action": "answer every question \"Often\"",
+          "operation": null,
+          "durationMs": 910,
+          "observed": []
+        },
+        {
+          "action": "click See results",
+          "operation": "see results (engine)",
+          "durationMs": 394,
+          "observed": []
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": [
+          "Software Delivery Reality Assessment",
+          "Results"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation-results/desktop-light-full.png",
+          "shown": [
+            "status: \"3 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation-results/desktop-dark-full.png",
+          "shown": [
+            "status: \"3 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation-results/tablet-light-full.png",
+          "shown": [
+            "status: \"3 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation-results/tablet-dark-full.png",
+          "shown": [
+            "status: \"3 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation-results/mobile-light-full.png",
+          "shown": [
+            "status: \"3 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation-results/mobile-dark-full.png",
+          "shown": [
+            "status: \"3 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "assessment-invitation-submitted",
+      "title": "Assessment invitation: submitted, with the submission link (completion)",
+      "scenario": "assessment",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html#r=AQOV3vb9UTM28PkwtvSc1Zo6FbZfwHcg5K5kZWZnaGlqa2xtbm9wcXJzAA9EREREREREQKvn-0U",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "assessment-invitation-results",
+      "steps": [
+        {
+          "action": "click Submit answers",
+          "operation": "submit answers (engine)",
+          "durationMs": 394,
+          "observed": []
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": [
+          "Software Delivery Reality Assessment",
+          "Submitted"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation-submitted/desktop-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation-submitted/desktop-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation-submitted/tablet-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation-submitted/tablet-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation-submitted/mobile-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation-submitted/mobile-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        }
+      ]
+    }
+  ],
+  "unreached": [],
+  "browserVersion": "153.0.8010.12"
+}
