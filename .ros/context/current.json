@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T12:30:32.000Z",
+  "updatedAt": "2026-11-10T12:50:42.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4834,10 +4834,31 @@
     {
       "id": "WI-0133",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-11-10T12:30:32.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/ActivityView.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "web/admin/index.html"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/outcome-beside-actions.spec.js"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/OperationsFollowUpTests.fs"
+        },
+        {
+          "type": "docs",
+          "path": "HANDOFF.md"
+        }
+      ],
+      "updatedAt": "2026-11-10T12:50:42.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T123033719Z-318c51c4"
       ],
@@ -4860,7 +4881,9 @@
           "status": "verified",
           "mechanism": "git-remote-observation"
         }
-      }
+      },
+      "completedAt": "2026-11-10T12:50:42.000Z",
+      "conclusion": "signal#137 review round 2 fixed: each long view's Outcome group shows the persistence, reload and notice lines only for its own latest change (a retire's line no longer sits in the draft's); the warnings are named beside their acknowledgement from the findings, with a way to Validation, which is now a draft part; outcome-beside-actions runs at 1280 and 390 px; the parts wrap on a phone; #136 follow-ups (release record and blocked-item wording) folded in. CI green at 8f5eedb2: 704/704 .NET, 197/197 Playwright; visual-evidence/baseline-8f5eedb (87 screens, 576 shots, none unreached)."
     }
   ]
 }
