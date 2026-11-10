@@ -184,6 +184,12 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - The empty state: such an import "is not always listed here; when it is, only until the page is refreshed or reopened" (only NeedsReconciliation is counted; part-way, offline and blocked imports show on the persistence line).
 - The release record written after an import has its own unknown-outcome sentence (`AdminWork.releaseStopped`), never "whether the import was saved"; the import's own notice is emitted last so it is the one shown.
 
+### Respondent page (WI-0122, SIG-ECHELON-APP-002 (d), 2026-11-10)
+
+- `web/survey/index.html` in the foundry ledger direction (mockup `respondent.html`): a quiet bar with Signal's mark and the survey's name, the title with its version eyebrow, the page and answered counts from Signal's own projection (no time estimate, no section steps: the engine projects no per-section progress), the questions on one raised card with prompts in the display face, Back tertiary and the one forward action primary, the submitted panel with Copy link primary.
+- `#activity` is the page's one live region (polite, not atomic): the loading spinner and label, the answered count, review, timer, each question's selection guidance, a link notice and the copy outcome. What it announces is shown, not live, where it belongs. Refusals and faults stay alerts; the start-up screen's own status (before the engine) is unchanged.
+- #133's survey-loading assertions moved from `pending-states.spec.js` into `respondent.spec.js` with every assertion kept; the one change is where the status role sits (on `#activity`, which holds `#loading`, instead of on `#loading`).
+
 ### signal#137 visual-gate review (WI-0130, 2026-11-10)
 
 - Template header: title, lifecycle chip and the one action group (Delete draft… danger, Submit for review and Approve as reviewed tertiary, Save draft, Publish primary), the warnings' acknowledgement, the delete confirmation and the outcome copy directly under it; no action is left in a panel.

@@ -240,6 +240,16 @@ scenario("survey", async ({ page, capture }) => {
     await capture.step(page, "click Submit", () => page.locator("#submit-answers").click(), { operation: "submit answers (engine)" });
     await expect(page.locator("#submitted-title")).toHaveText("Submitted");
   });
+  // SIG-ECHELON-APP-002 (d): Copy link's outcome, shown under the button and
+  // announced by the page's one live region (#activity).
+  await capture.attempt(page, { id: "survey-link-copied", title: "Survey: the submission link copied, its outcome shown and announced by #activity", extents: ["full", "viewport"], anchor: "#copy-link" }, async () => {
+    await capture.step(page, "allow the clipboard, click Copy link", async () => {
+      await page.context().grantPermissions(["clipboard-read", "clipboard-write"]).catch(() => {});
+      await page.locator("#copy-link").click();
+      await expect(page.locator("#copy-notice")).toBeVisible();
+      await expect(page.locator("#activity")).toContainText(await page.locator("#copy-notice").innerText());
+    }, { operation: "copy to the clipboard" });
+  });
 
   const variants = [
     ["survey-no-link", "Survey page opened without a link (error)", "web/survey/", () => expect(page.locator("#survey-refused-message")).toBeVisible()],

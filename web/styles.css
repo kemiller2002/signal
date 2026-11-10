@@ -16,3 +16,70 @@
 /* A fixture's scoring explanation (WI-0081): contributions and calculations sit under their section. */
 #fixture-explanation-lines [data-indented="true"],
 #preview-explanation-lines [data-indented="true"] { margin-inline-start: 1.5rem; }
+
+/* ---- The respondent's page ("foundry ledger", SIG-ECHELON-APP-002) -----
+   Composition only: panels, type roles and button emphasis are the Echelon
+   application layer's. A quiet bar with Signal's mark (no administrator
+   chrome), the survey's name, where the respondent is from Signal's own
+   counts, the questions on one raised card, and one primary action. */
+.respondent-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem clamp(1rem, 4vw, 2.5rem);
+  background: var(--echelon-surface-raised);
+  border-block-end: 1px solid var(--echelon-border-subtle);
+}
+
+.respondent { max-inline-size: 46rem; }
+
+.respondent-head { display: grid; gap: 0.35rem; }
+.respondent-head > * { margin: 0; }
+.respondent-head h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); overflow-wrap: anywhere; }
+
+.respondent-progress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+.respondent-progress > p { margin: 0; }
+
+.respondent-card { padding: clamp(1.25rem, 4vw, 2rem); }
+
+/* Back stays at the start; the one forward action sits at the end. */
+.respondent-nav > :last-child { margin-inline-start: auto; }
+
+/* The survey's name beside Signal's mark, as in the mockup (decorative: the
+   page's h1 names it to assistive technology). */
+.respondent-bar__survey {
+  min-inline-size: 0;
+  font-weight: var(--echelon-weight-label);
+  overflow-wrap: anywhere;
+}
+.respondent-bar__survey:not(:empty)::before { content: "· "; color: var(--echelon-text-secondary); }
+
+/* The page's one live region: the loading spinner shows; what it announces
+   otherwise is shown where it belongs, so it takes no room when idle. */
+.respondent > .activity:not(:has(#loading)) {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.respondent > .activity > :is(p, div) { margin: 0; }
+
+/* Each question on the card reads as the mockup's: the prompt in the
+   display face. */
+.respondent-card .survey-question {
+  font-family: var(--forma-primitive-font-family-display);
+  color: var(--forma-color-text-heading);
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  line-height: 1.3;
+  overflow-wrap: break-word;
+}
+.respondent-card .survey-section { margin: 0; }
+.respondent-progress #progress { color: var(--echelon-text-secondary); }

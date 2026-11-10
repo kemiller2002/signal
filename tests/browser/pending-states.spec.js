@@ -360,19 +360,6 @@ test("loading regions are status regions with Forma's spinner and a visible labe
   configuration.open();
   await expect(page.getByRole("heading", { name: "Sign in with GitHub" })).toBeVisible();
   await expect(page.locator("#loading")).toHaveCount(0);
-
-  // The survey's published version, held.
-  const survey = gate();
-  await page.route(`**/${links.templateFile}`, async (route) => {
-    await survey.opened;
-    await route.fallback();
-  });
-  await page.goto(links.identified);
-  await expect(page.locator("html")).toHaveAttribute("data-kernel", "running", { timeout: KERNEL_START_MS });
-  await expectLoadingRegion(page.locator("#loading"), "Loading the survey…");
-  survey.open();
-  await expect(page.locator("#survey-title")).toHaveText("Signal demo survey");
-  await expect(page.locator("#loading")).toHaveCount(0);
 });
 
 test("opening the dataset after sign-in shows what it waits for", async ({ page }) => {
