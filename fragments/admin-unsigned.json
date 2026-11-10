@@ -1,0 +1,1554 @@
+{
+  "scenario": "admin-unsigned",
+  "durationMs": 12665,
+  "consoleErrors": [],
+  "screens": [
+    {
+      "id": "admin-loading-configuration",
+      "title": "Console while its deployment configuration loads (fetch held)",
+      "scenario": "admin-unsigned",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/admin/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "hold signal.deployment.json, open http://127.0.0.1:4321/web/admin/index.html",
+          "operation": "deployment configuration fetch",
+          "durationMs": 777,
+          "observed": [
+            {
+              "atMs": 25,
+              "forMs": 37,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 61,
+              "forMs": 595,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 656,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\""
+              ]
+            },
+            {
+              "atMs": 661,
+              "forMs": null,
+              "shown": [
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Administration",
+        "headings": [
+          "ADMINISTRATION"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-loading-configuration/desktop-light-full.png",
+          "shown": [
+            "spinner: \"Loading the deployment's configuration…\"",
+            "status: \"\"",
+            "status: \"Loading the deployment's configuration…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-loading-configuration/desktop-dark-full.png",
+          "shown": [
+            "spinner: \"Loading the deployment's configuration…\"",
+            "status: \"\"",
+            "status: \"Loading the deployment's configuration…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-loading-configuration/tablet-light-full.png",
+          "shown": [
+            "spinner: \"Loading the deployment's configuration…\"",
+            "status: \"\"",
+            "status: \"Loading the deployment's configuration…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-loading-configuration/tablet-dark-full.png",
+          "shown": [
+            "spinner: \"Loading the deployment's configuration…\"",
+            "status: \"\"",
+            "status: \"Loading the deployment's configuration…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-loading-configuration/mobile-light-full.png",
+          "shown": [
+            "spinner: \"Loading the deployment's configuration…\"",
+            "status: \"\"",
+            "status: \"Loading the deployment's configuration…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-loading-configuration/mobile-dark-full.png",
+          "shown": [
+            "spinner: \"Loading the deployment's configuration…\"",
+            "status: \"\"",
+            "status: \"Loading the deployment's configuration…\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 11,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 4,
+            "4.5to7": 7
+          },
+          "lowest": [
+            {
+              "element": "a",
+              "text": "Groups",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Compare",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Assessments",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Reports",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Administrators",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Storage",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Loading the deployment's configuration…",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 9.23,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 13.68,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 11,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 11
+          },
+          "lowest": [
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 10.71,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Groups",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Compare",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Assessments",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Reports",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Administrators",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Storage",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Loading the deployment's configuration…",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Overview",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 16.5,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 8,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Copy link",
+            "Overview",
+            "Groups",
+            "Compare",
+            "Assessments",
+            "Reports",
+            "Administrators",
+            "Storage"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/admin-loading-configuration/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 11,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "admin-unconfigured",
+      "title": "Console with no data store configured (the demo deployment; empty state)",
+      "scenario": "admin-unsigned",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/admin/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "admin-loading-configuration",
+      "steps": [
+        {
+          "action": "release signal.deployment.json (the checkout has none: 404)",
+          "operation": "deployment configuration fetch",
+          "durationMs": 128,
+          "observed": [
+            {
+              "atMs": 2438,
+              "forMs": null,
+              "shown": [
+                "status: \"\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Administration",
+        "headings": [
+          "ADMINISTRATION",
+          "No data store is configured"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-unconfigured/desktop-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-unconfigured/desktop-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-unconfigured/tablet-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-unconfigured/tablet-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-unconfigured/mobile-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-unconfigured/mobile-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 13,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 5,
+            "4.5to7": 8
+          },
+          "lowest": [
+            {
+              "element": "a",
+              "text": "Groups",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Compare",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Assessments",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Reports",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Administrators",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Storage",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "This deployment configures no storage profile, so there is n",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "code",
+              "text": "signal.deployment.json",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 9.23,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 13,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 13
+          },
+          "lowest": [
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 10.71,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "This deployment configures no storage profile, so there is n",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "code",
+              "text": "signal.deployment.json",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Groups",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Compare",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Assessments",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Reports",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Administrators",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Storage",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "h2.echelon-heading",
+              "text": "No data store is configured",
+              "ratio": 13.68,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 8,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Copy link",
+            "Overview",
+            "Groups",
+            "Compare",
+            "Assessments",
+            "Reports",
+            "Administrators",
+            "Storage"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/admin-unconfigured/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 13,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "admin-misconfigured",
+      "title": "Console with a deployment configuration it cannot use (error)",
+      "scenario": "admin-unsigned",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/admin/index.html",
+      "auth": {
+        "required": false,
+        "how": "a test-only deployment configuration (signal.deployment.json answered locally) that names an identity exchange; nothing is signed in"
+      },
+      "reachedFrom": "admin-unconfigured",
+      "steps": [
+        {
+          "action": "answer signal.deployment.json with a dataset whose profile is not configured, reload",
+          "operation": "deployment configuration fetch",
+          "durationMs": 651,
+          "observed": [
+            {
+              "atMs": 13,
+              "forMs": 24,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 36,
+              "forMs": 474,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 510,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\""
+              ]
+            },
+            {
+              "atMs": 515,
+              "forMs": 103,
+              "shown": [
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 618,
+              "forMs": null,
+              "shown": [
+                "status: \"\"",
+                "alert: \"This deployment is not configured correctly The deployment's configuration is not valid: dataset 'ds_engagement' lives in profile 'missing', which is not configured.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Administration",
+        "headings": [
+          "ADMINISTRATION",
+          "This deployment is not configured correctly"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-misconfigured/desktop-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"This deployment is not configured correctly The deployment's configuration is not valid: dataset 'ds_engagement' lives in profile 'missing', which is not configured.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-misconfigured/desktop-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"This deployment is not configured correctly The deployment's configuration is not valid: dataset 'ds_engagement' lives in profile 'missing', which is not configured.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-misconfigured/tablet-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"This deployment is not configured correctly The deployment's configuration is not valid: dataset 'ds_engagement' lives in profile 'missing', which is not configured.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-misconfigured/tablet-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"This deployment is not configured correctly The deployment's configuration is not valid: dataset 'ds_engagement' lives in profile 'missing', which is not configured.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-misconfigured/mobile-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"This deployment is not configured correctly The deployment's configuration is not valid: dataset 'ds_engagement' lives in profile 'missing', which is not configured.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-misconfigured/mobile-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "alert: \"This deployment is not configured correctly The deployment's configuration is not valid: dataset 'ds_engagement' lives in profile 'missing', which is not configured.\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 12,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 5,
+            "4.5to7": 7
+          },
+          "lowest": [
+            {
+              "element": "a",
+              "text": "Groups",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Compare",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Assessments",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Reports",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Administrators",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Storage",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "The deployment's configuration is not valid: dataset 'ds_eng",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 9.23,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 13.68,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 12,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 12
+          },
+          "lowest": [
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 10.71,
+              "required": 4.5
+            },
+            {
+              "element": "p",
+              "text": "The deployment's configuration is not valid: dataset 'ds_eng",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Groups",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Compare",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Assessments",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Reports",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Administrators",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Storage",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "h2.echelon-heading",
+              "text": "This deployment is not configured correctly",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Overview",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 8,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Copy link",
+            "Overview",
+            "Groups",
+            "Compare",
+            "Assessments",
+            "Reports",
+            "Administrators",
+            "Storage"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/admin-misconfigured/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 12,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "admin-sign-in",
+      "title": "Console sign-in screen (a configured deployment, signed out)",
+      "scenario": "admin-unsigned",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/admin/index.html#/sign-in?returnTo=%2F",
+      "auth": {
+        "required": false,
+        "how": "a test-only deployment configuration (signal.deployment.json answered locally) that names an identity exchange; nothing is signed in"
+      },
+      "reachedFrom": "admin-misconfigured",
+      "steps": [
+        {
+          "action": "answer signal.deployment.json with the suite's test deployment (GitHub through Fides), reload",
+          "operation": "deployment configuration fetch",
+          "durationMs": 874,
+          "observed": [
+            {
+              "atMs": 13,
+              "forMs": 42,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 56,
+              "forMs": 499,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 555,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\""
+              ]
+            },
+            {
+              "atMs": 560,
+              "forMs": 112,
+              "shown": [
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 672,
+              "forMs": 180,
+              "shown": [
+                "spinner: \"Signing in with GitHub…\"",
+                "aria-busy element: \"Signing in\"",
+                "status: \"Signing in with GitHub…\"",
+                "1 button(s) disabled",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 852,
+              "forMs": null,
+              "shown": [
+                "status: \"\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Administration",
+        "headings": [
+          "ADMINISTRATION",
+          "Sign in with GitHub"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-sign-in/desktop-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-sign-in/desktop-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-sign-in/tablet-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-sign-in/tablet-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-sign-in/mobile-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-sign-in/mobile-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 16,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 7,
+            "4.5to7": 9
+          },
+          "lowest": [
+            {
+              "element": "a",
+              "text": "Overview",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Groups",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Compare",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Assessments",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Reports",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Administrators",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Storage",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#retention-disclosure",
+              "text": "Your sign-in is kept only on this page and ends when you rel",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "button#sign-in-button.forma-button",
+              "text": "Sign in",
+              "ratio": 5.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 9.23,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 16,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 16
+          },
+          "lowest": [
+            {
+              "element": "button#sign-in-button.forma-button",
+              "text": "Sign in",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 10.71,
+              "required": 4.5
+            },
+            {
+              "element": "p#retention-disclosure",
+              "text": "Your sign-in is kept only on this page and ends when you rel",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Overview",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Groups",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Compare",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Assessments",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Reports",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Administrators",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Storage",
+              "ratio": 13.29,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 10,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Copy link",
+            "Overview",
+            "Groups",
+            "Compare",
+            "Assessments",
+            "Reports",
+            "Administrators",
+            "Storage",
+            "page",
+            "Sign in"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/admin-sign-in/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 16,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "admin-pages-site-demo",
+      "title": "Console on the assembled Pages site (the published demo: no store, no sign-in)",
+      "scenario": "admin-unsigned",
+      "site": "pages",
+      "url": "http://127.0.0.1:4322/signal/web/admin/#/sign-in?returnTo=%2F",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "admin-sign-in",
+      "steps": [
+        {
+          "action": "open http://127.0.0.1:4322/signal/web/admin/",
+          "operation": "engine start-up + deployment configuration fetch",
+          "durationMs": 789,
+          "observed": [
+            {
+              "atMs": 12,
+              "forMs": 25,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 37,
+              "forMs": 446,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 483,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\""
+              ]
+            },
+            {
+              "atMs": 489,
+              "forMs": 107,
+              "shown": [
+                "spinner: \"Loading the deployment's configuration…\"",
+                "status: \"\"",
+                "status: \"Loading the deployment's configuration…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 596,
+              "forMs": 175,
+              "shown": [
+                "spinner: \"Signing in with GitHub…\"",
+                "aria-busy element: \"Signing in\"",
+                "status: \"Signing in with GitHub…\"",
+                "1 button(s) disabled",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 771,
+              "forMs": null,
+              "shown": [
+                "status: \"\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Administration",
+        "headings": [
+          "ADMINISTRATION",
+          "Sign in with GitHub"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-pages-site-demo/desktop-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-pages-site-demo/desktop-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-pages-site-demo/tablet-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-pages-site-demo/tablet-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/admin-pages-site-demo/mobile-light-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/admin-pages-site-demo/mobile-dark-full.png",
+          "shown": [
+            "status: \"\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 17,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 10,
+            "7plus": 7
+          },
+          "lowest": [
+            {
+              "element": "p.pages-demo-banner",
+              "text": "Demo — data stays in this browser; GitHub sign-in not config",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Overview",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Groups",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Compare",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Assessments",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Reports",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Administrators",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Storage",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#retention-disclosure",
+              "text": "Your sign-in is kept only on this page and ends when you rel",
+              "ratio": 4.89,
+              "required": 4.5
+            },
+            {
+              "element": "button#sign-in-button.forma-button",
+              "text": "Sign in",
+              "ratio": 5.36,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 17,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 17
+          },
+          "lowest": [
+            {
+              "element": "button#sign-in-button.forma-button",
+              "text": "Sign in",
+              "ratio": 7.36,
+              "required": 4.5
+            },
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 10.71,
+              "required": 4.5
+            },
+            {
+              "element": "p#retention-disclosure",
+              "text": "Your sign-in is kept only on this page and ends when you rel",
+              "ratio": 11.91,
+              "required": 4.5
+            },
+            {
+              "element": "p.pages-demo-banner",
+              "text": "Demo — data stays in this browser; GitHub sign-in not config",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Overview",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Groups",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Compare",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Assessments",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Reports",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "a",
+              "text": "Administrators",
+              "ratio": 13.29,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 10,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Copy link",
+            "Overview",
+            "Groups",
+            "Compare",
+            "Assessments",
+            "Reports",
+            "Administrators",
+            "Storage",
+            "page",
+            "Sign in"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/admin-pages-site-demo/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 17,
+            "failures": []
+          }
+        }
+      }
+    }
+  ],
+  "unreached": [],
+  "browserVersion": "153.0.8010.12"
+}
