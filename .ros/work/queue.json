@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 142,
+  "nextSeq": 143,
   "items": [
     {
       "id": "WI-0001",
@@ -3373,6 +3373,27 @@
       "attachments": [],
       "createdAt": "2026-11-10T16:40:25.041Z",
       "updatedAt": "2026-11-10T16:40:25.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0142",
+      "title": "Guard gap (signal#141): Signal rules whose subject is a Forma or theme class are not checked. Nine console rules in web/admin/admin.css set what that class sets: .admin-areas .echelon-nav-tabs (gap); .admin-figures .echelon-panel__body (gap); .admin .echelon-panel__header and .admin .echelon-panel__body below 30rem (padding); .draft-editor .draft-panel > :is(.echelon-panel__header, .echelon-panel__body) below 30rem (padding); .admin .echelon-panel .forma-button and .admin .admin-status .forma-button (max-inline-size, overflow-wrap); .admin .admin-table :is(td, th) .forma-button (overflow-wrap); .admin .draft-panel .forma-button below 30rem (padding). Move each to a Signal-owned wrapper or the component's own option (with a visual review of the console), then extend FormaOverrideGuardTests to subject classes",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T16:46:30.655Z",
+      "updatedAt": "2026-11-10T16:46:30.655Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

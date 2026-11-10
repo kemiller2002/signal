@@ -252,14 +252,14 @@
         </header>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-details">
           <div class="echelon-panel__header"><h3 id="draft-panel-details" class="echelon-heading">Details</h3></div>
-          <div class="echelon-panel__body forma-stack">
+          <div class="echelon-panel__body">
         <label>Title <input type="text" data-event="draftTitle" data-bind-value="draftTitle" /></label>
         <label>Description <textarea rows="2" data-event="draftDescription" data-bind-value="draftDescription"></textarea></label>
           </div>
         </section>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-sections">
           <div class="echelon-panel__header"><h3 id="draft-panel-sections" class="echelon-heading">Sections</h3></div>
-          <div class="echelon-panel__body forma-stack">
+          <div class="echelon-panel__body">
         <ol id="draft-sections">
           <template data-each="draftSections" data-key="id">
             <li>
@@ -279,7 +279,7 @@
         </section>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-questions">
           <div class="echelon-panel__header"><h3 id="draft-panel-questions" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-questions">Questions</h3></div>
-          <div class="echelon-panel__body forma-stack">
+          <div class="echelon-panel__body">
         <ol id="draft-questions">
           <template data-each="draftQuestions" data-key="id">
             <li class="draft-question"><p class="draft-question__text"><code data-text="id"></code>: <span data-text="prompt"></span></p><p class="draft-question__tags"><span class="draft-tag">Section <span data-text="section"></span></span> <span class="draft-tag" data-text="kind"></span></p><button type="button" class="forma-button" data-echelon-emphasis="tertiary" data-event="removeQuestion">Remove<span class="forma-visually-hidden"> question <span data-text="id"></span>: <span data-text="prompt"></span></span></button></li>
@@ -289,7 +289,7 @@
         </section>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-conditions">
           <div class="echelon-panel__header"><h3 id="draft-panel-conditions" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-conditions">Conditions</h3></div>
-          <div class="echelon-panel__body forma-stack">
+          <div class="echelon-panel__body">
         <ul id="draft-rules">
           <template data-each="draftRules" data-key="id">
             <li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeRule">Remove</button></li>
@@ -303,7 +303,7 @@
         </section>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-facts">
           <div class="echelon-panel__header"><h3 id="draft-panel-facts" class="echelon-heading">Facts</h3></div>
-          <div class="echelon-panel__body forma-stack">
+          <div class="echelon-panel__body">
         <ul id="draft-facts">
           <template data-each="draftFacts" data-key="id">
             <li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeFact">Remove</button></li>
@@ -316,7 +316,7 @@
         </section>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-recommendations">
           <div class="echelon-panel__header"><h3 id="draft-panel-recommendations" class="echelon-heading">Recommendations</h3></div>
-          <div class="echelon-panel__body forma-stack">
+          <div class="echelon-panel__body">
         <ul id="draft-recommendations">
           <template data-each="draftRecommendations" data-key="id">
             <li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeRecommendation">Remove</button></li>
@@ -332,7 +332,7 @@
         </section>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-completion">
           <div class="echelon-panel__header"><h3 id="draft-panel-completion" class="echelon-heading">Completion</h3></div>
-          <div class="echelon-panel__body forma-stack">
+          <div class="echelon-panel__body">
         <p id="draft-completion" data-text="draftCompletion"></p>
         <label>Share of applicable questions that must be answered (%) <input id="minimum-answered" type="text" inputmode="numeric" data-event="minimumAnswered" data-bind-value="minimumAnswered" /></label>
         <ul id="completion-sections">
@@ -344,7 +344,7 @@
         </section>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-validation-rules">
           <div class="echelon-panel__header"><h3 id="draft-panel-validation-rules" class="echelon-heading">Validation rules</h3></div>
-          <div class="echelon-panel__body forma-stack">
+          <div class="echelon-panel__body">
         <ul id="draft-validation">
           <template data-each="draftValidation" data-key="id">
             <li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeValidation">Remove</button></li>
@@ -375,7 +375,8 @@
         </section>
         <section class="echelon-panel draft-panel draft-panel--wide" aria-labelledby="draft-panel-presentation">
           <div class="echelon-panel__header"><h3 id="draft-panel-presentation" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-presentation">Presentation</h3></div>
-          <div class="echelon-panel__body forma-stack">
+          <div class="echelon-panel__body">
+          <div class="draft-fields">
         <label>Questions per page (blank for one page) <input id="items-per-page" type="text" inputmode="numeric" data-event="itemsPerPage" data-bind-value="itemsPerPage" /></label>
         <label><input id="show-numbers" type="checkbox" data-event="showNumbers" value="true" data-bind-checked="showNumbers" /> Number the questions</label>
         <label>Progress <select id="progress-mode" data-event="progressMode"><template data-each="progressModes" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
@@ -392,10 +393,12 @@
         <label>Each respondent answers <input id="bank-select" type="text" inputmode="numeric" data-event="bankSelect" data-bind-value="bankSelect" /></label>
         <button type="button" class="forma-button" data-event="addBank">Add question bank</button>
           </div>
+          </div>
         </section>
         <section class="echelon-panel draft-panel draft-panel--wide" aria-labelledby="draft-panel-scoring">
           <div class="echelon-panel__header"><h3 id="draft-panel-scoring" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-scoring">Scoring</h3></div>
-          <div class="echelon-panel__body forma-stack">
+          <div class="echelon-panel__body">
+          <div class="draft-fields">
         <ul id="draft-scoring">
           <template data-each="draftScoring" data-key="id">
             <li><label>Section <span data-text="label"></span> <select data-event="sectionScoring">
@@ -441,10 +444,11 @@
           <button type="button" class="forma-button" data-event="setOverall">Set the overall score</button>
         </section>
           </div>
+          </div>
         </section>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-translations">
           <div class="echelon-panel__header"><h3 id="draft-panel-translations" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-translations">Translations</h3></div>
-          <div class="echelon-panel__body forma-stack">
+          <div class="echelon-panel__body">
         <ul id="draft-translations"><template data-each="draftTranslations" data-key="id"><li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeTranslation">Remove</button></li></template></ul>
         <label>Language tag <input id="translation-locale" type="text" data-event="translationLocale" data-bind-value="translationLocale" /></label>
         <label>Text to translate (for example question/Q1/prompt) <input id="translation-key" type="text" data-event="translationKey" data-bind-value="translationKey" /></label>
@@ -454,7 +458,7 @@
         </section>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-accessibility-text">
           <div class="echelon-panel__header"><h3 id="draft-panel-accessibility-text" class="echelon-heading">Accessibility text</h3></div>
-          <div class="echelon-panel__body forma-stack">
+          <div class="echelon-panel__body">
         <ul id="draft-accessibility"><template data-each="draftAccessibility" data-key="id"><li data-text="label"></li></template></ul>
         <label>Question <input id="accessibility-question" type="text" data-event="accessibilityQuestion" data-bind-value="accessibilityQuestion" /></label>
         <label>Name read instead of the prompt (optional) <input id="accessibility-name" type="text" data-event="accessibilityName" data-bind-value="accessibilityName" /></label>
@@ -464,7 +468,8 @@
         </section>
         <section class="echelon-panel draft-panel draft-panel--wide" aria-labelledby="draft-panel-test-fixtures">
           <div class="echelon-panel__header"><h3 id="draft-panel-test-fixtures" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-fixtures">Test fixtures</h3></div>
-          <div class="echelon-panel__body forma-stack">
+          <div class="echelon-panel__body">
+          <div class="draft-fields">
         <ul id="draft-fixtures"><template data-each="draftFixtures" data-key="id"><li><span data-text="name"></span> <button type="button" class="forma-button" data-event="explainFixture">Explain</button></li></template></ul>
         <!-- How the draft scores a fixture (AUT-006 §63, SCS-017, AST-005): from the one evaluation. -->
         <template data-if="hasFixtureExplanation">
@@ -539,10 +544,12 @@
         </section>
         <button type="button" class="forma-button" data-event="addFixture">Add a fixture: every answer at the midpoint</button>
           </div>
+          </div>
         </section>
         <section class="echelon-panel draft-panel draft-panel--wide" aria-labelledby="draft-panel-validation">
           <div class="echelon-panel__header"><h3 id="draft-panel-validation" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-validation">Validation</h3></div>
-          <div class="echelon-panel__body forma-stack">
+          <div class="echelon-panel__body">
+          <div class="draft-fields">
         <div class="admin-table-scroll" role="region" tabindex="0" aria-labelledby="draft-panel-validation">
         <table id="draft-findings" class="admin-table">
           <thead><tr><th scope="col">Severity</th><th scope="col">Code</th><th scope="col">Finding</th></tr></thead>
@@ -551,10 +558,11 @@
         </div>
         <p id="draft-preview" data-text="draftPreview"></p>
           </div>
+          </div>
         </section>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-review">
           <div class="echelon-panel__header"><h3 id="draft-panel-review" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-review">Review</h3></div>
-          <div class="echelon-panel__body forma-stack">
+          <div class="echelon-panel__body">
         <p id="draft-review" data-text="draftReview"></p>
           </div>
         </section>
