@@ -29,8 +29,13 @@ test("ULI-A02: signing in sets the dataset up in the store, opens it writable, r
   await expect(page.locator("#groups-waiting-note")).toContainText("fewer surveys accepted than expected");
   await expect(page.locator("#groups-complete")).toHaveText("0");
   await expect(page.locator("#groups-complete-note")).toContainText("every expected survey accepted");
-  // A new dataset has nothing unresolved: it says so, and is not marked for attention.
-  await expect(page.locator("#no-obligations")).toHaveText("Nothing in this dataset is waiting to be resolved.");
+  // A new dataset has nothing unresolved: it says so, and how far that reaches
+  // (signal#136 review round 2: an unconfirmed import is known only when it
+  // happens on this page; finalizing still checks every stored import), and
+  // is not marked for attention.
+  await expect(page.locator("#no-obligations")).toHaveText(
+    "No unresolved work found. An import whose outcome Signal could not confirm appears here only when it happens on this page; finalizing a group still checks every import stored for it."
+  );
   await expect(page.locator("#unresolved")).toHaveAttribute("data-echelon-attention", "false");
 
   // Refresh reads the store again (a request that resolves the branch).

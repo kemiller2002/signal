@@ -269,10 +269,15 @@ scenario("admin-signed-in", async ({ page, capture }) => {
       await expect(draft.getByRole("button", { name: "Saving draft", exact: true })).toHaveAttribute("aria-busy", "true");
     }, { operation: "save draft (store write)" });
   });
-  await capture.attempt(page, { ...signedIn, id: "admin-draft-saved", title: "Survey authoring: the draft saved" }, async () => {
+  // signal#136 review round 2: on the long draft the outcome is shown beside
+  // the actions (#activity and #notice are at the top of the page); the
+  // viewport shots are scrolled to the action.
+  const outcome = (scope) => page.locator(`${scope} .admin-outcome`);
+  await capture.attempt(page, { ...signedIn, id: "admin-draft-saved", title: "Survey authoring: the draft saved, its outcome shown beside Save", extents: ["full", "viewport"], anchor: '#draft [data-event="saveDraft"]' }, async () => {
     await capture.step(page, "release the branch update", async () => {
       saveHold.release();
       await expect(notice(page)).toHaveText("The draft of PULSE was saved.", { timeout: STORE_MS });
+      await expect(outcome("#draft")).toContainText("The draft of PULSE was saved.");
     }, { operation: "save draft (store write)" });
   });
   await capture.attempt(page, { ...signedIn, id: "admin-draft-reviewed", title: "Survey authoring: the draft submitted for review and approved" }, async () => {
@@ -283,10 +288,12 @@ scenario("admin-signed-in", async ({ page, capture }) => {
       await expect(page.locator("#draft-review")).toHaveText("Reviewed", { timeout: STORE_MS });
     }, { operation: "review transitions (store write)" });
   });
-  await capture.attempt(page, { ...signedIn, id: "admin-publish-refused", title: "Survey authoring: Publish refused until the warnings are acknowledged (error)" }, async () => {
+  await capture.attempt(page, { ...signedIn, id: "admin-publish-refused", title: "Survey authoring: Publish refused until the warnings are acknowledged (error), the refusal shown beside the actions", extents: ["full", "viewport"], anchor: '#draft [data-event="publishDraft"]' }, async () => {
     await capture.step(page, "click Publish without acknowledging the warnings", async () => {
       await draft.getByRole("button", { name: "Publish" }).click();
       await expect(notice(page)).toContainText("Acknowledge the warnings first", { timeout: STORE_MS });
+      await expect(outcome("#draft")).toContainText("Acknowledge the warnings first");
+      await expect(outcome("#draft")).toBeInViewport();
     }, { operation: "publish (store write)" });
   });
   await capture.attempt(page, { ...signedIn, id: "admin-draft-published", title: "Survey authoring: published as version 1" }, async () => {
@@ -323,10 +330,11 @@ scenario("admin-signed-in", async ({ page, capture }) => {
       await expect(draft.getByRole("button", { name: "Deleting draft", exact: true })).toHaveAttribute("aria-busy", "true");
     }, { operation: "delete draft (store write)" });
   });
-  await capture.attempt(page, { ...signedIn, id: "admin-draft-deleted", title: "Draft deleted: the confirmation closed, focus on the status beside the notice" }, async () => {
+  await capture.attempt(page, { ...signedIn, id: "admin-draft-deleted", title: "Draft deleted: the confirmation closed, focus on the outcome shown where the draft was, with the Forma focus ring", extents: ["full", "viewport"], anchor: "#draft .admin-outcome" }, async () => {
     await capture.step(page, "release the branch update", async () => {
       deleteHold.hold?.release();
-      await expect(page.locator("#activity")).toBeFocused({ timeout: STORE_MS });
+      await expect(outcome("#draft")).toBeFocused({ timeout: STORE_MS });
+      await expect(outcome("#draft")).toBeInViewport();
     }, { operation: "delete draft (store write)" });
   });
 
@@ -347,5 +355,54 @@ scenario("admin-signed-in", async ({ page, capture }) => {
       await page.getByRole("button", { name: "Refresh" }).click();
       await expect(page.getByRole("status").filter({ hasText: "Engagement" })).not.toContainText("Offline", { timeout: STORE_MS });
     }, { operation: "refresh (store reads)" });
+  });
+
+  // signal#136 review round 2: unresolved work rendered. A new group's import
+  // whose branch update is dropped twice after it was sent (the outcome is
+  // unknown, and still unknown on the one retry) needs reconciliation; the
+  // overview names the group, links to its imported surveys and says how to
+  // resume. (Only an import on this page is listed: WI-0126.)
+  await capture.attempt(page, { ...signedIn, id: "admin-overview-unresolved", title: "Overview with unresolved work: an import whose outcome is unknown, its group, link and how to resume" }, async () => {
+    await capture.step(page, "create a group, open Imported surveys, drop the next two branch updates after sending them, import two lines", async () => {
+      await area(page, "Groups");
+      const form = page.locator("#new-group");
+      await spin(form, "Expected surveys", "2");
+      await form.getByRole("button", { name: "Create group" }).click();
+      await expect(page.getByRole("heading", { level: 2, name: /^Group [0-9a-f]{32}$/ })).toBeVisible({ timeout: STORE_MS });
+      await groupTab(page, "Imported surveys");
+      await expect(page.locator("#resume-import")).toContainText("Import exactly the same completed-survey links again to resume");
+      store.failNext("PATCH", /\/git\/refs\/heads\/main$/, "abort");
+      store.failNext("PATCH", /\/git\/refs\/heads\/main$/, "abort");
+      const imports = page.locator("#import");
+      await imports.getByRole("textbox", { name: "Completed survey links, one per line" }).fill("not a link\nnot a link either");
+      await imports.getByRole("button", { name: "Import" }).click();
+      await expect(page.locator("#importReconciliation li")).not.toHaveCount(0, { timeout: STORE_MS });
+      // A drop the import did not need (it may give up after the first) must
+      // not reach a later write.
+      store.failures.splice(0);
+    }, { operation: "import submissions (store write, outcome unknown)" });
+    await capture.step(page, "open the Overview", async () => {
+      await area(page, "Overview");
+      const item = page.locator("#unresolved li");
+      await expect(item).toHaveCount(1);
+      await expect(item.locator("code")).toHaveText(/^[0-9a-f]{32}$/);
+      await expect(item.getByRole("link", { name: "Open the group's imported surveys" })).toBeVisible();
+      await expect(item).toContainText("Import exactly the same completed-survey links again to resume");
+    }, { operation: "area navigation" });
+  });
+
+  // signal#136 review round 2: a published version hidden; its button goes
+  // away, so focus moves to the outcome beside the versions, near where the
+  // button was, not to #activity at the top of the page.
+  await capture.attempt(page, { ...signedIn, id: "admin-assessments-version-hidden", title: "Assessments: version hidden from new groups, focus on the outcome beside the versions, with the Forma focus ring", extents: ["full", "viewport"], anchor: "#assessments .admin-outcome" }, async () => {
+    await capture.step(page, "click Refresh, open Assessments, click Hide from new groups", async () => {
+      await page.getByRole("button", { name: "Refresh" }).click();
+      await expect(page.getByRole("status").filter({ hasText: "Signed in; changes can be saved." })).toBeVisible({ timeout: STORE_MS });
+      await area(page, "Assessments");
+      await page.locator("#template-actions").getByRole("button", { name: "Hide from new groups", exact: true }).click();
+      await expect(outcome("#assessments")).toBeFocused({ timeout: STORE_MS });
+      await expect(outcome("#assessments")).toContainText("PULSE version 1 is hidden from new groups");
+      await expect(outcome("#assessments")).toBeInViewport();
+    }, { operation: "hide version (store write)" });
   });
 });

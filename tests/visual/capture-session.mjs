@@ -159,6 +159,11 @@ export const session = (scenario) => {
       await page.emulateMedia({ colorScheme: scheme });
       await settle(page);
       await restPointer(page);
+      // A screen about something beside an action (signal#136 review round
+      // 2: the outcome beside Save and Publish, focus beside a hidden
+      // version) names it: each viewport shot is scrolled to it, as the
+      // person who acted would see it, rather than wherever the resize left it.
+      if (screen.anchor) await page.locator(screen.anchor).first().scrollIntoViewIfNeeded().catch(() => {});
       for (const extent of screen.extents ?? ["full"]) {
         const file = shotPath(screen.id, viewport.id, scheme, extent);
         mkdirSync(dirname(join(OUT, file)), { recursive: true });

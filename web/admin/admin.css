@@ -251,6 +251,22 @@
 .admin #notice > details { flex: 1 1 12rem; min-inline-size: 0; }
 .admin #notice > .forma-button { flex: 0 0 auto; }
 
+/* A long view's outcome beside its actions (signal#136 review round 2): a
+   quiet copy of the persistence line and the notice's sentence, ruled like
+   a margin note; absent while there is nothing to copy. #activity, at the
+   top of the page, stays the one that announces. */
+.admin .admin-outcome {
+  display: grid;
+  gap: 0.25rem;
+  padding-block: 0.5rem;
+  padding-inline: 0.75rem 0;
+  border-inline-start: 3px solid var(--echelon-accent-rule);
+}
+.admin .admin-outcome:not(:has(> p)) { display: none; }
+.admin .admin-outcome > p { margin: 0; max-inline-size: none; }
+.admin .admin-outcome > :is(.admin-outcome__persistence, .admin-outcome__reload) { color: var(--echelon-text-secondary); }
+.admin .admin-outcome > .admin-outcome__notice { color: var(--forma-color-text-primary); }
+
 /* The activity line sits under the dataset's title, part of the shell. */
 .admin .activity > :is(p, div) { margin: 0; }
 .admin .activity { color: var(--echelon-text-secondary); }
