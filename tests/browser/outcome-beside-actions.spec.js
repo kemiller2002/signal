@@ -51,9 +51,12 @@ test("on the long draft page, Publish's refusal and Save's outcome are shown bes
   expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeGreaterThan(viewport.height * 2);
 
   const outcome = draft.locator(".admin-outcome");
-  // A copy, not a second live region: no role, no aria-live, nothing inside either.
+  // A copy, not a second live region: a group named "Outcome" (signal#136
+  // re-review), no aria-live or aria-atomic, and nothing live inside it.
   await expect(outcome).toHaveCount(1);
-  for (const attribute of ["role", "aria-live", "aria-atomic"]) await expect(outcome).not.toHaveAttribute(attribute);
+  await expect(outcome).toHaveAttribute("role", "group");
+  await expect(outcome).toHaveAttribute("aria-label", "Outcome");
+  for (const attribute of ["aria-live", "aria-atomic"]) await expect(outcome).not.toHaveAttribute(attribute);
   await expect(outcome.locator("[role], [aria-live]")).toHaveCount(0);
 
   // Publish with blockers: refused, and the refusal is on screen beside Publish.
@@ -64,6 +67,7 @@ test("on the long draft page, Publish's refusal and Save's outcome are shown bes
   await publish.click();
   const refusal = "Publication is blocked: resolve the blockers listed under validation.";
   await expect(outcome).toContainText(refusal, { timeout: STORE_STEP_MS });
+  await expect(outcome).toHaveAccessibleName("Outcome");
   await expectBeside(page, outcome, publish, beforePublish, "Publish");
   // The editor's own alert says it at the top of the draft, out of view here,
   // and is the one region that announces it.

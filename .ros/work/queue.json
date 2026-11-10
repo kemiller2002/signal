@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 128,
+  "nextSeq": 129,
   "items": [
     {
       "id": "WI-0001",
@@ -3079,6 +3079,27 @@
       "attachments": [],
       "createdAt": "2026-11-10T08:20:16.599Z",
       "updatedAt": "2026-11-10T10:34:58.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0128",
+      "title": "SIG-ECHELON-APP-002 (b) signal#136 re-review wording: finalizing does not wait for an unknown import, empty-state scope until refresh, import notice resume wording, outcome group name",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-10T10:40:08.821Z",
+      "updatedAt": "2026-11-10T10:40:17.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
