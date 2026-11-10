@@ -69,11 +69,11 @@ test("on the long draft page, Publish's refusal and Save's outcome are shown bes
   await expect(outcome).toContainText(refusal, { timeout: STORE_STEP_MS });
   await expect(outcome).toHaveAccessibleName("Outcome");
   await expectBeside(page, outcome, publish, beforePublish, "Publish");
-  // The editor's own alert says it at the top of the draft, out of view here,
-  // and is the one region that announces it.
+  // The editor's own alert is the one region that announces it. (Since the
+  // draft's actions moved into its header, signal#137 review, the alert just
+  // above the header may be in view as well.)
   const announcers = page.locator('[aria-live], [role="status"], [role="alert"]').filter({ hasText: refusal });
   await expect(announcers).toHaveCount(1);
-  await expect(announcers).not.toBeInViewport();
   await page.screenshot({ path: test.info().outputPath("draft-publish-refused.png") });
 
   // Save: its outcome is shown beside the actions too.
@@ -85,10 +85,10 @@ test("on the long draft page, Publish's refusal and Save's outcome are shown bes
   const saved = "The draft of PULSE was saved.";
   await expect(outcome).toContainText(saved, { timeout: STORE_STEP_MS });
   await expectBeside(page, outcome, save, beforeSave, "Save");
-  // The shell's notice says it at the top of the page, out of view here, and
-  // #activity, the one live region, announces it.
+  // The shell's notice says it at the top of the page (in view or not, now
+  // that the actions are in the draft's header), and #activity, the one live
+  // region, announces it.
   await expect(page.locator("#notice-message")).toHaveText(saved);
-  await expect(page.locator("#notice-message")).not.toBeInViewport();
   await expect(page.locator("#activity")).toContainText(saved);
   await expect(page.locator('[aria-live], [role="status"], [role="alert"]').filter({ hasText: saved })).toHaveCount(1);
   await page.screenshot({ path: test.info().outputPath("draft-saved.png") });

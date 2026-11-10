@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T11:20:02.000Z",
+  "updatedAt": "2026-11-10T11:27:07.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4736,6 +4736,17 @@
       "updatedAt": "2026-11-10T11:20:02.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T112002759Z-fb458ce3"
+      ]
+    },
+    {
+      "id": "WI-0130",
+      "type": "task",
+      "state": "active",
+      "semanticState": "active",
+      "evidence": [],
+      "updatedAt": "2026-11-10T11:27:07.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T112708013Z-587f2c82"
       ]
     }
   ]

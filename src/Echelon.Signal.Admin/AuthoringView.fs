@@ -91,6 +91,14 @@ let project (model: Model) : (string * ViewValue) list =
       )
       "hasDraft", flag editor.IsSome
       "hasNoDraft", flag (survey.IsSome && editor.IsNone)
+      // The editor's parts, to move to from its header (signal#137 review).
+      "draftJumps",
+      Items(
+          if editor.IsSome then
+              Authoring.draftParts |> List.map (fun (key, label) -> [ "key", Text key; "label", Text label ])
+          else
+              []
+      )
       "draftSurvey", text (survey |> Option.defaultValue "")
       "draftHeading", text (editor |> Option.map (fun e -> $"{e.Draft.Content.Metadata.Title} ({e.Draft.SurveyId}, draft)") |> Option.defaultValue "")
       "draftTitle", text (editor |> Option.map (fun e -> e.Draft.Content.Metadata.Title) |> Option.defaultValue "")

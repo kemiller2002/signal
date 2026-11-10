@@ -252,6 +252,18 @@ type Command =
     /// Delete a survey's stored draft (AUT-006 §59).
     | DeleteDraft of survey: string
 
+/// The draft editor's parts a person can move to (SIG-ECHELON-APP-002 (c),
+/// signal#137 review): the key names its panel heading's focus target
+/// (`draft-part-<key>`); moving there changes nothing in the draft or the view.
+let draftParts =
+    [ "questions", "Questions"
+      "conditions", "Conditions"
+      "scoring", "Scoring"
+      "presentation", "Presentation"
+      "translations", "Translations"
+      "fixtures", "Test fixtures"
+      "review", "Review" ]
+
 /// The page events the authoring screens own.
 let events =
     set

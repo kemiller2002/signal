@@ -184,6 +184,15 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - The empty state: such an import "is not always listed here; when it is, only until the page is refreshed or reopened" (only NeedsReconciliation is counted; part-way, offline and blocked imports show on the persistence line).
 - The release record written after an import has its own unknown-outcome sentence (`AdminWork.releaseStopped`), never "whether the import was saved"; the import's own notice is emitted last so it is the one shown.
 
+### signal#137 visual-gate review (WI-0130, 2026-11-10)
+
+- Template header: title, lifecycle chip and the one action group (Delete draft… danger, Submit for review and Approve as reviewed tertiary, Save draft, Publish primary), the warnings' acknowledgement, the delete confirmation and the outcome copy directly under it; no action is left in a panel.
+- Draft parts: Questions, Conditions, Scoring, Presentation, Translations, Test fixtures, Review (`Authoring.draftParts`). Each button sends `draftJump`, which moves focus to the panel's heading (`draft-part-<key>`, Limen focus scrolls it into view); the draft, the route and the address are unchanged.
+- Fields fill their column up to 40rem: Forma's stack aligned the panel body's grid track to the start, sizing it to the widest field.
+- Question rows: the question, then section and kind tags, then Remove (tertiary) named "Remove question <id>: <prompt>".
+- Panels two to a row from 64rem (reading order), the wide ones (Presentation, Scoring, Test fixtures, Validation) across both with their fields in columns.
+- Follow-ups: WI-0131 (three-column layout, live preview, per-question edit view; the phone height), WI-0132 (the persistence line follows the person across views).
+
 ### signal#137 authoring (WI-0121, 2026-11-10)
 
 - Draft editor on Echelon panels (Details … Validation, Review), one primary (Publish), danger on Delete draft's confirmation; assessments and report definitions on panels; the validation findings in a labelled scroll region (`.admin-table-scroll`) with whole-word cells.

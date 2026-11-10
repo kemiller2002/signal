@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 130,
+  "nextSeq": 133,
   "items": [
     {
       "id": "WI-0001",
@@ -3121,6 +3121,69 @@
       "attachments": [],
       "createdAt": "2026-11-10T11:20:01.413Z",
       "updatedAt": "2026-11-10T11:20:01.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0130",
+      "title": "SIG-ECHELON-APP-002 (c) signal#137 visual-gate review: template header with one action group, draft parts navigation, consistent field widths, structured question rows, shorter page",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-10T11:26:56.764Z",
+      "updatedAt": "2026-11-10T11:27:06.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0131",
+      "title": "Authoring behaviour changes from the approved mockup, out of scope for signal#137: three-column layout with a section outline, a live respondent preview beside the editor, and a per-question edit view (also the way to shorten the draft page on a phone)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T11:26:57.207Z",
+      "updatedAt": "2026-11-10T11:26:57.207Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0132",
+      "title": "The persistence line follows the person across views: a settled outcome (for example 'The accepted results are retired…') stays on the draft page until the next operation; clear or scope it on navigation without breaking #133's pending-state tests",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T11:26:57.614Z",
+      "updatedAt": "2026-11-10T11:26:57.614Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

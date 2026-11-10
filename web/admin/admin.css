@@ -306,3 +306,121 @@
   .admin .draft-panel :is(ol, ul) { padding-inline-start: 1.25rem; }
   .admin .draft-panel .forma-button { padding-inline: 0.5rem; }
 }
+
+/* ---- The draft editor's layout (signal#137 review) ---------------------
+   One template header with the action group, its outcome and the editor's
+   parts to move to; panels two to a row on a wide screen (in reading order,
+   left then right), the wide ones across both; fields full width in their
+   column up to a readable measure; question rows as structured rows. */
+.draft-head {
+  display: grid;
+  gap: 0.75rem 1.5rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+.draft-head__title { display: grid; gap: 0.35rem; min-inline-size: 0; }
+.draft-head__title > * { margin: 0; }
+.draft-head h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); overflow-wrap: anywhere; }
+.draft-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.draft-head > :is(label, .admin-confirm, .admin-outcome, .draft-parts) { grid-column: 1 / -1; }
+@media (min-width: 64rem) {
+  .draft-head { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+  .draft-actions { justify-content: flex-end; }
+}
+.draft-parts__list { list-style: none; margin: 0; padding: 0; }
+.admin .draft-parts__link {
+  padding: 0.65rem 0.9rem;
+  border: 0;
+  border-block-end: 3px solid transparent;
+  margin-block-end: -1px;
+  background: none;
+  color: var(--echelon-text-secondary);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: var(--echelon-weight-label);
+  cursor: pointer;
+}
+.admin .draft-parts__link:hover { color: var(--forma-color-text-primary); border-block-end-color: var(--echelon-border-subtle); }
+.admin .draft-parts__link:focus-visible { outline: 2px solid var(--forma-color-focus-ring); outline-offset: 2px; }
+@media (forced-colors: active) {
+  .admin .draft-parts__link { color: LinkText; }
+}
+.draft-editor .echelon-panel__header h3:focus { outline-offset: 4px; }
+
+@media (min-width: 64rem) {
+  .draft-editor {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .draft-editor > :is(.draft-head, .draft-panel--wide) { grid-column: 1 / -1; }
+}
+.draft-editor .echelon-panel__body > label:not(:has(> input[type="checkbox"], > input[type="radio"])),
+.draft-editor .echelon-panel__body > .forma-stack > label:not(:has(> input[type="checkbox"], > input[type="radio"])),
+.draft-editor #scoring-authoring > label:not(:has(> input[type="checkbox"], > input[type="radio"])) {
+  display: grid;
+  gap: 0.35rem;
+  justify-self: stretch;
+  inline-size: 100%;
+  max-inline-size: 40rem;
+  font-weight: var(--echelon-weight-label);
+}
+.draft-editor .echelon-panel__body label :is(input[type="text"], input:not([type]), input[type="number"], textarea, select) {
+  inline-size: 100%;
+  max-inline-size: 40rem;
+  box-sizing: border-box;
+  font-weight: normal;
+}
+.draft-question {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.35rem 1rem;
+  align-items: start;
+  padding-block: 0.75rem;
+  border-block-end: 1px solid var(--echelon-border-subtle);
+}
+.draft-question:last-child { border-block-end: 0; }
+.draft-question > p { margin: 0; grid-column: 1; }
+.draft-question > .forma-button { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+.draft-question__text code { color: var(--echelon-text-secondary); }
+.draft-question__tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.draft-tag {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: var(--echelon-surface-sunken);
+  color: var(--forma-color-text-on-secondary-surface);
+}
+@media (forced-colors: active) { .draft-tag { border: 1px solid CanvasText; } }
+#draft-questions { list-style: none; padding: 0; margin: 0; }
+/* A wide panel's fields flow in columns on a wide screen, in reading order;
+   its lists, headings, notes, tables and sub-sections take the whole row. */
+@media (min-width: 64rem) {
+  .draft-panel--wide > .echelon-panel__body,
+  .draft-panel--wide #scoring-authoring {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: 0.75rem 1.25rem;
+    align-items: end;
+  }
+  .draft-panel--wide > .echelon-panel__body > :not(label, button, template),
+  .draft-panel--wide #scoring-authoring > :not(label, button, template) { grid-column: 1 / -1; }
+  .draft-panel--wide :is(.echelon-panel__body, #scoring-authoring) > button { justify-self: start; }
+}
+/* The editor's panels are dense on a phone: tighter rhythm, same order. */
+/* Forma's stack aligns a grid's tracks to the start, which sized the panel
+   body's one column to its widest field (Title was 155-220 px): the track
+   fills the panel, so fields take its width up to the measure. */
+.draft-editor .draft-panel > .echelon-panel__body,
+.draft-editor #scoring-authoring { gap: 0.75rem; justify-content: stretch; }
+@media (max-width: 30rem) {
+  .draft-editor .draft-panel > :is(.echelon-panel__header, .echelon-panel__body) { padding-inline: 0.875rem; }
+  .draft-editor { gap: 1rem; }
+}
+/* On a narrow screen the parts stay one row that scrolls sideways in place,
+   rather than wrapping into several. */
+@media (max-width: 48rem) {
+  .draft-parts__list { flex-wrap: nowrap; overflow-x: auto; }
+  .draft-parts__list > li { flex: 0 0 auto; }
+  .admin .draft-parts__link { white-space: nowrap; overflow-wrap: normal; }
+}

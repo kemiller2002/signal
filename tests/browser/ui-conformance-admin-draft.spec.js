@@ -41,7 +41,10 @@ test("ULI-A02/A07: each draft editing action adds its entry, refuses an impossib
     await type("New question", prompt);
     await draft.getByRole("button", { name: "Add the question below here" }).click();
   }
-  await expect(page.locator("#draft-questions li")).toHaveText([/^S1 · Q1: We ship every week\./, /^S1 · Q2: We fix bugs fast\./]);
+  // Structured rows (signal#137 review): the question, then its section and
+  // kind as tags, then Remove named for the question.
+  await expect(page.locator("#draft-questions li")).toHaveText([/^Q1: We ship every week\.\s*Section S1/, /^Q2: We fix bugs fast\.\s*Section S1/]);
+  await expect(page.locator("#draft-questions li").first().getByRole("button")).toHaveAccessibleName("Remove question Q1: We ship every week.");
 
   // A condition on an answer the question does not have is refused, and says which answers exist.
   await type("Show question", "Q2");
@@ -168,4 +171,63 @@ test("SIG-ECHELON-APP-002 (WI-0121): the draft's validation findings keep whole 
   await expect(region).toHaveAttribute("role", "region");
   await expect(region).toHaveAttribute("tabindex", "0");
   await expect(region).toHaveAccessibleName("Validation");
+});
+
+// The template header and layout (signal#137 review): one action group at the
+// top with the outcome under it; the editor's parts to move to, each moving
+// focus to its panel's heading and changing nothing else; fields as wide as
+// their column, up to a measure.
+test("SIG-ECHELON-APP-002 (WI-0130): the draft's actions are one group in its header, and its parts move focus to their headings", async ({ page }) => {
+  await signInWithStore(page);
+  const draft = await startDraft(page);
+  const head = draft.locator("header.draft-head");
+  await expect(head.getByRole("heading", { level: 2 })).toHaveText("Team pulse (PULSE, draft)");
+  await expect(head.locator("#draft-lifecycle")).toHaveAttribute("data-echelon-tone", "draft");
+  const actions = head.getByRole("group", { name: "Draft actions" });
+  // In the mockup's order, of the actions the draft offers now.
+  const ORDER = ["Delete draft…", "Submit for review", "Approve as reviewed", "Save draft", "Publish"];
+  const offered = async () => {
+    const names = (await actions.getByRole("button").allTextContents()).map((name) => name.trim());
+    expect(names).toEqual(ORDER.filter((name) => names.includes(name)));
+    return names;
+  };
+  expect(await offered()).toEqual(expect.arrayContaining(["Save draft", "Publish"]));
+  await expect(actions.getByRole("button", { name: "Publish", exact: true })).toHaveAttribute("data-echelon-emphasis", "primary");
+  // Every draft action is in that group: none is left in a panel below.
+  for (const name of ["Save draft", "Publish", "Submit for review", "Approve as reviewed", "Delete draft…"]) {
+    await expect(draft.locator(".draft-panel").getByRole("button", { name, exact: true })).toHaveCount(0);
+  }
+  await actions.getByRole("button", { name: "Save draft", exact: true }).click();
+  await expect(head.locator(".admin-outcome")).toContainText("The draft of PULSE was saved.", { timeout: STORE_STEP_MS });
+  expect(await offered()).toEqual(expect.arrayContaining(["Delete draft…", "Save draft", "Publish"]));
+  await expect(actions.getByRole("button", { name: "Delete draft…", exact: true })).toHaveAttribute("data-echelon-emphasis", "danger");
+
+  // The parts: each moves focus to its heading, in view; the address stays.
+  const parts = head.getByRole("navigation", { name: "Draft parts" }).getByRole("button");
+  await expect(parts).toHaveText(["Questions", "Conditions", "Scoring", "Presentation", "Translations", "Test fixtures", "Review"]);
+  const address = page.url();
+  for (const [part, heading] of [["Scoring", "Scoring"], ["Test fixtures", "Test fixtures"], ["Review", "Review"], ["Questions", "Questions"]]) {
+    await parts.filter({ hasText: part }).click();
+    const target = draft.getByRole("heading", { level: 3, name: heading, exact: true });
+    await expect(target).toBeFocused();
+    await expect(target).toBeInViewport();
+  }
+  expect(page.url()).toBe(address);
+  // By keyboard too.
+  await parts.filter({ hasText: "Conditions" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(draft.getByRole("heading", { level: 3, name: "Conditions", exact: true })).toBeFocused();
+
+  // Fields fill their column, up to a 40rem measure (Title was about 155 px).
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    const fit = await draft.getByRole("textbox", { name: "Title", exact: true }).first().evaluate((input) => {
+      const body = input.closest(".echelon-panel__body");
+      const style = getComputedStyle(body);
+      const room = body.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+      const measure = 40 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+      return { width: input.getBoundingClientRect().width, expected: Math.min(room, measure) };
+    });
+    expect(Math.abs(fit.width - fit.expected), `at ${width} px`).toBeLessThanOrEqual(1);
+  }
 });

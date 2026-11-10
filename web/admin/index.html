@@ -198,11 +198,46 @@
         <!-- Exactly one root element per data-if: Limen mounts only the first,
              so the editor below once rendered as its heading alone (GH-113). -->
         <div class="forma-stack draft-editor">
-        <div class="admin-title">
-          <p class="echelon-eyebrow">Draft</p>
-          <h2 id="draft-heading" class="echelon-heading" data-text="draftHeading"></h2>
-        </div>
-        <p class="draft-state"><span class="echelon-chip" id="draft-lifecycle" data-bind-data-echelon-tone="draftLifecycleTone" data-text="draftLifecycle">Draft</span> · <span data-text="draftParent"></span><template data-if="draftUnsaved"><span> · <strong>Unsaved changes</strong></span></template></p>
+        <!-- The template header (signal#137 review): title, lifecycle chip and the
+             one action group, with the outcome beside it and the editor's parts
+             to move to. -->
+        <header class="draft-head">
+          <div class="draft-head__title">
+            <p class="echelon-eyebrow">Draft</p>
+            <h2 id="draft-heading" class="echelon-heading" data-text="draftHeading"></h2>
+            <p class="draft-state"><span class="echelon-chip" id="draft-lifecycle" data-bind-data-echelon-tone="draftLifecycleTone" data-text="draftLifecycle">Draft</span> · <span data-text="draftParent"></span><template data-if="draftUnsaved"><span> · <strong>Unsaved changes</strong></span></template></p>
+          </div>
+          <div class="draft-actions" role="group" aria-label="Draft actions">
+            <template data-if="canDeleteDraft"><button type="button" class="forma-button" data-echelon-emphasis="danger" data-event="deleteDraft" data-bind-disabled="busy">Delete draft…</button></template>
+            <template data-if="canRequestReview"><button type="button" class="forma-button" data-echelon-emphasis="tertiary" data-event="requestReview" data-bind-disabled="requestReviewDisabled" data-bind-aria-busy="requestReviewBusy" data-bind-aria-disabled="requestReviewBusy" data-text="requestReviewLabel">Submit for review</button></template>
+            <template data-if="canApproveReview"><button type="button" class="forma-button" data-echelon-emphasis="tertiary" data-event="approveReview" data-bind-disabled="approveReviewDisabled" data-bind-aria-busy="approveReviewBusy" data-bind-aria-disabled="approveReviewBusy" data-text="approveReviewLabel">Approve as reviewed</button></template>
+            <template data-if="canEditDrafts"><button type="button" class="forma-button" data-event="saveDraft" data-bind-disabled="saveDraftDisabled" data-bind-aria-busy="saveDraftBusy" data-bind-aria-disabled="saveDraftBusy" data-text="saveDraftLabel">Save draft</button></template>
+            <template data-if="canPublishTemplates"><button type="button" class="forma-button" data-echelon-emphasis="primary" data-event="publishDraft" data-bind-disabled="publishDisabled" data-bind-aria-busy="publishBusy" data-bind-aria-disabled="publishBusy" data-text="publishLabel">Publish</button></template>
+          </div>
+          <template data-if="draftHasWarnings"><label><input type="checkbox" data-event="acknowledgeWarnings" value="true" data-bind-checked="acknowledgeWarnings" /> I have read the warnings and accept them</label></template>
+          <template data-if="confirmingDeleteDraft">
+          <div id="delete-draft-confirm" class="forma-stack admin-confirm" role="alertdialog" aria-labelledby="delete-draft-text">
+          <p id="delete-draft-text">Delete this draft and its review? Unpublished changes are lost. Published versions are not affected.</p>
+          <button type="button" class="forma-button" data-echelon-emphasis="danger" data-event="confirmDeleteDraft" data-bind-disabled="confirmDeleteDisabled" data-bind-aria-busy="confirmDeleteBusy" data-bind-aria-disabled="confirmDeleteBusy" data-text="confirmDeleteLabel">Delete draft</button>
+          <button type="button" class="forma-button" data-event="cancelDeleteDraft" data-bind-disabled="busy">Keep it</button>
+          </div>
+          </template>
+          <!-- The outcome beside the draft's actions: a visual copy of #activity's
+          persistence and the notice's sentence, not a live region, so #activity
+          stays the one announcer (signal#136 review round 2; #133's
+          SIG-VIS-PENDING-002.2). It sits directly under the one action group. -->
+          <div class="admin-outcome" role="group" aria-label="Outcome" tabindex="-1" data-focus-target="outcome">
+          <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
+          <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
+          <template data-if="hasAuthoringProblem"><p class="admin-outcome__notice" data-text="authoringProblem"></p></template>
+          <template data-if="hasNotice"><p class="admin-outcome__notice" data-text="notice"></p></template>
+          </div>
+          <nav class="draft-parts" aria-label="Draft parts">
+            <ul class="echelon-nav-tabs draft-parts__list">
+              <template data-each="draftJumps" data-key="key"><li><button type="button" class="draft-parts__link" data-event="draftJump" data-text="label"></button></li></template>
+            </ul>
+          </nav>
+        </header>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-details">
           <div class="echelon-panel__header"><h3 id="draft-panel-details" class="echelon-heading">Details</h3></div>
           <div class="echelon-panel__body forma-stack">
@@ -231,17 +266,17 @@
           </div>
         </section>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-questions">
-          <div class="echelon-panel__header"><h3 id="draft-panel-questions" class="echelon-heading">Questions</h3></div>
+          <div class="echelon-panel__header"><h3 id="draft-panel-questions" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-questions">Questions</h3></div>
           <div class="echelon-panel__body forma-stack">
         <ol id="draft-questions">
           <template data-each="draftQuestions" data-key="id">
-            <li><span data-text="section"></span> · <span data-text="id"></span>: <span data-text="prompt"></span> (<span data-text="kind"></span>) <button type="button" class="forma-button" data-event="removeQuestion">Remove</button></li>
+            <li class="draft-question"><p class="draft-question__text"><code data-text="id"></code>: <span data-text="prompt"></span></p><p class="draft-question__tags"><span class="draft-tag">Section <span data-text="section"></span></span> <span class="draft-tag" data-text="kind"></span></p><button type="button" class="forma-button" data-echelon-emphasis="tertiary" data-event="removeQuestion">Remove<span class="forma-visually-hidden"> question <span data-text="id"></span>: <span data-text="prompt"></span></span></button></li>
           </template>
         </ol>
           </div>
         </section>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-conditions">
-          <div class="echelon-panel__header"><h3 id="draft-panel-conditions" class="echelon-heading">Conditions</h3></div>
+          <div class="echelon-panel__header"><h3 id="draft-panel-conditions" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-conditions">Conditions</h3></div>
           <div class="echelon-panel__body forma-stack">
         <ul id="draft-rules">
           <template data-each="draftRules" data-key="id">
@@ -326,8 +361,8 @@
         <button type="button" class="forma-button" data-event="addValidation">Add validation rule</button>
           </div>
         </section>
-        <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-presentation">
-          <div class="echelon-panel__header"><h3 id="draft-panel-presentation" class="echelon-heading">Presentation</h3></div>
+        <section class="echelon-panel draft-panel draft-panel--wide" aria-labelledby="draft-panel-presentation">
+          <div class="echelon-panel__header"><h3 id="draft-panel-presentation" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-presentation">Presentation</h3></div>
           <div class="echelon-panel__body forma-stack">
         <label>Questions per page (blank for one page) <input id="items-per-page" type="text" inputmode="numeric" data-event="itemsPerPage" data-bind-value="itemsPerPage" /></label>
         <label><input id="show-numbers" type="checkbox" data-event="showNumbers" value="true" data-bind-checked="showNumbers" /> Number the questions</label>
@@ -346,8 +381,8 @@
         <button type="button" class="forma-button" data-event="addBank">Add question bank</button>
           </div>
         </section>
-        <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-scoring">
-          <div class="echelon-panel__header"><h3 id="draft-panel-scoring" class="echelon-heading">Scoring</h3></div>
+        <section class="echelon-panel draft-panel draft-panel--wide" aria-labelledby="draft-panel-scoring">
+          <div class="echelon-panel__header"><h3 id="draft-panel-scoring" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-scoring">Scoring</h3></div>
           <div class="echelon-panel__body forma-stack">
         <ul id="draft-scoring">
           <template data-each="draftScoring" data-key="id">
@@ -396,7 +431,7 @@
           </div>
         </section>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-translations">
-          <div class="echelon-panel__header"><h3 id="draft-panel-translations" class="echelon-heading">Translations</h3></div>
+          <div class="echelon-panel__header"><h3 id="draft-panel-translations" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-translations">Translations</h3></div>
           <div class="echelon-panel__body forma-stack">
         <ul id="draft-translations"><template data-each="draftTranslations" data-key="id"><li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeTranslation">Remove</button></li></template></ul>
         <label>Language tag <input id="translation-locale" type="text" data-event="translationLocale" data-bind-value="translationLocale" /></label>
@@ -415,8 +450,8 @@
         <button type="button" class="forma-button" data-event="setAccessibility">Set accessibility text</button>
           </div>
         </section>
-        <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-test-fixtures">
-          <div class="echelon-panel__header"><h3 id="draft-panel-test-fixtures" class="echelon-heading">Test fixtures</h3></div>
+        <section class="echelon-panel draft-panel draft-panel--wide" aria-labelledby="draft-panel-test-fixtures">
+          <div class="echelon-panel__header"><h3 id="draft-panel-test-fixtures" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-fixtures">Test fixtures</h3></div>
           <div class="echelon-panel__body forma-stack">
         <ul id="draft-fixtures"><template data-each="draftFixtures" data-key="id"><li><span data-text="name"></span> <button type="button" class="forma-button" data-event="explainFixture">Explain</button></li></template></ul>
         <!-- How the draft scores a fixture (AUT-006 §63, SCS-017, AST-005): from the one evaluation. -->
@@ -493,7 +528,7 @@
         <button type="button" class="forma-button" data-event="addFixture">Add a fixture: every answer at the midpoint</button>
           </div>
         </section>
-        <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-validation">
+        <section class="echelon-panel draft-panel draft-panel--wide" aria-labelledby="draft-panel-validation">
           <div class="echelon-panel__header"><h3 id="draft-panel-validation" class="echelon-heading">Validation</h3></div>
           <div class="echelon-panel__body forma-stack">
         <div class="admin-table-scroll" role="region" tabindex="0" aria-labelledby="draft-panel-validation">
@@ -503,36 +538,12 @@
         </table>
         </div>
         <p id="draft-preview" data-text="draftPreview"></p>
-        <template data-if="draftHasWarnings"><label><input type="checkbox" data-event="acknowledgeWarnings" value="true" data-bind-checked="acknowledgeWarnings" /> I have read the warnings and accept them</label></template>
-        <template data-if="canEditDrafts"><button type="button" class="forma-button" data-event="saveDraft" data-bind-disabled="saveDraftDisabled" data-bind-aria-busy="saveDraftBusy" data-bind-aria-disabled="saveDraftBusy" data-text="saveDraftLabel">Save draft</button></template>
-        <template data-if="canDeleteDraft"><button type="button" class="forma-button" data-event="deleteDraft" data-bind-disabled="busy">Delete draft…</button></template>
-        <template data-if="confirmingDeleteDraft">
-          <div id="delete-draft-confirm" class="forma-stack admin-confirm" role="alertdialog" aria-labelledby="delete-draft-text">
-            <p id="delete-draft-text">Delete this draft and its review? Unpublished changes are lost. Published versions are not affected.</p>
-            <button type="button" class="forma-button" data-echelon-emphasis="danger" data-event="confirmDeleteDraft" data-bind-disabled="confirmDeleteDisabled" data-bind-aria-busy="confirmDeleteBusy" data-bind-aria-disabled="confirmDeleteBusy" data-text="confirmDeleteLabel">Delete draft</button>
-            <button type="button" class="forma-button" data-event="cancelDeleteDraft" data-bind-disabled="busy">Keep it</button>
-          </div>
-        </template>
-        <!-- The outcome beside the draft's actions: a visual copy of #activity's
-             persistence and the notice's sentence, not a live region, so #activity
-             (at the top of this long page) stays the one announcer (signal#136
-             review round 2; #133's SIG-VIS-PENDING-002.2). It sits between Save
-             and Publish so either one's outcome is on screen beside it. -->
-        <div class="admin-outcome" role="group" aria-label="Outcome" tabindex="-1" data-focus-target="outcome">
-          <template data-if="hasPersistence"><p class="admin-outcome__persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p></template>
-          <template data-if="reloadOwed"><p class="admin-outcome__reload" data-text="reloadText"></p></template>
-          <template data-if="hasAuthoringProblem"><p class="admin-outcome__notice" data-text="authoringProblem"></p></template>
-          <template data-if="hasNotice"><p class="admin-outcome__notice" data-text="notice"></p></template>
-        </div>
           </div>
         </section>
         <section class="echelon-panel draft-panel" aria-labelledby="draft-panel-review">
-          <div class="echelon-panel__header"><h3 id="draft-panel-review" class="echelon-heading">Review</h3></div>
+          <div class="echelon-panel__header"><h3 id="draft-panel-review" class="echelon-heading" tabindex="-1" data-focus-target="draft-part-review">Review</h3></div>
           <div class="echelon-panel__body forma-stack">
         <p id="draft-review" data-text="draftReview"></p>
-        <template data-if="canRequestReview"><button type="button" class="forma-button" data-event="requestReview" data-bind-disabled="requestReviewDisabled" data-bind-aria-busy="requestReviewBusy" data-bind-aria-disabled="requestReviewBusy" data-text="requestReviewLabel">Submit for review</button></template>
-        <template data-if="canApproveReview"><button type="button" class="forma-button" data-event="approveReview" data-bind-disabled="approveReviewDisabled" data-bind-aria-busy="approveReviewBusy" data-bind-aria-disabled="approveReviewBusy" data-text="approveReviewLabel">Approve as reviewed</button></template>
-        <template data-if="canPublishTemplates"><button type="button" class="forma-button" data-echelon-emphasis="primary" data-event="publishDraft" data-bind-disabled="publishDisabled" data-bind-aria-busy="publishBusy" data-bind-aria-disabled="publishBusy" data-text="publishLabel">Publish</button></template>
           </div>
         </section>
       </div>
