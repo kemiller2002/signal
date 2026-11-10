@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T05:59:45.000Z",
+  "updatedAt": "2026-11-10T06:01:00.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4432,6 +4432,17 @@
       ],
       "completedAt": "2026-11-10T05:59:45.000Z",
       "conclusion": "Landing page ported from the approved mockup; CI green on cac77d0; capture audit clean"
+    },
+    {
+      "id": "WI-0120",
+      "type": "task",
+      "state": "active",
+      "semanticState": "active",
+      "evidence": [],
+      "updatedAt": "2026-11-10T06:01:00.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T060101778Z-8a6fd575"
+      ]
     }
   ]
 }
