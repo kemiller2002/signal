@@ -4944,7 +4944,27 @@
       "updatedAt": "2026-11-10T15:15:28.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T151529594Z-cc193051"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "42b3299b5304f0612e331738",
+        "recordedAt": "2026-11-10T16:13:43.000Z",
+        "executionId": "EXE-20261110T151529594Z-cc193051",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-respondent",
+        "commit": "62aaf43e7f7a1a8f7f7d485de36cd7d300f54481",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-respondent",
+        "remoteCommit": "62aaf43e7f7a1a8f7f7d485de36cd7d300f54481",
+        "summary": "signal#139 review fixed: scale questions as Forma's ordinal scale (own radio group), no Signal override of the best-worst row or the theme panel (EXCEPTION test for the narrow best-worst row, WI-0139), a property-overlap conformance guard, focus and page announcement on a new page, guidance only on change, solid read-only link border. CI green at 45f2e377 (708 .NET, 207 Playwright); visual-evidence/baseline-45f2e37 (88 screens, none unreached)",
+        "nextAction": "complete WI-0138, update the signal#139 PR body, report, resume 2e",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     }
   ]
 }
