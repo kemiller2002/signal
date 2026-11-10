@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 129,
+  "nextSeq": 130,
   "items": [
     {
       "id": "WI-0001",
@@ -3100,6 +3100,27 @@
       "attachments": [],
       "createdAt": "2026-11-10T10:40:08.821Z",
       "updatedAt": "2026-11-10T10:57:09.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0129",
+      "title": "SIG-ECHELON-APP-002 (b) signal#136 second re-review: unfinished-import obligation wording, empty-state reach, release record's own unknown-outcome sentence",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-10T11:20:01.413Z",
+      "updatedAt": "2026-11-10T11:20:01.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

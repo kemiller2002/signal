@@ -178,6 +178,12 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - Evidence: CI on `d2ab83d` green (693 .NET, 191 Playwright); `visual-evidence/baseline-d2ab83d` (85 screens, 540 shots, all 85 audited, no finding; 959 focus stops, all visible).
 - The improved audit on `e9eed4e` found admin panels overflowing with 200% text at 320 px (fixed in `afee558`, now also asserted by the shell test), an unavailable report link at 2.42:1 from an old `opacity: 0.6` (secondary colour now), and light shots taken mid colour-transition after a dark one (the capture now waits for finite animations, `98532cc`).
 
+### signal#136 second re-review (WI-0129, 2026-11-10)
+
+- `AdminState.describeObligation` (ReconcileUnknownWrite): "N import(s) did not finish or could not be confirmed: import the same links again." True on the overview and in finalize's BLOCKED_BY_OBLIGATIONS refusal (stored part-way or blocked batches); a Refresh reconciles nothing.
+- The empty state: such an import "is not always listed here; when it is, only until the page is refreshed or reopened" (only NeedsReconciliation is counted; part-way, offline and blocked imports show on the persistence line).
+- The release record written after an import has its own unknown-outcome sentence (`AdminWork.releaseStopped`), never "whether the import was saved"; the import's own notice is emitted last so it is the one shown.
+
 ### signal#136 re-review wording (WI-0128, 2026-11-10)
 
 - Finalizing does **not** wait for an unknown-outcome import: the chunk is never stored, so an import of 25 links or fewer leaves the whole batch or nothing, and `unfinishedBatches` finds nothing. The resolution now says "Resume before finalizing the group: finalizing does not wait for it." (`AdminView.resumeImport`, overview and both places on Imported surveys).

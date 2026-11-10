@@ -30,11 +30,11 @@ test("ULI-A02: signing in sets the dataset up in the store, opens it writable, r
   await expect(page.locator("#groups-complete")).toHaveText("0");
   await expect(page.locator("#groups-complete-note")).toContainText("every expected survey accepted");
   // A new dataset has nothing unresolved: it says so, and how far that reaches
-  // (signal#136 review: an import that did not finish or whose outcome is
-  // unknown is listed only while this page is open, until it is refreshed or
-  // reopened), and is not marked for attention.
+  // (signal#136 re-review: an import that did not finish or whose outcome is
+  // unknown is not always listed; when it is, only until a refresh or a
+  // reopen), and is not marked for attention.
   await expect(page.locator("#no-obligations")).toHaveText(
-    "No unresolved work found. An import that did not finish, or whose outcome Signal could not confirm, is listed here only while this page is open, until it is refreshed or reopened."
+    "No unresolved work found. An import that did not finish, or whose outcome Signal could not confirm, is not always listed here; when it is, only until the page is refreshed or reopened."
   );
   await expect(page.locator("#unresolved")).toHaveAttribute("data-echelon-attention", "false");
 

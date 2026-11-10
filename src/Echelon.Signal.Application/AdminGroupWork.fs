@@ -93,9 +93,15 @@ let import (catalog: TemplateCatalog.Loaded) (actor: Store.Actor) (group: GroupS
             let stopped = imported.StoppedBecause |> Option.map (importStopped >> engine) |> Option.toList
             let! released = Releases.record actor now imported.Group
             let! fresh = GroupStore.openGroup resolve group.Config.Group now group.Dataset
-            let failures = [ released |> Result.map ignore; fresh |> Result.map ignore ] |> List.choose (function Error f -> Some(engine (importStopped f)) | Ok() -> None)
+            // The release record follows a saved import: its own failure says so
+            // (releaseStopped), and a failed reread is a read (groupFailure).
+            let failures =
+                [ released |> Result.mapError releaseStopped |> Result.map ignore
+                  fresh |> Result.mapError groupFailure |> Result.map ignore ]
+                |> List.choose (function Error message -> Some(engine message) | Ok() -> None)
             let current = fresh |> Result.defaultValue imported.Group
-            return GroupReady(current, Some imported, unreconciled) :: stopped @ failures
+            // The import's own outcome is said last, so it is the notice shown.
+            return GroupReady(current, Some imported, unreconciled) :: failures @ stopped
     }
 
 /// Moves a group through its lifecycle, telling other tabs storage changed.

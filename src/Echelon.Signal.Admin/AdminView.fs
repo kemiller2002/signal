@@ -92,12 +92,13 @@ let resumeImport =
     "Import exactly the same completed-survey links again to resume: Signal finishes what was interrupted, skips what it already decided and never counts a link twice. Resume before finalizing the group: finalizing does not wait for it."
 
 /// Says truthfully how far the overview's unresolved work reaches: record
-/// problems are read with the dataset, but an import that did not finish or
-/// whose outcome is unknown is known only from the page's own import, and a
-/// refresh or a reopen summarises groups without it (WI-0126 would read
+/// problems are read with the dataset, but of the page's own imports only
+/// one whose outcome is unknown is counted (AdminGroupWork.import);
+/// part-way, offline and blocked ones show only on the persistence line, and
+/// a refresh or a reopen summarises groups without any (WI-0126 would read
 /// stored batches instead).
 let noUnresolvedWork =
-    "No unresolved work found. An import that did not finish, or whose outcome Signal could not confirm, is listed here only while this page is open, until it is refreshed or reopened."
+    "No unresolved work found. An import that did not finish, or whose outcome Signal could not confirm, is not always listed here; when it is, only until the page is refreshed or reopened."
 
 /// Where the person goes to resolve an obligation, and what resolves it: a
 /// path through the console, never an action the console does not have.
