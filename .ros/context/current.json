@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T11:37:41.000Z",
+  "updatedAt": "2026-11-10T12:50:42.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4504,6 +4504,56 @@
       "conclusion": "Admin shell and dashboard in the foundry ledger direction with the #134/#135 review follow-ups; CI green on d2ab83d; capture audit clean on all 85 screens. WI-0119 record notes: its completion event recorded paths [node_modules] (untracked symlink) and commit 3c2cb37 says checkpoint though none exists."
     },
     {
+      "id": "WI-0121",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "web/admin/index.html"
+        },
+        {
+          "type": "implementation",
+          "path": "web/admin/admin.css"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/ui-conformance-admin-draft.spec.js"
+        },
+        {
+          "type": "docs",
+          "path": "HANDOFF.md"
+        }
+      ],
+      "updatedAt": "2026-11-10T11:00:46.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T072839973Z-4338d24d"
+      ],
+      "latestCheckpoint": {
+        "id": "1dc7332da3f738eee3308537",
+        "recordedAt": "2026-11-10T11:00:32.000Z",
+        "executionId": "EXE-20261110T072839973Z-4338d24d",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-authoring",
+        "commit": "442fc94b47d4770ef6d99ed09e7a37d6b5181083",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-authoring",
+        "remoteCommit": "442fc94b47d4770ef6d99ed09e7a37d6b5181083",
+        "summary": "signal#137 authoring done: draft editor on panels, one primary, danger confirm; findings table keeps whole words (audit collapse check clean at 1440/834/390/320@200%, browser test); #136 rounds merged forward. CI green at 76e96ac (700 .NET, 194 Playwright); visual-evidence/baseline-76e96ac",
+        "nextAction": "complete WI-0121, update the signal#137 PR body and report",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-10T11:00:46.000Z",
+      "conclusion": "signal#137 (SIG-ECHELON-APP-002 c, authoring) done. Draft editor on Echelon panels with one primary (Publish) and danger on Delete draft's confirmation; assessments and report definitions on panels; validation findings in a labelled scroll region with whole-word cells, so the capture audit's collapse check is clean on every draft screen at 1440, 834, 390 and 320 px with 200% text, and a browser test asserts it. #136's review rounds (WI-0125, WI-0127, WI-0128) merged forward. CI green at 76e96ac: 700/700 .NET, 194/194 Playwright; visual-evidence/baseline-76e96ac (87 screens, 576 shots, none unreached)."
+    },
+    {
       "id": "WI-0125",
       "type": "task",
       "state": "complete",
@@ -4726,6 +4776,114 @@
       },
       "completedAt": "2026-11-10T11:37:41.000Z",
       "conclusion": "signal#136 second re-review fixed: the unfinished-import obligation says 'did not finish or could not be confirmed: import the same links again' (overview and finalize's refusal); the empty state says such an import is not always listed, and when it is only until a refresh or reopen; the release record has its own unknown-outcome sentence, the import's notice shown last. CI green at 96f4faf1: 702/702 .NET, 192/192 Playwright; visual-evidence/baseline-96f4faf (87 screens, 576 shots, none unreached)."
+    },
+    {
+      "id": "WI-0130",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "web/admin/index.html"
+        },
+        {
+          "type": "implementation",
+          "path": "web/admin/admin.css"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/AdminUpdate.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/ui-conformance-admin-draft.spec.js"
+        },
+        {
+          "type": "docs",
+          "path": "HANDOFF.md"
+        }
+      ],
+      "updatedAt": "2026-11-10T12:24:14.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T112708013Z-587f2c82"
+      ],
+      "latestCheckpoint": {
+        "id": "479b47a648765041a66f7be9",
+        "recordedAt": "2026-11-10T12:24:09.000Z",
+        "executionId": "EXE-20261110T112708013Z-587f2c82",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-authoring",
+        "commit": "f6f76c1b945cfaf66f178803d7894a814d67466a",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-authoring",
+        "remoteCommit": "f6f76c1b945cfaf66f178803d7894a814d67466a",
+        "summary": "signal#137 visual gate fixed: template header with one action group and the outcome under it, draft parts navigation, fields as wide as their column, structured question rows, two panels to a row from 50rem. CI green at 6bbf9166 (702 .NET, 195 Playwright); visual-evidence/baseline-6bbf916",
+        "nextAction": "complete WI-0130, update the signal#137 PR body and report",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-10T12:24:14.000Z",
+      "conclusion": "signal#137 visual-gate review done. The draft has a template header (title, lifecycle chip, one action group: Delete draft… danger, Submit for review and Approve as reviewed tertiary, Save draft, Publish primary) with the acknowledgement, delete confirmation and outcome copy under it; draft parts (Questions … Review) move focus to their headings without changing the route; fields fill their column up to 40rem; question rows show the question, section and kind tags and a tertiary Remove named for the question; panels two to a row from 50rem. Heights (capture, admin-draft-edited): desktop 10805 -> 7256 px, tablet 10836 -> 7950 px, phone 11900 -> 12118 px (follow-up WI-0131). Audit: no finding on any draft screen. CI green at 6bbf9166: 702/702 .NET, 195/195 Playwright; visual-evidence/baseline-6bbf916 (87 screens, 576 shots, none unreached). Follow-ups WI-0131, WI-0132."
+    },
+    {
+      "id": "WI-0133",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/ActivityView.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "web/admin/index.html"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/outcome-beside-actions.spec.js"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/OperationsFollowUpTests.fs"
+        },
+        {
+          "type": "docs",
+          "path": "HANDOFF.md"
+        }
+      ],
+      "updatedAt": "2026-11-10T12:50:42.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T123033719Z-318c51c4"
+      ],
+      "latestCheckpoint": {
+        "id": "32372095e2d0b259b964abcb",
+        "recordedAt": "2026-11-10T12:50:37.000Z",
+        "executionId": "EXE-20261110T123033719Z-318c51c4",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-authoring",
+        "commit": "11ab89556960859a02bbd64a0d25003343854608",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-authoring",
+        "remoteCommit": "11ab89556960859a02bbd64a0d25003343854608",
+        "summary": "signal#137 review round 2 fixed; CI green at 8f5eedb2 (704 .NET, 197 Playwright); visual-evidence/baseline-8f5eedb (87 screens, none unreached)",
+        "nextAction": "complete WI-0133, update the signal#137 PR body, report, resume 2d",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-10T12:50:42.000Z",
+      "conclusion": "signal#137 review round 2 fixed: each long view's Outcome group shows the persistence, reload and notice lines only for its own latest change (a retire's line no longer sits in the draft's); the warnings are named beside their acknowledgement from the findings, with a way to Validation, which is now a draft part; outcome-beside-actions runs at 1280 and 390 px; the parts wrap on a phone; #136 follow-ups (release record and blocked-item wording) folded in. CI green at 8f5eedb2: 704/704 .NET, 197/197 Playwright; visual-evidence/baseline-8f5eedb (87 screens, 576 shots, none unreached)."
     }
   ]
 }

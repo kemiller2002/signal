@@ -112,6 +112,14 @@ let private onNamedEvent (model: Model) (name: string) (key: string option) (val
         // (GH-113): it is ignored (`launch`), and the button says it is opening.
         | Some id when model.Principal.IsSome -> busy (Operations.Operation.OpenDataset id) [ OpenDataset id ]
         | _ -> model, []
+    // One of the draft editor's parts: focus moves to its heading (which
+    // scrolls it into view); the draft and the view are unchanged.
+    | "draftJump" ->
+        match key with
+        | Some part when Authoring.draftParts |> List.exists (fst >> (=) part) -> model, [ Focus $"draft-part-{part}" ]
+        | _ -> model, []
+    // Beside the warnings' acknowledgement: to the findings it acknowledges.
+    | "draftJumpValidation" -> model, [ Focus "draft-part-validation" ]
     | "navigate" ->
         // A location the page names (`/groups`), as a link would.
         match key |> Option.map (RouteCodec.parse codec Router.allowAll) with

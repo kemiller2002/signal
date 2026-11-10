@@ -158,7 +158,8 @@
   vertical-align: middle;
 }
 .admin-table tr:last-child td { border-block-end: 0; }
-.admin-table td :is(a, code) { overflow-wrap: normal; }
+.admin .echelon-panel__body a { overflow-wrap: anywhere; }
+.admin .admin-table td :is(a, code) { overflow-wrap: normal; }
 
 /* A destructive confirmation stands apart from the controls around it. */
 .admin-confirm {
@@ -261,10 +262,11 @@
   padding-inline: 0.75rem 0;
   border-inline-start: 3px solid var(--echelon-accent-rule);
 }
-.admin .admin-outcome:not(:has(> p)) { display: none; }
-.admin .admin-outcome > p { margin: 0; max-inline-size: none; }
-.admin .admin-outcome > :is(.admin-outcome__persistence, .admin-outcome__reload) { color: var(--echelon-text-secondary); }
-.admin .admin-outcome > .admin-outcome__notice { color: var(--forma-color-text-primary); }
+.admin .admin-outcome:not(:has(p)) { display: none; }
+.admin .admin-outcome :is(p) { margin: 0; max-inline-size: none; }
+.admin .admin-outcome__lines { display: grid; gap: 0.25rem; }
+.admin .admin-outcome :is(.admin-outcome__persistence, .admin-outcome__reload) { color: var(--echelon-text-secondary); }
+.admin .admin-outcome .admin-outcome__notice { color: var(--forma-color-text-primary); }
 
 /* The activity line sits under the dataset's title, part of the shell. */
 .admin .activity > :is(p, div) { margin: 0; }
@@ -283,3 +285,154 @@
 }
 /* The lifecycle targets are a list of actions: no bullet, no indent. */
 .admin #lifecycle-targets { padding: 0; margin: 0; list-style: none; }
+
+/* ---- Authoring (SIG-ECHELON-APP-002) -----------------------------------
+   The draft editor's parts, each on its own panel, in the editor's order. */
+.draft-state { margin: 0; }
+.draft-editor > .echelon-panel { scroll-margin-block-start: 1rem; }
+.admin-rows li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding-block: 0.5rem;
+  border-block-end: 1px solid var(--echelon-border-subtle);
+}
+.admin-rows li:last-child { border-block-end: 0; }
+.admin-title h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); }
+/* On the narrowest screens the editor's numbered lists keep a smaller
+   indent and their row buttons a smaller inner padding, so a label breaks
+   between words, not letters (the audit's collapse check). */
+@media (max-width: 30rem) {
+  .admin .draft-panel :is(ol, ul) { padding-inline-start: 1.25rem; }
+  .admin .draft-panel .forma-button { padding-inline: 0.5rem; }
+}
+
+/* ---- The draft editor's layout (signal#137 review) ---------------------
+   One template header with the action group, its outcome and the editor's
+   parts to move to; panels two to a row on a wide screen (in reading order,
+   left then right), the wide ones across both; fields full width in their
+   column up to a readable measure; question rows as structured rows.
+   Two to a row from 50rem, so a tablet (834 px) gets them too. */
+.draft-head {
+  display: grid;
+  gap: 0.75rem 1.5rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+.draft-head__title { display: grid; gap: 0.35rem; min-inline-size: 0; }
+.draft-head__title > * { margin: 0; }
+.draft-head h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); overflow-wrap: anywhere; }
+.draft-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.draft-head > :is(label, .draft-ack, .admin-confirm, .admin-outcome, .draft-parts) { grid-column: 1 / -1; }
+@media (min-width: 64rem) {
+  .draft-head { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+  .draft-actions { justify-content: flex-end; }
+}
+.draft-parts__list { list-style: none; margin: 0; padding: 0; }
+.admin .draft-parts__link {
+  padding: 0.65rem 0.9rem;
+  border: 0;
+  border-block-end: 3px solid transparent;
+  margin-block-end: -1px;
+  background: none;
+  color: var(--echelon-text-secondary);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: var(--echelon-weight-label);
+  cursor: pointer;
+}
+.admin .draft-parts__link:hover { color: var(--forma-color-text-primary); border-block-end-color: var(--echelon-border-subtle); }
+.admin .draft-parts__link:focus-visible { outline: 2px solid var(--forma-color-focus-ring); outline-offset: 2px; }
+@media (forced-colors: active) {
+  .admin .draft-parts__link { color: LinkText; }
+}
+.draft-editor .echelon-panel__header h3:focus { outline-offset: 4px; }
+
+@media (min-width: 50rem) {
+  .draft-editor {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .draft-editor > :is(.draft-head, .draft-panel--wide) { grid-column: 1 / -1; }
+}
+.draft-editor .echelon-panel__body > label:not(:has(> input[type="checkbox"], > input[type="radio"])),
+.draft-editor .echelon-panel__body > .forma-stack > label:not(:has(> input[type="checkbox"], > input[type="radio"])),
+.draft-editor #scoring-authoring > label:not(:has(> input[type="checkbox"], > input[type="radio"])) {
+  display: grid;
+  gap: 0.35rem;
+  justify-self: stretch;
+  inline-size: 100%;
+  max-inline-size: 40rem;
+  font-weight: var(--echelon-weight-label);
+}
+.draft-editor .echelon-panel__body label :is(input[type="text"], input:not([type]), input[type="number"], textarea, select) {
+  inline-size: 100%;
+  max-inline-size: 40rem;
+  box-sizing: border-box;
+  font-weight: normal;
+}
+.draft-question {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.35rem 1rem;
+  align-items: start;
+  padding-block: 0.75rem;
+  border-block-end: 1px solid var(--echelon-border-subtle);
+}
+.draft-question:last-child { border-block-end: 0; }
+.draft-question > p { margin: 0; grid-column: 1; }
+.draft-question > .forma-button { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+.draft-question__text code { color: var(--echelon-text-secondary); }
+.draft-question__tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.draft-tag {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: var(--echelon-surface-sunken);
+  color: var(--forma-color-text-on-secondary-surface);
+}
+@media (forced-colors: active) { .draft-tag { border: 1px solid CanvasText; } }
+#draft-questions { list-style: none; padding: 0; margin: 0; }
+/* A wide panel's fields flow in columns on a wide screen, in reading order;
+   its lists, headings, notes, tables and sub-sections take the whole row. */
+@media (min-width: 50rem) {
+  .draft-panel--wide > .echelon-panel__body,
+  .draft-panel--wide #scoring-authoring {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: 0.75rem 1.25rem;
+    align-items: end;
+  }
+  .draft-panel--wide > .echelon-panel__body > :not(label, button, template),
+  .draft-panel--wide #scoring-authoring > :not(label, button, template) { grid-column: 1 / -1; }
+  .draft-panel--wide :is(.echelon-panel__body, #scoring-authoring) > button { justify-self: start; }
+}
+/* The editor's panels are dense on a phone: tighter rhythm, same order. */
+/* Forma's stack aligns a grid's tracks to the start, which sized the panel
+   body's one column to its widest field (Title was 155-220 px): the track
+   fills the panel, so fields take its width up to the measure. */
+.draft-editor .draft-panel > .echelon-panel__body,
+.draft-editor #scoring-authoring { gap: 0.75rem; justify-content: stretch; }
+@media (max-width: 30rem) {
+  .draft-editor .draft-panel > :is(.echelon-panel__header, .echelon-panel__body) { padding-inline: 0.875rem; }
+  .draft-editor { gap: 1rem; }
+}
+/* On a narrow screen the parts wrap onto further rows, as the route tabs do
+   (signal#137 review: a sideways-scrolling row cut "Presentation" off). */
+@media (max-width: 48rem) {
+  .admin .draft-parts__link { padding-inline: 0.5rem; }
+}
+/* A phone (and 320 px with 200% text): Remove goes under the question, so
+   the question keeps the row's width (the audit found it set four letters a
+   line beside the button). */
+@media (max-width: 30rem) {
+  .draft-question { grid-template-columns: minmax(0, 1fr); }
+  .draft-question > .forma-button { grid-column: 1; grid-row: auto; justify-self: start; }
+}
+/* The warnings' acknowledgement names them and leads to them (signal#137
+   review): the checkbox, the warnings' codes, and a way to Validation. */
+.draft-ack { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; }
+.draft-ack > label { display: inline-flex; align-items: center; gap: 0.5rem; }
+#draft-warning-summary { color: var(--echelon-text-secondary); font-family: var(--forma-primitive-font-family-mono); font-size: 0.875rem; overflow-wrap: anywhere; }

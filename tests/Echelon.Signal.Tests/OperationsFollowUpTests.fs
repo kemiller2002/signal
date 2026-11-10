@@ -304,3 +304,63 @@ let ``a snapshot whose reread fails is still confirmed first`` () =
     page.Event("takeSnapshot")
     Assert.Equal("saved", page.Text "persistenceState")
     Assert.Contains("snapshot is saved", page.Text "persistenceText")
+
+[<Fact>]
+let ``after a retire, a draft opened next shows no other view's outcome beside its actions (signal#137 review)`` () =
+    let _, _, page = signedIn ()
+    page.Event("navigate", key = "groups")
+    page.Event("newGroupExpected", value = "2")
+    page.Event("newGroupMinimum", value = "1")
+    page.Event("createGroup")
+    let key = page.Text "groupKey"
+    let id = (Echelon.Signal.Engine.UrlState.OpaqueId.ofBytes (Convert.FromHexString key)).Value
+    page.Event("importText", value = String.concat "\n" [ link 1uy id; link 2uy id ])
+    page.Event("import")
+    page.Event("navigate", key = "storage")
+    page.Event("rebuildIndex")
+    page.Event("openGroup", key = key)
+    page.Event("transition", value = "finalize")
+    page.Event("retireSources")
+    page.Event("confirmRetire")
+    // The retire is the latest change, and the shell says so.
+    match page.Model.Value.Activity.LastWrite with
+    | Some(Operation.RetireSources, _) -> ()
+    | other -> failwith $"%A{other}"
+    Assert.True(page.Flag "hasPersistence", page.ViewText)
+    Assert.False(page.Flag "draftOutcome")
+
+    // A draft opened next: its outcome copy shows none of it.
+    Echelon.Signal.Tests.AdminLinkTests.changed page "#/assessments"
+    page.Event("newDraftSurvey", value = "PULSE")
+    page.Event("newDraftTitle", value = "Team pulse")
+    page.Event("startDraft")
+    Assert.True(page.Flag "hasDraft", page.ViewText)
+    Assert.False(page.Flag "draftOutcome")
+    Assert.False(page.Flag "assessmentsOutcome")
+    Assert.False(page.Flag "reportOutcome")
+
+    // Its own change shows there.
+    page.Event("saveDraft")
+    Assert.True(page.Flag "draftOutcome")
+    Assert.False(page.Flag "assessmentsOutcome")
+
+[<Fact>]
+let ``the draft's warnings are named beside their acknowledgement, from its own findings`` () =
+    let page = onStoredDraft ()
+    page.Event("newSectionTitle", value = "Delivery")
+    page.Event("addSection")
+    page.Event("newQuestionPrompt", value = "We ship every week.")
+    page.Event("addQuestion", key = "S1")
+    Assert.True(page.Flag "draftHasWarnings", page.ViewText)
+    let warnings =
+        page.Items "draftFindings"
+        |> List.filter (fun f -> f["severity"].GetValue<string>() = "Warning")
+        |> List.map (fun f -> f["code"].GetValue<string>())
+    let expected =
+        match warnings with
+        | [ code ] -> $"1 warning: {code}"
+        | codes ->
+            let listed = String.concat ", " codes
+            $"{codes.Length} warnings: {listed}"
+    Assert.NotEmpty(warnings)
+    Assert.Equal(expected, page.Text "draftWarningSummary")

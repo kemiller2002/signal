@@ -5,7 +5,7 @@
 // the outcome beside its actions: not a live region, so nothing is
 // announced twice, and on screen where the person clicked.
 import { test, expect } from "./support.js";
-import { signInWithStore, STORE_STEP_MS } from "./ui-conformance-fixtures.mjs";
+import { signInWithStore, createGroup, STORE_STEP_MS } from "./ui-conformance-fixtures.mjs";
 
 test.describe.configure({ timeout: 300_000 });
 
@@ -43,8 +43,9 @@ async function expectBeside(page, outcome, action, scrolledBefore, label) {
   console.log(`${label}: the page moved ${moved}px while it ran`);
 }
 
-test("on the long draft page, Publish's refusal and Save's outcome are shown beside the actions, and #activity alone announces them", async ({ page }) => {
-  await signInWithStore(page);
+// At a desktop width and on a phone (390 px, signal#137 review).
+for (const width of [1280, 390]) test(`at ${width} px, on the long draft page, Publish's refusal and Save's outcome are shown beside the actions, and #activity alone announces them`, async ({ page }) => {
+  await signInWithStore(page, { width });
   const draft = await startDraft(page);
   // The page is long: the shell's notice is out of view from the actions.
   const viewport = page.viewportSize();
@@ -69,11 +70,11 @@ test("on the long draft page, Publish's refusal and Save's outcome are shown bes
   await expect(outcome).toContainText(refusal, { timeout: STORE_STEP_MS });
   await expect(outcome).toHaveAccessibleName("Outcome");
   await expectBeside(page, outcome, publish, beforePublish, "Publish");
-  // The editor's own alert says it at the top of the draft, out of view here,
-  // and is the one region that announces it.
+  // The editor's own alert is the one region that announces it. (Since the
+  // draft's actions moved into its header, signal#137 review, the alert just
+  // above the header may be in view as well.)
   const announcers = page.locator('[aria-live], [role="status"], [role="alert"]').filter({ hasText: refusal });
   await expect(announcers).toHaveCount(1);
-  await expect(announcers).not.toBeInViewport();
   await page.screenshot({ path: test.info().outputPath("draft-publish-refused.png") });
 
   // Save: its outcome is shown beside the actions too.
@@ -85,11 +86,29 @@ test("on the long draft page, Publish's refusal and Save's outcome are shown bes
   const saved = "The draft of PULSE was saved.";
   await expect(outcome).toContainText(saved, { timeout: STORE_STEP_MS });
   await expectBeside(page, outcome, save, beforeSave, "Save");
-  // The shell's notice says it at the top of the page, out of view here, and
-  // #activity, the one live region, announces it.
+  // The shell's notice says it at the top of the page (in view or not, now
+  // that the actions are in the draft's header), and #activity, the one live
+  // region, announces it.
   await expect(page.locator("#notice-message")).toHaveText(saved);
-  await expect(page.locator("#notice-message")).not.toBeInViewport();
   await expect(page.locator("#activity")).toContainText(saved);
   await expect(page.locator('[aria-live], [role="status"], [role="alert"]').filter({ hasText: saved })).toHaveCount(1);
   await page.screenshot({ path: test.info().outputPath("draft-saved.png") });
+});
+
+// Another view's outcome never shows beside the draft's actions (signal#137
+// review: a retire's line sat in every draft capture's Outcome group). The
+// shell's persistence line still says it; the draft's copy shows only the
+// draft's own changes. (The retire itself: OperationsFollowUpTests.)
+test("a change made in another view is not shown in the draft's Outcome group; the draft's own change is", async ({ page }) => {
+  await signInWithStore(page);
+  await createGroup(page);
+  await expect(page.locator("#activity #persistence")).toContainText("The new group is saved", { timeout: STORE_STEP_MS });
+  const draft = await startDraft(page);
+  await expect(page.locator("#activity #persistence")).toContainText("The new group is saved");
+  const outcome = draft.locator(".admin-outcome");
+  await expect(outcome).toBeHidden();
+  await expect(outcome).not.toContainText("The new group is saved");
+  await draft.getByRole("group", { name: "Draft actions" }).getByRole("button", { name: "Save draft", exact: true }).click();
+  await expect(outcome).toContainText("The draft of PULSE was saved.", { timeout: STORE_STEP_MS });
+  await expect(outcome).not.toContainText("The new group is saved");
 });

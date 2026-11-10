@@ -57,6 +57,20 @@ let private readingText (model: Model) (operation: Operation) =
 /// owed reload. It is the page's one live region for operations: always in
 /// the page, it announces each start and each settle once, the notice's
 /// sentence included (the notice itself is not a second live region).
+/// The draft editor's own changes.
+let private draftOperation (operation: Operations.Operation) =
+    match operation with
+    | Operations.Operation.SaveDraft
+    | Operations.Operation.PublishDraft
+    | Operations.Operation.RequestReview
+    | Operations.Operation.ApproveReview
+    | Operations.Operation.DeleteDraft -> true
+    | _ -> false
+
+/// Whether the latest change (kept until the next one starts) was one of these.
+let private lastWriteWas (these: Operations.Operation -> bool) (activity: Operations.Activity) =
+    activity.LastWrite |> Option.exists (fst >> these)
+
 let project (model: Model) : View =
     let activity = model.Activity
     let signingIn = model.SignIn = Echelon.Signal.Admin.Credential.SigningIn
@@ -85,4 +99,10 @@ let project (model: Model) : View =
       "reloadText", Value(Text reload)
       // The notice's sentence for assistive technology, inside the live
       // region; visually the notice shows it.
-      "noticeAnnouncement", Value(Text(if isRunning activity then "" else notice)) ]
+      "noticeAnnouncement", Value(Text(if isRunning activity then "" else notice))
+      // Whether the latest change was one of a long view's own (signal#137
+      // review): its outcome copy beside the actions shows only then, never
+      // another view's outcome (a retire's line on the draft).
+      "draftOutcome", Value(Flag(lastWriteWas draftOperation activity))
+      "assessmentsOutcome", Value(Flag(lastWriteWas (function Operations.Operation.HideVersion _ -> true | _ -> false) activity))
+      "reportOutcome", Value(Flag(lastWriteWas ((=) Operations.Operation.SaveReportDefinition) activity)) ]

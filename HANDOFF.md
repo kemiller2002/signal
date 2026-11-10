@@ -184,6 +184,28 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - The empty state: such an import "is not always listed here; when it is, only until the page is refreshed or reopened" (only NeedsReconciliation is counted; part-way, offline and blocked imports show on the persistence line).
 - The release record written after an import has its own unknown-outcome sentence (`AdminWork.releaseStopped`), never "whether the import was saved"; the import's own notice is emitted last so it is the one shown.
 
+### signal#137 review round 2 (WI-0133, 2026-11-10)
+
+- The long views' outcome copies show the persistence, reload and notice lines only for the view's own latest change (`ActivityView`: `draftOutcome` for save, publish, review, approve and delete; `assessmentsOutcome` for hide; `reportOutcome` for a report definition). A retire's line no longer sits in the draft's Outcome group; the shell's persistence line still says it.
+- The warnings' acknowledgement names them from the findings ("1 warning: CODE", `draftWarningSummary`) and has "See them under Validation" (`draftJumpValidation`); Validation is in the draft parts.
+- `outcome-beside-actions.spec.js` runs at 1280 and 390 px; the draft parts wrap on a phone.
+- #136 follow-ups folded in: the release record's sentence adds "If newer results are still withheld, import the same links again."; the obligation adds that blocked items resume only once their template or encoding can be read.
+
+### signal#137 visual-gate review (WI-0130, 2026-11-10)
+
+- Template header: title, lifecycle chip and the one action group (Delete draft… danger, Submit for review and Approve as reviewed tertiary, Save draft, Publish primary), the warnings' acknowledgement, the delete confirmation and the outcome copy directly under it; no action is left in a panel.
+- Draft parts: Questions, Conditions, Scoring, Presentation, Translations, Test fixtures, Review (`Authoring.draftParts`). Each button sends `draftJump`, which moves focus to the panel's heading (`draft-part-<key>`, Limen focus scrolls it into view); the draft, the route and the address are unchanged.
+- Fields fill their column up to 40rem: Forma's stack aligned the panel body's grid track to the start, sizing it to the widest field.
+- Question rows: the question, then section and kind tags, then Remove (tertiary) named "Remove question <id>: <prompt>".
+- Panels two to a row from 64rem (reading order), the wide ones (Presentation, Scoring, Test fixtures, Validation) across both with their fields in columns.
+- Follow-ups: WI-0131 (three-column layout, live preview, per-question edit view; the phone height), WI-0132 (the persistence line follows the person across views).
+
+### signal#137 authoring (WI-0121, 2026-11-10)
+
+- Draft editor on Echelon panels (Details … Validation, Review), one primary (Publish), danger on Delete draft's confirmation; assessments and report definitions on panels; the validation findings in a labelled scroll region (`.admin-table-scroll`) with whole-word cells.
+- The findings table no longer sets words as columns of letters: the capture audit's collapse check is clean on every draft screen at 1440, 834, 390 and 320 px with 200% text (`visual-evidence/baseline-76e96ac`), and `ui-conformance-admin-draft.spec.js` asserts it at 834, 390 and 320 px with 200% text.
+- #136's review rounds are merged forward (outcome copy at the end of the Validation panel, before Review).
+
 ### signal#136 re-review wording (WI-0128, 2026-11-10)
 
 - Finalizing does **not** wait for an unknown-outcome import: the chunk is never stored, so an import of 25 links or fewer leaves the whole batch or nothing, and `unfinishedBatches` finds nothing. The resolution now says "Resume before finalizing the group: finalizing does not wait for it." (`AdminView.resumeImport`, overview and both places on Imported surveys).

@@ -136,7 +136,7 @@
 | WI-0118 | SIG-ECHELON-APP-001: adopt echelon-current 1.39.0 (Echelon theme 1.1.0) and load the Echelon application layer and fonts on every page; capture tooling onto main | complete | signal, design-system | high |
 | WI-0119 | SIG-ECHELON-APP-002 (a): landing page in the foundry ledger direction | complete |  | medium |
 | WI-0120 | SIG-ECHELON-APP-002 (b): administrator shell and dashboard (app bar, route tabs, panels) | complete |  | medium |
-| WI-0121 | SIG-ECHELON-APP-002 (c): authoring in the foundry ledger direction | captured |  | medium |
+| WI-0121 | SIG-ECHELON-APP-002 (c): authoring in the foundry ledger direction | complete |  | medium |
 | WI-0122 | SIG-ECHELON-APP-002 (d): respondent page (no admin chrome, one primary action, truthful progress) | captured |  | medium |
 | WI-0123 | SIG-ECHELON-APP-002 (e): results (score figures, How this was calculated panel) | captured |  | medium |
 | WI-0124 | Remove administrator acts without a confirmation: the Administrators area's Remove button removes the account at once (follow-up from the signal#136 review; not fixed there) | captured |  | medium |
@@ -145,3 +145,7 @@
 | WI-0127 | SIG-ECHELON-APP-002 (b) review round 2 on signal#136: outcome beside the actions on long views, truthful unresolved-work wording and resume guidance, obligation page-flow test and capture | complete |  | medium |
 | WI-0128 | SIG-ECHELON-APP-002 (b) signal#136 re-review wording: finalizing does not wait for an unknown import, empty-state scope until refresh, import notice resume wording, outcome group name | complete |  | medium |
 | WI-0129 | SIG-ECHELON-APP-002 (b) signal#136 second re-review: unfinished-import obligation wording, empty-state reach, release record's own unknown-outcome sentence | complete |  | medium |
+| WI-0130 | SIG-ECHELON-APP-002 (c) signal#137 visual-gate review: template header with one action group, draft parts navigation, consistent field widths, structured question rows, shorter page | complete |  | medium |
+| WI-0131 | Authoring behaviour changes from the approved mockup, out of scope for signal#137: three-column layout with a section outline, a live respondent preview beside the editor, and a per-question edit view (also the way to shorten the draft page on a phone) | captured |  | medium |
+| WI-0132 | The persistence line follows the person across views: a settled outcome (for example 'The accepted results are retired…') stays on the draft page until the next operation; clear or scope it on navigation without breaking #133's pending-state tests | captured |  | medium |
+| WI-0133 | SIG-ECHELON-APP-002 (c) signal#137 review round 2: outcome copy only for the view's own changes, warnings named beside their acknowledgement with Validation in the parts, 390 px outcome pass, parts wrap; #136 follow-ups (release record and blocked-item wording) | complete |  | medium |
