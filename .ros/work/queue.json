@@ -2991,10 +2991,10 @@
       "description": null,
       "tags": [],
       "priority": "medium",
-      "status": "captured",
+      "status": "ready",
       "attachments": [],
       "createdAt": "2026-11-10T05:45:37.548Z",
-      "updatedAt": "2026-11-10T05:45:37.548Z",
+      "updatedAt": "2026-11-10T16:18:55.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

@@ -48,6 +48,18 @@
     </div>
   </header>
 
+  <!-- The page's one live region (SIG-ECHELON-APP-002 (e), as for the survey
+       page and the console): it announces a link notice, how many dimensions
+       were scored and the copy outcome. Each is shown, not live, where it
+       belongs below. aria-atomic="false": only what changed is read.
+       Refusals and faults stay alerts. -->
+  <div id="activity" class="activity" role="status" aria-live="polite" aria-atomic="false">
+    <span class="forma-visually-hidden" data-text="notice"></span>
+    <span class="forma-visually-hidden" data-text="urlNotice"></span>
+    <template data-if="reviewing"><span class="forma-visually-hidden" data-text="scoredCount"></span></template>
+    <span class="forma-visually-hidden" data-text="copyNotice"></span>
+  </div>
+
   <!-- Unexpected operational failure (Aegis) is its own presentation. An
        expected refusal (questions still unanswered) is an ordinary alert. -->
   <template data-if="hasOperationalFault">
@@ -70,7 +82,7 @@
        browser would not update: ordinary notices, not operational faults. -->
   <template data-if="hasNotice">
     <forma-alert class="forma-component-tag">
-      <aside id="resume-notice" class="forma-alert" role="status" data-tone="attention">
+      <aside id="resume-notice" class="forma-alert" role="note" data-tone="attention">
         <div class="forma-alert__icon" aria-hidden="true">!</div>
         <p id="resume-notice-message" data-text="notice"></p>
       </aside>
@@ -78,7 +90,7 @@
   </template>
   <template data-if="hasUrlNotice">
     <forma-alert class="forma-component-tag">
-      <aside id="url-notice" class="forma-alert" role="status" data-tone="attention">
+      <aside id="url-notice" class="forma-alert" role="note" data-tone="attention">
         <div class="forma-alert__icon" aria-hidden="true">!</div>
         <p id="url-notice-message" data-text="urlNotice"></p>
       </aside>
@@ -175,9 +187,26 @@
   <template data-if="reviewing">
     <section id="results" class="forma-stack" aria-labelledby="results-title">
       <div class="forma-cluster results-header">
-        <h2 id="results-title">Results</h2>
-        <span class="forma-status-lozenge" id="scored-count" role="status" data-text="scoredCount"></span>
+        <h2 id="results-title" class="echelon-heading">Results</h2>
+        <span class="forma-status-lozenge" id="scored-count" data-text="scoredCount"></span>
       </div>
+      <!-- Each dimension's score as a figure ("foundry ledger" direction,
+           SIG-ECHELON-APP-002): the engine's own value, or "Not scored" with
+           its reason. A visual summary of the table below, which carries the
+           same values for assistive technology and print. The assessment
+           defines no overall score, so none is shown. -->
+      <ul class="results-figures" aria-hidden="true">
+        <template data-each="results" data-key="id">
+          <li class="echelon-panel" data-bind-data-state="scoreState">
+            <div class="echelon-panel__body">
+              <p class="echelon-eyebrow" data-text="dimension"></p>
+              <p class="echelon-figure" data-bind-hidden="hideFigure" data-text="score"></p>
+              <p class="results-unscored" data-bind-hidden="hideUnscored" data-text="score"></p>
+              <p class="results-figure-note" data-text="coverage"></p>
+            </div>
+          </li>
+        </template>
+      </ul>
       <forma-data-grid class="forma-component-tag">
         <div class="forma-data-grid" role="region" tabindex="0" aria-labelledby="results-title">
           <table>
@@ -197,12 +226,18 @@
           </table>
         </div>
       </forma-data-grid>
-      <p id="methodology" class="forma-field__description" data-text="methodology"></p>
+      <!-- How the scores were derived: the engine's methodology, verbatim. -->
+      <section class="echelon-panel" data-echelon-surface="accent" aria-labelledby="methodology-title">
+        <div class="echelon-panel__body">
+          <h3 id="methodology-title" class="echelon-eyebrow">How this was calculated</h3>
+          <p id="methodology" data-text="methodology"></p>
+        </div>
+      </section>
       <div class="forma-cluster">
-        <button id="edit-answers" type="button" data-event="editRequested">Edit answers</button>
-        <button id="start-over" type="button" data-event="restarted">Start over</button>
+        <button id="edit-answers" type="button" class="forma-button" data-event="editRequested">Edit answers</button>
+        <button id="start-over" type="button" class="forma-button" data-echelon-emphasis="tertiary" data-event="restarted">Start over</button>
         <template data-if="canSubmit">
-          <button id="submit-answers" type="button" data-event="submitRequested">Submit answers</button>
+          <button id="submit-answers" type="button" class="forma-button" data-echelon-emphasis="primary" data-event="submitRequested">Submit answers</button>
         </template>
       </div>
       <p class="forma-field__description">Print this page for the result report.</p>
@@ -223,7 +258,7 @@
         <button id="copy-link" type="button" data-event="copyRequested">Copy link</button>
       </div>
       <template data-if="hasCopyNotice">
-        <p id="copy-notice" role="status" data-text="copyNotice"></p>
+        <p id="copy-notice" data-text="copyNotice"></p>
       </template>
     </section>
   </template>

@@ -436,3 +436,20 @@
 .draft-ack { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; }
 .draft-ack > label { display: inline-flex; align-items: center; gap: 0.5rem; }
 #draft-warning-summary { color: var(--echelon-text-secondary); font-family: var(--forma-primitive-font-family-mono); font-size: 0.875rem; overflow-wrap: anywhere; }
+
+/* ---- Results, scoring and report (SIG-ECHELON-APP-002 (e), WI-0123) -----
+   Figures keep whole words and numbers: their tables scroll in a labelled,
+   focusable region on a narrow screen instead of setting "Mean", "Section"
+   or "75.0" a few letters a line (the capture's audit at 390 px and at
+   320 px with 200% text). The bars keep a readable length. */
+.admin .admin-table--figures :is(th, td) { white-space: nowrap; overflow-wrap: normal; }
+.admin .admin-table--figures meter { min-inline-size: 8rem; }
+.admin #scoring-sections { list-style: none; margin: 0; padding: 0; }
+.admin #scoring > .echelon-panel .echelon-panel__body > * { margin: 0; }
+.admin #report-snapshots .echelon-panel__body > :is(p, ul) { margin: 0; }
+/* The report's tables on screen: the same, in their labelled region (print
+   keeps Folio's own layout). */
+@media screen {
+  .admin .report-table-scroll { display: block; overflow-x: auto; }
+  .admin .report-table-scroll :is(th, td) { white-space: nowrap; overflow-wrap: normal; }
+}

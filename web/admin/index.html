@@ -885,15 +885,20 @@
               <template data-if="viewResults">
               <!-- Charts compiled and validated in F# (ADM-015..017): meters for the
                    marks, a symbol beside every colour, and the same data as text. -->
-              <section id="exploration" class="forma-stack" aria-label="Exploration">
+              <section id="exploration" class="echelon-panel" aria-labelledby="exploration-title">
+                <div class="echelon-panel__header"><h3 id="exploration-title" class="echelon-heading">Exploration</h3></div>
+                <div class="echelon-panel__body forma-stack">
                 <div class="explore-controls">
                   <label><input type="checkbox" data-event="exploreSort" value="value" data-bind-checked="exploreByValue" /> Sort by value</label>
                   <label><input type="checkbox" data-event="exploreDisplay" value="percent" data-bind-checked="explorePercent" /> Distribution as percentages</label>
                   <button type="button" class="forma-button" data-event="exploreSection">All sections</button>
                 </div>
                 <figure id="section-chart">
-                  <figcaption data-text="chartDescription"></figcaption>
-                  <table class="chart">
+                  <figcaption id="section-chart-caption" data-text="chartDescription"></figcaption>
+                  <!-- The figures scroll in their labelled region on a narrow
+                       screen, whole words (WI-0123). -->
+                  <div class="admin-table-scroll" role="region" tabindex="0" aria-labelledby="section-chart-caption">
+                  <table class="chart admin-table admin-table--figures">
                     <thead><tr><th>Section</th><th>Mean</th><th>Bar</th></tr></thead>
                     <tbody>
                       <template data-each="chart" data-key="key">
@@ -905,12 +910,14 @@
                       </template>
                     </tbody>
                   </table>
+                  </div>
                   <p class="chart-warnings" data-text="chartWarnings"></p>
                 </figure>
                 <template data-if="hasDistribution">
                   <figure id="distribution-chart">
-                    <figcaption data-text="distributionDescription"></figcaption>
-                    <table class="chart">
+                    <figcaption id="distribution-chart-caption" data-text="distributionDescription"></figcaption>
+                    <div class="admin-table-scroll" role="region" tabindex="0" aria-labelledby="distribution-chart-caption">
+                    <table class="chart admin-table admin-table--figures">
                       <thead><tr><th>Scores</th><th>Respondents</th><th>Bar</th></tr></thead>
                       <tbody>
                         <template data-each="distribution" data-key="key">
@@ -918,21 +925,37 @@
                         </template>
                       </tbody>
                     </table>
+                    </div>
                   </figure>
                 </template>
+                </div>
               </section>
               </template>
               <template data-if="viewScoring">
               <section id="scoring" class="forma-stack" aria-label="Scoring">
-                <p>Calculated measures, not the canonical result.</p>
-                <ul class="areas" id="scoring-sections">
+                <section class="echelon-panel" aria-labelledby="scoring-measures-title">
+                <div class="echelon-panel__header"><h3 id="scoring-measures-title" class="echelon-heading">Measures</h3></div>
+                <div class="echelon-panel__body">
+                <ul class="areas echelon-nav-tabs admin-scoring-sections" id="scoring-sections">
                   <template data-each="scoringSections" data-key="id"><li><a data-bind-href="href" data-bind-aria-current="current" data-text="id"></a></li></template>
                 </ul>
-                <table id="scoring-measures">
+                <div class="admin-table-scroll" role="region" tabindex="0" aria-labelledby="scoring-measures-title">
+                <table id="scoring-measures" class="admin-table admin-table--figures">
                   <thead><tr><th>Section</th><th>Measure</th><th>Value</th></tr></thead>
                   <tbody><template data-each="scoringMeasures" data-key="key"><tr><td data-text="section"></td><td data-text="measure"></td><td data-text="value"></td></tr></template></tbody>
                 </table>
+                </div>
+                </div>
+                </section>
+                <!-- How these figures were derived (SIG-ECHELON-APP-002 (e)): what
+                     they are, and the engine's lineage of the calculation. -->
+                <section class="echelon-panel" data-echelon-surface="accent" aria-labelledby="scoring-derivation-title">
+                <div class="echelon-panel__body">
+                <h3 id="scoring-derivation-title" class="echelon-eyebrow">How this was calculated</h3>
+                <p>Calculated measures, not the canonical result.</p>
                 <p>Lineage: <code id="lineage" data-text="lineage"></code></p>
+                </div>
+                </section>
                 <template data-if="hasLateSubmissions"><p id="late-submissions" role="status" data-text="lateSubmissions"></p></template>
               </section>
               </template>
@@ -1118,10 +1141,11 @@
         <p id="report-withheld" role="status">This report is not available for this group. <span data-text="reportWithheldReason"></span></p>
       </template>
       <p class="forma-field__description">To keep a copy, print this page or save it as PDF: only the report is printed.</p>
-      <section id="report-snapshots" class="forma-stack" aria-labelledby="report-snapshots-title">
-        <h2 id="report-snapshots-title">Formal snapshots</h2>
+      <section id="report-snapshots" class="echelon-panel" aria-labelledby="report-snapshots-title">
+        <div class="echelon-panel__header"><h2 id="report-snapshots-title" class="echelon-heading">Formal snapshots</h2></div>
+        <div class="echelon-panel__body forma-stack">
         <p class="forma-field__description">A snapshot keeps this report exactly as it is now, with what produced it. Opening it later never shows newer data.</p>
-        <template data-if="canTakeSnapshot"><button type="button" class="forma-button" id="take-snapshot" data-event="takeSnapshot" data-bind-disabled="snapshotDisabled" data-bind-aria-busy="snapshotBusy" data-bind-aria-disabled="snapshotBusy" data-text="snapshotLabel">Take a snapshot</button></template>
+        <template data-if="canTakeSnapshot"><button type="button" class="forma-button" data-echelon-emphasis="primary" id="take-snapshot" data-event="takeSnapshot" data-bind-disabled="snapshotDisabled" data-bind-aria-busy="snapshotBusy" data-bind-aria-disabled="snapshotBusy" data-text="snapshotLabel">Take a snapshot</button></template>
         <ul id="snapshots">
           <template data-each="reportSnapshots" data-key="key">
             <li>
@@ -1135,6 +1159,7 @@
             </li>
           </template>
         </ul>
+        </div>
       </section>
     </section>
   </template>
@@ -1172,15 +1197,15 @@
             <ef-print-metric><p id="report-overall" data-text="reportOverall"></p></ef-print-metric></section></ef-print-section>
         </template>
         <template data-if="reportHasSectionResults">
-          <ef-print-section><section><h2 data-text="reportTitleSectionResults"></h2>
-            <ef-print-table><table id="report-sections">
+          <ef-print-section><section><h2 id="report-section-results-title" data-text="reportTitleSectionResults"></h2>
+            <ef-print-table class="report-table-scroll" role="region" tabindex="0" aria-labelledby="report-section-results-title"><table id="report-sections">
               <thead><tr><template data-each="reportColumns" data-key="key"><th scope="col" data-text="label"></th></template></tr></thead>
               <tbody><template data-each="reportSections" data-key="key"><tr><th scope="row" data-text="section"></th><td data-text="mean"></td><td data-text="median"></td><td data-text="range"></td><td data-text="scored"></td><td data-text="unscored"></td></tr></template></tbody>
             </table></ef-print-table></section></ef-print-section>
         </template>
         <template data-if="reportHasGroupDistributions">
-          <ef-print-section><section><h2 data-text="reportTitleGroupDistributions"></h2>
-            <ef-print-table><table id="report-spread">
+          <ef-print-section><section><h2 id="report-group-distributions-title" data-text="reportTitleGroupDistributions"></h2>
+            <ef-print-table class="report-table-scroll" role="region" tabindex="0" aria-labelledby="report-group-distributions-title"><table id="report-spread">
               <tbody><template data-each="reportSections" data-key="key"><tr><th scope="row" data-text="section"></th><td data-text="median"></td><td data-text="range"></td></tr></template></tbody>
             </table></ef-print-table></section></ef-print-section>
         </template>
