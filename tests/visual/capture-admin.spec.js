@@ -358,12 +358,14 @@ scenario("admin-signed-in", async ({ page, capture }) => {
   });
 
   // signal#136 review round 2: unresolved work rendered. A new group's import
-  // whose branch update is dropped twice after it was sent (the outcome is
-  // unknown, and still unknown on the one retry) needs reconciliation; the
-  // overview names the group, links to its imported surveys and says how to
-  // resume. (Only an import on this page is listed: WI-0126.)
+  // whose branch update fails ambiguously (503) and whose check of whether it
+  // landed then fails too, so its outcome stays unknown and the batch needs
+  // reconciliation (GroupStore.importBatch). Dropping the update outright is
+  // not enough: the store then reads the branch, sees it did not land and
+  // resends. The overview names the group, links to its imported surveys and
+  // says how to resume. (Only an import on this page is listed: WI-0126.)
   await capture.attempt(page, { ...signedIn, id: "admin-overview-unresolved", title: "Overview with unresolved work: an import whose outcome is unknown, its group, link and how to resume" }, async () => {
-    await capture.step(page, "create a group, open Imported surveys, drop the next two branch updates after sending them, import two lines", async () => {
+    await capture.step(page, "create a group, open Imported surveys, import two lines; hold the branch update, answer it 503 and fail the reads that check it", async () => {
       await area(page, "Groups");
       const form = page.locator("#new-group");
       await spin(form, "Expected surveys", "2");
@@ -371,14 +373,16 @@ scenario("admin-signed-in", async ({ page, capture }) => {
       await expect(page.getByRole("heading", { level: 2, name: /^Group [0-9a-f]{32}$/ })).toBeVisible({ timeout: STORE_MS });
       await groupTab(page, "Imported surveys");
       await expect(page.locator("#resume-import")).toContainText("Import exactly the same completed-survey links again to resume");
-      store.failNext("PATCH", /\/git\/refs\/heads\/main$/, "abort");
-      store.failNext("PATCH", /\/git\/refs\/heads\/main$/, "abort");
+      const hold = store.holdNext("PATCH", /\/git\/refs\/heads\/main$/);
       const imports = page.locator("#import");
       await imports.getByRole("textbox", { name: "Completed survey links, one per line" }).fill("not a link\nnot a link either");
       await imports.getByRole("button", { name: "Import" }).click();
+      await hold.reached;
+      store.failNext("PATCH", /\/git\/refs\/heads\/main$/);
+      for (let i = 0; i < 3; i += 1) store.failNext("GET", /^\/repos\//);
+      hold.release();
       await expect(page.locator("#importReconciliation li")).not.toHaveCount(0, { timeout: STORE_MS });
-      // A drop the import did not need (it may give up after the first) must
-      // not reach a later write.
+      // A failure the import did not use must not reach a later request.
       store.failures.splice(0);
     }, { operation: "import submissions (store write, outcome unknown)" });
     await capture.step(page, "open the Overview", async () => {
