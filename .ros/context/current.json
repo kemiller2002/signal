@@ -747,7 +747,7 @@
         },
         "remoteBranch": "feat/live-url",
         "remoteCommit": "ef315a7840e17d516233a68f406c6a11ed1fc093",
-        "summary": "Live URL sync implemented and tested (unit \u002B browser)",
+        "summary": "Live URL sync implemented and tested (unit + browser)",
         "nextAction": "Complete WI-0032",
         "verification": {
           "status": "verified",
@@ -931,7 +931,7 @@
         },
         "remoteBranch": "chore/ordo-1.5.0",
         "remoteCommit": "437fc23c13dbaa4f5b84ab42db8394229ce00784",
-        "summary": "conditor upgrade --current to echelon-current 1.2.0 (Ordo 1.4.2 -\u003E 1.5.0) committed and pushed; local checks passed",
+        "summary": "conditor upgrade --current to echelon-current 1.2.0 (Ordo 1.4.2 -> 1.5.0) committed and pushed; local checks passed",
         "nextAction": "Open the PR, get CI green and merge",
         "verification": {
           "status": "verified",
@@ -1563,7 +1563,7 @@
         }
       },
       "completedAt": "2026-10-08T16:58:58.000Z",
-      "conclusion": "Signal\u0027s data location is deployment configuration with storage profiles; Signal owns \u003Cbase\u003E/signal, datasets live in their profile\u0027s repository, production data is refused in public repositories, and every dataset carries a validated ADM-005 storage manifest. ADM-004, ADM-005 and ADM-057 are partial; remainders are named in WI-0039 and WI-0040."
+      "conclusion": "Signal's data location is deployment configuration with storage profiles; Signal owns <base>/signal, datasets live in their profile's repository, production data is refused in public repositories, and every dataset carries a validated ADM-005 storage manifest. ADM-004, ADM-005 and ADM-057 are partial; remainders are named in WI-0039 and WI-0040."
     },
     {
       "id": "WI-0039",
@@ -1613,7 +1613,7 @@
         }
       },
       "completedAt": "2026-10-08T17:14:51.000Z",
-      "conclusion": "Signal programs against Arca\u0027s provider-neutral StorageProvider with explicit capability knowledge, write modes and failure meanings; loading is staged and validates everything as untrusted; GitHub failures are classified through Aegis. ADM-005 and ADM-006 are tested; ADM-003, 025, 026, 044, 046, 058, 073 are partial with remainders named in WI-0040, 0041, 0048, 0049, 0050, 0052, 0053 and 0057."
+      "conclusion": "Signal programs against Arca's provider-neutral StorageProvider with explicit capability knowledge, write modes and failure meanings; loading is staged and validates everything as untrusted; GitHub failures are classified through Aegis. ADM-005 and ADM-006 are tested; ADM-003, 025, 026, 044, 046, 058, 073 are partial with remainders named in WI-0040, 0041, 0048, 0049, 0050, 0052, 0053 and 0057."
     },
     {
       "id": "WI-0040",
@@ -1841,7 +1841,7 @@
         }
       },
       "completedAt": "2026-10-08T18:19:47.000Z",
-      "conclusion": "The administrator page runs on Limen and Forma with F# owning state, capabilities and obligations; sign-in is the real Fides client and storage is Arca through Limen\u0027s Http effect; groups have a legal lifecycle with finalization obligations and sealing; read-only, degraded and offline modes are explicit; tabs coordinate through token-free announcements. ADM-033, 035, 056, 065, 070, 072 and LURL-005 are tested; ADM-001, 002, 007, 008, 031, 032, 052, 062, 066 and 077 are partial with remainders in WI-0048, WI-0050 and WI-0052."
+      "conclusion": "The administrator page runs on Limen and Forma with F# owning state, capabilities and obligations; sign-in is the real Fides client and storage is Arca through Limen's Http effect; groups have a legal lifecycle with finalization obligations and sealing; read-only, degraded and offline modes are explicit; tabs coordinate through token-free announcements. ADM-033, 035, 056, 065, 070, 072 and LURL-005 are tested; ADM-001, 002, 007, 008, 031, 032, 052, 062, 066 and 077 are partial with remainders in WI-0048, WI-0050 and WI-0052."
     },
     {
       "id": "WI-0048",
@@ -1895,7 +1895,7 @@
         }
       },
       "completedAt": "2026-10-08T18:31:49.000Z",
-      "conclusion": "Analytics are calculated over the group\u0027s evidence with declared prerequisites and typed unavailability; comparison requires explicit semantic compatibility; lineage traces values without identities; the dependency graph invalidates exactly the downstream closure, equal to a full rebuild, and drives impact previews; diffs and template upgrades are explained; analysis state is URL-safe and saved analyses are records. Remainders are in WI-0049, WI-0050 and WI-0054."
+      "conclusion": "Analytics are calculated over the group's evidence with declared prerequisites and typed unavailability; comparison requires explicit semantic compatibility; lineage traces values without identities; the dependency graph invalidates exactly the downstream closure, equal to a full rebuild, and drives impact previews; diffs and template upgrades are explained; analysis state is URL-safe and saved analyses are records. Remainders are in WI-0049, WI-0050 and WI-0054."
     },
     {
       "id": "WI-0049",
@@ -2275,7 +2275,7 @@
         "remoteBranch": "feature/template-catalog",
         "remoteCommit": "ec8a964fba21c4a083c33c2e4b05c8dab028400e",
         "summary": "Template codec, TemplateRecord and TemplateStore over Arca with 9 new tests; 359 .NET and 22 browser tests pass; remainders captured as WI-0073",
-        "nextAction": "Complete with the branch\u0027s committed paths attributed (ROS_BASE_REF), push and merge PR #50",
+        "nextAction": "Complete with the branch's committed paths attributed (ROS_BASE_REF), push and merge PR #50",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
@@ -2942,7 +2942,7 @@
         }
       },
       "completedAt": "2026-10-13T15:09:37Z",
-      "conclusion": "The midpoint fixture\u0027s allocation is complete and round-trips through the link."
+      "conclusion": "The midpoint fixture's allocation is complete and round-trips through the link."
     },
     {
       "id": "WI-0090",
@@ -3114,7 +3114,7 @@
         }
       },
       "completedAt": "2026-10-13T18:23:43Z",
-      "conclusion": "Template localization and selector accessibility in the model, on the survey page and in the console, plus the console\u0027s validation, presentation and scoring areas; CAN-001 and AUT-001 tested."
+      "conclusion": "Template localization and selector accessibility in the model, on the survey page and in the console, plus the console's validation, presentation and scoring areas; CAN-001 and AUT-001 tested."
     },
     {
       "id": "WI-0096",
@@ -3316,7 +3316,7 @@
         },
         "remoteBranch": "docs/named-test-citations",
         "remoteCommit": "95a641ab926ff63c94fc96c9584980ce250d393c",
-        "summary": "72 tested rows given a named test after checking each cited file\u0027s test names; GapAnalysisTests requires a named test for every tested row (proved failing on a removed citation). .NET 574.",
+        "summary": "72 tested rows given a named test after checking each cited file's test names; GapAnalysisTests requires a named test for every tested row (proved failing on a removed citation). .NET 574.",
         "nextAction": "Complete, PR, gate, merge; then WI-0077",
         "verification": {
           "status": "verified",
@@ -3608,7 +3608,7 @@
         },
         "remoteBranch": "claude/gifted-keller-7dy8ms",
         "remoteCommit": "03a6d48d87352eb789d4dd95a33f1732d866bffe",
-        "summary": "Modernization audit C0: reports, coverage matrix \u002B CI gate, independent verification (76/100 verified, 24 corrected to partial), ArchitectureTests, ledger-total test",
+        "summary": "Modernization audit C0: reports, coverage matrix + CI gate, independent verification (76/100 verified, 24 corrected to partial), ArchitectureTests, ledger-total test",
         "nextAction": "Open draft PR; then C1 Conditor upgrade to echelon-current 1.37.0 and C3 SEC-01 (WI-0101)",
         "verification": {
           "status": "verified",
@@ -3692,7 +3692,7 @@
         },
         "remoteBranch": "claude/gifted-keller-7dy8ms",
         "remoteCommit": "a29c5e68aa5a5c4b62061715d5584f27169d4feb",
-        "summary": "Signal on echelon-current 1.37.1 (Forma 0.13.1); record-header exception retired; 634/634 \u002B 143/143",
+        "summary": "Signal on echelon-current 1.37.1 (Forma 0.13.1); record-header exception retired; 634/634 + 143/143",
         "nextAction": "PR #127 review and merge by the owner; then C3 SEC-01 (WI-0101)",
         "verification": {
           "status": "verified",
@@ -4512,7 +4512,27 @@
       "updatedAt": "2026-11-10T07:28:39.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T072839973Z-4338d24d"
-      ]
+      ],
+      "latestCheckpoint": {
+        "id": "1dc7332da3f738eee3308537",
+        "recordedAt": "2026-11-10T11:00:32.000Z",
+        "executionId": "EXE-20261110T072839973Z-4338d24d",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-authoring",
+        "commit": "442fc94b47d4770ef6d99ed09e7a37d6b5181083",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-authoring",
+        "remoteCommit": "442fc94b47d4770ef6d99ed09e7a37d6b5181083",
+        "summary": "signal#137 authoring done: draft editor on panels, one primary, danger confirm; findings table keeps whole words (audit collapse check clean at 1440/834/390/320@200%, browser test); #136 rounds merged forward. CI green at 76e96ac (700 .NET, 194 Playwright); visual-evidence/baseline-76e96ac",
+        "nextAction": "complete WI-0121, update the signal#137 PR body and report",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      }
     },
     {
       "id": "WI-0125",
