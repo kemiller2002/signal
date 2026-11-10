@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 146,
+  "nextSeq": 148,
   "items": [
     {
       "id": "WI-0001",
@@ -3457,6 +3457,48 @@
       "attachments": [],
       "createdAt": "2026-11-10T20:11:12.263Z",
       "updatedAt": "2026-11-10T20:30:36.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0146",
+      "title": "Release write not retried (signal#142 review): Releases.record runs only from import, so if the last import's release write fails (releaseStopped) results stay 'Held back until the next release' until someone imports again, and the withheld notice ('held back until at least N have arrived since the last update') is then false. Options: retry the release, or record it on refresh; correct the notice for the failed-write case",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T20:50:01.662Z",
+      "updatedAt": "2026-11-10T20:50:01.662Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0147",
+      "title": "Test Releases.shown with no recorded release (signal#142 review): drive an anonymous group (minimum above 1) with accepted contributions and Released = None through Releases.shown and the admin summary, asserting the held-back reason, instead of pairing an empty shown state with a live count in SectionScoreTests",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T20:50:02.207Z",
+      "updatedAt": "2026-11-10T20:50:02.207Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
