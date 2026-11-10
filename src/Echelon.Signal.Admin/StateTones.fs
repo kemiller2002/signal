@@ -65,6 +65,22 @@ let phaseLabel (phase: AdminState.GroupPhase) =
     | AdminState.GroupSealed -> "Sealed"
     | AdminState.GroupSuperseded -> "Superseded"
 
+/// A group filter's label (SIG-ECHELON-APP-002): the lifecycle statuses as the
+/// phase chips name them (a collecting group's chip names its phase, so its
+/// filter reads "Collecting"), and the identity modes capitalised. The
+/// address keeps the stable values (`Routes.statusValues`, `modeValues`).
+let filterLabel (value: string) =
+    match value with
+    | "collecting" -> "Collecting"
+    | "closed-incomplete" -> phaseLabel AdminState.GroupClosedIncomplete
+    | "finalized" -> phaseLabel AdminState.GroupFinalized
+    | "finalized-incomplete" -> phaseLabel AdminState.GroupFinalizedIncomplete
+    | "sealed" -> phaseLabel AdminState.GroupSealed
+    | "superseded" -> phaseLabel AdminState.GroupSuperseded
+    | "anonymous" -> "Anonymous"
+    | "identified" -> "Identified"
+    | other -> other
+
 /// A template version's tone: draft (dashed, hollow), review (diamond) for a
 /// draft in review or reviewed and not yet published, published (settled
 /// fill). The contract names no tone for a version hidden from new groups;

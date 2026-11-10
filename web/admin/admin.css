@@ -228,3 +228,28 @@
   color: var(--echelon-text-secondary);
   text-decoration-style: dotted;
 }
+
+/* An unresolved item: what is wrong, which group, what resolves it, and the
+   page where that happens. */
+.admin-obligations li { display: grid; gap: 0.25rem; }
+.admin-obligations li > p { margin: 0; }
+.admin-obligation__meta { color: var(--echelon-text-secondary); font-size: 0.875rem; }
+.admin-obligation__link { justify-self: start; font-weight: 600; }
+
+/* The notice: its sentence, its technical detail and Dismiss share the row
+   while there is room and wrap below one another when there is not; each
+   keeps a readable width (the detail collapsed into a column of letters at
+   834 px when the alert's columns were left to Forma's default). */
+.admin #notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.5rem 1rem;
+}
+.admin #notice > #notice-message { flex: 1 1 18rem; margin: 0; min-inline-size: 0; }
+.admin #notice > details { flex: 1 1 12rem; min-inline-size: 0; }
+.admin #notice > .forma-button { flex: 0 0 auto; }
+
+/* The activity line sits under the dataset's title, part of the shell. */
+.admin .activity > :is(p, div) { margin: 0; }
+.admin .activity { color: var(--echelon-text-secondary); }

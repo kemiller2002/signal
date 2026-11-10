@@ -230,6 +230,8 @@ test("delete draft keeps its confirmation, busy, until it is answered; then focu
   const draft = await startDraft(page);
   await saveDraft(page, draft);
   await draft.getByRole("button", { name: "Delete draft…", exact: true }).click();
+  // The destructive confirmation carries danger emphasis (SIG-ECHELON-APP-002).
+  await expect(draft.getByRole("button", { name: "Delete draft", exact: true })).toHaveAttribute("data-echelon-emphasis", "danger");
 
   const hold = store.holdNext("PATCH", REF_UPDATE);
   await draft.getByRole("button", { name: "Delete draft", exact: true }).click();

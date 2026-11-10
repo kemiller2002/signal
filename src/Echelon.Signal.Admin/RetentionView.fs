@@ -20,6 +20,10 @@ let project (model: Model) (selected: GroupSummary option) : (string * ViewValue
     let retired = selected |> Option.bind _.SourcesRetired
     let confirming = selected |> Option.exists (fun g -> model.RetireConfirm = Some g.Key)
 
+    let note =
+        selected
+        |> Option.bind (fun g -> RetentionScreen.retentionNote g.Status retired.IsSome (can.Contains AdminState.CanRetireSources))
+
     [ // The dataset's lifecycle (ADM-045).
       "datasetLifecycle", text (dataset |> Option.map (_.Lifecycle >> Retention.stateId) |> Option.defaultValue "")
       "datasetLifecycleText", text (dataset |> Option.map (_.Lifecycle >> RetentionScreen.stateLabel) |> Option.defaultValue "")
@@ -32,7 +36,8 @@ let project (model: Model) (selected: GroupSummary option) : (string * ViewValue
               RetentionScreen.offered d.Lifecycle
               |> List.map (fun target ->
                   [ "target", Text(Retention.stateId target)
-                    "targetMeaning", Text(RetentionScreen.stateLabel target) ]
+                    "targetMeaning", Text(RetentionScreen.stateLabel target)
+                    "targetEmphasis", Text(if RetentionScreen.isDestructive target then "danger" else "") ]
                   // The row's button binds within the row (GH-113): its label,
                   // and whether it or another operation runs.
                   @ ActivityView.fields model.Activity "target" (Operations.Operation.TransitionDataset target) (RetentionScreen.targetLabel target)))
@@ -43,5 +48,8 @@ let project (model: Model) (selected: GroupSummary option) : (string * ViewValue
       "sourcesRetiredText", text (retired |> Option.map RetentionScreen.reconstructionLabel |> Option.defaultValue "")
       "canRetireSources", flag (retired.IsNone && not confirming && can.Contains AdminState.CanRetireSources)
       "confirmingRetire", flag (retired.IsNone && confirming && can.Contains AdminState.CanRetireSources)
+      // The panel never stands empty: why nothing can be retired now.
+      "hasRetentionNote", flag note.IsSome
+      "retentionNote", text (defaultArg note "")
       "retireWarning", text RetentionScreen.retireWarning
       yield! ActivityView.control model.Activity "confirmRetire" Operations.Operation.RetireSources "Retire accepted results" ]

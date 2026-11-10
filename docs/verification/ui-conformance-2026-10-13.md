@@ -83,7 +83,13 @@ Each measurement is attached to its test result as JSON.
 | survey.best-worst."Fits best" / "Fits least" columns | L09 | left | 0 | 0 | 0 | 0 |
 | survey.best-worst.<row> (best vs least) | L01 | top | 0 | 0 | 0 | 0 |
 | survey.ranking (Speed, Quality, Cost) | L02 | left and right | 0 | 0 | 0 | 0 |
-| admin.areas | L01 | left | 0 | 0 | 0 | 0 |
+| admin.areas | L01 | top from 768 (route tabs in one row, from 48rem), left below (a list) | 0 | 0 | 0 | 0 |
+
+Amended 2026-11-10 (SIG-ECHELON-APP-002 (b), signal#136): the administration
+areas became the Echelon route tabs, one row from 48rem and a list below, so
+the shared edge they are held to is the top from 768 CSS px and the left
+below. The rule and the 1 CSS px tolerance are unchanged; deltas measured on
+a static preview with the self-hosted fonts, and the CI suite asserts them.
 
 ## Other evidence
 
