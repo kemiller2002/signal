@@ -1,0 +1,2250 @@
+{
+  "scenario": "survey",
+  "durationMs": 22734,
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (File not found)"
+  ],
+  "screens": [
+    {
+      "id": "survey-loading",
+      "title": "Survey page while the published survey file is being fetched (fetch held)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAAAFxy8v",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "hold published-templates/6beb132f5815c173.json, open web/survey/#r=AQFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAAAFxy8v",
+          "operation": "survey template fetch",
+          "durationMs": 518,
+          "observed": [
+            {
+              "atMs": 12,
+              "forMs": 20,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\""
+              ]
+            },
+            {
+              "atMs": 32,
+              "forMs": 373,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\""
+              ]
+            },
+            {
+              "atMs": 405,
+              "forMs": 5,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 410,
+              "forMs": null,
+              "shown": [
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Loading the survey…"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-loading/desktop-light-full.png",
+          "shown": [
+            "status: \"Loading the survey…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-loading/desktop-dark-full.png",
+          "shown": [
+            "status: \"Loading the survey…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-loading/tablet-light-full.png",
+          "shown": [
+            "status: \"Loading the survey…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-loading/tablet-dark-full.png",
+          "shown": [
+            "status: \"Loading the survey…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-loading/mobile-light-full.png",
+          "shown": [
+            "status: \"Loading the survey…\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-loading/mobile-dark-full.png",
+          "shown": [
+            "status: \"Loading the survey…\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-first-question",
+      "title": "Survey (single page): first question, nothing answered",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAAAFxy8v",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-loading",
+      "steps": [
+        {
+          "action": "release published-templates/6beb132f5815c173.json",
+          "operation": "survey template fetch",
+          "durationMs": 130,
+          "observed": [
+            {
+              "atMs": 1005,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-first-question/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-first-question/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-first-question/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-first-question/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-first-question/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-first-question/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-submit-refused",
+      "title": "Survey (single page): submit refused, each unanswered question marked (validation)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAAAFxy8v",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-first-question",
+      "steps": [
+        {
+          "action": "click Submit with nothing answered",
+          "operation": "submit answers (engine)",
+          "durationMs": 199,
+          "observed": [
+            {
+              "atMs": 2355,
+              "forMs": 68,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 2423,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "alert: \"! Answer the questions before you submit.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-submit-refused/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! Answer the questions before you submit.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-submit-refused/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! Answer the questions before you submit.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-submit-refused/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! Answer the questions before you submit.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-submit-refused/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! Answer the questions before you submit.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-submit-refused/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! Answer the questions before you submit.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-submit-refused/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! Answer the questions before you submit.\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-paged-first-question",
+      "title": "Survey in pages: page 1 of 3, first question",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAABKcuf-",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-submit-refused",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AQFU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAABKcuf- and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 303,
+          "observed": [
+            {
+              "atMs": 9,
+              "forMs": 189,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\""
+              ]
+            },
+            {
+              "atMs": 198,
+              "forMs": 1,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 199,
+              "forMs": 88,
+              "shown": [
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 287,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey in pages",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-paged-validation",
+      "title": "Survey in pages: Next refused until the page's required questions are answered (mid-survey validation)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAABKcuf-",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-paged-first-question",
+      "steps": [
+        {
+          "action": "click Next with nothing answered",
+          "operation": "page navigation (engine)",
+          "durationMs": 65,
+          "observed": [
+            {
+              "atMs": 987,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "alert: \"! 2 required questions on this page need an answer before you go on, because earlier answers cannot be changed after you leave.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey in pages",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-validation/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! 2 required questions on this page need an answer before you go on, because earlier answers cannot be changed after you leave.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-validation/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! 2 required questions on this page need an answer before you go on, because earlier answers cannot be changed after you leave.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-validation/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! 2 required questions on this page need an answer before you go on, because earlier answers cannot be changed after you leave.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-validation/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! 2 required questions on this page need an answer before you go on, because earlier answers cannot be changed after you leave.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-validation/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! 2 required questions on this page need an answer before you go on, because earlier answers cannot be changed after you leave.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-validation/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "alert: \"! 2 required questions on this page need an answer before you go on, because earlier answers cannot be changed after you leave.\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-paged-mid",
+      "title": "Survey in pages: page 2 of 3 (mid-survey)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAVFAADOdvJq&p=2",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-paged-validation",
+      "steps": [
+        {
+          "action": "answer rows 0-3 and 1-4, click Next",
+          "operation": "page navigation (engine)",
+          "durationMs": 235,
+          "observed": [
+            {
+              "atMs": 1946,
+              "forMs": 75,
+              "shown": [
+                "status: \"1 of 5 answered\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 2020,
+              "forMs": null,
+              "shown": [
+                "status: \"2 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey in pages",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-mid/desktop-light-full.png",
+          "shown": [
+            "status: \"2 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-mid/desktop-dark-full.png",
+          "shown": [
+            "status: \"2 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-mid/tablet-light-full.png",
+          "shown": [
+            "status: \"2 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-mid/tablet-dark-full.png",
+          "shown": [
+            "status: \"2 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-mid/mobile-light-full.png",
+          "shown": [
+            "status: \"2 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-mid/mobile-dark-full.png",
+          "shown": [
+            "status: \"2 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-paged-last",
+      "title": "Survey in pages: page 3 of 3, every question answered, ready to submit",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAVFeYClmUgc&p=3",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-paged-mid",
+      "steps": [
+        {
+          "action": "answer row 2-6, click Next, answer rows 3-1 and 4-2",
+          "operation": "page navigation (engine)",
+          "durationMs": 254,
+          "observed": [
+            {
+              "atMs": 3084,
+              "forMs": 99,
+              "shown": [
+                "status: \"3 of 5 answered\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 3183,
+              "forMs": 50,
+              "shown": [
+                "status: \"4 of 5 answered\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 3234,
+              "forMs": null,
+              "shown": [
+                "status: \"5 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey in pages",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-last/desktop-light-full.png",
+          "shown": [
+            "status: \"5 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-last/desktop-dark-full.png",
+          "shown": [
+            "status: \"5 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-last/tablet-light-full.png",
+          "shown": [
+            "status: \"5 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-last/tablet-dark-full.png",
+          "shown": [
+            "status: \"5 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-last/mobile-light-full.png",
+          "shown": [
+            "status: \"5 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-last/mobile-dark-full.png",
+          "shown": [
+            "status: \"5 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-completion",
+      "title": "Survey: submitted, with the submission link (completion)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQJU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAVFeYCp9OYY",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-paged-last",
+      "steps": [
+        {
+          "action": "click Submit",
+          "operation": "submit answers (engine)",
+          "durationMs": 111,
+          "observed": [
+            {
+              "atMs": 4259,
+              "forMs": null,
+              "shown": [
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey in pages",
+          "Submitted"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-completion/desktop-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-completion/desktop-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-completion/tablet-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-completion/tablet-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-completion/mobile-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-completion/mobile-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-no-link",
+      "title": "Survey page opened without a link (error)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-completion",
+      "steps": [
+        {
+          "action": "open web/survey/ and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 207,
+          "observed": [
+            {
+              "atMs": 9,
+              "forMs": 181,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\""
+              ]
+            },
+            {
+              "atMs": 190,
+              "forMs": 2,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\""
+              ]
+            },
+            {
+              "atMs": 192,
+              "forMs": null,
+              "shown": [
+                "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Survey unavailable"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-no-link/desktop-light-full.png",
+          "shown": [
+            "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-no-link/desktop-dark-full.png",
+          "shown": [
+            "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-no-link/tablet-light-full.png",
+          "shown": [
+            "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-no-link/tablet-dark-full.png",
+          "shown": [
+            "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-no-link/mobile-light-full.png",
+          "shown": [
+            "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-no-link/mobile-dark-full.png",
+          "shown": [
+            "alert: \"! This page needs a survey link. Open the link you were sent; it ends with #r= and a code.\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-unpublished",
+      "title": "Survey link naming a version this site does not publish (error)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQF1B35lVGmhLQECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAACWrARu",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-no-link",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AQF1B35lVGmhLQECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAACWrARu and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 224,
+          "observed": [
+            {
+              "atMs": 9,
+              "forMs": 185,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\""
+              ]
+            },
+            {
+              "atMs": 194,
+              "forMs": 6,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 200,
+              "forMs": 7,
+              "shown": [
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 207,
+              "forMs": null,
+              "shown": [
+                "alert: \"! The survey this link belongs to is not published on this site. Ask the person who sent you the link.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Survey unavailable"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-unpublished/desktop-light-full.png",
+          "shown": [
+            "alert: \"! The survey this link belongs to is not published on this site. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-unpublished/desktop-dark-full.png",
+          "shown": [
+            "alert: \"! The survey this link belongs to is not published on this site. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-unpublished/tablet-light-full.png",
+          "shown": [
+            "alert: \"! The survey this link belongs to is not published on this site. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-unpublished/tablet-dark-full.png",
+          "shown": [
+            "alert: \"! The survey this link belongs to is not published on this site. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-unpublished/mobile-light-full.png",
+          "shown": [
+            "alert: \"! The survey this link belongs to is not published on this site. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-unpublished/mobile-dark-full.png",
+          "shown": [
+            "alert: \"! The survey this link belongs to is not published on this site. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-expired",
+      "title": "Expired invitation (error)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AgFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3Akd0AAUAAABE2yUI",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-unpublished",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AgFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3Akd0AAUAAABE2yUI and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 269,
+          "observed": [
+            {
+              "atMs": 9,
+              "forMs": 186,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\""
+              ]
+            },
+            {
+              "atMs": 195,
+              "forMs": 3,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 198,
+              "forMs": 56,
+              "shown": [
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 254,
+              "forMs": null,
+              "shown": [
+                "alert: \"! This invitation has expired. It could be answered until 31 January 2020. Ask the person who sent it for a new link.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Survey unavailable"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-expired/desktop-light-full.png",
+          "shown": [
+            "alert: \"! This invitation has expired. It could be answered until 31 January 2020. Ask the person who sent it for a new link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-expired/desktop-dark-full.png",
+          "shown": [
+            "alert: \"! This invitation has expired. It could be answered until 31 January 2020. Ask the person who sent it for a new link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-expired/tablet-light-full.png",
+          "shown": [
+            "alert: \"! This invitation has expired. It could be answered until 31 January 2020. Ask the person who sent it for a new link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-expired/tablet-dark-full.png",
+          "shown": [
+            "alert: \"! This invitation has expired. It could be answered until 31 January 2020. Ask the person who sent it for a new link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-expired/mobile-light-full.png",
+          "shown": [
+            "alert: \"! This invitation has expired. It could be answered until 31 January 2020. Ask the person who sent it for a new link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-expired/mobile-dark-full.png",
+          "shown": [
+            "alert: \"! This invitation has expired. It could be answered until 31 January 2020. Ask the person who sent it for a new link.\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-test-link",
+      "title": "Test link, marked as a test",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AYFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAADvp9jl",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-expired",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AYFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAADvp9jl and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 302,
+          "observed": [
+            {
+              "atMs": 8,
+              "forMs": 180,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\""
+              ]
+            },
+            {
+              "atMs": 189,
+              "forMs": 4,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 192,
+              "forMs": 92,
+              "shown": [
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 284,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-test-link/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-test-link/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-test-link/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-test-link/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-test-link/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-test-link/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-timed",
+      "title": "Timed survey, with its deadline notice",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AgFLBvZxFRxPGgECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3BAHITmEABQAAAB6JyGc",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-test-link",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AQFLBvZxFRxPGgECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAAB1jcP5 and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 346,
+          "observed": [
+            {
+              "atMs": 7,
+              "forMs": 180,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\""
+              ]
+            },
+            {
+              "atMs": 188,
+              "forMs": 4,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 191,
+              "forMs": 122,
+              "shown": [
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 313,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "status: \"Answer by 10 November 2026, 00:11 UTC (10 minutes from when you first opened this survey; after that, answers can't be changed).\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-timed/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "status: \"Answer by 10 November 2026, 00:11 UTC (10 minutes from when you first opened this survey; after that, answers can't be changed).\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-timed/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "status: \"Answer by 10 November 2026, 00:11 UTC (10 minutes from when you first opened this survey; after that, answers can't be changed).\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-timed/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "status: \"Answer by 10 November 2026, 00:11 UTC (10 minutes from when you first opened this survey; after that, answers can't be changed).\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-timed/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "status: \"Answer by 10 November 2026, 00:11 UTC (10 minutes from when you first opened this survey; after that, answers can't be changed).\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-timed/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "status: \"Answer by 10 November 2026, 00:11 UTC (10 minutes from when you first opened this survey; after that, answers can't be changed).\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-timed/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "status: \"Answer by 10 November 2026, 00:11 UTC (10 minutes from when you first opened this survey; after that, answers can't be changed).\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-timed-expired",
+      "title": "Timed survey whose enforced timer ran out",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AgFLBvZxFRxPGgECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3BAGRRdwABQAAAOZ9nyk",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-timed",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AgFLBvZxFRxPGgECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3BAGRRdwABQAAAOZ9nyk and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 317,
+          "observed": [
+            {
+              "atMs": 8,
+              "forMs": 183,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\""
+              ]
+            },
+            {
+              "atMs": 191,
+              "forMs": 1,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 192,
+              "forMs": 105,
+              "shown": [
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 297,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "status: \"Time is up (1 January 2020, 09:10 UTC). Your answers can no longer be changed.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-timed-expired/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "status: \"Time is up (1 January 2020, 09:10 UTC). Your answers can no longer be changed.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-timed-expired/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "status: \"Time is up (1 January 2020, 09:10 UTC). Your answers can no longer be changed.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-timed-expired/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "status: \"Time is up (1 January 2020, 09:10 UTC). Your answers can no longer be changed.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-timed-expired/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "status: \"Time is up (1 January 2020, 09:10 UTC). Your answers can no longer be changed.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-timed-expired/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "status: \"Time is up (1 January 2020, 09:10 UTC). Your answers can no longer be changed.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-timed-expired/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "status: \"Time is up (1 January 2020, 09:10 UTC). Your answers can no longer be changed.\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-localized",
+      "title": "Survey in the invitation's locale (fr-CA)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AgFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AwVmci1DQbl6AAUAAABuOjjB",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-timed-expired",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AgFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AwVmci1DQbl6AAUAAABuOjjB and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 311,
+          "observed": [
+            {
+              "atMs": 9,
+              "forMs": 183,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\""
+              ]
+            },
+            {
+              "atMs": 192,
+              "forMs": 1,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 193,
+              "forMs": 98,
+              "shown": [
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 291,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-localized/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-localized/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-localized/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-localized/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-localized/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-localized/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-kinds",
+      "title": "Survey with other answer kinds (numbers, yes/no, checkboxes)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQHXTeESIljFhQECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAYAAADv1Rjl",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-localized",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AQHXTeESIljFhQECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAYAAADv1Rjl and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 322,
+          "observed": [
+            {
+              "atMs": 8,
+              "forMs": 180,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\""
+              ]
+            },
+            {
+              "atMs": 188,
+              "forMs": 4,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 192,
+              "forMs": 106,
+              "shown": [
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 298,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Mixed kinds",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-kinds/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-kinds/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-kinds/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-kinds/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-kinds/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-kinds/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-compound",
+      "title": "Survey with rankings, allocations, best-worst, ranges and option trees",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQHEy7c7LPyW_AECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAYAAAAAg33I2g",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-kinds",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AQHEy7c7LPyW_AECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAYAAAAAg33I2g and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 307,
+          "observed": [
+            {
+              "atMs": 8,
+              "forMs": 178,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\""
+              ]
+            },
+            {
+              "atMs": 186,
+              "forMs": 3,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 189,
+              "forMs": 96,
+              "shown": [
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 285,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 6 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Compound kinds",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-compound/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 6 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-compound/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 6 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-compound/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 6 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-compound/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 6 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-compound/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 6 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-compound/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 6 answered\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-altered-file",
+      "title": "Survey whose published file was altered: refused (error)",
+      "scenario": "survey",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/#r=AQFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAAAFxy8v",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-compound",
+      "steps": [
+        {
+          "action": "answer published-templates/6beb132f5815c173.json with one altered word",
+          "operation": null,
+          "durationMs": 11,
+          "observed": []
+        },
+        {
+          "action": "open web/survey/#r=AQFr6xMvWBXBcwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAAAFxy8v and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 370,
+          "observed": [
+            {
+              "atMs": 7,
+              "forMs": 17,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\""
+              ]
+            },
+            {
+              "atMs": 24,
+              "forMs": 227,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\""
+              ]
+            },
+            {
+              "atMs": 250,
+              "forMs": 3,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 253,
+              "forMs": 58,
+              "shown": [
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 311,
+              "forMs": null,
+              "shown": [
+                "alert: \"! The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link.\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Survey unavailable"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-altered-file/desktop-light-full.png",
+          "shown": [
+            "alert: \"! The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-altered-file/desktop-dark-full.png",
+          "shown": [
+            "alert: \"! The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-altered-file/tablet-light-full.png",
+          "shown": [
+            "alert: \"! The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-altered-file/tablet-dark-full.png",
+          "shown": [
+            "alert: \"! The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-altered-file/mobile-light-full.png",
+          "shown": [
+            "alert: \"! The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-altered-file/mobile-dark-full.png",
+          "shown": [
+            "alert: \"! The survey file on this site does not match this link (it was changed, or it is a different survey), so it was not used. Ask the person who sent you the link.\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "survey-paged-first-question-pages-site",
+      "title": "Survey in pages, page 1, on the assembled Pages site",
+      "scenario": "survey",
+      "site": "pages",
+      "url": "http://127.0.0.1:4322/signal/web/survey/#r=AQFU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAABKcuf-",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "survey-altered-file",
+      "steps": [
+        {
+          "action": "open web/survey/#r=AQFU_aArsRphEwECAwQFBgcICQoLDA0ODxAoKSorLC0uLzAxMjM0NTY3AAUAAABKcuf- and wait for the kernel",
+          "operation": "engine start-up + survey template fetch",
+          "durationMs": 371,
+          "observed": [
+            {
+              "atMs": 7,
+              "forMs": 15,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\""
+              ]
+            },
+            {
+              "atMs": 22,
+              "forMs": 221,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\""
+              ]
+            },
+            {
+              "atMs": 243,
+              "forMs": 4,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"Loading the survey…\""
+              ]
+            },
+            {
+              "atMs": 246,
+              "forMs": 88,
+              "shown": [
+                "status: \"Loading the survey…\"",
+                "kernel: running"
+              ]
+            },
+            {
+              "atMs": 334,
+              "forMs": null,
+              "shown": [
+                "status: \"0 of 5 answered\"",
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": [
+          "Signal demo survey in pages",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question-pages-site/desktop-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question-pages-site/desktop-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question-pages-site/tablet-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question-pages-site/tablet-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question-pages-site/mobile-light-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/survey-paged-first-question-pages-site/mobile-dark-full.png",
+          "shown": [
+            "status: \"0 of 5 answered\"",
+            "kernel: running"
+          ]
+        }
+      ]
+    }
+  ],
+  "unreached": [],
+  "browserVersion": "153.0.8010.12"
+}
