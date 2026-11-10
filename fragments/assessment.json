@@ -1,0 +1,1615 @@
+{
+  "scenario": "assessment",
+  "durationMs": 52346,
+  "consoleErrors": [],
+  "screens": [
+    {
+      "id": "assessment-first-questions",
+      "title": "Assessment page (web/): the questions, nothing answered",
+      "scenario": "assessment",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "open http://127.0.0.1:4321/web/index.html and wait for the kernel",
+          "operation": "engine start-up",
+          "durationMs": 569,
+          "observed": [
+            {
+              "atMs": 14,
+              "forMs": 28,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\""
+              ]
+            },
+            {
+              "atMs": 41,
+              "forMs": 506,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine\""
+              ]
+            },
+            {
+              "atMs": 547,
+              "forMs": null,
+              "shown": [
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": [
+          "Software Delivery Reality Assessment",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-first-questions/desktop-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-first-questions/desktop-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-first-questions/tablet-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-first-questions/tablet-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-first-questions/mobile-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-first-questions/mobile-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 249,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 20,
+            "7plus": 229
+          },
+          "lowest": [
+            {
+              "element": "span.forma-record-header__type",
+              "text": "Signal",
+              "ratio": 4.54,
+              "required": 4.5
+            },
+            {
+              "element": "p#assessment-version",
+              "text": "SDRA 0.1.0-draft",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-field__description",
+              "text": "Answer for the last eight weeks. If you do not know, have no",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span#progress.forma-survey-progress__value",
+              "text": "0 of 15 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 249,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 1,
+            "7plus": 248
+          },
+          "lowest": [
+            {
+              "element": "span.forma-record-header__type",
+              "text": "Signal",
+              "ratio": 4.8,
+              "required": 4.5
+            },
+            {
+              "element": "p#assessment-version",
+              "text": "SDRA 0.1.0-draft",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-field__description",
+              "text": "Answer for the last eight weeks. If you do not know, have no",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span#progress.forma-survey-progress__value",
+              "text": "0 of 15 answered",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 16,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "See results"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/assessment-first-questions/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 249,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "assessment-results-refused",
+      "title": "Assessment page: \"See results\" refused with 14 questions unanswered (validation)",
+      "scenario": "assessment",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html#r=AQCV3vb9UTM28AAPQAAAAAAAAAAbsYVx",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "assessment-first-questions",
+      "steps": [
+        {
+          "action": "answer CORE-001 with 3",
+          "operation": null,
+          "durationMs": 643,
+          "observed": []
+        },
+        {
+          "action": "click See results",
+          "operation": "see results (engine)",
+          "durationMs": 633,
+          "observed": []
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": [
+          "Software Delivery Reality Assessment",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-results-refused/desktop-light-full.png",
+          "shown": [
+            "alert: \"! 14 questions still need an answer. \"Don't know\", \"Not observed\" and \"Not applicable\" are answers too.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-results-refused/desktop-dark-full.png",
+          "shown": [
+            "alert: \"! 14 questions still need an answer. \"Don't know\", \"Not observed\" and \"Not applicable\" are answers too.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-results-refused/tablet-light-full.png",
+          "shown": [
+            "alert: \"! 14 questions still need an answer. \"Don't know\", \"Not observed\" and \"Not applicable\" are answers too.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-results-refused/tablet-dark-full.png",
+          "shown": [
+            "alert: \"! 14 questions still need an answer. \"Don't know\", \"Not observed\" and \"Not applicable\" are answers too.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-results-refused/mobile-light-full.png",
+          "shown": [
+            "alert: \"! 14 questions still need an answer. \"Don't know\", \"Not observed\" and \"Not applicable\" are answers too.\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-results-refused/mobile-dark-full.png",
+          "shown": [
+            "alert: \"! 14 questions still need an answer. \"Don't know\", \"Not observed\" and \"Not applicable\" are answers too.\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 251,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 21,
+            "7plus": 230
+          },
+          "lowest": [
+            {
+              "element": "span.forma-record-header__type",
+              "text": "Signal",
+              "ratio": 4.54,
+              "required": 4.5
+            },
+            {
+              "element": "p#assessment-version",
+              "text": "SDRA 0.1.0-draft",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-field__description",
+              "text": "Answer for the last eight weeks. If you do not know, have no",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span#progress.forma-survey-progress__value",
+              "text": "1 of 15 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 251,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 2,
+            "7plus": 249
+          },
+          "lowest": [
+            {
+              "element": "span.forma-record-header__type",
+              "text": "Signal",
+              "ratio": 4.8,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-ordinal-option__marker",
+              "text": "3",
+              "ratio": 4.85,
+              "required": 4.5
+            },
+            {
+              "element": "p#assessment-version",
+              "text": "SDRA 0.1.0-draft",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-field__description",
+              "text": "Answer for the last eight weeks. If you do not know, have no",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span#progress.forma-survey-progress__value",
+              "text": "1 of 15 answered",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 16,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "3",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "See results"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/assessment-results-refused/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 251,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "assessment-results",
+      "title": "Assessment page: scored results, one dimension not scored (results and scoring)",
+      "scenario": "assessment",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html#r=AQCV3vb9UTM28AAPRERFZERnhEDoPIpj",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "assessment-results-refused",
+      "steps": [
+        {
+          "action": "answer every question with 3, then CORE-006=4, CORE-007/011 don't know, CORE-012 not observed, CORE-013 not applicable",
+          "operation": null,
+          "durationMs": 1571,
+          "observed": []
+        },
+        {
+          "action": "click See results",
+          "operation": "see results (engine)",
+          "durationMs": 704,
+          "observed": []
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": [
+          "Software Delivery Reality Assessment",
+          "Results"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-results/desktop-light-full.png",
+          "shown": [
+            "status: \"2 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-results/desktop-dark-full.png",
+          "shown": [
+            "status: \"2 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-results/tablet-light-full.png",
+          "shown": [
+            "status: \"2 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-results/tablet-dark-full.png",
+          "shown": [
+            "status: \"2 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-results/mobile-light-full.png",
+          "shown": [
+            "status: \"2 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-results/mobile-dark-full.png",
+          "shown": [
+            "status: \"2 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 23,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 4,
+            "7plus": 19
+          },
+          "lowest": [
+            {
+              "element": "span.forma-record-header__type",
+              "text": "Signal",
+              "ratio": 4.54,
+              "required": 4.5
+            },
+            {
+              "element": "p#assessment-version",
+              "text": "SDRA 0.1.0-draft",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#methodology.forma-field__description",
+              "text": "Each dimension score is the mean of its numeric answers (0 =",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-field__description",
+              "text": "Print this page for the result report.",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Dimension",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Score (0-100)",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Coverage",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Note",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "h1",
+              "text": "Software Delivery Reality Assessment",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "h2#results-title",
+              "text": "Results",
+              "ratio": 13.68,
+              "required": 3
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 23,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 1,
+            "7plus": 22
+          },
+          "lowest": [
+            {
+              "element": "span.forma-record-header__type",
+              "text": "Signal",
+              "ratio": 4.8,
+              "required": 4.5
+            },
+            {
+              "element": "p#assessment-version",
+              "text": "SDRA 0.1.0-draft",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#methodology.forma-field__description",
+              "text": "Each dimension score is the mean of its numeric answers (0 =",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-field__description",
+              "text": "Print this page for the result report.",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Dimension",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Score (0-100)",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Coverage",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Note",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h1",
+              "text": "Software Delivery Reality Assessment",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "h2#results-title",
+              "text": "Results",
+              "ratio": 15.26,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 3,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "DimensionScore (0-100)CoverageNote Plan ",
+            "Edit answers",
+            "Start over"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/assessment-results/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 23,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "assessment-invitation",
+      "title": "Assessment invitation link: the questions, nothing answered",
+      "scenario": "assessment",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html#r=AQSV3vb9UTM28AoLDA0ODxAREhMUFRYXGBlkZWZnaGlqa2xtbm9wcXJzAA8AAAAAAAAAAGf0i7E",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "assessment-results",
+      "steps": [
+        {
+          "action": "open the anonymous invitation /web/index.html#r=AQSV3vb9UTM28AoLDA0ODxAREhMUFRYXGBlkZWZnaGlqa2xtbm9wcXJzAA8AAAAAAAAAAGf0i7E",
+          "operation": "engine start-up",
+          "durationMs": 314,
+          "observed": [
+            {
+              "atMs": 11,
+              "forMs": 275,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine\""
+              ]
+            },
+            {
+              "atMs": 286,
+              "forMs": null,
+              "shown": [
+                "kernel: running"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": [
+          "Software Delivery Reality Assessment",
+          "Questions"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation/desktop-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation/desktop-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation/tablet-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation/tablet-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation/mobile-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation/mobile-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 249,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 20,
+            "7plus": 229
+          },
+          "lowest": [
+            {
+              "element": "span.forma-record-header__type",
+              "text": "Signal",
+              "ratio": 4.54,
+              "required": 4.5
+            },
+            {
+              "element": "p#assessment-version",
+              "text": "SDRA 0.1.0-draft",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-field__description",
+              "text": "Answer for the last eight weeks. If you do not know, have no",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span#progress.forma-survey-progress__value",
+              "text": "0 of 15 answered",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 4.6,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 249,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 1,
+            "7plus": 248
+          },
+          "lowest": [
+            {
+              "element": "span.forma-record-header__type",
+              "text": "Signal",
+              "ratio": 4.8,
+              "required": 4.5
+            },
+            {
+              "element": "p#assessment-version",
+              "text": "SDRA 0.1.0-draft",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-field__description",
+              "text": "Answer for the last eight weeks. If you do not know, have no",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#link-disclosure.forma-field__description",
+              "text": "This page's address contains your answers, so you can come b",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span#progress.forma-survey-progress__value",
+              "text": "0 of 15 answered",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-question__help",
+              "text": "Plan Commitment",
+              "ratio": 13.29,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 16,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "See results"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/assessment-invitation/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 249,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "assessment-invitation-results",
+      "title": "Assessment invitation: results before submitting",
+      "scenario": "assessment",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html#r=AQSV3vb9UTM28AoLDA0ODxAREhMUFRYXGBlkZWZnaGlqa2xtbm9wcXJzAA9EREREREREQK5-ZCg",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "assessment-invitation",
+      "steps": [
+        {
+          "action": "answer every question \"Often\"",
+          "operation": null,
+          "durationMs": 1372,
+          "observed": []
+        },
+        {
+          "action": "click See results",
+          "operation": "see results (engine)",
+          "durationMs": 666,
+          "observed": []
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": [
+          "Software Delivery Reality Assessment",
+          "Results"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation-results/desktop-light-full.png",
+          "shown": [
+            "status: \"3 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation-results/desktop-dark-full.png",
+          "shown": [
+            "status: \"3 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation-results/tablet-light-full.png",
+          "shown": [
+            "status: \"3 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation-results/tablet-dark-full.png",
+          "shown": [
+            "status: \"3 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation-results/mobile-light-full.png",
+          "shown": [
+            "status: \"3 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation-results/mobile-dark-full.png",
+          "shown": [
+            "status: \"3 of 3 dimensions scored\"",
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 23,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 4,
+            "7plus": 19
+          },
+          "lowest": [
+            {
+              "element": "span.forma-record-header__type",
+              "text": "Signal",
+              "ratio": 4.54,
+              "required": 4.5
+            },
+            {
+              "element": "p#assessment-version",
+              "text": "SDRA 0.1.0-draft",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#methodology.forma-field__description",
+              "text": "Each dimension score is the mean of its numeric answers (0 =",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-field__description",
+              "text": "Print this page for the result report.",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Dimension",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Score (0-100)",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Coverage",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Note",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "h1",
+              "text": "Software Delivery Reality Assessment",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "h2#results-title",
+              "text": "Results",
+              "ratio": 13.68,
+              "required": 3
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 23,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 1,
+            "7plus": 22
+          },
+          "lowest": [
+            {
+              "element": "span.forma-record-header__type",
+              "text": "Signal",
+              "ratio": 4.8,
+              "required": 4.5
+            },
+            {
+              "element": "p#assessment-version",
+              "text": "SDRA 0.1.0-draft",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#methodology.forma-field__description",
+              "text": "Each dimension score is the mean of its numeric answers (0 =",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-field__description",
+              "text": "Print this page for the result report.",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Dimension",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Score (0-100)",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Coverage",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "th",
+              "text": "Note",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "h1",
+              "text": "Software Delivery Reality Assessment",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "h2#results-title",
+              "text": "Results",
+              "ratio": 15.26,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 4,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "DimensionScore (0-100)CoverageNote Plan ",
+            "Edit answers",
+            "Start over",
+            "Submit answers"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/assessment-invitation-results/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 23,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "assessment-invitation-submitted",
+      "title": "Assessment invitation: submitted, with the submission link (completion)",
+      "scenario": "assessment",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html#r=AQOV3vb9UTM28ET2d_Q6iqeZ_rJL7fvrfDdkZWZnaGlqa2xtbm9wcXJzAA9EREREREREQMDVfJA",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": "assessment-invitation-results",
+      "steps": [
+        {
+          "action": "click Submit answers",
+          "operation": "submit answers (engine)",
+          "durationMs": 614,
+          "observed": []
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": [
+          "Software Delivery Reality Assessment",
+          "Submitted"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation-submitted/desktop-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation-submitted/desktop-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation-submitted/tablet-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation-submitted/tablet-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/assessment-invitation-submitted/mobile-light-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/assessment-invitation-submitted/mobile-dark-full.png",
+          "shown": [
+            "kernel: running"
+          ]
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 8,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 4,
+            "7plus": 4
+          },
+          "lowest": [
+            {
+              "element": "span.forma-record-header__type",
+              "text": "Signal",
+              "ratio": 4.54,
+              "required": 4.5
+            },
+            {
+              "element": "p#assessment-version",
+              "text": "SDRA 0.1.0-draft",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#submission-disclosure",
+              "text": "Your answers are final. This link contains your answers, and",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "strong#submission-kind",
+              "text": "anonymous",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "h1",
+              "text": "Software Delivery Reality Assessment",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "h2#submitted-title",
+              "text": "Submitted",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-field__label",
+              "text": "Submission link",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link",
+              "text": "Copy link",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 8,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "4.5to7": 1,
+            "7plus": 7
+          },
+          "lowest": [
+            {
+              "element": "span.forma-record-header__type",
+              "text": "Signal",
+              "ratio": 4.8,
+              "required": 4.5
+            },
+            {
+              "element": "p#assessment-version",
+              "text": "SDRA 0.1.0-draft",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#submission-disclosure",
+              "text": "Your answers are final. This link contains your answers, and",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "strong#submission-kind",
+              "text": "anonymous",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "h1",
+              "text": "Software Delivery Reality Assessment",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "h2#submitted-title",
+              "text": "Submitted",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "span.forma-field__label",
+              "text": "Submission link",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link",
+              "text": "Copy link",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 2,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "http://127.0.0.1:4321/web/index.html#r=A",
+            "Copy link"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/assessment-invitation-submitted/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 8,
+            "failures": []
+          }
+        }
+      }
+    }
+  ],
+  "unreached": [],
+  "browserVersion": "153.0.8010.12"
+}
