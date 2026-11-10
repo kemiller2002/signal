@@ -144,3 +144,13 @@ let ``a Recommendations block with nothing to recommend says None, in the report
 
     changed page $"#/groups/{key}/report?locale=de-DE"
     Assert.Equal("Keine", page.Text "reportNone")
+
+[<Fact>]
+let ``the spread of results names its columns in the report's language`` () =
+    // signal#142 review: its median and range had no column names.
+    let _, _, page, key = reportPage "1"
+    changed page $"#/groups/{key}/report?family=audit"
+    Assert.True(page.Flag "reportHasGroupDistributions")
+    Assert.Equal<string list>([ "Section"; "Median"; "Range" ], column page "reportSpreadColumns" "label")
+    changed page $"#/groups/{key}/report?family=audit&locale=de-DE"
+    Assert.Equal<string list>([ "Abschnitt"; "Median"; "Spannweite" ], column page "reportSpreadColumns" "label")

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 144,
+  "nextSeq": 145,
   "items": [
     {
       "id": "WI-0001",
@@ -3415,6 +3415,27 @@
       "attachments": [],
       "createdAt": "2026-11-10T18:53:17.346Z",
       "updatedAt": "2026-11-10T19:12:55.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0144",
+      "title": "signal#142 review: section reasons from the engine (anonymity only when suppressed), long titles in table mode, spread column headers",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-10T19:36:44.639Z",
+      "updatedAt": "2026-11-10T19:36:53.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

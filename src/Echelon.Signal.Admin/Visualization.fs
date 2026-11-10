@@ -212,10 +212,13 @@ let private text (unit: Unit) (value: float) =
 /// ("Withheld to protect anonymity"), with the minimum it is below.
 let suppressedText (minimum: int) = $"""{ReportLabels.label "en" "suppressed"} (below {minimum})"""
 
-let private reason =
+/// Why a value is missing, in words a reader can act on.
+let unavailableText =
     function
     // The report's own words for it (ReportLabels "suppressed"), with the minimum.
     | Suppressed(minimum, _) -> suppressedText minimum
+    | NoAcceptedResponses -> ReportLabels.label "en" "noAcceptedResponses"
+    | NotScored -> ReportLabels.label "en" "notScored"
     | InsufficientSample(required, found) -> $"needs {required}, has {found}"
     | NotRetained _ -> "not retained"
     | other -> $"unavailable ({other})"
@@ -252,7 +255,7 @@ let compile (spec: Spec) (data: Datum list) : Result<Compiled, Refusal list> =
                       Available = true }
                 | Unavailable why ->
                     { Category = d.Category
-                      Text = reason why
+                      Text = unavailableText why
                       Position = None
                       Colour = colour
                       Pattern = pattern

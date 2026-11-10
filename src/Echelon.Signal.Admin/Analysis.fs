@@ -30,11 +30,28 @@ type Unavailable =
     | NotMeaningful of reason: string
     | DivisionByZero
     | UnknownSection of section: string
+    /// The group has no accepted response yet.
+    | NoAcceptedResponses
+    /// Responses were accepted, but none had enough numeric answers to score
+    /// the section (all "don't know" or "not applicable", or too few).
+    | NotScored
 
 /// A calculated value, or why there is none.
 type Metric =
     | Value of float
     | Unavailable of Unavailable
+
+/// A section's score as the report state holds it, or the engine's reason
+/// for none (signal#142 review): no accepted response yet; withheld because
+/// an anonymous group is below its minimum (the engine's own Suppressed
+/// flag); otherwise no response scored it. Never anonymity for a section
+/// that simply had no numeric answers.
+let sectionScore (minimum: int) (state: ReportState.AdminReportState) (section: ReportState.SectionSummary) : Metric =
+    match section.AggregateScore with
+    | Some score -> Value score
+    | None when state.AcceptedSurveyCount = 0 -> Unavailable NoAcceptedResponses
+    | None when section.Suppressed -> Unavailable(Suppressed(minimum, state.AcceptedSurveyCount))
+    | None -> Unavailable NotScored
 
 /// Descriptive or inferential: the page shows which (ADM-013).
 type Kind =

@@ -149,15 +149,26 @@ test("SIG-ECHELON-APP-002 (WI-0123): with an imported response, the means are dr
   // the table's semantics, so its roles are explicit; at every width it is
   // still a table of a header row and three section rows, each a row header
   // and five cells. It never scrolls sideways, so its box is not a
-  // focusable region at any width.
-  for (const [width, text] of [[1280, "100%"], [834, "100%"], [390, "100%"], [320, "200%"]]) {
+  // focusable region at any width. A section title that is one unbroken
+  // 75-character word (signal#142 review: it pushed the page 114 to 274 px
+  // sideways at 900 to 740 px) breaks inside the table instead.
+  const unbroken = "A".repeat(75);
+  const secondTitle = table.getByRole("rowheader").nth(1);
+  const overflow = () => page.evaluate(() => {
+    const box = document.querySelector(".report-table:has(#report-sections)");
+    return [box.scrollWidth - box.clientWidth, document.documentElement.scrollWidth - document.documentElement.clientWidth];
+  });
+  for (const [width, text] of [[1280, "100%"], [900, "100%"], [834, "100%"], [800, "100%"], [740, "100%"], [390, "100%"], [320, "200%"]]) {
     await page.setViewportSize({ width, height: 900 });
     await page.evaluate((size) => { document.documentElement.style.fontSize = size; }, text);
     await expect(table.getByRole("row")).toHaveCount(4);
     await expect(table.getByRole("columnheader")).toHaveCount(6);
     await expect(table.getByRole("rowheader")).toHaveText(["D01 Plan Commitment", "D02 Change Responsiveness", "D03 Timebox Discipline"]);
     await expect(table.getByRole("cell")).toHaveCount(15);
-    expect(await sections.evaluate((box) => box.scrollWidth - box.clientWidth), `report table at ${width} px, ${text} text`).toBeLessThanOrEqual(0);
+    expect(Math.max(...(await overflow())), `report table at ${width} px, ${text} text`).toBeLessThanOrEqual(0);
+    const title = await secondTitle.evaluate((th, word) => { const was = th.textContent; th.textContent = word; return was; }, unbroken);
+    expect(Math.max(...(await overflow())), `a 75-character title at ${width} px, ${text} text`).toBeLessThanOrEqual(0);
+    await secondTitle.evaluate((th, was) => { th.textContent = was; }, title);
   }
   await page.evaluate(() => { document.documentElement.style.removeProperty("font-size"); });
   await expect(page.locator(".report-table[tabindex], .report-table[role]")).toHaveCount(0);
@@ -187,4 +198,12 @@ test("SIG-ECHELON-APP-002 (WI-0123): with an imported response, the means are dr
   await expect(page.locator("#report-recommendations")).toBeHidden();
   await page.setViewportSize({ width: 1280, height: 900 });
   await expect(sections.locator("thead")).not.toHaveCSS("position", "absolute");
+
+  // The spread of results has its own header row, in the report's language
+  // (signal#142 review: its median and range were unnamed at wide sizes).
+  await page.evaluate(() => { location.hash = location.hash.split("?")[0] + "?family=audit"; });
+  const spread = page.getByRole("table", { name: "Spread of results" });
+  await expect(spread.getByRole("columnheader")).toHaveText(["Section", "Median", "Range"]);
+  await expect(spread.getByRole("rowheader")).toHaveCount(3);
+  await expect(spread.getByRole("cell")).toHaveCount(6);
 });

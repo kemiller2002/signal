@@ -180,6 +180,10 @@ let project (model: Model) (group: GroupSummary option) : View =
       "reportOverall", text (data |> Option.map (fun r -> valueText tag decimals r.Overall) |> Option.defaultValue "")
       "reportColumns",
       items ([ "section"; "mean"; "median"; "range"; "scored"; "unscored" ] |> List.map (fun k -> [ "key", Text k; "label", Text(l k) ]))
+      // The distributions table's own header row, in the report's language
+      // (signal#142 review: its median and range had no column names).
+      "reportSpreadColumns",
+      items ([ "section"; "median"; "range" ] |> List.map (fun k -> [ "key", Text k; "label", Text(l k) ]))
       "reportSections",
       items (
           data

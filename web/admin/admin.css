@@ -563,6 +563,9 @@
     border-block-end: 1px solid var(--echelon-border-subtle);
   }
   .admin .report-cards thead th { color: var(--echelon-text-secondary); font-size: 0.8125rem; }
+  /* A section title may be one long unbroken word: it breaks inside the
+     word rather than widen the table past the page (signal#142 review). */
+  .admin .report-cards th[scope="row"] { overflow-wrap: anywhere; }
   .admin .report-cards td { font-variant-numeric: tabular-nums; }
 }
 @container report-table (max-width: 44rem) {

@@ -35,8 +35,8 @@ type GroupSummary =
       MinimumReportable: int
       Status: GroupLifecycle.Status
       Phase: AdminState.GroupPhase
-      /// Section scores as the report state shows them (suppressed are None).
-      Sections: (string * float option) list
+      /// Section scores as the report state shows them, or why each has none.
+      Sections: (string * Analysis.Metric) list
       /// Where the report state lives: an embedded fragment or a reference.
       ReportFragment: string
       LastBatch: Intake.BatchSummary option

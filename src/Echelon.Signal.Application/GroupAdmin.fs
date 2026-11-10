@@ -235,7 +235,7 @@ let summary (unreconciled: int) (imported: Imported option) (live: OpenedGroup) 
               Expected = group.Config.ExpectedCount
               BatchRunning = lastBatch |> Option.exists (fun b -> b.Status = Intake.Running)
               UnreconciledBatches = unreconciled }
-      Sections = state.Sections |> List.map (fun s -> s.SectionId, s.AggregateScore)
+      Sections = state.Sections |> List.map (fun s -> s.SectionId, Analysis.sectionScore group.Config.MinimumReportableCount state s)
       ReportFragment =
         match ReportState.persistence ReportState.defaultBudget state with
         | ReportState.EmbeddedInUrl fragment

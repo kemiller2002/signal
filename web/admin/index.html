@@ -1238,6 +1238,7 @@
         <template data-if="reportHasGroupDistributions">
           <ef-print-section><section><h2 id="report-group-distributions-title" data-text="reportTitleGroupDistributions"></h2>
             <div class="report-table"><ef-print-table><table id="report-spread" class="report-cards" role="table" aria-labelledby="report-group-distributions-title">
+              <thead role="rowgroup"><tr role="row"><template data-each="reportSpreadColumns" data-key="key"><th scope="col" role="columnheader" data-text="label"></th></template></tr></thead>
               <tbody role="rowgroup"><template data-each="reportSections" data-key="key"><tr role="row"><th scope="row" role="rowheader" data-text="section"></th><td role="cell" data-bind-data-label="medianLabel" data-text="median"></td><td role="cell" data-bind-data-label="rangeLabel" data-text="range"></td></tr></template></tbody>
             </table></ef-print-table></div></section></ef-print-section>
         </template>
