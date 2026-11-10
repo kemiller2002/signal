@@ -207,7 +207,13 @@
 .admin .admin-confirm > * { min-inline-size: 0; max-inline-size: 100%; }
 .admin code { overflow-wrap: anywhere; }
 .admin .echelon-panel .forma-button,
-.admin .admin-status .forma-button { white-space: normal; }
+.admin .admin-status .forma-button { white-space: normal; max-inline-size: 100%; overflow-wrap: anywhere; }
+.admin .admin-plain-list > li { min-inline-size: 0; }
+/* On the narrowest screens the panel's inner padding gives way to content. */
+@media (max-width: 30rem) {
+  .admin .echelon-panel__header,
+  .admin .echelon-panel__body { padding-inline: 0.75rem; }
+}
 
 /* An unavailable report family is shown as such without fading its text
    below AA (it was opacity: 0.6, 2.42:1): the secondary text colour, and a
