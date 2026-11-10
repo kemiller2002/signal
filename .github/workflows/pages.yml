@@ -62,10 +62,18 @@ jobs:
                    web-kernel/limen-wasm.js web-kernel/startup-watchdog.js build/wasm/wwwroot/_framework/dotnet.js \
                    node_modules/@echelon-foundry/limen/dist/kernel/browser-kernel.js \
                    node_modules/@echelon-foundry/design-system/dist/all.css \
-                   node_modules/@echelon-foundry/echelon-theme/dist/echelon.css; do
+                   node_modules/@echelon-foundry/echelon-theme/dist/echelon.css \
+                   node_modules/@echelon-foundry/echelon-theme/dist/echelon-fonts.css \
+                   node_modules/@echelon-foundry/echelon-theme/dist/echelon-app.css; do
             test -e "$site/$f" || { echo "::error::the site is missing $f"; exit 1; }
           done
           ls "$site"/build/wasm/wwwroot/_framework/*.wasm > /dev/null
+          # Every font the theme's fonts stylesheet names is in the site, at
+          # the address relative to it (font-src 'self'; SIG-ECHELON-APP-001).
+          fonts_css="$site/node_modules/@echelon-foundry/echelon-theme/dist/echelon-fonts.css"
+          for font in $(grep -o 'url("[^"]*")' "$fonts_css" | sed 's/^url("//; s/")$//'); do
+            test -s "$(dirname "$fonts_css")/$font" || { echo "::error::the site is missing the font $font"; exit 1; }
+          done
           grep -q 'http-equiv="Content-Security-Policy"' "$site/web/index.html"
           grep -q "'wasm-unsafe-eval'" "$site/web/index.html"
           grep -q 'data-pages-banner' "$site/web/index.html"

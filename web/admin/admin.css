@@ -1,9 +1,12 @@
 /* The administrator page. Forma (pinned @echelon-foundry/design-system) owns
    tokens, foundations and components; the Echelon theme (pinned
-   @echelon-foundry/echelon-theme, after Forma) supplies Echelon colours and
-   fonts. Both from the installed packages, never copies. */
+   @echelon-foundry/echelon-theme, after Forma) supplies Echelon colours,
+   then its self-hosted fonts, then its application layer. All from the
+   installed packages, never copies. */
 @import "../../node_modules/@echelon-foundry/design-system/dist/all.css";
 @import "../../node_modules/@echelon-foundry/echelon-theme/dist/echelon.css";
+@import "../../node_modules/@echelon-foundry/echelon-theme/dist/echelon-fonts.css";
+@import "../../node_modules/@echelon-foundry/echelon-theme/dist/echelon-app.css";
 @import "../../node_modules/@echelon-foundry/print-components/src/styles/print.css" print;
 @import "../../web-kernel/page.css";
 

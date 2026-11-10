@@ -18,9 +18,10 @@ let private str (node: JsonNode) = node.GetValue<string>()
 let private formaRelease =
     "https://github.com/kemiller2002/forma/releases/download/v1.0.1/echelon-foundry-design-system-1.0.1.tgz"
 
-/// The Echelon brand for Forma 1.x (EDS-ADR-002), from kemiller2002/echelon-design-system.
+/// The Echelon brand for Forma 1.x (EDS-ADR-002), from kemiller2002/echelon-design-system;
+/// 1.1.0 adds the Echelon application layer and the self-hosted fonts.
 let private themeRelease =
-    "https://github.com/kemiller2002/echelon-design-system/releases/download/v1.0.0/echelon-foundry-echelon-theme-1.0.0.tgz"
+    "https://github.com/kemiller2002/echelon-design-system/releases/download/v1.1.0/echelon-foundry-echelon-theme-1.1.0.tgz"
 
 let private folioRelease =
     "https://github.com/kemiller2002/folio/releases/download/v0.4.1/echelon-foundry-print-components-0.4.1.tgz"
@@ -47,7 +48,7 @@ let ``the npm foundations are pinned to immutable releases and locked`` () =
 
     for name, version in
         [ "@echelon-foundry/design-system", "1.0.1"
-          "@echelon-foundry/echelon-theme", "1.0.0"
+          "@echelon-foundry/echelon-theme", "1.1.0"
           "@echelon-foundry/print-components", "0.4.1"
           "@echelon-foundry/limen", "0.9.1" ] do
         let locked = packages.[$"node_modules/{name}"]
@@ -66,6 +67,8 @@ let ``the page takes Forma and Folio from the installed packages`` () =
     Assert.Equal<string list>(
         [ "../node_modules/@echelon-foundry/design-system/dist/all.css"
           "../node_modules/@echelon-foundry/echelon-theme/dist/echelon.css"
+          "../node_modules/@echelon-foundry/echelon-theme/dist/echelon-fonts.css"
+          "../node_modules/@echelon-foundry/echelon-theme/dist/echelon-app.css"
           "../node_modules/@echelon-foundry/print-components/src/styles/print.css"
           "../web-kernel/page.css" ],
         imports
@@ -89,6 +92,15 @@ let private pages =
       "web/admin/index.html", "web/admin/admin.css"
       "web/home/index.html", "web/home/home.css" ]
 
+/// The theme's documented load order (echelon-theme 1.1.0, Echelon
+/// application-layer contract): Forma, the brand, its fonts, the application
+/// layer. Each comes once, and in this order.
+let private brandOrder =
+    [ "/@echelon-foundry/design-system/dist/all.css"
+      "/@echelon-foundry/echelon-theme/dist/echelon.css"
+      "/@echelon-foundry/echelon-theme/dist/echelon-fonts.css"
+      "/@echelon-foundry/echelon-theme/dist/echelon-app.css" ]
+
 [<Fact>]
 let ``every page is branded Echelon, loading the theme after Forma`` () =
     for page, stylesheet in pages do
@@ -98,12 +110,15 @@ let ``every page is branded Echelon, loading the theme after Forma`` () =
         let imports =
             Regex.Matches(readRepoFile stylesheet, "@import \"([^\"]+)\"") |> Seq.map (fun m -> m.Groups[1].Value) |> Seq.toList
 
-        let position (suffix: string) = imports |> List.tryFindIndex (fun i -> i.EndsWith suffix)
-        let forma = position "/@echelon-foundry/design-system/dist/all.css"
-        let theme = position "/@echelon-foundry/echelon-theme/dist/echelon.css"
-        Assert.True(forma.IsSome, $"{stylesheet} does not import Forma")
-        Assert.True(theme.IsSome, $"{stylesheet} does not import the Echelon theme")
-        Assert.True(forma < theme, $"{stylesheet} imports the Echelon theme before Forma")
+        let positions (suffix: string) = imports |> List.indexed |> List.filter (fun (_, i) -> i.EndsWith suffix) |> List.map fst
+
+        let found = brandOrder |> List.map (fun suffix -> suffix, positions suffix)
+
+        for suffix, at in found do
+            Assert.True(List.length at = 1, $"{stylesheet} must import {suffix} exactly once, not {List.length at} times")
+
+        let order = found |> List.map (snd >> List.head)
+        Assert.True(order = List.sort order, $"{stylesheet} must import Forma, echelon.css, echelon-fonts.css, then echelon-app.css; found positions {order}")
 
         for imported in imports do
             let dir = Path.GetDirectoryName(repoFile stylesheet)
@@ -112,6 +127,37 @@ let ``every page is branded Echelon, loading the theme after Forma`` () =
     // The installed theme is the Forma 1.x Echelon brand.
     let theme = readRepoFile "node_modules/@echelon-foundry/echelon-theme/dist/echelon.css"
     Assert.Contains("[data-forma-brand=\"echelon\"]", theme)
+
+/// The Echelon fonts are self-hosted (owner decision 2026-11-09): every font
+/// the theme's fonts stylesheet names is a relative address that resolves to
+/// an installed WOFF2 file beside it, so the pages' `font-src 'self'` holds
+/// and the Pages site (which copies the theme's whole dist/) serves them.
+[<Fact>]
+let ``the Echelon fonts are self-hosted WOFF2 files installed beside the fonts stylesheet`` () =
+    let fontsCss = "node_modules/@echelon-foundry/echelon-theme/dist/echelon-fonts.css"
+
+    let urls =
+        Regex.Matches(readRepoFile fontsCss, "url\\(\"?([^\")]+)\"?\\)") |> Seq.map (fun m -> m.Groups[1].Value) |> Seq.toList
+
+    Assert.NotEmpty(urls)
+
+    for url in urls do
+        Assert.False(Regex.IsMatch(url, "^(?:[a-z][a-z0-9+.-]*:|//|/)", RegexOptions.IgnoreCase), $"{url} is not a relative, same-origin address")
+        Assert.EndsWith(".woff2", url)
+        let dir = Path.GetDirectoryName(repoFile fontsCss)
+        Assert.True(File.Exists(Path.GetFullPath(Path.Combine(dir, url))), $"{fontsCss}: {url} is not installed")
+
+    // Each family's SIL Open Font License text ships with it.
+    for family in [ "manrope"; "newsreader"; "ibm-plex-mono" ] do
+        Assert.True(
+            File.Exists(repoFile $"node_modules/@echelon-foundry/echelon-theme/dist/fonts/licenses/{family}-OFL.txt"),
+            $"the {family} licence is not installed"
+        )
+
+    // The application layer is the Echelon brand's, scoped to it.
+    let app = readRepoFile "node_modules/@echelon-foundry/echelon-theme/dist/echelon-app.css"
+    Assert.Contains("@layer echelon.app", app)
+    Assert.Contains("[data-forma-brand=\"echelon\"] .echelon-panel", app)
 
 [<Fact>]
 let ``Signal keeps its own mark: the theme's Echelon Foundry logos are not used`` () =

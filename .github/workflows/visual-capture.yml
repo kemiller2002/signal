@@ -1,0 +1,147 @@
+name: Visual capture
+
+# Visual-review evidence (SIG-VIS-CAPTURE-001, WI-0110): screenshots of every
+# reachable screen of the real built app at three viewports in light and
+# dark, with a manifest (tests/visual/). Evidence, not a test: it is kept off
+# pull requests so it never burdens normal CI, and it is recorded separately
+# from the functional suites.
+#
+# The images and manifest are committed to their own orphan branch,
+# visual-evidence/baseline-<short sha>, because some reviewers can read git
+# but cannot download Actions artifacts.
+on:
+  push:
+    branches: ["visual/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: visual-capture-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    permissions:
+      # Pushes the evidence branch with GITHUB_TOKEN.
+      contents: write
+    env:
+      VISUAL_OUT: ${{ github.workspace }}/visual-capture
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      # The engine exactly as the Build and Pages workflows publish it.
+      - name: Publish the WASM engine
+        run: npm run build:wasm
+
+      # The site exactly as the Pages workflow assembles it; the capture's
+      # Pages server (playwright.config.js) assembles the same site under
+      # /signal/.
+      - name: Assemble the site
+        run: |
+          set -euo pipefail
+          node tools/pages/assemble-site.mjs dist-pages
+          test -e dist-pages/web/home/index.html
+          ls dist-pages/build/wasm/wwwroot/_framework/*.wasm > /dev/null
+
+      # Chromium as the Build workflow provides it: cached under the pinned
+      # Playwright version, OS libraries proved present offline (see build.yml
+      # for why apt is not run on every build).
+      - name: Resolve the pinned Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('./package-lock.json').packages['node_modules/playwright-core'].version")" >> "$GITHUB_OUTPUT"
+
+      - name: Restore the Chromium build for that version
+        id: chromium-cache
+        uses: actions/cache@v4
+        env:
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: "2"
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}-${{ runner.arch }}-${{ steps.playwright.outputs.version }}
+
+      - name: Download Chromium
+        if: steps.chromium-cache.outputs.cache-hit != 'true'
+        timeout-minutes: 5
+        run: npx playwright install chromium
+
+      - name: Verify Chromium's OS libraries
+        timeout-minutes: 8
+        run: |
+          missing_libraries() {
+            find ~/.cache/ms-playwright -type f \( -name chrome -o -name chrome-headless-shell \) -print0 \
+              | xargs -0 --no-run-if-empty ldd \
+              | awk '/not found/ { print $1 }' \
+              | sort -u
+          }
+          missing="$(missing_libraries)"
+          if [ -n "$missing" ]; then
+            echo "::warning::Runner image lacks Chromium libraries: $(echo $missing). Installing Chromium's OS dependencies."
+            printf '%s\n' 'Acquire::Retries "3";' 'Acquire::http::Timeout "30";' 'Acquire::https::Timeout "30";' \
+              | sudo tee /etc/apt/apt.conf.d/99-bounded-network > /dev/null
+            timeout 300 npx playwright install-deps chromium \
+              || echo "::error::Installing Chromium's OS dependencies failed or took longer than five minutes."
+          fi
+          still_missing="$(missing_libraries)"
+          if [ -n "$still_missing" ]; then
+            echo "::error::Chromium cannot start; missing shared libraries: $(echo $still_missing)"
+            exit 1
+          fi
+
+      - name: Check the capture's pure planning
+        run: node --test tests/visual/capture-plan.test.mjs
+
+      # A screen the capture cannot reach is recorded in the manifest, not
+      # fatal. A failure of the run itself still publishes what was captured,
+      # and fails the job at the end.
+      - name: Capture the screens
+        id: capture
+        continue-on-error: true
+        run: npx playwright test -c tests/visual/visual.config.js
+
+      - name: Build the manifest
+        if: always()
+        run: node tests/visual/build-manifest.mjs "$VISUAL_OUT"
+
+      - name: Commit the evidence to its own branch
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test -f "$VISUAL_OUT/manifest.json"
+          short="$(git rev-parse --short=7 HEAD)"
+          branch="visual-evidence/baseline-${short}"
+          cd "$VISUAL_OUT"
+          git init -q -b "$branch"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Visual baseline of ${GITHUB_REPOSITORY}@${GITHUB_SHA}" \
+            -m "Visual-review evidence (WI-0110), not functional test evidence. Captured by ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} from ${GITHUB_REF_NAME}."
+          git push --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/${branch}"
+          {
+            echo "### Visual evidence"
+            echo ""
+            echo "Branch \`${branch}\` at \`$(git rev-parse HEAD)\`."
+            echo ""
+            node -e 'const m=require(process.argv[1]);console.log("Screens: "+m.summary.screens+", screenshots: "+m.summary.screenshots+", unreached: "+m.summary.unreached.length)' "$VISUAL_OUT/manifest.json"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail when the capture run failed
+        if: steps.capture.outcome == 'failure'
+        run: |
+          echo "::error::The capture run failed; what it captured was still published to the evidence branch."
+          exit 1
