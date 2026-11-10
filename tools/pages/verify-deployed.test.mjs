@@ -1,7 +1,8 @@
 // Tests for the deployed-site check, against an assembled site served locally,
 // plus adversarial copies with a broken asset, a missing start-up screen, an
 // unapproved mark, a page that is not branded, a missing or misordered Echelon
-// theme and an Echelon Foundry logo in place of Signal's mark. Run after
+// theme, fonts or application layer, a font that is not served, and an
+// Echelon Foundry logo in place of Signal's mark. Run after
 // `npm ci`; `npm run build:wasm` is not required: only the static pages, their
 // stylesheets and the brand assets are fetched.
 import { test } from "node:test";
@@ -10,7 +11,7 @@ import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } f
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { extname, join } from "node:path";
-import { verify, pageProblems, identityProblems, stylesheetProblems, themeProblems } from "./verify-deployed.mjs";
+import { verify, pageProblems, identityProblems, stylesheetProblems, themeProblems, brandLayerProblems, fontFileUrls, fontsProblems, fontFileProblems, appLayerProblems } from "./verify-deployed.mjs";
 import { pages, publishPage } from "./assemble-site.mjs";
 
 const repo = new URL("../../", import.meta.url).pathname;
@@ -127,6 +128,52 @@ test("a stylesheet without the theme, or with it before Forma, is reported", () 
     assert.ok(problems.some((p) => /web\/home\/home\.css: does not import the Echelon theme/.test(p)), problems.join("\n"));
     assert.ok(problems.some((p) => /web\/admin\/admin\.css: imports the Echelon theme before Forma/.test(p)), problems.join("\n"));
   }));
+
+test("a stylesheet without the fonts or the application layer, or with them out of order, is reported", () =>
+  withSite((root) => {
+    edit(root, "web/home/home.css", (css) => css.replace(/@import "[^"]*echelon-fonts\.css";\n/, ""));
+    edit(root, "web/admin/admin.css", (css) => {
+      const app = css.match(/@import "[^"]*echelon-app\.css";\n/)[0];
+      const fonts = css.match(/@import "[^"]*echelon-fonts\.css";\n/)[0];
+      return css.replace(app, "").replace(fonts, app + fonts);
+    });
+    edit(root, "web/styles.css", (css) => css.replace(/@import "[^"]*echelon-app\.css";\n/, ""));
+  }, async (base) => {
+    const problems = await verify(base);
+    assert.ok(problems.some((p) => /web\/home\/home\.css: does not import the Echelon theme's echelon-fonts\.css/.test(p)), problems.join("\n"));
+    assert.ok(problems.some((p) => /web\/admin\/admin\.css: imports echelon-app\.css before echelon-fonts\.css/.test(p)), problems.join("\n"));
+    assert.ok(problems.some((p) => /web\/styles\.css: does not import the Echelon theme's echelon-app\.css/.test(p)), problems.join("\n"));
+  }));
+
+test("a self-hosted font that is not served is reported", () =>
+  withSite((root) => rmSync(join(root, "node_modules/@echelon-foundry/echelon-theme/dist/fonts/manrope-latin-wght-normal.woff2")), async (base) => {
+    const problems = await verify(base);
+    assert.ok(problems.some((p) => /fonts\/manrope-latin-wght-normal\.woff2: HTTP 404/.test(p)), problems.join("\n"));
+  }));
+
+test("an application layer that is not served is reported", () =>
+  withSite((root) => rmSync(join(root, "node_modules/@echelon-foundry/echelon-theme/dist/echelon-app.css")), async (base) => {
+    const problems = await verify(base);
+    assert.ok(problems.some((p) => /echelon-theme\/dist\/echelon-app\.css: HTTP 404/.test(p)), problems.join("\n"));
+  }));
+
+test("the font and application-layer checks are pure", () => {
+  const theme = '@import "../node_modules/@echelon-foundry/echelon-theme/dist/echelon.css";';
+  const fonts = '@import "../node_modules/@echelon-foundry/echelon-theme/dist/echelon-fonts.css";';
+  const app = '@import "../node_modules/@echelon-foundry/echelon-theme/dist/echelon-app.css";';
+  assert.deepEqual(brandLayerProblems("s.css", { status: 200, body: [theme, fonts, app].join("\n") }), []);
+  assert.deepEqual(brandLayerProblems("s.css", { status: 200, body: [fonts, theme, app].join("\n") }), ["s.css: imports echelon-fonts.css before echelon.css"]);
+  assert.deepEqual(brandLayerProblems("s.css", { status: 404, body: "" }), []);
+  const face = '@font-face { font-family: "Manrope"; src: url("fonts/m.woff2") format("woff2"); }';
+  assert.deepEqual(fontFileUrls("https://x.test/a/f.css", face), ["https://x.test/a/fonts/m.woff2"]);
+  assert.deepEqual(fontsProblems("https://x.test/f.css", { status: 200, body: face }), []);
+  assert.deepEqual(fontsProblems("https://x.test/f.css", { status: 200, body: "/* empty */" }), ["https://x.test/f.css: names no self-hosted font"]);
+  assert.deepEqual(fontFileProblems("https://x.test")("https://x.test/f.woff2", { status: 200, body: "" }), []);
+  assert.deepEqual(fontFileProblems("https://x.test")("https://cdn.example/f.woff2", { status: 200, body: "" }),
+    ["https://cdn.example/f.woff2: not served from the site (font-src 'self')"]);
+  assert.deepEqual(appLayerProblems("a.css", { status: 200, body: '@layer echelon.app { [data-forma-brand="echelon"] .echelon-panel {} }' }), []);
+  assert.deepEqual(appLayerProblems("a.css", { status: 200, body: ".x {}" }), ["a.css: not the Echelon application layer"]);
+});
 
 test("an Echelon Foundry logo in place of Signal's identity is reported", () =>
   withSite((root) => edit(root, "web/home/index.html", (html) => html

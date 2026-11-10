@@ -89,6 +89,48 @@ for (const path of [...PAGES, "/web/home/index.html"]) {
   });
 }
 
+// The Echelon theme 1.1.0's self-hosted fonts (SIG-ECHELON-APP-001), from the
+// assembled Pages site, whose every page carries the strict policy
+// (style-src 'self'; font-src 'self'): each family loads from the site's own
+// theme files, and the page reports no policy violation.
+const pagesSite = (baseURL) => {
+  const url = new URL(baseURL);
+  return `${url.protocol}//${url.hostname}:${Number(url.port) + 1}/signal/`;
+};
+
+for (const path of ["web/", "web/survey/", "web/admin/", "web/home/"]) {
+  test(`${path} on the Pages site: the Echelon fonts load from the site under its policy`, async ({ page, baseURL }) => {
+    const site = pagesSite(baseURL);
+    const fonts = [];
+    page.on("response", (response) => { if (/\.woff2$/.test(response.url())) fonts.push({ url: response.url(), status: response.status() }); });
+    await page.addInitScript(() => {
+      window.__violations = [];
+      document.addEventListener("securitypolicyviolation", (event) => window.__violations.push(`${event.violatedDirective} ${event.blockedURI}`));
+    });
+    await page.route(`${site}${FRAMEWORK.replace("**/", "")}`, () => new Promise(() => {}));
+    await page.goto(`${site}${path}`);
+    await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveAttribute("content", /font-src 'self'/);
+    const loaded = await page.evaluate(async () => {
+      const families = ["Manrope", "Newsreader", "IBM Plex Mono"];
+      const faces = await Promise.all(families.map((family) => document.fonts.load(`1em "${family}"`)));
+      await document.fonts.ready;
+      return families.map((family, i) => ({ family, faces: faces[i].map((face) => face.status) }));
+    });
+    for (const { family, faces } of loaded) {
+      expect(faces.length, `${family} has no font face`).toBeGreaterThan(0);
+      expect(faces.every((status) => status === "loaded"), `${family}: ${faces.join(", ")}`).toBe(true);
+    }
+    // The body text is set in Manrope, and the fonts came from the site itself.
+    expect(await page.evaluate(() => document.fonts.check('1em "Manrope"'))).toBe(true);
+    expect(fonts.length).toBeGreaterThan(0);
+    for (const font of fonts) {
+      expect(font.url.startsWith(`${site}node_modules/@echelon-foundry/echelon-theme/dist/fonts/`), font.url).toBe(true);
+      expect(font.status, font.url).toBe(200);
+    }
+    expect(await page.evaluate(() => window.__violations)).toEqual([]);
+  });
+}
+
 test("the landing page explains Signal and leads to the administrator console", async ({ page }) => {
   await page.goto("/web/home/index.html");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Surveys whose answers live in the link");

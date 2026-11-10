@@ -50,3 +50,6 @@ playwright-report/
 
 # Praxis runtime locks (transient, per checkout)
 .ros/locks/
+
+# Visual-review evidence capture output (tests/visual, WI-0110)
+visual-capture/

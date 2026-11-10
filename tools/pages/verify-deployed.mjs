@@ -5,7 +5,10 @@
 // after Forma's; every engine page carries its pre-runtime start-up screen
 // (Forma 1.x .forma-startup); the landing page carries Signal's own
 // identity, never the Echelon Foundry logos; and every brand asset the pages
-// and web/brand/identity.json reference resolves at the deployed URL.
+// and web/brand/identity.json reference resolves at the deployed URL. Since
+// the Echelon theme 1.1.0 (SIG-ECHELON-APP-001), each stylesheet also loads
+// the theme's self-hosted fonts and its application layer after echelon.css,
+// and every font file the fonts stylesheet names is served from the site.
 //
 //   node tools/pages/verify-deployed.mjs https://signal.example.org/
 //
@@ -20,6 +23,8 @@ export const IDENTITY = "web/brand/identity.json";
 // imports them from the published node_modules.
 export const FORMA_CSS = /node_modules\/@echelon-foundry\/design-system\/dist\/all\.css$/;
 export const THEME_CSS = /node_modules\/@echelon-foundry\/echelon-theme\/dist\/echelon\.css$/;
+export const FONTS_CSS = /node_modules\/@echelon-foundry\/echelon-theme\/dist\/echelon-fonts\.css$/;
+export const APP_CSS = /node_modules\/@echelon-foundry\/echelon-theme\/dist\/echelon-app\.css$/;
 
 const iconHref = (html) => html.match(/<link rel="icon" href="([^"]+)"/)?.[1] ?? null;
 
@@ -62,10 +67,51 @@ export const stylesheetProblems = (url, response) => {
   ];
 };
 
-export const themeImportUrl = (url, css) => {
-  const href = importsOf(css).find((candidate) => THEME_CSS.test(candidate));
+const importUrl = (pattern) => (url, css) => {
+  const href = importsOf(css).find((candidate) => pattern.test(candidate));
   return href ? new URL(href, url).href : null;
 };
+
+export const themeImportUrl = importUrl(THEME_CSS);
+export const fontsImportUrl = importUrl(FONTS_CSS);
+export const appImportUrl = importUrl(APP_CSS);
+
+// The theme's documented order after Forma: echelon.css, echelon-fonts.css,
+// echelon-app.css. A stylesheet that is not served is reported by
+// stylesheetProblems, so it adds nothing here.
+export const brandLayerProblems = (url, response) => {
+  if (response.status !== 200) return [];
+  const imports = importsOf(response.body);
+  const theme = imports.findIndex((href) => THEME_CSS.test(href));
+  const fonts = imports.findIndex((href) => FONTS_CSS.test(href));
+  const app = imports.findIndex((href) => APP_CSS.test(href));
+  return [
+    ...(fonts >= 0 ? [] : [`${url}: does not import the Echelon theme's echelon-fonts.css`]),
+    ...(app >= 0 ? [] : [`${url}: does not import the Echelon theme's echelon-app.css`]),
+    ...(theme >= 0 && fonts >= 0 && fonts < theme ? [`${url}: imports echelon-fonts.css before echelon.css`] : []),
+    ...(fonts >= 0 && app >= 0 && app < fonts ? [`${url}: imports echelon-app.css before echelon-fonts.css`] : [])
+  ];
+};
+
+// The font files an @font-face stylesheet names, as absolute URLs.
+export const fontFileUrls = (url, css) =>
+  [...css.matchAll(/url\(\s*"?([^")]+?)"?\s*\)/g)].map((m) => new URL(m[1], url).href);
+
+export const fontsProblems = (url, response) =>
+  response.status !== 200 ? [`${url}: HTTP ${response.status}`]
+  : /@font-face/.test(response.body) && fontFileUrls(url, response.body).length > 0 ? []
+  : [`${url}: names no self-hosted font`];
+
+// A font must come from the site itself: the pages' policy is font-src 'self'.
+export const fontFileProblems = (pageOrigin) => (url, response) =>
+  new URL(url).origin !== pageOrigin ? [`${url}: not served from the site (font-src 'self')`]
+  : response.status !== 200 ? [`${url}: HTTP ${response.status}`]
+  : [];
+
+export const appLayerProblems = (url, response) =>
+  response.status !== 200 ? [`${url}: HTTP ${response.status}`]
+  : /@layer echelon\.app/.test(response.body) && /\[data-forma-brand="echelon"\]/.test(response.body) ? []
+  : [`${url}: not the Echelon application layer`];
 
 // The served theme is the Echelon brand for Forma 1.x, not an empty or stale file.
 export const themeProblems = (url, response) =>
@@ -116,6 +162,19 @@ export const verify = async (base, fetcher = fetchText) => {
     .map(({ url, response }) => themeImportUrl(url, response.body))
     .filter((url) => url !== null));
   const themeIssues = (await Promise.all(themeUrls.map(async (url) => themeProblems(url, await fetcher(url))))).flat();
+  const brandLayerIssues = stylesheets.flatMap(({ url, response }) => brandLayerProblems(url, response));
+  const importedBy = (find) => unique(stylesheets
+    .filter(({ response }) => response.status === 200)
+    .map(({ url, response }) => find(url, response.body))
+    .filter((url) => url !== null));
+  const appIssues = (await Promise.all(importedBy(appImportUrl).map(async (url) => appLayerProblems(url, await fetcher(url))))).flat();
+  const fontsSheets = await Promise.all(importedBy(fontsImportUrl).map(async (url) => ({ url, response: await fetcher(url) })));
+  const fontsIssues = fontsSheets.flatMap(({ url, response }) => fontsProblems(url, response));
+  const fontFiles = unique(fontsSheets
+    .filter(({ response }) => response.status === 200)
+    .flatMap(({ url, response }) => fontFileUrls(url, response.body)));
+  const fontFileIssues = (await Promise.all(fontFiles.map(async (url) =>
+    fontFileProblems(new URL(root).origin)(url, await fetcher(url))))).flat();
 
   const favicons = served
     .filter(({ response }) => iconHref(response.body))
@@ -128,6 +187,10 @@ export const verify = async (base, fetcher = fetchText) => {
     ...pageIssues,
     ...stylesheetIssues,
     ...themeIssues,
+    ...brandLayerIssues,
+    ...appIssues,
+    ...fontsIssues,
+    ...fontFileIssues,
     ...(identityResponse.status === 200 ? identityProblems(identity) : [`${IDENTITY}: HTTP ${identityResponse.status}`]),
     ...assetIssues
   ];

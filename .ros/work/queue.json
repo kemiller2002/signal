@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 117,
+  "nextSeq": 119,
   "items": [
     {
       "id": "WI-0001",
@@ -2876,6 +2876,30 @@
       },
       "source": "review",
       "sourceReference": "kemiller2002/signal#133@771c98f"
+    },
+    {
+      "id": "WI-0118",
+      "title": "SIG-ECHELON-APP-001: adopt echelon-current 1.39.0 (Echelon theme 1.1.0) and load the Echelon application layer and fonts on every page; capture tooling onto main",
+      "description": null,
+      "tags": [
+        "signal",
+        "design-system"
+      ],
+      "priority": "high",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-10T05:13:40.771Z",
+      "updatedAt": "2026-11-10T05:44:42.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
     }
   ]
 }

@@ -133,3 +133,4 @@
 | WI-0115 | Admin console: verify #activity live-region announcements and focus moves with real screen readers (NVDA, VoiceOver); only structure is tested (follow-up to SIG-VIS-PENDING-002) | captured | signal, visual | medium |
 | WI-0116 | Admin console: a created group that cannot be read back reports one notice but no longer marks the store offline when the read failed for connectivity (follow-up to SIG-VIS-PENDING-002) | captured | signal, visual | medium |
 | WI-0117 | SIG-VIS-PENDING-003: second review round on PR #133: faults tied to the running operation, focus beside the change, visible :focus ring, defect keeps settled state (WI-0114), pin edits during save, definite retire test | complete | signal, accessibility | high |
+| WI-0118 | SIG-ECHELON-APP-001: adopt echelon-current 1.39.0 (Echelon theme 1.1.0) and load the Echelon application layer and fonts on every page; capture tooling onto main | complete | signal, design-system | high |
