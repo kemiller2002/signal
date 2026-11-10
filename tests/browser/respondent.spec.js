@@ -61,10 +61,15 @@ test("while answering, #activity is the one live region and says what the page s
   expect(await liveRegions(page)).toEqual(["activity"]);
 });
 
-test("the respondent page keeps whole words and does not scroll sideways at 320 px with 200% text", async ({ page }) => {
+// The paged survey, and the compound kinds (best-worst columns "Fits best"
+// and "Fits least", which the capture's audit found broken at 320 px).
+for (const [name, link, ready] of [
+  ["a paged survey", "paged", (page) => expect(page.locator("#page-label")).toHaveText("Page 1 of 3")],
+  ["the compound kinds", "compound", (page) => expect(page.locator("#survey-title")).toHaveText("Compound kinds")]
+]) test(`the respondent page (${name}) keeps whole words and does not scroll sideways at 320 px with 200% text`, async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 900 });
-  await open(page, links.paged);
-  await expect(page.locator("#page-label")).toHaveText("Page 1 of 3");
+  await open(page, links[link]);
+  await ready(page);
   await page.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
   // The audit's rule (tests/visual/audit.mjs): three or more lines with fewer
   // than four characters a line is a word set as a column of letters.
@@ -86,6 +91,6 @@ test("the respondent page keeps whole words and does not scroll sideways at 320 
   });
   expect(collapsed).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
-  // Back and the one forward action are both reachable on the narrow screen.
-  await expect(page.locator("#page-next")).toBeVisible();
+  // The forward action is reachable on the narrow screen.
+  await expect(page.locator("#page-next, #submit-answers").first()).toBeVisible();
 });

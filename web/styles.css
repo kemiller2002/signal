@@ -54,6 +54,18 @@
 @media (max-width: 30rem) {
   .respondent-card { padding: 0.75rem; }
 }
+/* At 320 px (and 200% text there) the card lays flat and gives its whole
+   width to the answers, as before it was a card: the best-worst columns'
+   "Fits best" and "Fits least" keep whole words (the capture's audit). */
+@media (max-width: 22.5rem) {
+  .respondent-card {
+    padding-inline: 0;
+    border-inline: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+}
 
 /* Back stays at the start; the one forward action sits at the end. */
 .respondent-nav > :last-child { margin-inline-start: auto; }
