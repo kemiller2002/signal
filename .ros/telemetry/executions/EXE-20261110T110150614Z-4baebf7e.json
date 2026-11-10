@@ -512,14 +512,30 @@
     },
     {
       "metricId": "agent.interruptions",
-      "status": "unknown",
-      "reason": "runtime capability not reported or mapped",
-      "discoveredAt": "2026-11-10T11:01:50.614Z",
+      "status": "derived",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-10T11:57:45.000Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-codex-environment"
-      }
+        "type": "calculated",
+        "name": "ros-work-protocol",
+        "mechanism": "blocked-transition"
+      },
+      "lastAssessedAt": "2026-11-10T11:57:45.000Z",
+      "recordedAt": "2026-11-10T11:57:45.000Z",
+      "history": [
+        {
+          "status": "unknown",
+          "reason": "runtime capability not reported or mapped",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-codex-environment"
+          },
+          "discoveredAt": "2026-11-10T11:01:50.614Z",
+          "lastAssessedAt": "2026-11-10T11:01:50.614Z",
+          "recordedAt": "2026-11-10T11:01:50.614Z"
+        }
+      ]
     },
     {
       "metricId": "agent.resumes",
@@ -1361,6 +1377,26 @@
       },
       "collectedAt": "2026-11-10T11:01:50.614Z",
       "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-1249dd89f63492a48b8580f0",
+      "id": "agent.interruptions",
+      "value": 1,
+      "unit": "count",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "calculated",
+        "name": "ros-work-protocol",
+        "mechanism": "blocked-transition"
+      },
+      "collectedAt": "2026-11-10T11:57:45.000Z",
+      "schemaVersion": "1.0.0"
     }
   ],
   "rawTelemetry": [],
@@ -1373,6 +1409,17 @@
         "name": "ros",
         "mechanism": "work-lifecycle"
       }
+    },
+    {
+      "type": "work.blocked",
+      "occurredAt": "2026-11-10T11:57:45.000Z",
+      "reason": "Implementation and review evidence are pushed in draft PR 138. Whole-application acceptance awaits independent visual review and integration of existing PRs 136/137; live authenticated verification is unavailable until the deployment has configured identity and storage.",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "work-lifecycle"
+      },
+      "eventId": "TEVT-576ff65ebcc3ba1a8b668aec"
     }
   ],
   "repository": {

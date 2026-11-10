@@ -50,8 +50,8 @@
   "humanOnlyTransitions": [],
   "parentExecution": null,
   "startedAt": "2026-11-10T11:01:50.842Z",
-  "state": "active",
-  "stateReason": null,
+  "state": "blocked",
+  "stateReason": "Implementation and review evidence are pushed in draft PR 138. Whole-application acceptance awaits independent visual review and integration of existing PRs 136/137; live authenticated verification is unavailable until the deployment has configured identity and storage.",
   "origin": {
     "kind": "work-transition",
     "reference": "work.begin"
