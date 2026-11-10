@@ -33,9 +33,11 @@ let transition (env: Env) (previous: TemplateCatalog.Loaded) (backend: Store.Bac
             let! _ = announce env opened.DatasetId
             let! reopened = AdminGroupWork.openDataset env previous backend config actor (Some opened.RepositoryId) opened.DatasetId now
 
+            // The change is confirmed first: it landed whether or not the
+            // reopen that follows succeeds (SIG-VIS-PENDING-001).
             return
-                reopened
-                @ [ engine (AdminApp.Noted(notice "SIGNAL.LIFECYCLE.CHANGED" $"The dataset is now {RetentionScreen.stateLabel state}" false)) ]
+                engine (AdminApp.Noted(notice "SIGNAL.LIFECYCLE.CHANGED" $"The dataset is now {RetentionScreen.stateLabel state}" false))
+                :: reopened
     }
 
 /// Retires a finalized group's accepted results on a deletion request, then

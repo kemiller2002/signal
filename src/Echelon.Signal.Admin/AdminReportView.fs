@@ -127,6 +127,7 @@ let project (model: Model) (group: GroupSummary option) : View =
       "hasReport", flag data.IsSome
       // Formal snapshots of this group (WI-0075, ADM-022, ADM-023).
       "canTakeSnapshot", flag (data.IsSome && (capabilities model).Contains AdminState.CanCreateSnapshot)
+      yield! ActivityView.control model.Activity "snapshot" Operations.Operation.TakeSnapshot "Take a snapshot"
       "reportSnapshots",
       Items(
           model.Snapshots
@@ -135,7 +136,11 @@ let project (model: Model) (group: GroupSummary option) : View =
               [ "key", Text s.SnapshotId
                 "label", Text $"{s.SnapshotId} · {s.DefinitionId} v{s.DefinitionVersion} · {s.Accepted} responses · {s.Locale} · {s.TakenAt}"
                 "intact", Text(if s.Intact then "Verified" else "Altered: not exportable")
-                "canExport", Flag(s.Intact && (capabilities model).Contains AdminState.CanExport) ])
+                "canExport", Flag(s.Intact && (capabilities model).Contains AdminState.CanExport) ]
+              // Each export button binds within the row (GH-113).
+              @ ActivityView.fields model.Activity "json" (Operations.Operation.ExportSnapshot(s.SnapshotId, "report.json")) "Report (JSON)"
+              @ ActivityView.fields model.Activity "csv" (Operations.Operation.ExportSnapshot(s.SnapshotId, "sections.csv")) "Sections (CSV)"
+              @ ActivityView.fields model.Activity "lineage" (Operations.Operation.ExportSnapshot(s.SnapshotId, "lineage.json")) "Lineage")
       )
       "reportWithheld", flag (match report with Some(Error _) -> true | _ -> false)
       "reportWithheldReason", text (match report with Some(Error reasons) -> String.concat " " reasons | _ -> "")

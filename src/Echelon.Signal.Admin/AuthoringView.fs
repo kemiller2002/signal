@@ -45,6 +45,21 @@ let project (model: Model) : (string * ViewValue) list =
             | Error refusal -> $"Publication would be refused: %A{refusal}")
         |> Option.defaultValue ""
 
+    let activity = model.Activity
+    let control = ActivityView.control activity
+
+    let lifecycleChip (prefix: string) (lifecycle: TemplateListing.Lifecycle) =
+        [ prefix, Text(StateTones.lifecycleLabel lifecycle)
+          $"{prefix}Tone", Text(StateTones.toneId (StateTones.ofLifecycle lifecycle)) ]
+
+    // The draft's lifecycle chip: a draft not yet stored is a draft.
+    let draftChip =
+        survey
+        |> Option.map (TemplateListing.lifecycleOfDraft model.Templates)
+        |> Option.defaultValue TemplateListing.Lifecycle.Draft
+        |> lifecycleChip "draftLifecycle"
+        |> List.map (fun (name, value) -> name, Value value)
+
     [ "viewDraft", flag survey.IsSome
       "canEditDrafts", flag (can.Contains AdminState.CanEditDrafts)
       "canPublishTemplates", flag (can.Contains AdminState.CanPublishTemplates)
@@ -60,10 +75,20 @@ let project (model: Model) : (string * ViewValue) list =
                 "label", Text $"{r.Title} ({r.SurveyId} {r.Version})"
                 "canHide", Flag(not r.Hidden && can.Contains AdminState.CanPublishTemplates)
                 "canDerive", Flag(not (model.Templates.DraftsById.ContainsKey r.SurveyId) && can.Contains AdminState.CanEditDrafts)
-                // A row's buttons bind within the row (GH-113): the page-wide flag, per row.
-                "busy", Flag model.Busy ])
+                // A row's buttons bind within the row (GH-113): deriving is
+                // unavailable while an operation runs, as it was while the
+                // page was busy; hiding shows its own operation.
+                "busy", Flag(Operations.isRunning activity) ]
+              @ ActivityView.fields activity "hide" (Operations.Operation.HideVersion(r.SurveyId, r.Version)) "Hide from new groups")
       )
-      "draftLinks", Items(model.Templates.Drafts |> List.map (fun (s, title) -> [ "key", Text s; "label", Text $"{title} ({s})"; "href", Text(href (Draft s)) ]))
+      // Each stored draft with its lifecycle chip (SIG-VIS-PENDING-001), from its review as stored.
+      "draftLinks",
+      Items(
+          model.Templates.Drafts
+          |> List.map (fun (s, title) ->
+              [ "key", Text s; "label", Text $"{title} ({s})"; "href", Text(href (Draft s)) ]
+              @ lifecycleChip "lifecycle" (TemplateListing.lifecycleOfDraft model.Templates s))
+      )
       "hasDraft", flag editor.IsSome
       "hasNoDraft", flag (survey.IsSome && editor.IsNone)
       "draftSurvey", text (survey |> Option.defaultValue "")
@@ -71,6 +96,9 @@ let project (model: Model) : (string * ViewValue) list =
       "draftTitle", text (editor |> Option.map (fun e -> e.Draft.Content.Metadata.Title) |> Option.defaultValue "")
       "draftDescription", text (editor |> Option.bind (fun e -> e.Draft.Content.Metadata.Description) |> Option.defaultValue "")
       "draftUnsaved", flag (editor |> Option.exists _.Unsaved)
+      yield! draftChip
+      yield! control "saveDraft" Operations.Operation.SaveDraft "Save draft"
+      yield! control "confirmDelete" Operations.Operation.DeleteDraft "Delete draft"
       // Deleting a stored draft (AUT-006 §59), after a confirmation.
       "canDeleteDraft",
       flag (
@@ -164,6 +192,9 @@ let project (model: Model) : (string * ViewValue) list =
       "draftReview", text (survey |> Option.bind (fun s -> model.Templates.Reviews |> Map.tryFind s) |> Option.defaultValue "Not saved yet")
       "canRequestReview", flag (can.Contains AdminState.CanEditDrafts)
       "canApproveReview", flag (can.Contains AdminState.CanReviewTemplates)
+      yield! control "requestReview" Operations.Operation.RequestReview "Submit for review"
+      yield! control "approveReview" Operations.Operation.ApproveReview "Approve as reviewed"
+      yield! control "publish" Operations.Operation.PublishDraft "Publish"
       "draftPreview", text preview ]
     @ AreaAuthoringView.project (editor |> Option.map (fun e -> e.Draft.Content)) model.Authoring.Areas
     @ ScoringAuthoringView.project (editor |> Option.map (fun e -> e.Draft.Content)) model.Authoring.ScoringForm

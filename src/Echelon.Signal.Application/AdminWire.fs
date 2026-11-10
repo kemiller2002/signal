@@ -244,6 +244,15 @@ let private perform (env: Env) (state: State) (effect: AdminApp.Effect) : State 
                 | Error(Store.Failed meaning) -> return [ ToEngine(AdminApp.Failed(notice meaning.Code meaning.Message true)) ]
                 | Error Store.ConflictPersists ->
                     return [ ToEngine(AdminApp.Failed(notice "SIGNAL.STORAGE.CONFLICT" "The administrators changed elsewhere and the change no longer applies; it was not saved." false)) ]
+                // Unknown, not refused: the provider could not say whether it
+                // landed, and it is reconciled before anything is resent (ARX-015).
+                | Error(Store.OutcomeStillUnknown _) ->
+                    return
+                        [ ToEngine(
+                              AdminApp.Failed(
+                                  notice Echelon.Signal.Admin.Operations.OutcomeUnknownCode "The provider did not say whether the change to the administrators was saved; it is checked before anything is sent again." true
+                              )
+                          ) ]
                 | Error other -> return [ ToEngine(AdminApp.Failed(notice "SIGNAL.ACCESS.REFUSED" $"%A{other}" false)) ]
             })
 

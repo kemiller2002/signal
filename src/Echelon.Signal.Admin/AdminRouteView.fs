@@ -118,8 +118,12 @@ let private assessments (model: Model) : View =
                 "label", Text $"{r.Title} ({r.SurveyId} {r.Version})"
                 "status", Text(if r.Hidden then "Hidden from new groups" elif r.Superseded then "Superseded" else "Listed")
                 "groups", Text(r.NotForGroups |> Option.map (fun reason -> $"Cannot start groups: {reason}.") |> Option.defaultValue "Can start groups.")
-                // A row's button binds within the row (GH-113).
-                "busy", Flag model.Busy ])
+                // The version's lifecycle chip (SIG-VIS-PENDING-001), from its visibility.
+                "lifecycle", Text(StateTones.lifecycleLabel (TemplateListing.versionLifecycle r))
+                "lifecycleTone", Text(StateTones.toneId (StateTones.ofLifecycle (TemplateListing.versionLifecycle r)))
+                // A row's button binds within the row (GH-113): unavailable
+                // while an operation runs, as it was while the page was busy.
+                "busy", Flag(Operations.isRunning model.Activity) ])
       )
       "hasTestLinks", flag model.TestLinks.IsSome
       "testLinksTitle", text (model.TestLinks |> Option.map _.Title |> Option.defaultValue "")

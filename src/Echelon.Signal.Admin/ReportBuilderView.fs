@@ -47,6 +47,7 @@ let project (model: Model) : (string * ViewValue) list =
 
     [ "viewReports", flag (match model.Place.View with Ok Reports -> true | _ -> false)
       "canBuildReports", flag (can.Contains AdminState.CanBuildReport)
+      yield! ActivityView.control model.Activity "saveDefinition" Operations.Operation.SaveReportDefinition "Save definition"
       "reportsHref", text (href Reports)
       "newReportId", text model.Builder.NewId
       "hasBuilderProblem", flag model.Builder.Problem.IsSome

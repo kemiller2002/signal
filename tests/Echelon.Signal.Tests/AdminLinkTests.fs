@@ -263,9 +263,16 @@ let ``the administrator page binds only what its engine projects, and sends only
     // issued invitation links (link) by AdminView once links are issued (CatalogPageTests);
     // a draft section's completion flag (requiredForCompletion) by AuthoringView (RuleAuthoringTests);
     // a draft section's scoring choice (isMean ... isNone) by AreaAuthoringView (AreaAuthoringTests).
+    // The same empty lists' new fields (SIG-VIS-PENDING-001): a stored
+    // version's and a stored draft's lifecycle chip (lifecycle, lifecycleTone;
+    // AdminRouteView, AuthoringView), a version's hide button (hide*;
+    // AuthoringView) and a snapshot's export buttons (json*, csv*, lineage*;
+    // AdminReportView, once a snapshot is taken).
     let emptyListFields =
         set [ "code"; "text"; "title"; "priority"; "frequency"; "label"; "baseline"; "delta"; "role"; "count"; "canDerive"; "canHide"; "questionCount"; "name"; "severity"; "message"; "intact"; "canExport"; "kind"; "link"; "requiredForCompletion"
-              "isMean"; "isMedian"; "isSum"; "isMinimum"; "isMaximum"; "isNone" ]
+              "isMean"; "isMedian"; "isSum"; "isMinimum"; "isMaximum"; "isNone"
+              "lifecycle"; "lifecycleTone"; "hideBusy"; "hideDisabled"; "hideLabel"
+              "jsonBusy"; "jsonDisabled"; "jsonLabel"; "csvBusy"; "csvDisabled"; "csvLabel"; "lineageBusy"; "lineageDisabled"; "lineageLabel" ]
     Assert.Empty(Set.difference bound (Set.union seen emptyListFields))
 
     // Every event the page sends is one the engine handles (an unknown one fails loudly).

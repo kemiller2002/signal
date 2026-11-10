@@ -197,6 +197,9 @@ type Page(browser: Browser, github: InMemoryStore, reachable: unit -> bool) =
     member _.Text(name: string) = view[name].GetValue<string>()
     member _.Items(name: string) = view[name].AsArray() |> Seq.map (fun item -> item.AsObject()) |> List.ofSeq
     member _.ViewText = view.ToJsonString()
+    /// The engine's model as the wire holds it now, for pure update tests
+    /// that start from a real signed-in page (OperationsTests).
+    member _.Model = state.Model
 
 let openPage (configuration: string option) =
     let browser = Browser(configuration)
@@ -253,20 +256,25 @@ let ``a dataset already opening is not opened a second time, and its button says
     let principal = { Access.PrincipalId = "github:583231"; Access.Kind = Access.Human; Access.DisplayName = "octocat" }
     let config = (Deployment.parse configured |> Result.toOption).Value
     let ready = { AdminApp.initial [] with Principal = Some principal; Deployment = Some config }
-    let opening' = { ready with Busy = true }
+    // The page-wide busy flag became per-action pending state (SIG-VIS-PENDING-001):
+    // "opening" is now the dataset's own open operation in flight.
+    let opening' = { ready with Activity = (Operations.start (Operations.Operation.OpenDataset "ds_engagement") Operations.idle).Value }
 
     let _, effects = AdminUpdate.update (AdminApp.Ui("openDataset", Some "ds_engagement", "")) opening'
     Assert.Empty(effects)
     let _, effects = AdminUpdate.update (AdminApp.Ui("openDataset", Some "ds_engagement", "")) ready
     Assert.Equal<AdminApp.Effect list>([ AdminApp.OpenDataset "ds_engagement" ], effects)
 
-    let opening (model: AdminApp.Model) =
-        match AdminView.project model |> List.pick (fun (name, value) -> if name = "datasets" then Some value else None) with
-        | View.Items [ row ] -> row |> List.pick (fun (field, value) -> if field = "opening" then Some value else None)
+    let field (name: string) (model: AdminApp.Model) =
+        match AdminView.project model |> List.pick (fun (key, value) -> if key = "datasets" then Some value else None) with
+        | View.Items [ row ] -> row |> List.pick (fun (key, value) -> if key = name then Some value else None)
         | other -> failwithf "unexpected datasets projection %A" other
 
-    Assert.Equal(View.Flag true, opening opening')
-    Assert.Equal(View.Flag false, opening ready)
+    // Its button says so: busy, with its own label, and not merely disabled.
+    Assert.Equal(View.Text "true", field "openBusy" opening')
+    Assert.Equal(View.Text "Opening Engagement", field "openLabel" opening')
+    Assert.Equal(View.Text "false", field "openBusy" ready)
+    Assert.Equal(View.Text "Engagement", field "openLabel" ready)
 
 // ---- Groups, imports and the lifecycle -----------------------------------------------------------
 

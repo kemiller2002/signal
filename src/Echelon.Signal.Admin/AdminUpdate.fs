@@ -33,6 +33,19 @@ let private settleAccess (model: Model) : Model * Effect list =
 
 let private can (model: Model) capability = (capabilities model).Contains capability
 
+/// The model with `operation` running, or None while another runs: no two
+/// store operations overlap (the guard in `Operations`).
+let private started (operation: Operations.Operation) (model: Model) : Model option =
+    Operations.start operation model.Activity |> Option.map (fun activity -> { model with Activity = activity })
+
+/// A person's activation: starts `operation` with its effects and clears the
+/// last notice, or is ignored while an operation runs, so a second click
+/// never queues a duplicate write.
+let private launch (operation: Operations.Operation) (effects: Effect list) (model: Model) : Model * Effect list =
+    match started operation model with
+    | Some model -> { model with Notice = None }, effects
+    | None -> model, []
+
 let private refuse code message =
     Some
         { Code = code
@@ -70,7 +83,7 @@ let private buttonActions =
 
 /// What the page does for an event.
 let private onNamedEvent (model: Model) (name: string) (key: string option) (value: string) : Model * Effect list =
-    let busy effects = { model with Busy = true; Notice = None }, effects
+    let busy operation effects = launch operation effects model
     let routeKey = groupKey model
     let place = model.Place
     // A checkbox sends its value when checked and "" when not (protocol 1.2).
@@ -92,8 +105,8 @@ let private onNamedEvent (model: Model) (name: string) (key: string option) (val
         match key with
         // While an open (such as the one after sign-in) is under way, a second
         // would race it and report its own setup as a change made elsewhere
-        // (GH-113); the button is disabled meanwhile ("opening").
-        | Some id when model.Principal.IsSome && not model.Busy -> busy [ OpenDataset id ]
+        // (GH-113): it is ignored (`launch`), and the button says it is opening.
+        | Some id when model.Principal.IsSome -> busy (Operations.Operation.OpenDataset id) [ OpenDataset id ]
         | _ -> model, []
     | "navigate" ->
         // A location the page names (`/groups`), as a link would.
@@ -103,8 +116,10 @@ let private onNamedEvent (model: Model) (name: string) (key: string option) (val
     | "openGroup" ->
         match key with
         | Some groupKey ->
-            let model, moves = go (navigate place (Group groupKey)) { model with Busy = true; Notice = None }
-            model, moves @ [ OpenGroup groupKey ]
+            // The view moves at once; the reread waits for nothing else to run.
+            let model, moves = go (navigate place (Group groupKey)) model
+            let model, effects = launch (Operations.Operation.OpenGroup groupKey) [ OpenGroup groupKey ] model
+            model, moves @ effects
         | None -> model, []
     | "exploreSort"
     | "exploreDisplay"
@@ -147,8 +162,11 @@ let private onNamedEvent (model: Model) (name: string) (key: string option) (val
 
         match routeKey with
         | Some groupKey when can model AdminState.CanImportBatch && not texts.IsEmpty ->
-            let model, effects = busy [ ImportArtifacts(groupKey, texts, (if texts.Length = 1 && model.ImportOrigin = ResultRecord.MultiPaste then ResultRecord.PastedUrl else model.ImportOrigin)) ]
-            { model with ImportText = "" }, effects
+            let origin = if texts.Length = 1 && model.ImportOrigin = ResultRecord.MultiPaste then ResultRecord.PastedUrl else model.ImportOrigin
+
+            match started Operations.Operation.ImportArtifacts model with
+            | Some model -> { model with ImportText = ""; Notice = None }, [ ImportArtifacts(groupKey, texts, origin) ]
+            | None -> model, []
         | Some _ when texts.IsEmpty -> model, []
         | _ -> { model with Notice = refuse "SIGNAL.ADMIN.NOT_PERMITTED" "Importing is not available here now." }, []
     | "inviteCount" -> { model with Invite = { model.Invite with Count = value } }, []
@@ -156,7 +174,7 @@ let private onNamedEvent (model: Model) (name: string) (key: string option) (val
     | "inviteExpires" -> { model with Invite = { model.Invite with Expires = value } }, []
     | "issueInvitations" ->
         match routeKey, Invitations.parse model.Invite with
-        | Some groupKey, Ok(count, terms) when can model AdminState.CanCreateGroup -> busy [ IssueInvitations(groupKey, count, terms) ]
+        | Some groupKey, Ok(count, terms) when can model AdminState.CanCreateGroup -> busy Operations.Operation.IssueInvitations [ IssueInvitations(groupKey, count, terms) ]
         | Some _, Error problem -> { model with Notice = refuse "SIGNAL.INVITE.INVALID" problem }, []
         | _ -> { model with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "Issuing invitations needs ManageGroups and a writable store." }, []
     | "saveInvitations" ->
@@ -169,7 +187,7 @@ let private onNamedEvent (model: Model) (name: string) (key: string option) (val
     | "newGroupMinimum" -> { model with NewGroup = {| model.NewGroup with Minimum = positive value model.NewGroup.Minimum |} }, []
     | "createGroup" when can model AdminState.CanCreateGroup ->
         let g = model.NewGroup
-        busy [ CreateGroup(g.Template, g.Mode, g.Expected, g.Minimum) ]
+        busy Operations.Operation.CreateGroup [ CreateGroup(g.Template, g.Mode, g.Expected, g.Minimum) ]
     | "createGroup" -> { model with Notice = refuse "SIGNAL.ADMIN.NOT_PERMITTED" "Creating groups needs ManageGroups and a writable store." }, []
     | "transition" ->
         let needed =
@@ -180,7 +198,7 @@ let private onNamedEvent (model: Model) (name: string) (key: string option) (val
             | _ -> AdminState.CanSealGroup
 
         match routeKey with
-        | Some groupKey when can model needed -> busy [ TransitionGroup(groupKey, value) ]
+        | Some groupKey when can model needed -> busy (Operations.Operation.TransitionGroup value) [ TransitionGroup(groupKey, value) ]
         | _ -> { model with Notice = refuse "SIGNAL.GROUP.ILLEGAL_TRANSITION" $"'{value}' is not available for this group now." }, []
     | "admitAccount" -> { model with Admit = {| model.Admit with Account = value.Trim() |} }, []
     | "admitGrant" -> { model with Admit = {| model.Admit with Grant = value |} }, []
@@ -193,31 +211,32 @@ let private onNamedEvent (model: Model) (name: string) (key: string option) (val
                   Kind = Human
                   DisplayName = $"GitHub account {account}" }
 
-            let model, effects = busy [ ChangeRoster(Admit(principal, grantOf model.Admit.Grant)) ]
-            { model with Admit = {| model.Admit with Account = "" |} }, effects
+            match started Operations.Operation.Admit model with
+            | Some model -> { model with Admit = {| model.Admit with Account = "" |}; Notice = None }, [ ChangeRoster(Admit(principal, grantOf model.Admit.Grant)) ]
+            | None -> model, []
         else
             { model with Notice = refuse "SIGNAL.ACCESS.NOT_AN_ACCOUNT_NUMBER" "Enter the person's GitHub account number (digits only), never a login or e-mail." }, []
     | "removeAdministrator" when can model AdminState.CanManageAdministrators ->
         match key with
-        | Some principalId -> busy [ ChangeRoster(Remove principalId) ]
+        | Some principalId -> busy (Operations.Operation.RemoveAdministrator principalId) [ ChangeRoster(Remove principalId) ]
         | None -> model, []
     | "admit"
     | "removeAdministrator" -> { model with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "This needs ManageAdministrators and a writable store." }, []
-    | "rebuildIndex" when can model AdminState.CanRepairIndex -> busy [ RebuildIndex ]
+    | "rebuildIndex" when can model AdminState.CanRepairIndex -> busy Operations.Operation.RebuildIndex [ RebuildIndex ]
     | "rebuildIndex" -> { model with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "Rebuilding the index needs ManageStorage." }, []
     | "refresh" ->
         match model.Dataset with
-        | Some dataset -> busy [ OpenDataset dataset.DatasetId ]
+        | Some dataset -> busy Operations.Operation.Refresh [ OpenDataset dataset.DatasetId ]
         | None -> model, []
     | "dismissNotice" -> { model with Notice = None; Conflict = None }, []
     | "takeSnapshot" when can model AdminState.CanCreateSnapshot ->
         match place.View with
-        | Ok(Report(g, family, locale)) -> busy [ TakeSnapshot(g, family, locale) ]
+        | Ok(Report(g, family, locale)) -> busy Operations.Operation.TakeSnapshot [ TakeSnapshot(g, family, locale) ]
         | _ -> { model with Notice = refuse "SIGNAL.REPORT.NO_REPORT" "Open a group's report first." }, []
     | "takeSnapshot" -> { model with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "Taking a snapshot needs BuildReports and a writable store." }, []
     | "exportSnapshot" when can model AdminState.CanExport ->
         match key with
-        | Some id when [ "report.json"; "sections.csv"; "lineage.json" ] |> List.contains value -> busy [ ExportSnapshot(id, value) ]
+        | Some id when [ "report.json"; "sections.csv"; "lineage.json" ] |> List.contains value -> busy (Operations.Operation.ExportSnapshot(id, value)) [ ExportSnapshot(id, value) ]
         | _ -> model, []
     | "exportSnapshot" -> { model with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "Exporting needs ExportData." }, []
     // The respondent site's copy of a published version (DF-SIGNAL-2026-0005):
@@ -238,7 +257,7 @@ let private onNamedEvent (model: Model) (name: string) (key: string option) (val
         let model = { model with Builder = screen; Notice = None }
 
         match commands with
-        | [ ReportBuilder.SaveDefinition(d, p) ] when can model AdminState.CanBuildReport -> busy [ SaveReportDefinition(d, p) ]
+        | [ ReportBuilder.SaveDefinition(d, p) ] when can model AdminState.CanBuildReport -> launch Operations.Operation.SaveReportDefinition [ SaveReportDefinition(d, p) ] model
         | [ _ ] -> { model with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "Saving a report definition needs BuildReports and a writable store." }, []
         | _ -> model, []
     | authoring when Authoring.events.Contains authoring ->
@@ -247,17 +266,22 @@ let private onNamedEvent (model: Model) (name: string) (key: string option) (val
         let model = { model with Authoring = screen; Notice = None }
         let permitted capability = can model capability
 
+        // A write starts its operation, or is ignored while one runs (`launch`).
+        let write operation effect (m: Model, effects) =
+            let m, begun = launch operation [ effect ] m
+            m, effects @ begun
+
         commands
         |> List.fold
             (fun (m: Model, effects) command ->
                 match command with
                 | Authoring.OpenDraft s -> let m, moves = go (navigate m.Place (Draft s)) m in m, effects @ moves
-                | Authoring.SaveDraft d when permitted AdminState.CanEditDrafts -> { m with Busy = true }, effects @ [ SaveDraft d ]
-                | Authoring.PublishDraft(d, a) when permitted AdminState.CanPublishTemplates -> { m with Busy = true }, effects @ [ PublishDraft(d, a) ]
-                | Authoring.HideVersion(s, v) when permitted AdminState.CanPublishTemplates -> { m with Busy = true }, effects @ [ HideTemplate(s, v) ]
-                | Authoring.RequestReview s when permitted AdminState.CanEditDrafts -> { m with Busy = true }, effects @ [ RequestReview s ]
-                | Authoring.ApproveReview d when permitted AdminState.CanReviewTemplates -> { m with Busy = true }, effects @ [ ApproveReview d ]
-                | Authoring.DeleteDraft s when permitted AdminState.CanEditDrafts -> { m with Busy = true }, effects @ [ DeleteDraft s ]
+                | Authoring.SaveDraft d when permitted AdminState.CanEditDrafts -> write Operations.Operation.SaveDraft (SaveDraft d) (m, effects)
+                | Authoring.PublishDraft(d, a) when permitted AdminState.CanPublishTemplates -> write Operations.Operation.PublishDraft (PublishDraft(d, a)) (m, effects)
+                | Authoring.HideVersion(s, v) when permitted AdminState.CanPublishTemplates -> write (Operations.Operation.HideVersion(s, v)) (HideTemplate(s, v)) (m, effects)
+                | Authoring.RequestReview s when permitted AdminState.CanEditDrafts -> write Operations.Operation.RequestReview (RequestReview s) (m, effects)
+                | Authoring.ApproveReview d when permitted AdminState.CanReviewTemplates -> write Operations.Operation.ApproveReview (ApproveReview d) (m, effects)
+                | Authoring.DeleteDraft s when permitted AdminState.CanEditDrafts -> write Operations.Operation.DeleteDraft (DeleteDraft s) (m, effects)
                 | _ -> { m with Notice = refuse "SIGNAL.ACCESS.CAPABILITY_NOT_HELD" "This needs EditDrafts (saving, asking for review), ReviewTemplates (approving) or PublishTemplates (publishing, hiding) and a writable store." }, effects)
             (model, [])
     // The draft preview (AUT-003 §§20-22): the survey page's engine on the
@@ -299,7 +323,15 @@ let private onUi (model: Model) (name: string) (key: string option) (value: stri
     | Some(original, action) -> onNamedEvent model original key action
     | None -> onNamedEvent model name key value
 
-let update (msg: Msg) (model: Model) : Model * Effect list =
+/// The operation in flight settled by `msg`, when `msg` answers it
+/// (`AdminApp.answer`): before the message itself is applied, so what it
+/// starts (a new group's view) finds nothing running.
+let private settled (msg: Msg) (model: Model) : Model =
+    match model.Activity.Running |> Option.bind (fun running -> AdminApp.answer running msg) with
+    | Some outcome -> { model with Activity = Operations.settle outcome model.Activity }
+    | None -> model
+
+let private apply (msg: Msg) (model: Model) : Model * Effect list =
     match msg with
     | Started(page, query) ->
         // A provider callback is consumed and removed from the address by
@@ -319,12 +351,15 @@ let update (msg: Msg) (model: Model) : Model * Effect list =
             | Some identity -> { model with SignIn = Credential.SigningIn; CallbackQuery = [] }, [ BeginIdentity(identity, model.CallbackQuery) ]
             | None -> model, []
     | IdentityChanged(signIn, principal) ->
-        let model, moves = settleAccess { model with SignIn = signIn; Principal = principal; Busy = false }
+        let model, moves = settleAccess { model with SignIn = signIn; Principal = principal }
 
         match principal, model.Deployment with
         | Some _, Some config ->
             match config.Datasets with
-            | [ only ] -> { model with Busy = true }, moves @ [ OpenDataset only.Id ]
+            | [ only ] ->
+                match started (Operations.Operation.OpenDataset only.Id) model with
+                | Some opening -> opening, moves @ [ OpenDataset only.Id ]
+                | None -> model, moves
             | _ -> model, moves
         | None, _ -> { model with Dataset = None }, moves
         | _ -> model, moves
@@ -335,25 +370,32 @@ let update (msg: Msg) (model: Model) : Model * Effect list =
 
             match notice with
             | Credential.SignedOutElsewhere -> settleAccess { model with Dataset = None; Principal = None; SignIn = Credential.SignedOut }
-            | _ -> { model with Dataset = Some { dataset with Credential = downgraded }; Busy = true }, [ OpenDataset dataset.DatasetId ]
+            | _ ->
+                let model = { model with Dataset = Some { dataset with Credential = downgraded } }
+
+                // Reloaded now; while an operation runs, the reload would race it
+                // (`Operations`), so the page asks for a refresh once it is answered.
+                match started Operations.Operation.Refresh model with
+                | Some model -> model, [ OpenDataset dataset.DatasetId ]
+                | None -> { model with Activity = { model.Activity with ReloadOwed = true } }, []
         | None -> model, []
     | DatasetOpened(dataset, at) ->
         { model with
             Dataset = Some dataset
             Connectivity = Credential.Online
             LastVerified = Some at
-            Busy = false },
+            Activity = { model.Activity with ReloadOwed = false } },
         []
     | CatalogLoaded(catalog, listing) ->
         let template = if catalog |> List.exists (fun e -> e.Hash = model.NewGroup.Template) then model.NewGroup.Template else catalog |> List.tryHead |> Option.map _.Hash |> Option.defaultValue ""
         { model with Catalog = catalog; Templates = listing; NewGroup = {| model.NewGroup with Template = template |} }, []
-    | SnapshotsLoaded snapshots -> { model with Snapshots = snapshots; Busy = false }, []
+    | SnapshotsLoaded snapshots -> { model with Snapshots = snapshots }, []
     | LibraryLoaded library -> { model with Library = library }, []
-    | DraftDeleted survey -> { model with Authoring = Authoring.deleted survey model.Authoring; Busy = false }, []
-    | DefinitionSaved entry -> { model with Builder = ReportBuilder.saved entry model.Builder; Busy = false }, []
-    | ExportReady(name, mime, data) -> { model with Busy = false }, [ Download(name, mime, data) ]
-    | DraftSaved survey -> { model with Authoring = Authoring.saved survey model.Authoring; Busy = false }, []
-    | DraftPublished(survey, _) -> { model with Authoring = Authoring.published survey model.Authoring; Busy = false }, []
+    | DraftDeleted survey -> { model with Authoring = Authoring.deleted survey model.Authoring }, []
+    | DefinitionSaved entry -> { model with Builder = ReportBuilder.saved entry model.Builder }, []
+    | ExportReady(name, mime, data) -> model, [ Download(name, mime, data) ]
+    | DraftSaved survey -> { model with Authoring = Authoring.saved survey model.Authoring }, []
+    | DraftPublished(survey, _) -> { model with Authoring = Authoring.published survey model.Authoring }, []
     | GroupUpdated group ->
         match model.Dataset with
         | Some dataset ->
@@ -363,20 +405,19 @@ let update (msg: Msg) (model: Model) : Model * Effect list =
                 else
                     dataset.Groups @ [ group ]
 
-            let model = { model with Dataset = Some { dataset with Groups = groups }; Busy = false }
+            let model = { model with Dataset = Some { dataset with Groups = groups } }
             // A new group opens; an update to the group in view stays where it is.
             if groupKey model = Some group.Key then model, [] else go (navigate model.Place (Group group.Key)) model
-        | None -> { model with Busy = false }, []
-    | InvitationsIssued(group, links) -> { model with Busy = false; Issued = Some {| Group = group; Links = links |} }, []
+        | None -> model, []
+    | InvitationsIssued(group, links) -> { model with Issued = Some {| Group = group; Links = links |} }, []
     | Failed notice
-    | Noted notice -> { model with Notice = Some notice; Busy = false }, []
+    | Noted notice -> { model with Notice = Some notice }, []
     | WentOffline reason ->
         { model with
             Connectivity = Credential.Degraded(reason, model.LastVerified)
-            Busy = false
             Notice = Some { Code = "SIGNAL.STORAGE.OFFLINE"; Message = "The data store cannot be reached. What is shown may be out of date; changes are unavailable."; Infrastructure = true } },
         []
-    | ConflictFound conflict -> { model with Conflict = Some conflict; Busy = false }, []
+    | ConflictFound conflict -> { model with Conflict = Some conflict }, []
     | LocationMoved page -> go (arrive (access model) model.Place page) model
     | ReturnRecalled target ->
         match target |> Option.bind (ReturnTo.capture table) with
@@ -386,3 +427,6 @@ let update (msg: Msg) (model: Model) : Model * Effect list =
     | LinkCopied false ->
         { model with Notice = Some { Code = "SIGNAL.LINK.NOT_COPIED"; Message = "The browser did not allow copying. Copy the address from the address bar instead."; Infrastructure = false } }, []
     | Ui(name, key, value) -> onUi model name key value
+
+/// The next model and the effects to perform.
+let update (msg: Msg) (model: Model) : Model * Effect list = apply msg (settled msg model)
