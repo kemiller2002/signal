@@ -283,3 +283,10 @@
 }
 .admin-rows li:last-child { border-block-end: 0; }
 .admin-title h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); }
+/* On the narrowest screens the editor's numbered lists keep a smaller
+   indent and their row buttons a smaller inner padding, so a label breaks
+   between words, not letters (the audit's collapse check). */
+@media (max-width: 30rem) {
+  .admin .draft-panel :is(ol, ul) { padding-inline-start: 1.25rem; }
+  .admin .draft-panel .forma-button { padding-inline: 0.5rem; }
+}
