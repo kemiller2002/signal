@@ -178,6 +178,13 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - Evidence: CI on `d2ab83d` green (693 .NET, 191 Playwright); `visual-evidence/baseline-d2ab83d` (85 screens, 540 shots, all 85 audited, no finding; 959 focus stops, all visible).
 - The improved audit on `e9eed4e` found admin panels overflowing with 200% text at 320 px (fixed in `afee558`, now also asserted by the shell test), an unavailable report link at 2.42:1 from an old `opacity: 0.6` (secondary colour now), and light shots taken mid colour-transition after a dark one (the capture now waits for finite animations, `98532cc`).
 
+### signal#136 review round (WI-0125, 2026-11-10)
+
+- REQUEST_CHANGES at `977ffb9` (visual gate). Fixed in `4227355` and `8d48eae`: the notice's "Technical detail" no longer collapses at 834 px; the Retention panel says why nothing can be retired (`RetentionScreen.retentionNote`); unresolved work is one item per obligation per group with its group, a path (the group's imported surveys, or Storage) and what resolves it (`AdminView.obligationsOf`, `obligationPath`; `ShellProjectionTests`); order is dataset title, activity, notice, then tabs; danger on Delete draft's confirmation and the Retire / Delete from active state targets; group filters labelled as the chips; `admin.areas` declared top from 768, left below.
+- `tests/visual/audit.mjs` flags text narrower than a word (3+ lines, under 4 characters a line) at 1440, 834, 390 and 320 px with 200% text. Shell screens are clean on `8d48eae`; it still reports the draft findings table (authoring, #137) and the group results, scoring and report tables (results, 2e) at 390 / 320@200%, to be fixed in those PRs.
+- Follow-up WI-0124: Remove administrator has no confirmation.
+- Evidence: CI on `8d48eae` green (699 .NET, 191 Playwright); `visual-evidence/baseline-8d48eae`.
+
 ## Modernization audit (WI-0100, 2026-11-08)
 
 - Reports and machine-readable coverage: `docs/modernization/` (start at

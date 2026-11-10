@@ -55,6 +55,62 @@
   </div>
 </header>
 <main class="admin forma-stack">
+  <!-- The open dataset as the view's title (SIG-ECHELON-APP-002): its name,
+       what the credential allows, and Refresh and Sign out; the activity line
+       and the notice follow it, before the route tabs (ADM-033, ADM-056,
+       ADM-070; SIG-VIS-PENDING-001/-002: #activity beside the notice and the
+       status). -->
+  <template data-if="screenDataset">
+    <div id="status" class="admin-status" role="status">
+      <p class="echelon-eyebrow admin-status__eyebrow">Dataset</p>
+      <p class="admin-status__line"><strong class="echelon-heading admin-status__dataset" data-text="datasetLabel"></strong> <span id="credential" data-text="credential"></span></p>
+      <template data-if="readOnly"><p id="read-only">Read-only. <span data-text="readOnlyReasons"></span></p></template>
+      <template data-if="offline"><p id="offline">Offline: what is shown was last verified <span data-text="lastVerified"></span> and may be out of date. Changes are unavailable and nothing is queued.</p></template>
+      <button type="button" class="forma-button" data-event="refresh" data-bind-disabled="refreshDisabled" data-bind-aria-busy="refreshBusy" data-bind-aria-disabled="refreshBusy" data-text="refreshLabel">Refresh</button>
+      <button type="button" class="forma-button" data-event="signOut">Sign out</button>
+    </div>
+  </template>
+
+  <template data-if="hasOperationalFault">
+    <aside class="forma-fault forma-fault--inline" id="operational-fault" role="alert">
+      <p class="forma-fault__title"><strong data-text="operationalFaultTitle"></strong></p>
+      <p class="forma-fault__message" data-text="operationalFaultMessage"></p>
+      <p class="forma-fault-reference">Reference <code data-text="operationalFaultReference"></code></p>
+    </aside>
+  </template>
+
+  <!-- What runs now and what the store last said about a change
+       (SIG-VIS-PENDING-001, -002), beside the notice and the status where the
+       person acts. #activity is the page's one live region for operations:
+       always in the page, it announces each start and each settle once, the
+       notice's sentence included, so the notice below is not a second live
+       region. The running control says so itself (aria-busy, its
+       present-participle label); focus comes here when that control went away. -->
+  <div id="activity" class="activity" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" data-focus-target="activity">
+    <template data-if="operationRunning">
+      <div id="operation-pending" class="echelon-loading" data-bind-data-persistence="persistenceState">
+        <p class="forma-spinner"><span class="forma-spinner__indicator" aria-hidden="true"></span><span class="forma-spinner__label" data-text="operationText"></span></p>
+      </div>
+    </template>
+    <template data-if="hasPersistence">
+      <p id="persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p>
+    </template>
+    <template data-if="reloadOwed">
+      <p id="reload-owed" data-text="reloadText"></p>
+    </template>
+    <span class="forma-visually-hidden" data-text="noticeAnnouncement"></span>
+  </div>
+
+  <!-- Domain refusals and infrastructure notices: a sentence, with the stable
+       code as technical detail (ADM-031). Announced through #activity above. -->
+  <template data-if="hasNotice">
+    <aside id="notice" class="forma-alert" data-tone="attention">
+      <p id="notice-message" data-text="notice"></p>
+      <details><summary>Technical detail</summary><code id="notice-code" data-text="noticeCode"></code></details>
+      <button type="button" class="forma-button" data-event="dismissNotice">Dismiss</button>
+    </aside>
+  </template>
+
   <!-- Relative links from the engine's route codec (SIG-LINK-002), as route
        tabs: the current area carries aria-current="page". -->
   <nav class="admin-areas" id="areas" aria-label="Administration">
@@ -552,45 +608,8 @@
     </section>
   </template>
 
-  <template data-if="hasOperationalFault">
-    <aside class="forma-fault forma-fault--inline" id="operational-fault" role="alert">
-      <p class="forma-fault__title"><strong data-text="operationalFaultTitle"></strong></p>
-      <p class="forma-fault__message" data-text="operationalFaultMessage"></p>
-      <p class="forma-fault-reference">Reference <code data-text="operationalFaultReference"></code></p>
-    </aside>
-  </template>
 
-  <!-- What runs now and what the store last said about a change
-       (SIG-VIS-PENDING-001, -002), beside the notice and the status where the
-       person acts. #activity is the page's one live region for operations:
-       always in the page, it announces each start and each settle once, the
-       notice's sentence included, so the notice below is not a second live
-       region. The running control says so itself (aria-busy, its
-       present-participle label); focus comes here when that control went away. -->
-  <div id="activity" class="activity" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" data-focus-target="activity">
-    <template data-if="operationRunning">
-      <div id="operation-pending" class="echelon-loading" data-bind-data-persistence="persistenceState">
-        <p class="forma-spinner"><span class="forma-spinner__indicator" aria-hidden="true"></span><span class="forma-spinner__label" data-text="operationText"></span></p>
-      </div>
-    </template>
-    <template data-if="hasPersistence">
-      <p id="persistence" data-bind-data-persistence="persistenceState" data-text="persistenceText"></p>
-    </template>
-    <template data-if="reloadOwed">
-      <p id="reload-owed" data-text="reloadText"></p>
-    </template>
-    <span class="forma-visually-hidden" data-text="noticeAnnouncement"></span>
-  </div>
 
-  <!-- Domain refusals and infrastructure notices: a sentence, with the stable
-       code as technical detail (ADM-031). Announced through #activity above. -->
-  <template data-if="hasNotice">
-    <aside id="notice" class="forma-alert" data-tone="attention">
-      <p id="notice-message" data-text="notice"></p>
-      <details><summary>Technical detail</summary><code id="notice-code" data-text="noticeCode"></code></details>
-      <button type="button" class="forma-button" data-event="dismissNotice">Dismiss</button>
-    </aside>
-  </template>
 
   <template data-if="screenLoading">
     <div id="loading" class="echelon-loading" role="status">
@@ -643,26 +662,24 @@
 
   <template data-if="screenDataset">
     <section id="dataset" class="forma-stack">
-      <!-- Status: credential, read-only and offline state (ADM-033, ADM-056, ADM-070). -->
-      <div id="status" class="admin-status" role="status">
-        <p class="echelon-eyebrow admin-status__eyebrow">Dataset</p>
-        <p class="admin-status__line"><strong class="echelon-heading admin-status__dataset" data-text="datasetLabel"></strong> <span id="credential" data-text="credential"></span></p>
-        <template data-if="readOnly"><p id="read-only">Read-only. <span data-text="readOnlyReasons"></span></p></template>
-        <template data-if="offline"><p id="offline">Offline: what is shown was last verified <span data-text="lastVerified"></span> and may be out of date. Changes are unavailable and nothing is queued.</p></template>
-        <button type="button" class="forma-button" data-event="refresh" data-bind-disabled="refreshDisabled" data-bind-aria-busy="refreshBusy" data-bind-aria-disabled="refreshBusy" data-text="refreshLabel">Refresh</button>
-        <button type="button" class="forma-button" data-event="signOut">Sign out</button>
-      </div>
 
       <template data-if="viewOverview">
         <section id="overview" class="forma-stack" aria-labelledby="overview-title">
-          <h2 id="overview-title" class="echelon-heading">Overview</h2>
+          <!-- The current tab names this view; the heading stays for structure. -->
+          <h2 id="overview-title" class="forma-visually-hidden">Overview</h2>
           <!-- Unresolved work first (ADM-031), marked for attention only when
                the dataset has some; the counts below are Signal's own. -->
           <section class="echelon-panel" id="unresolved" aria-labelledby="unresolved-title" data-bind-data-echelon-attention="hasObligations">
             <div class="echelon-panel__header"><h3 id="unresolved-title" class="echelon-heading">Unresolved work</h3></div>
             <div class="echelon-panel__body">
               <ul id="obligations" class="admin-plain-list admin-obligations">
-                <template data-each="obligations" data-key="code"><li data-text="text"></li></template>
+                <template data-each="obligations" data-key="key">
+                  <li data-bind-data-code="code">
+                    <p class="admin-obligation__text" data-text="text"></p>
+                    <p class="admin-obligation__meta">Group <code data-text="group"></code>. <span data-text="resolution"></span></p>
+                    <a class="admin-obligation__link" data-bind-href="href" data-text="linkLabel"></a>
+                  </li>
+                </template>
               </ul>
               <template data-if="noObligations"><p id="no-obligations">Nothing in this dataset is waiting to be resolved.</p></template>
             </div>
@@ -787,6 +804,7 @@
               <section id="group-retention" class="echelon-panel" data-echelon-surface="sunken" aria-labelledby="group-retention-heading">
                 <div class="echelon-panel__header"><h3 id="group-retention-heading" class="echelon-heading">Retention</h3></div>
                 <div class="echelon-panel__body">
+                <template data-if="hasRetentionNote"><p id="retention-note" data-text="retentionNote"></p></template>
                 <template data-if="sourcesRetired"><p id="sources-retired" tabindex="-1" data-focus-target="sources-retired">Accepted results retired. <span data-text="sourcesRetiredText"></span></p></template>
                 <template data-if="canRetireSources"><button type="button" id="retire-sources" class="forma-button" data-event="retireSources" data-bind-disabled="busy" data-focus-target="retire-sources">Retire accepted results…</button></template>
                 <template data-if="confirmingRetire">
@@ -998,7 +1016,7 @@
             <template data-if="canManageLifecycle">
               <ul class="forma-stack" id="lifecycle-targets">
                 <template data-each="lifecycleTargets" data-key="target">
-                  <li><button type="button" class="forma-button" data-event="datasetTransition" data-bind-disabled="targetDisabled" data-bind-aria-busy="targetBusy" data-bind-aria-disabled="targetBusy" data-text="targetLabel"></button> <span data-text="targetMeaning"></span></li>
+                  <li><button type="button" class="forma-button" data-bind-data-echelon-emphasis="targetEmphasis" data-event="datasetTransition" data-bind-disabled="targetDisabled" data-bind-aria-busy="targetBusy" data-bind-aria-disabled="targetBusy" data-text="targetLabel"></button> <span data-text="targetMeaning"></span></li>
                 </template>
               </ul>
             </template>

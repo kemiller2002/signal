@@ -238,6 +238,8 @@ test("SIG-ECHELON-APP-002: the administrator shell marks the current area and ke
 
   await createGroup(page);
   await expect(page.locator("#tab-group")).toHaveAttribute("aria-current", "true");
+  // A collecting group's Retention panel says why nothing can be retired yet.
+  await expect(page.locator("#retention-note")).toHaveText("Accepted results can be retired once the group is finalized or sealed.");
   expect(await visiblePrimaries(page).count()).toBeLessThanOrEqual(1);
   await expectNoHorizontalOverflow(page, "admin: group overview, foundry ledger shell @1280");
 
@@ -257,4 +259,15 @@ test("SIG-ECHELON-APP-002: the administrator shell marks the current area and ke
   await area(page, "Storage");
   await expect(page.getByRole("heading", { level: 2, name: "Storage" })).toBeVisible();
   await expectNoHorizontalOverflow(page, "admin: storage, 200% text @320");
+  // The dataset lifecycle targets that take it out of use carry danger
+  // emphasis; the others do not.
+  const targets = page.locator("#lifecycle-targets button");
+  await expect(targets.first()).toBeVisible();
+  for (const target of await targets.all()) {
+    const label = (await target.textContent()).trim();
+    const destructive = label === "Retire" || label === "Delete from active state";
+    if (destructive) await expect(target, label).toHaveAttribute("data-echelon-emphasis", "danger");
+    else expect(await target.getAttribute("data-echelon-emphasis"), label).not.toBe("danger");
+  }
+  await expect(targets.filter({ hasText: /^(Retire|Delete from active state)$/ })).toHaveCount(2);
 });

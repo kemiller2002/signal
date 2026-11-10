@@ -139,3 +139,5 @@
 | WI-0121 | SIG-ECHELON-APP-002 (c): authoring in the foundry ledger direction | ready |  | medium |
 | WI-0122 | SIG-ECHELON-APP-002 (d): respondent page (no admin chrome, one primary action, truthful progress) | captured |  | medium |
 | WI-0123 | SIG-ECHELON-APP-002 (e): results (score figures, How this was calculated panel) | captured |  | medium |
+| WI-0124 | Remove administrator acts without a confirmation: the Administrators area's Remove button removes the account at once (follow-up from the signal#136 review; not fixed there) | captured |  | medium |
+| WI-0125 | SIG-ECHELON-APP-002 (b) review fixes on signal#136: notice layout, retention note, per-group obligations with paths, shell order, danger on destructive lifecycle targets, filter labels, audit collapse check | complete |  | medium |

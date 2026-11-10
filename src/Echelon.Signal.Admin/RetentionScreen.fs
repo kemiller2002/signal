@@ -36,6 +36,29 @@ let targetLabel (state: Retention.State) =
     | Retention.ProviderDeletionVerified -> "Record verified provider deletion"
     | Retention.ProviderDeletionNotProvable -> "Record that provider deletion is not provable"
 
+/// Whether moving the dataset to `state` takes it out of use: these targets
+/// carry danger emphasis on their buttons (SIG-ECHELON-APP-002).
+let isDestructive (state: Retention.State) =
+    match state with
+    | Retention.Retired
+    | Retention.DeletedFromActiveState -> true
+    | _ -> false
+
+/// Why the open group's accepted results cannot be retired now, when there is
+/// nothing to do in the Retention panel: the panel says so rather than
+/// standing empty. None when they are retired or can be retired.
+let retentionNote (status: GroupLifecycle.Status) (retired: bool) (canRetire: bool) =
+    let retirable =
+        match status with
+        | GroupLifecycle.Finalized
+        | GroupLifecycle.FinalizedIncomplete
+        | GroupLifecycle.Sealed -> true
+        | _ -> false
+
+    if retired || canRetire then None
+    elif not retirable then Some "Accepted results can be retired once the group is finalized or sealed."
+    else Some "Retiring accepted results needs a writable store and the ManageStorage grant."
+
 /// The states the console offers from `state`: every legal transition except
 /// verified provider deletion. GitHub keeps history, so a person can never
 /// establish that by hand (ADM-045); only a provider's proof may.

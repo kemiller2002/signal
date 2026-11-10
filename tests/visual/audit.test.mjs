@@ -2,7 +2,7 @@
 // alpha composition and the findings it records.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { compose, contrastFindings, contrastRatio, keyboardFindings, required } from "./audit.mjs";
+import { collapseFindings, compose, contrastFindings, contrastRatio, keyboardFindings, required } from "./audit.mjs";
 
 test("contrast ratios match WCAG's definition", () => {
   assert.equal(Math.round(contrastRatio([0, 0, 0], [255, 255, 255]) * 100) / 100, 21);
@@ -50,4 +50,12 @@ test("opacity fades text toward its background, and every ratio is summarised", 
   assert.equal(found.lowest[0].text, "faded");
   assert.equal(found.bands["7plus"], 1);
   assert.equal((found.bands.below3 ?? 0) + (found.bands["3to4.5"] ?? 0), 1);
+});
+
+test("collapsed text is recorded with the width it collapsed at", () => {
+  const found = collapseFindings([
+    { width: "1440", found: [] },
+    { width: "834", found: [{ element: "summary", text: "Technical detail", lines: 14, words: 2, boxWidth: 9 }] }
+  ]);
+  assert.deepEqual(found, [{ element: "summary", text: "Technical detail", lines: 14, words: 2, boxWidth: 9, width: "834" }]);
 });

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 124,
+  "nextSeq": 126,
   "items": [
     {
       "id": "WI-0001",
@@ -2995,6 +2995,48 @@
       "attachments": [],
       "createdAt": "2026-11-10T05:45:37.548Z",
       "updatedAt": "2026-11-10T05:45:37.548Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0124",
+      "title": "Remove administrator acts without a confirmation: the Administrators area's Remove button removes the account at once (follow-up from the signal#136 review; not fixed there)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T07:38:02.905Z",
+      "updatedAt": "2026-11-10T07:38:02.905Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0125",
+      "title": "SIG-ECHELON-APP-002 (b) review fixes on signal#136: notice layout, retention note, per-group obligations with paths, shell order, danger on destructive lifecycle targets, filter labels, audit collapse check",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "complete",
+      "attachments": [],
+      "createdAt": "2026-11-10T07:38:03.388Z",
+      "updatedAt": "2026-11-10T08:13:40.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

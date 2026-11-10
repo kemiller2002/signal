@@ -92,6 +92,7 @@
     <Compile Include="OperationsFollowUpTests.fs" />
     <Compile Include="OperationsGuardTests.fs" />
     <Compile Include="StateToneTests.fs" />
+    <Compile Include="ShellProjectionTests.fs" />
     <Compile Include="DraftPreviewTests.fs" />
     <Compile Include="RuleAuthoringTests.fs" />
     <Compile Include="AreaAuthoringTests.fs" />
