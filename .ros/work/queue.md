@@ -136,6 +136,6 @@
 | WI-0118 | SIG-ECHELON-APP-001: adopt echelon-current 1.39.0 (Echelon theme 1.1.0) and load the Echelon application layer and fonts on every page; capture tooling onto main | complete | signal, design-system | high |
 | WI-0119 | SIG-ECHELON-APP-002 (a): landing page in the foundry ledger direction | complete |  | medium |
 | WI-0120 | SIG-ECHELON-APP-002 (b): administrator shell and dashboard (app bar, route tabs, panels) | complete |  | medium |
-| WI-0121 | SIG-ECHELON-APP-002 (c): authoring in the foundry ledger direction | captured |  | medium |
+| WI-0121 | SIG-ECHELON-APP-002 (c): authoring in the foundry ledger direction | ready |  | medium |
 | WI-0122 | SIG-ECHELON-APP-002 (d): respondent page (no admin chrome, one primary action, truthful progress) | captured |  | medium |
 | WI-0123 | SIG-ECHELON-APP-002 (e): results (score figures, How this was calculated panel) | captured |  | medium |
