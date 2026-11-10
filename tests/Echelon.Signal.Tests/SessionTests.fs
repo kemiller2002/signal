@@ -69,6 +69,9 @@ let ``with every question answered the results are shown, scored or not`` () =
     let results = items "results" session
     Assert.Equal<Scalar list>([ Text "75.0"; Text "75.0"; Text "Not scored" ], results |> List.map (fun r -> r.["score"]))
     Assert.Equal<Scalar list>([ Text "scored"; Text "scored"; Text "unscored" ], results |> List.map (fun r -> r.["scoreState"]))
+    // A score is a figure; "Not scored" is shown apart from the figures.
+    Assert.Equal<Scalar list>([ Flag false; Flag false; Flag true ], results |> List.map (fun r -> r.["hideFigure"]))
+    Assert.Equal<Scalar list>([ Flag true; Flag true; Flag false ], results |> List.map (fun r -> r.["hideUnscored"]))
     Assert.Equal(Text "2 of 5 numeric", results.[2].["coverage"])
     Assert.Equal(Text "Needs at least 3 numeric answers; missing data is not counted as zero.", results.[2].["note"])
     Assert.Equal("2 of 3 dimensions scored", text "scoredCount" session)

@@ -414,8 +414,8 @@
         <!-- Scoring models, interpretations and the overall score (ALG-004, WI-0081):
              named built-in choices, each compiling to the engine's scorer algebra. -->
         <section id="scoring-authoring" class="draft-scoring" aria-labelledby="scoring-authoring-heading">
-          <h4 id="scoring-authoring-heading">How sections score</h4>
-          <ul id="scoring-sections"><template data-each="draftSectionScoring" data-key="id"><li data-text="label"></li></template></ul>
+          <h4 id="scoring-authoring-heading" class="draft-scoring__heading">How sections score</h4>
+          <ul id="draft-scoring-sections" class="draft-scoring__list"><template data-each="draftSectionScoring" data-key="id"><li data-text="label"></li></template></ul>
           <label>Section <select id="scoring-section" data-event="scoringSection"><template data-each="scoringSectionChoices" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
           <label>Model <select id="scoring-model" data-event="scoringModel"><template data-each="scoringModels" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
           <label>Weights, one per scored question in order (weighted models) <input id="scoring-weights" type="text" data-event="scoringWeights" data-bind-value="scoringWeights" /></label>
@@ -426,7 +426,7 @@
           <label>Special answers count as (blank: left out) <input id="scoring-substitute" type="text" data-event="scoringSubstitute" data-bind-value="scoringSubstitute" /></label>
           <label>Answers a score needs <input id="scoring-minimum" type="text" inputmode="numeric" data-event="scoringMinimum" data-bind-value="scoringMinimum" /></label>
           <button type="button" class="forma-button" data-event="applySectionSpecials">Apply</button>
-          <h4>Interpretations</h4>
+          <h4 class="draft-scoring__heading">Interpretations</h4>
           <ul id="draft-interpretations"><template data-each="draftInterpretations" data-key="id"><li><span data-text="label"></span> <button type="button" class="forma-button" data-event="removeInterpretation">Remove</button></li></template></ul>
           <label>Bands on (a section id, or overall) <input id="band-target" type="text" data-event="bandTarget" data-bind-value="bandTarget" /></label>
           <label>Bands, as "Low 0-40; Medium 40-70; High 70-100" <input id="band-text" type="text" data-event="bandText" data-bind-value="bandText" /></label>
@@ -435,7 +435,7 @@
           <label>Threshold <input id="pass-threshold" type="text" data-event="passThreshold" data-bind-value="passThreshold" /></label>
           <label>Direction <select data-event="passDirection"><template data-each="passDirections" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
           <button type="button" class="forma-button" data-event="addPassFail">Add pass / fail</button>
-          <h4>Overall score</h4>
+          <h4 class="draft-scoring__heading">Overall score</h4>
           <p id="overall-now" data-text="overallNow"></p>
           <label>Method <select id="overall-method" data-event="overallMethod"><template data-each="overallMethods" data-key="value"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template></select></label>
           <label>Section weights, as "S1=2, S2=1" (weighted sections) <input id="overall-weights" type="text" data-event="overallWeights" data-bind-value="overallWeights" /></label>
@@ -897,56 +897,91 @@
               </section>
               </template>
               <template data-if="viewResults">
-              <!-- Charts compiled and validated in F# (ADM-015..017): meters for the
-                   marks, a symbol beside every colour, and the same data as text. -->
-              <section id="exploration" class="forma-stack" aria-label="Exploration">
-                <div class="explore-controls">
-                  <label><input type="checkbox" data-event="exploreSort" value="value" data-bind-checked="exploreByValue" /> Sort by value</label>
-                  <label><input type="checkbox" data-event="exploreDisplay" value="percent" data-bind-checked="explorePercent" /> Distribution as percentages</label>
-                  <button type="button" class="forma-button" data-event="exploreSection">All sections</button>
+              <!-- Charts compiled and validated in F# (ADM-015..017), composed as
+                   the "foundry ledger" results (SIG-ECHELON-APP-002 (e), signal#140
+                   review): each section by its name from the template, a bar for
+                   the engine's value, and the value as text; a value that cannot be
+                   shown says why and draws no bar. The caption says the same as
+                   text. No overall score, dataset mean or strengths: the engine
+                   projects none for a group. -->
+              <section id="exploration" class="echelon-panel" aria-labelledby="exploration-title">
+                <div class="echelon-panel__header">
+                  <h3 id="exploration-title" class="echelon-heading">Section means</h3>
+                  <!-- The view's options, quiet, beside its heading: the order,
+                       and which section's distribution shows below. -->
+                  <div class="forma-actions">
+                    <label class="admin-option"><input type="checkbox" data-event="exploreSort" value="value" data-bind-checked="exploreByValue" /> Sort by value</label>
+                    <label class="admin-option admin-option--field">Distribution
+                      <select id="explore-section" data-event="exploreSection">
+                        <option value="">None</option>
+                        <template data-each="chart" data-key="key"><option data-bind-value="key" data-bind-selected="selected" data-text="category"></option></template>
+                      </select>
+                    </label>
+                  </div>
                 </div>
-                <figure id="section-chart">
-                  <figcaption data-text="chartDescription"></figcaption>
-                  <table class="chart">
-                    <thead><tr><th>Section</th><th>Mean</th><th>Bar</th></tr></thead>
-                    <tbody>
-                      <template data-each="chart" data-key="key">
-                        <tr data-bind-data-pattern="pattern">
-                          <th scope="row"><button type="button" class="forma-button" data-event="exploreSection" data-text="category"></button></th>
-                          <td><span aria-hidden="true" data-text="symbol"></span> <span data-text="value"></span></td>
-                          <td><meter min="0" max="1" data-bind-value="position" data-bind-hidden="unavailable" data-bind-aria-label="value"></meter></td>
-                        </tr>
-                      </template>
-                    </tbody>
-                  </table>
-                  <p class="chart-warnings" data-text="chartWarnings"></p>
+                <div class="echelon-panel__body">
+                <figure id="section-chart" class="admin-figure">
+                  <figcaption id="section-chart-caption" class="admin-figure__caption" data-text="chartDescription"></figcaption>
+                  <ol class="admin-means" aria-labelledby="section-chart-caption">
+                    <template data-each="chart" data-key="key">
+                      <li class="admin-means__row" data-bind-data-unavailable="unavailable">
+                        <span class="admin-means__name" data-text="category"></span>
+                        <meter class="admin-meter" min="0" max="1" data-bind-value="position" data-bind-hidden="unavailable" data-bind-aria-label="value"></meter>
+                        <span class="admin-means__value" data-text="value"></span>
+                      </li>
+                    </template>
+                  </ol>
+                  <p class="admin-figure__note" data-text="chartWarnings"></p>
                 </figure>
                 <template data-if="hasDistribution">
-                  <figure id="distribution-chart">
-                    <figcaption data-text="distributionDescription"></figcaption>
-                    <table class="chart">
-                      <thead><tr><th>Scores</th><th>Respondents</th><th>Bar</th></tr></thead>
-                      <tbody>
-                        <template data-each="distribution" data-key="key">
-                          <tr><th scope="row" data-text="category"></th><td data-text="value"></td><td><meter min="0" max="1" data-bind-value="position" data-bind-hidden="unavailable"></meter></td></tr>
-                        </template>
-                      </tbody>
-                    </table>
+                  <figure id="distribution-chart" class="admin-figure admin-distribution" aria-labelledby="distribution-title">
+                    <div class="admin-distribution__head">
+                      <h4 id="distribution-title">Distribution: <span data-text="exploreSectionName"></span></h4>
+                      <div class="forma-actions">
+                        <label class="admin-option"><input type="checkbox" data-event="exploreDisplay" value="percent" data-bind-checked="explorePercent" /> As percentages</label>
+                        <button type="button" class="forma-button" data-echelon-emphasis="tertiary" data-event="exploreSection">All sections</button>
+                      </div>
+                    </div>
+                    <figcaption id="distribution-chart-caption" class="admin-figure__caption" data-text="distributionDescription"></figcaption>
+                    <ol class="admin-means" aria-labelledby="distribution-chart-caption">
+                      <template data-each="distribution" data-key="key">
+                        <li class="admin-means__row" data-bind-data-unavailable="unavailable">
+                          <span class="admin-means__name" data-text="category"></span>
+                          <meter class="admin-meter" min="0" max="1" data-bind-value="position" data-bind-hidden="unavailable" data-bind-aria-label="value"></meter>
+                          <span class="admin-means__value" data-text="value"></span>
+                        </li>
+                      </template>
+                    </ol>
                   </figure>
                 </template>
+                </div>
               </section>
               </template>
               <template data-if="viewScoring">
               <section id="scoring" class="forma-stack" aria-label="Scoring">
-                <p>Calculated measures, not the canonical result.</p>
-                <ul class="areas" id="scoring-sections">
-                  <template data-each="scoringSections" data-key="id"><li><a data-bind-href="href" data-bind-aria-current="current" data-text="id"></a></li></template>
+                <section class="echelon-panel" aria-labelledby="scoring-measures-title">
+                <div class="echelon-panel__header"><h3 id="scoring-measures-title" class="echelon-heading">Measures</h3></div>
+                <div class="echelon-panel__body">
+                <ul class="areas echelon-nav-tabs admin-scoring-sections" id="scoring-sections">
+                  <template data-each="scoringSections" data-key="id"><li><a data-bind-href="href" data-bind-aria-current="current" data-text="label"></a></li></template>
                 </ul>
-                <table id="scoring-measures">
+                <div class="admin-table-scroll" role="region" tabindex="0" aria-labelledby="scoring-measures-title">
+                <table id="scoring-measures" class="admin-table admin-table--figures">
                   <thead><tr><th>Section</th><th>Measure</th><th>Value</th></tr></thead>
                   <tbody><template data-each="scoringMeasures" data-key="key"><tr><td data-text="section"></td><td data-text="measure"></td><td data-text="value"></td></tr></template></tbody>
                 </table>
+                </div>
+                </div>
+                </section>
+                <!-- How these figures were derived (SIG-ECHELON-APP-002 (e)): what
+                     they are, and the engine's lineage of the calculation. -->
+                <section class="echelon-panel" data-echelon-surface="accent" aria-labelledby="scoring-derivation-title">
+                <div class="echelon-panel__body">
+                <h3 id="scoring-derivation-title" class="echelon-eyebrow">How this was calculated</h3>
+                <p>Calculated measures, not the canonical result.</p>
                 <p>Lineage: <code id="lineage" data-text="lineage"></code></p>
+                </div>
+                </section>
                 <template data-if="hasLateSubmissions"><p id="late-submissions" role="status" data-text="lateSubmissions"></p></template>
               </section>
               </template>
@@ -1115,14 +1150,14 @@
   <template data-if="viewReport">
     <section id="report-controls" class="forma-stack report-controls" aria-label="Report options">
       <nav aria-label="Report family">
-        <ul class="areas" id="report-families">
+        <ul class="areas echelon-nav-tabs" id="report-families">
           <template data-each="reportFamilies" data-key="id">
             <li><a data-bind-href="href" data-bind-aria-current="current" data-bind-data-available="available" data-text="label"></a></li>
           </template>
         </ul>
       </nav>
       <nav aria-label="Report language">
-        <ul class="areas" id="report-locales">
+        <ul class="areas echelon-nav-tabs" id="report-locales">
           <template data-each="reportLocales" data-key="id">
             <li><a data-bind-href="href" data-bind-aria-current="current" data-bind-lang="id" data-text="label"></a></li>
           </template>
@@ -1132,10 +1167,11 @@
         <p id="report-withheld" role="status">This report is not available for this group. <span data-text="reportWithheldReason"></span></p>
       </template>
       <p class="forma-field__description">To keep a copy, print this page or save it as PDF: only the report is printed.</p>
-      <section id="report-snapshots" class="forma-stack" aria-labelledby="report-snapshots-title">
-        <h2 id="report-snapshots-title">Formal snapshots</h2>
+      <section id="report-snapshots" class="echelon-panel" aria-labelledby="report-snapshots-title">
+        <div class="echelon-panel__header"><h2 id="report-snapshots-title" class="echelon-heading">Formal snapshots</h2></div>
+        <div class="echelon-panel__body forma-stack">
         <p class="forma-field__description">A snapshot keeps this report exactly as it is now, with what produced it. Opening it later never shows newer data.</p>
-        <template data-if="canTakeSnapshot"><button type="button" class="forma-button" id="take-snapshot" data-event="takeSnapshot" data-bind-disabled="snapshotDisabled" data-bind-aria-busy="snapshotBusy" data-bind-aria-disabled="snapshotBusy" data-text="snapshotLabel">Take a snapshot</button></template>
+        <template data-if="canTakeSnapshot"><button type="button" class="forma-button" data-echelon-emphasis="primary" id="take-snapshot" data-event="takeSnapshot" data-bind-disabled="snapshotDisabled" data-bind-aria-busy="snapshotBusy" data-bind-aria-disabled="snapshotBusy" data-text="snapshotLabel">Take a snapshot</button></template>
         <ul id="snapshots">
           <template data-each="reportSnapshots" data-key="key">
             <li>
@@ -1149,6 +1185,7 @@
             </li>
           </template>
         </ul>
+        </div>
       </section>
     </section>
   </template>
@@ -1173,12 +1210,12 @@
           </nav>
         </ef-print-toc>
         <template data-if="reportHasSummary">
-          <ef-print-section><section><h2 data-text="reportTitleSummary"></h2><p id="report-summary" data-text="reportSummary"></p>
+          <ef-print-section><section><h2 data-text="reportTitleSummary"></h2><p id="report-summary" class="report-prose" data-text="reportSummary"></p>
             <ul id="report-warnings"><template data-each="reportWarnings" data-key="code"><li data-bind-data-code="code" data-text="text"></li></template></ul></section></ef-print-section>
         </template>
         <template data-if="reportHasResponseCounts">
           <ef-print-section><section><h2 data-text="reportTitleResponseCounts"></h2>
-            <dl id="report-counts"><template data-each="reportCounts" data-key="key"><div><dt data-text="label"></dt><dd data-bind-data-count="key" data-text="value"></dd></div></template></dl>
+            <dl id="report-counts" class="report-facts"><template data-each="reportCounts" data-key="key"><div><dt data-text="label"></dt><dd data-bind-data-count="key" data-text="value"></dd></div></template></dl>
           </section></ef-print-section>
         </template>
         <template data-if="reportHasOverallResult">
@@ -1186,17 +1223,20 @@
             <ef-print-metric><p id="report-overall" data-text="reportOverall"></p></ef-print-metric></section></ef-print-section>
         </template>
         <template data-if="reportHasSectionResults">
-          <ef-print-section><section><h2 data-text="reportTitleSectionResults"></h2>
-            <ef-print-table><table id="report-sections">
+          <ef-print-section><section><h2 id="report-section-results-title" data-text="reportTitleSectionResults"></h2>
+            <!-- On a narrow screen each row is a card that names its figures
+                 (no sideways scroll, no header cut off); print keeps Folio's
+                 table. -->
+            <div class="report-table" role="region" tabindex="0" aria-labelledby="report-section-results-title"><ef-print-table><table id="report-sections" class="report-cards">
               <thead><tr><template data-each="reportColumns" data-key="key"><th scope="col" data-text="label"></th></template></tr></thead>
-              <tbody><template data-each="reportSections" data-key="key"><tr><th scope="row" data-text="section"></th><td data-text="mean"></td><td data-text="median"></td><td data-text="range"></td><td data-text="scored"></td><td data-text="unscored"></td></tr></template></tbody>
-            </table></ef-print-table></section></ef-print-section>
+              <tbody><template data-each="reportSections" data-key="key"><tr><th scope="row" data-text="section"></th><td data-bind-data-label="meanLabel" data-text="mean"></td><td data-bind-data-label="medianLabel" data-text="median"></td><td data-bind-data-label="rangeLabel" data-text="range"></td><td data-bind-data-label="scoredLabel" data-text="scored"></td><td data-bind-data-label="unscoredLabel" data-text="unscored"></td></tr></template></tbody>
+            </table></ef-print-table></div></section></ef-print-section>
         </template>
         <template data-if="reportHasGroupDistributions">
-          <ef-print-section><section><h2 data-text="reportTitleGroupDistributions"></h2>
-            <ef-print-table><table id="report-spread">
-              <tbody><template data-each="reportSections" data-key="key"><tr><th scope="row" data-text="section"></th><td data-text="median"></td><td data-text="range"></td></tr></template></tbody>
-            </table></ef-print-table></section></ef-print-section>
+          <ef-print-section><section><h2 id="report-group-distributions-title" data-text="reportTitleGroupDistributions"></h2>
+            <div class="report-table" role="region" tabindex="0" aria-labelledby="report-group-distributions-title"><ef-print-table><table id="report-spread" class="report-cards">
+              <tbody><template data-each="reportSections" data-key="key"><tr><th scope="row" data-text="section"></th><td data-bind-data-label="medianLabel" data-text="median"></td><td data-bind-data-label="rangeLabel" data-text="range"></td></tr></template></tbody>
+            </table></ef-print-table></div></section></ef-print-section>
         </template>
         <template data-if="reportHasStrengths">
           <ef-print-section><section><h2 data-text="reportTitleStrengths"></h2><ul><template data-each="reportStrengths" data-key="key"><li data-text="text"></li></template></ul></section></ef-print-section>
@@ -1210,7 +1250,7 @@
         </template>
         <template data-if="reportHasCoverageAndConfidence">
           <ef-print-section><section><h2 data-text="reportTitleCoverageAndConfidence"></h2>
-            <dl id="report-coverage"><template data-each="reportCoverage" data-key="key"><div><dt data-text="label"></dt><dd data-text="value"></dd></div></template></dl></section></ef-print-section>
+            <dl id="report-coverage" class="report-facts"><template data-each="reportCoverage" data-key="key"><div><dt data-text="label"></dt><dd data-text="value"></dd></div></template></dl></section></ef-print-section>
         </template>
         <template data-if="reportHasComparisons">
           <ef-print-section><section><h2 data-text="reportTitleComparisons"></h2>
@@ -1220,7 +1260,7 @@
           <ef-print-section><section><h2 data-text="reportTitleRoleBreakdown"></h2><ul><template data-each="reportRoles" data-key="key"><li><span data-text="role"></span>: <span data-text="count"></span></li></template></ul></section></ef-print-section>
         </template>
         <template data-if="reportHasMethodology">
-          <ef-print-section><section><h2 data-text="reportTitleMethodology"></h2><ul id="report-methodology"><template data-each="reportMethodology" data-key="key"><li data-text="text"></li></template></ul></section></ef-print-section>
+          <ef-print-section><section><h2 data-text="reportTitleMethodology"></h2><ul id="report-methodology" class="report-prose"><template data-each="reportMethodology" data-key="key"><li data-text="text"></li></template></ul></section></ef-print-section>
         </template>
         <template data-if="reportHasAuditMetadata">
           <ef-print-section><section><h2 data-text="reportTitleAuditMetadata"></h2>

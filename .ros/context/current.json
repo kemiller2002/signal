@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T17:16:49.000Z",
+  "updatedAt": "2026-11-10T18:26:11.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -5058,6 +5058,72 @@
       },
       "completedAt": "2026-11-10T17:16:49.000Z",
       "conclusion": "signal#139 Should items: EXCEPTION scoped to the text in Forma's best-worst rows, recorded; scale markers are stored values; numeric labels shown once; no id-selector restyle of Forma, guarded; subject-class guard gap is WI-0142. CI green at d4ac6558 (710 .NET, 208 Playwright)."
+    },
+    {
+      "id": "WI-0123",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "web/admin/index.html"
+        },
+        {
+          "type": "implementation",
+          "path": "web/admin/admin.css"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/AdminView.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/Analysis.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "web/index.html"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/ui-conformance-admin-results.spec.js"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/ResultsProjectionTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/FormaOverrideGuardTests.fs"
+        }
+      ],
+      "updatedAt": "2026-11-10T18:26:11.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261110T161857233Z-24826fde"
+      ],
+      "latestCheckpoint": {
+        "id": "034807ae260fe9193177ba19",
+        "recordedAt": "2026-11-10T18:26:06.000Z",
+        "executionId": "EXE-20261110T161857233Z-24826fde",
+        "repository": "echelon-signal",
+        "branch": "feat/echelon-results",
+        "commit": "f113ed25a95c2a60c8a8395d0dc3948eb7a64af2",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal.git"
+        },
+        "remoteBranch": "feat/echelon-results",
+        "remoteCommit": "f113ed25a95c2a60c8a8395d0dc3948eb7a64af2",
+        "summary": "signal#140 visual gate and signal#141 follow-ups done: section means by name with bars, report tabs, figure grid, prose and narrow-screen cards, measure labels, respondent bar on the assessment page; guard holes, numeric scale markers, draft scoring sub-sections, unique ids. CI green at 95821132 (717 .NET, 214 Playwright); visual-evidence/baseline-9582113 (88 screens, none unreached; only the best-worst EXCEPTION in the audit)",
+        "nextAction": "complete WI-0123, update the signal#140 PR body, report for re-review",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-10T18:26:11.000Z",
+      "conclusion": "SIG-ECHELON-APP-002 (e): results, scoring and report in the foundry ledger direction, through the signal#140 visual gate and signal#141 follow-ups. CI green at 95821132 (717 .NET, 214 Playwright); visual-evidence/baseline-9582113, audit: only the best-worst EXCEPTION."
     }
   ]
 }

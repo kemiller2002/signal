@@ -185,3 +185,30 @@ test("an invited respondent submits anonymously and copies an unlinkable link", 
   await expect(page.locator("#copy-notice")).toHaveText(/copied/);
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(link);
 });
+
+// Results in the "foundry ledger" direction (SIG-ECHELON-APP-002 (e)): each
+// dimension's score as a figure from the engine's own values (a summary of
+// the table, hidden from assistive technology, which reads the table), no
+// invented overall score, and the engine's methodology in a "How this was
+// calculated" panel; one primary action.
+test("results show each dimension's score as a figure and say how it was calculated", async ({ assessment: page }) => {
+  for (const item of ITEMS) await answer(page, item, "3");
+  await answer(page, "CORE-011", "dont-know");
+  await answer(page, "CORE-012", "not-observed");
+  await answer(page, "CORE-013", "not-applicable");
+  await page.click("#see-results");
+  const figures = page.locator(".results-figures");
+  await expect(figures).toHaveAttribute("aria-hidden", "true");
+  await expect(figures.locator("li")).toHaveCount(3);
+  const rows = await resultRows(page);
+  await expect(figures.locator(".echelon-figure:visible, .results-unscored:visible")).toHaveText(rows.map(([, score]) => score));
+  // "Not scored" is words beside the figures, never set as one.
+  await expect(figures.locator("li").nth(2)).toHaveAttribute("data-state", "unscored");
+  await expect(figures.locator("li").nth(2).locator(".echelon-figure")).toBeHidden();
+  await expect(figures.locator("li").nth(2).locator(".results-unscored")).toHaveText("Not scored");
+  const derivation = page.getByRole("region", { name: "How this was calculated" });
+  await expect(derivation).toHaveAttribute("data-echelon-surface", "accent");
+  await expect(derivation.locator("#methodology")).toContainText("Each dimension score is the mean of its numeric answers");
+  await expect(page.locator("#results")).not.toContainText(/overall/i);
+  await expect(page.locator('#results [data-echelon-emphasis="primary"]:visible')).toHaveCount(0);
+});

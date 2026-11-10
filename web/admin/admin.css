@@ -10,14 +10,7 @@
 @import "../../node_modules/@echelon-foundry/print-components/src/styles/print.css" print;
 @import "../../web-kernel/page.css";
 
-/* Chart marks: a pattern beside every colour, so colour is never the only
-   carrier (ADM-017). Values and positions come from the engine. */
-.chart meter { inline-size: 100%; min-block-size: 1rem; }
-.chart tr[data-pattern="diagonal"] meter { background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgb(0 0 0 / 0.25) 4px 6px); }
-.chart tr[data-pattern="dots"] meter { background-image: radial-gradient(rgb(0 0 0 / 0.3) 1px, transparent 1.5px); background-size: 6px 6px; }
-.chart tr[data-pattern="cross"] meter { background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgb(0 0 0 / 0.2) 4px 5px), repeating-linear-gradient(-45deg, transparent 0 4px, rgb(0 0 0 / 0.2) 4px 5px); }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
-@media (forced-colors: active) { .chart meter { forced-color-adjust: auto; } }
 
 /* Focus the page moves itself (limen.focus, `data-focus-target`) after an
    operation answers is shown on :focus, not only :focus-visible: a browser
@@ -423,6 +416,15 @@
 }
 .draft-editor :is(.draft-fields, .draft-scoring) > :is(p, ul, ol, fieldset, h3, h4) { margin: 0; }
 .draft-editor :is(.draft-fields, .draft-scoring) > .forma-button { justify-self: start; }
+/* Scoring's sub-sections (How sections score, Interpretations, Overall
+   score) each start with space and a rule, so they do not run together;
+   the sections' scoring is a plain list, not bullets (signal#141 review). */
+.draft-editor .draft-scoring__heading:not(:first-child) {
+  margin-block-start: 1rem;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--echelon-border-subtle);
+}
+.draft-editor .draft-scoring__list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.35rem; }
 @media (min-width: 50rem) {
   .draft-panel--wide :is(.draft-fields, .draft-scoring) {
     grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
@@ -452,3 +454,129 @@
 .draft-ack { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; }
 .draft-ack > label { display: inline-flex; align-items: center; gap: 0.5rem; }
 #draft-warning-summary { color: var(--echelon-text-secondary); font-family: var(--forma-primitive-font-family-mono); font-size: 0.875rem; overflow-wrap: anywhere; }
+
+/* ---- Results, scoring and report (SIG-ECHELON-APP-002 (e), WI-0123) -----
+   Figures keep whole words and numbers: tables scroll in a labelled,
+   focusable region on a narrow screen instead of setting "Mean", "Section"
+   or "75.0" a few letters a line (the capture's audit at 390 px and at
+   320 px with 200% text). */
+.admin .admin-table--figures :is(th, td) { white-space: nowrap; overflow-wrap: normal; }
+.admin #scoring > .echelon-panel .echelon-panel__body > * { margin: 0; }
+.admin #report-snapshots .echelon-panel__body > :is(p, ul) { margin: 0; }
+
+/* Section means, as the "foundry ledger" results compose them (signal#140
+   review): a section's name, a bar for the engine's value and the value
+   itself, in rows; on a narrow screen the name takes its own line above the
+   bar. One colour for every bar: each row is named, so colour carries no
+   meaning; a value that cannot be shown draws no bar and says why. */
+.admin .admin-figure { margin: 0; display: grid; gap: 0.75rem; min-inline-size: 0; }
+.admin .admin-figure__caption { color: var(--echelon-text-secondary); font-size: 0.875rem; }
+.admin .admin-figure__note:empty { display: none; }
+.admin .admin-figure__note { margin: 0; color: var(--echelon-text-secondary); font-size: 0.875rem; }
+.admin .admin-means { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+.admin .admin-means__row {
+  display: grid;
+  grid-template-columns: minmax(8rem, 14rem) minmax(6rem, 1fr) minmax(3.5rem, auto);
+  gap: 0.5rem 1rem;
+  align-items: center;
+}
+.admin .admin-means__name { overflow-wrap: break-word; min-inline-size: 0; }
+.admin .admin-means__value {
+  font: 500 1rem/1.2 var(--forma-primitive-font-family-mono);
+  text-align: end;
+  white-space: nowrap;
+}
+/* A value that cannot be shown: its reason, in words, where the bar would be. */
+.admin .admin-means__row[data-unavailable="true"] .admin-means__value {
+  grid-column: 2 / -1;
+  text-align: start;
+  white-space: normal;
+  font: inherit;
+  color: var(--echelon-text-secondary);
+}
+.admin .admin-meter {
+  appearance: none;
+  inline-size: 100%;
+  block-size: 0.75rem;
+  border: 0;
+  border-radius: 99px;
+  background: var(--echelon-surface-sunken);
+  overflow: hidden;
+}
+.admin .admin-meter::-webkit-meter-bar { background: var(--echelon-surface-sunken); border: 0; border-radius: 99px; block-size: 0.75rem; }
+.admin .admin-meter::-webkit-meter-optimum-value,
+.admin .admin-meter::-webkit-meter-suboptimum-value,
+.admin .admin-meter::-webkit-meter-even-less-good-value { background: var(--echelon-accent-rule); border-radius: 99px; }
+.admin .admin-meter::-moz-meter-bar { background: var(--echelon-accent-rule); border-radius: 99px; }
+@media (forced-colors: active) { .admin .admin-meter { forced-color-adjust: auto; appearance: auto; } }
+@media (max-width: 40rem) {
+  .admin .admin-means__row { grid-template-columns: minmax(0, 1fr) minmax(3.5rem, auto); }
+  .admin .admin-means__name,
+  .admin .admin-means__row[data-unavailable="true"] .admin-means__value { grid-column: 1 / -1; }
+}
+/* The results' quiet options sit beside their heading; a drilled-in
+   section's distribution follows the means, under its own heading. */
+.admin .admin-option { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.875rem; }
+/* A field option: its name above its control, the pair as wide as there is
+   room for, up to a measure (the control keeps Forma's own width rule). */
+.admin .admin-option--field { display: grid; gap: 0.25rem; flex: 1 1 10rem; max-inline-size: 16rem; min-inline-size: 0; }
+.admin .admin-distribution { border-block-start: 1px solid var(--echelon-border-subtle); padding-block-start: 1rem; }
+.admin .admin-distribution__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1rem; }
+.admin .admin-distribution__head h4 { margin: 0; }
+.admin .admin-distribution__head .forma-actions { margin-inline-start: auto; }
+
+/* The report on screen (print keeps Folio's own layout): figures as a
+   definition grid, methodology and summary as prose with a measure, and a
+   table that, on a narrow screen, shows each row as a card naming its
+   figures, so nothing scrolls sideways and no heading is cut off. */
+@media screen {
+  .admin .report-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr));
+    gap: 0.75rem;
+    margin: 0;
+  }
+  .admin .report-facts > div {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--echelon-border-subtle);
+    border-radius: var(--echelon-radius-container);
+    background: var(--echelon-surface-raised);
+  }
+  .admin .report-facts dt { color: var(--echelon-text-secondary); font-size: 0.875rem; }
+  .admin .report-facts dd { margin: 0; font: 500 1.5rem/1.2 var(--forma-primitive-font-family-display); color: var(--forma-color-text-heading); }
+  .admin .report-prose { max-inline-size: 70ch; line-height: 1.6; }
+  /* Its one track never grows to its longest word: at 320 px with 200%
+     text a method's "Responsiveness:" is wider than the column and wraps
+     inside it instead of pushing the page sideways. */
+  .admin ul.report-prose { padding-inline-start: 1.25rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+  .admin .report-prose { overflow-wrap: break-word; }
+  .admin .report-table { overflow-x: auto; }
+  .admin .report-cards { border-collapse: collapse; min-inline-size: 100%; }
+  .admin .report-cards :is(th, td) {
+    white-space: nowrap;
+    overflow-wrap: normal;
+    padding: 0.6rem 0.75rem;
+    text-align: start;
+    border-block-end: 1px solid var(--echelon-border-subtle);
+  }
+  .admin .report-cards thead th { color: var(--echelon-text-secondary); font-size: 0.8125rem; }
+  .admin .report-cards td { font-variant-numeric: tabular-nums; }
+}
+@media screen and (max-width: 40rem) {
+  .admin .report-cards thead { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .admin .report-cards,
+  .admin .report-cards tbody { display: grid; gap: 0.75rem; }
+  .admin .report-cards tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.25rem 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--echelon-border-subtle);
+    border-radius: var(--echelon-radius-container);
+  }
+  .admin .report-cards th[scope="row"] { grid-column: 1 / -1; text-align: start; white-space: normal; }
+  .admin .report-cards td { display: contents; }
+  .admin .report-cards td::before { content: attr(data-label); color: var(--echelon-text-secondary); white-space: normal; }
+}

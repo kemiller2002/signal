@@ -157,18 +157,20 @@ let private choiceRows (qi: int) (q: Question) (answer: AnswerState option) (hel
            // A scale's choices are on its question's row (`scaleFields`).
            row $"{qi}-{ci}" "option" (common label @ [ "checked", flag (answer = Some state); "hideRow", flag (scalePoints q).IsSome ])))
 
-/// A point as the scale shows it: its marker is the value stored for it
-/// (point n is stored as n, as the console and the export show it), and its
-/// label is shown beside the marker unless it only repeats that number (a 0
-/// to 10 rating), when the marker alone names it.
+/// A point as the scale shows it (signal#141 review). A label that is
+/// purely a number (a 0 to 10 or 1 to 10 rating) is the point's marker, and
+/// is not shown again beside it: one number, the label's. Any other label is
+/// shown beside a marker that is the value stored for the point (point n is
+/// stored as n, as the console and the export show it).
 let pointShown (n: int) (label: string) =
-    let stored = string n
-    stored, label.Trim() = stored
+    match Int32.TryParse(label.Trim(), Globalization.NumberStyles.AllowLeadingSign, Globalization.CultureInfo.InvariantCulture) with
+    | true, _ -> label.Trim(), true
+    | _ -> string n, false
 
 /// A scale question's row as Forma's ordinal scale: one slot per point,
 /// numbered, then its special answers, all one radio group. Each input's
 /// value is its choice's index, so the page sends the question and the index.
-let private scaleFields (qi: int) (q: Question) (answer: AnswerState option) =
+let scaleFields (qi: int) (q: Question) (answer: AnswerState option) =
     match scalePoints q with
     | None -> []
     | Some points ->

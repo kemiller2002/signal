@@ -174,7 +174,8 @@ let private analysisRows (group: OpenedGroup) =
 
     [ for section in source.Scores |> Map.keys do
           for m in [ Analysis.Mean; Analysis.Median; Analysis.StandardDeviation; Analysis.InterquartileRange; Analysis.ConfidenceLower95; Analysis.ConfidenceUpper95 ] ->
-              section, Analysis.measureName m, show (Analysis.measure source (Some section) m) ]
+              // The measure's display label: its identifier is for records.
+              section, Analysis.measureLabel m, show (Analysis.measure source (Some section) m) ]
 
 /// What the page shows about a group.
 /// A section's distribution, released only when the disclosure policy allows

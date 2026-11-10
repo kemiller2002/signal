@@ -126,10 +126,14 @@ let private glyph =
     | "plus" -> "✚"
     | _ -> "○"
 
-let private marks (compiled: Visualization.Compiled) =
+/// A chart's marks; `keyOf` gives the key each mark's category is reached by
+/// (a section's id for its name).
+let private marks (keyOf: string -> string) (chosen: string option) (compiled: Visualization.Compiled) =
     compiled.Marks
     |> List.map (fun m ->
-        [ "key", Text m.Category
+        [ "key", Text(keyOf m.Category)
+          // The one the person drilled into, for the section picker.
+          "selected", Flag(chosen = Some(keyOf m.Category))
           "category", Text m.Category
           "value", Text m.Text
           "position", Number(defaultArg m.Position 0.0)
@@ -153,6 +157,19 @@ let private charts (model: Model) (group: GroupSummary option) =
         | Ok(Results(_, view)) -> view
         | _ -> defaultResults
 
+    // Each section by its name from the template (its id is how the page
+    // reaches it); a name two sections share is told apart by its id.
+    let names =
+        group
+        |> Option.map (fun g ->
+            let titled = g.Sections |> List.map (fun (id, _) -> id, AdminTypes.sectionTitle g id)
+            let shared title = (titled |> List.filter (snd >> (=) title)).Length > 1
+            titled |> List.map (fun (id, title) -> id, (if shared title then $"{title} ({id})" else title)))
+        |> Option.defaultValue []
+
+    let nameOf id = names |> List.tryFind (fst >> (=) id) |> Option.map snd |> Option.defaultValue id
+    let idOf name = names |> List.tryFind (snd >> (=) name) |> Option.map fst |> Option.defaultValue name
+
     let sectionChart =
         group
         |> Option.map (fun g ->
@@ -163,7 +180,7 @@ let private charts (model: Model) (group: GroupSummary option) =
             let data =
                 g.Sections
                 |> List.mapi (fun i (id, score) ->
-                    ({ Category = id
+                    ({ Category = nameOf id
                        Value =
                          match score with
                          | Some v -> Analysis.Value v
@@ -180,7 +197,7 @@ let private charts (model: Model) (group: GroupSummary option) =
                 let total = bins |> List.sumBy (fun (_, _, n) -> n)
 
                 let spec =
-                    { Visualization.defaultSpec Visualization.Histogram $"Distribution of {section}" with
+                    { Visualization.defaultSpec Visualization.Histogram $"Distribution of {nameOf section}" with
                         Dimension = Visualization.Binned
                         Sort = Visualization.ByOrder
                         Unit = if (e.Display = Percentages) then Visualization.Percent0To1 else Visualization.Count
@@ -198,14 +215,14 @@ let private charts (model: Model) (group: GroupSummary option) =
             | None -> None
         | _ -> None
 
-    let items (compiled: Result<Visualization.Compiled, Visualization.Refusal list> option) =
+    let items (keyOf: string -> string) (compiled: Result<Visualization.Compiled, Visualization.Refusal list> option) =
         match compiled with
-        | Some(Ok c) -> Items(marks c), Value(Text c.Description), Value(Text(c.Warnings |> List.map warningText |> String.concat " "))
+        | Some(Ok c) -> Items(marks keyOf e.Section c), Value(Text c.Description), Value(Text(c.Warnings |> List.map warningText |> String.concat " "))
         | Some(Error refusals) -> Items [], Value(Text $"This chart cannot be drawn: %A{refusals.Head}"), Value(Text "")
         | None -> Items [], Value(Text ""), Value(Text "")
 
-    let sectionItems, sectionDescription, sectionWarnings = items sectionChart
-    let distributionItems, distributionDescription, _ = items distribution
+    let sectionItems, sectionDescription, sectionWarnings = items idOf sectionChart
+    let distributionItems, distributionDescription, _ = items id distribution
 
     [ "chart", sectionItems
       "chartDescription", sectionDescription
@@ -215,7 +232,9 @@ let private charts (model: Model) (group: GroupSummary option) =
       "distributionDescription", distributionDescription
       "exploreByValue", Value(Flag (e.Sort = ByValue))
       "explorePercent", Value(Flag (e.Display = Percentages))
-      "exploreSection", Value(Text(e.Section |> Option.defaultValue "")) ]
+      "exploreSection", Value(Text(e.Section |> Option.defaultValue ""))
+      // The section drilled into, by name, for the distribution's heading.
+      "exploreSectionName", Value(Text(e.Section |> Option.map nameOf |> Option.defaultValue "")) ]
 
 /// The last batch's items by the view ADM-008 names.
 let private importViews: (string * (string -> bool)) list =

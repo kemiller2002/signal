@@ -169,6 +169,10 @@ let private resultRow (dimension: Dimension, result: DimensionResult) =
       "dimension", Text dimension.Label
       "score", Text score
       "scoreState", Text state
+      // A score is a figure; "Not scored" is words, shown apart so it never
+      // reads as a number (SIG-ECHELON-APP-002 (e)).
+      "hideFigure", Flag(state <> "scored")
+      "hideUnscored", Flag(state = "scored")
       "coverage", Text coverage
       "note", Text note ]
 

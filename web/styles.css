@@ -17,6 +17,24 @@
 #fixture-explanation-lines [data-indented="true"],
 #preview-explanation-lines [data-indented="true"] { margin-inline-start: 1.5rem; }
 
+/* ---- Results ("foundry ledger", SIG-ECHELON-APP-002) -------------------
+   Each dimension's score as a figure, a visual summary of the results table;
+   the methodology sits in an accent panel. Composition only. */
+.results-figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.results-figures .echelon-panel__body > * { margin: 0; }
+/* "Not scored" is words, not a number: the theme's figure shows a score, and
+   this Signal-owned line the words, so they never read as one. */
+.results-unscored { font-size: 1.25rem; line-height: 1.3; font-weight: var(--echelon-weight-label); }
+.results-figure-note { color: var(--echelon-text-secondary); font-size: 0.875rem; }
+#results .echelon-panel[data-echelon-surface="accent"] .echelon-panel__body > * { margin: 0; }
+
 /* ---- The respondent's page ("foundry ledger", SIG-ECHELON-APP-002) -----
    Composition only: panels, type roles and button emphasis are the Echelon
    application layer's. A quiet bar with Signal's mark (no administrator
@@ -60,10 +78,14 @@
   font-weight: var(--echelon-weight-label);
   overflow-wrap: anywhere;
 }
+/* The assessment page prints its report only (Folio), not the bar. */
+@media print { .respondent-bar { display: none; } }
 .respondent-bar__survey:not(:empty)::before { content: "· "; color: var(--echelon-text-secondary); }
 
-/* The page's one live region: the loading spinner shows; what it announces
-   otherwise is shown where it belongs, so it takes no room when idle. */
+/* A page's one live region (#activity, on the assessment and survey pages):
+   the loading spinner shows; what it announces otherwise is shown where it
+   belongs, so it takes no room when idle. */
+main.app > #activity:not(:has(#loading)),
 .respondent > .activity:not(:has(#loading)) {
   position: absolute;
   inline-size: 1px;

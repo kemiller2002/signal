@@ -123,6 +123,17 @@ test("SIG-ECHELON-APP-002: the draft editor's parts sit on panels in order, with
   const panels = draft.locator(".draft-editor > .echelon-panel > .echelon-panel__header h3");
   await expect(panels).toHaveText(["Details", "Sections", "Questions", "Conditions", "Facts", "Recommendations", "Completion",
     "Validation rules", "Presentation", "Scoring", "Translations", "Accessibility text", "Test fixtures", "Validation", "Review"]);
+  // Scoring's sub-sections stand apart (signal#141 review): each after the
+  // first starts below a rule with space above it, and the sections'
+  // scoring is a plain list.
+  const subsections = draft.locator(".draft-scoring__heading");
+  await expect(subsections).toHaveText(["How sections score", "Interpretations", "Overall score"]);
+  for (const heading of (await subsections.all()).slice(1)) {
+    const gap = await heading.evaluate((h) => h.getBoundingClientRect().top - h.previousElementSibling.getBoundingClientRect().bottom);
+    expect(gap, "space above a scoring sub-section").toBeGreaterThanOrEqual(24);
+    await expect(heading).toHaveCSS("border-top-style", "solid");
+  }
+  await expect(draft.locator("#draft-scoring-sections")).toHaveCSS("list-style-type", "none");
   const primaries = draft.locator('[data-echelon-emphasis="primary"]:visible');
   expect(await primaries.count()).toBeLessThanOrEqual(1);
   if (await primaries.count() === 1) await expect(primaries).toHaveText("Publish");
