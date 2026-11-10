@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 126,
+  "nextSeq": 128,
   "items": [
     {
       "id": "WI-0001",
@@ -3037,6 +3037,48 @@
       "attachments": [],
       "createdAt": "2026-11-10T07:38:03.388Z",
       "updatedAt": "2026-11-10T08:13:40.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0126",
+      "title": "Derive unreconciled imports from stored batch records when a dataset is opened or refreshed: today DatasetReady and RosterChanged summarise groups with GroupAdmin.summary 0 None, so interrupted imports from before the page opened are not listed under Unresolved work (follow-up from the signal#136 review)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-11-10T08:20:16.065Z",
+      "updatedAt": "2026-11-10T08:20:16.065Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0127",
+      "title": "SIG-ECHELON-APP-002 (b) review round 2 on signal#136: outcome beside the actions on long views, truthful unresolved-work wording and resume guidance, obligation page-flow test and capture",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-10T08:20:16.599Z",
+      "updatedAt": "2026-11-10T08:20:19.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
