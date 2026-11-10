@@ -2742,10 +2742,10 @@
         "accessibility"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-10T02:52:19.000Z",
-      "updatedAt": "2026-11-10T02:52:19.000Z",
+      "updatedAt": "2026-11-10T04:06:27.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

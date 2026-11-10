@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "anthropic/claude-code",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T02:52:20.000Z",
+  "updatedAt": "2026-11-10T04:06:27.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -4079,33 +4079,139 @@
     {
       "id": "WI-0112",
       "type": "engineering",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-11-10T02:52:20.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "documentation",
+          "path": "HANDOFF.md"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/ActivityView.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/AdminApp.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/AdminUpdate.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/AdminView.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/Authoring.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/Operations.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/ReportBuilder.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/RetentionScreen.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Admin/StateTones.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/AdminGroupWork.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/AdminProtocol.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/AdminWire.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/AdminWireState.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/AuthoringWork.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/Bridge.fs"
+        },
+        {
+          "type": "implementation",
+          "path": "src/Echelon.Signal.Application/Echelon.Signal.Application.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/AdminPageTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/Echelon.Signal.Tests.fsproj"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/OperationsFollowUpTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/OperationsTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/StateToneTests.fs"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/pending-states.spec.js"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/ui-conformance-admin.spec.js"
+        },
+        {
+          "type": "implementation",
+          "path": "web/admin/admin.js"
+        },
+        {
+          "type": "implementation",
+          "path": "web/admin/index.html"
+        }
+      ],
+      "updatedAt": "2026-11-10T04:06:27.000Z",
       "telemetryExecutionIds": [
         "EXE-20261110T025220961Z-a00aaed1"
       ],
       "latestCheckpoint": {
-        "id": "cb46fc2cd5c9b0b3c786a322",
-        "recordedAt": "2026-11-10T03:56:37.000Z",
+        "id": "b78bc70f52aeb54bb4ed4849",
+        "recordedAt": "2026-11-10T04:06:24.000Z",
         "executionId": "EXE-20261110T025220961Z-a00aaed1",
         "repository": "echelon-signal",
         "branch": "feat/per-action-pending-states",
-        "commit": "0b00a5e4c5f1b624b1a063621c28fe231117543c",
+        "commit": "e0de39d4e8eebf45c067270ce0751cf1cbe8a228",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal.git"
         },
         "remoteBranch": "feat/per-action-pending-states",
-        "remoteCommit": "0b00a5e4c5f1b624b1a063621c28fe231117543c",
-        "summary": "Review follow-ups green at 0b00a5e: 685/685 dotnet, 180/180 Playwright",
-        "nextAction": "Refresh visual evidence, update PR body, complete WI-0112",
+        "remoteCommit": "e0de39d4e8eebf45c067270ce0751cf1cbe8a228",
+        "summary": "Review follow-ups complete; CI green at 0b00a5e; visual evidence visual-evidence/baseline-1d599b4 posted",
+        "nextAction": "Independent re-review of PR #133 (do not merge before it)",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
         }
-      }
+      },
+      "completedAt": "2026-11-10T04:06:27.000Z"
     }
   ]
 }
