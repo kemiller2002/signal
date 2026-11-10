@@ -1,0 +1,3765 @@
+{
+  "scenario": "startup",
+  "durationMs": 431216,
+  "consoleErrors": [
+    "Failed to load resource: net::ERR_FAILED",
+    "[limen] bridge error during dispatch: TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:4321/build/wasm/wwwroot/_framework/dotnet.js",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "screens": [
+    {
+      "id": "startup-assessment-starting",
+      "title": "assessment page (web/): start-up screen before the engine mounts (download held)",
+      "scenario": "startup",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "hold **/build/wasm/wwwroot/_framework/dotnet.js (never answered), then open http://127.0.0.1:4321/web/index.html",
+          "operation": "engine start-up",
+          "durationMs": 86,
+          "observed": [
+            {
+              "atMs": 15,
+              "forMs": 33,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 48,
+              "forMs": null,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine\"",
+                "status: \"\""
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": []
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-assessment-starting/desktop-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-assessment-starting/desktop-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-assessment-starting/tablet-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-assessment-starting/tablet-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-assessment-starting/mobile-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-assessment-starting/mobile-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 3,
+            "4.5to7": 1
+          },
+          "lowest": [
+            {
+              "element": "p.forma-startup__slow",
+              "text": "Still starting. On a slow connection the engine can take up ",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Starting Signal: loading the assessment engine",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 4
+          },
+          "lowest": [
+            {
+              "element": "p.forma-startup__slow",
+              "text": "Still starting. On a slow connection the engine can take up ",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Starting Signal: loading the assessment engine",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 0,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": []
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/startup-assessment-starting/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 4,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "startup-assessment-slow",
+      "title": "assessment page (web/): start-up screen still starting after Forma's 8 s slow-note delay (download held)",
+      "scenario": "startup",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "hold **/build/wasm/wwwroot/_framework/dotnet.js, open http://127.0.0.1:4321/web/index.html, wait until the slow note is shown (about 8 s)",
+          "operation": "engine start-up",
+          "durationMs": 8980,
+          "observed": [
+            {
+              "atMs": 16,
+              "forMs": 33,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 49,
+              "forMs": 8012,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 8060,
+              "forMs": null,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+                "status: \"\""
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": []
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-assessment-slow/desktop-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-assessment-slow/desktop-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-assessment-slow/tablet-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-assessment-slow/tablet-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-assessment-slow/mobile-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-assessment-slow/mobile-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 3,
+            "4.5to7": 1
+          },
+          "lowest": [
+            {
+              "element": "p.forma-startup__slow",
+              "text": "Still starting. On a slow connection the engine can take up ",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Starting Signal: loading the assessment engine",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 4
+          },
+          "lowest": [
+            {
+              "element": "p.forma-startup__slow",
+              "text": "Still starting. On a slow connection the engine can take up ",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Starting Signal: loading the assessment engine",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 0,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": []
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/startup-assessment-slow/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 4,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "startup-assessment-failed-download",
+      "title": "assessment page (web/): start-up failed: the engine download is aborted",
+      "scenario": "startup",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "abort **/build/wasm/wwwroot/_framework/dotnet.js, open http://127.0.0.1:4321/web/index.html",
+          "operation": "engine start-up",
+          "durationMs": 109,
+          "observed": [
+            {
+              "atMs": 15,
+              "forMs": 30,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 45,
+              "forMs": 38,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 83,
+              "forMs": null,
+              "shown": [
+                "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\"",
+                "kernel: faulted"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": []
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-assessment-failed-download/desktop-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-assessment-failed-download/desktop-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-assessment-failed-download/tablet-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-assessment-failed-download/tablet-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-assessment-failed-download/mobile-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-assessment-failed-download/mobile-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 2,
+            "4.5to7": 2
+          },
+          "lowest": [
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal could not start.",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The engine did not start. Reload this page to try again; rel",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 4
+          },
+          "lowest": [
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal could not start.",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The engine did not start. Reload this page to try again; rel",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 15.26,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 0,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": []
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/startup-assessment-failed-download/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 4,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "startup-assessment-failed-module",
+      "title": "assessment page (web/): start-up failed: a page module (web-kernel/limen-wasm.js) answers 404",
+      "scenario": "startup",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "answer web-kernel/limen-wasm.js with 404, open http://127.0.0.1:4321/web/index.html",
+          "operation": "engine start-up",
+          "durationMs": 84,
+          "observed": [
+            {
+              "atMs": 15,
+              "forMs": 30,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 45,
+              "forMs": 7,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 52,
+              "forMs": null,
+              "shown": [
+                "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": []
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-assessment-failed-module/desktop-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-assessment-failed-module/desktop-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-assessment-failed-module/tablet-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-assessment-failed-module/tablet-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-assessment-failed-module/mobile-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-assessment-failed-module/mobile-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 2,
+            "4.5to7": 2
+          },
+          "lowest": [
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal could not start.",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The engine did not start. Reload this page to try again; rel",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 4
+          },
+          "lowest": [
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal could not start.",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The engine did not start. Reload this page to try again; rel",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 15.26,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 0,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": []
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/startup-assessment-failed-module/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 4,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "startup-assessment-timed-out",
+      "title": "assessment page (web/): start-up timed out: the 60 s watchdog fires (fake clock)",
+      "scenario": "startup",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "install Playwright's fake clock, hold **/build/wasm/wwwroot/_framework/dotnet.js, open http://127.0.0.1:4321/web/index.html, advance the clock 61 s",
+          "operation": "engine start-up",
+          "durationMs": 5072,
+          "observed": [
+            {
+              "atMs": 22,
+              "forMs": 30,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 52,
+              "forMs": 59981,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the assessment engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 60033,
+              "forMs": null,
+              "shown": [
+                "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": "The page's clock is Playwright's fake clock, advanced 61 s; CSS animations run on real time, so the slow note's 8 s reveal may not have run.",
+      "page": {
+        "title": "Signal · Assessment",
+        "headings": []
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-assessment-timed-out/desktop-light-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-assessment-timed-out/desktop-dark-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-assessment-timed-out/tablet-light-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-assessment-timed-out/tablet-dark-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-assessment-timed-out/mobile-light-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-assessment-timed-out/mobile-dark-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 2,
+            "4.5to7": 2
+          },
+          "lowest": [
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal is taking too long to start.",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The engine did not start. Reload this page to try again; rel",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 4
+          },
+          "lowest": [
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal is taking too long to start.",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The engine did not start. Reload this page to try again; rel",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 15.26,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 0,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": []
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/startup-assessment-timed-out/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 4,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "startup-survey-starting",
+      "title": "survey page (web/survey/): start-up screen before the engine mounts (download held)",
+      "scenario": "startup",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "hold **/build/wasm/wwwroot/_framework/dotnet.js (never answered), then open http://127.0.0.1:4321/web/survey/index.html",
+          "operation": "engine start-up",
+          "durationMs": 99,
+          "observed": [
+            {
+              "atMs": 15,
+              "forMs": 37,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 52,
+              "forMs": null,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": []
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-survey-starting/desktop-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-survey-starting/desktop-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-survey-starting/tablet-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-survey-starting/tablet-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-survey-starting/mobile-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-survey-starting/mobile-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 3,
+            "4.5to7": 1
+          },
+          "lowest": [
+            {
+              "element": "p.forma-startup__slow",
+              "text": "Still starting. On a slow connection the engine can take up ",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Starting Signal: loading the survey engine",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 4
+          },
+          "lowest": [
+            {
+              "element": "p.forma-startup__slow",
+              "text": "Still starting. On a slow connection the engine can take up ",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Starting Signal: loading the survey engine",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 0,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": []
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/startup-survey-starting/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 4,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "startup-survey-slow",
+      "title": "survey page (web/survey/): start-up screen still starting after Forma's 8 s slow-note delay (download held)",
+      "scenario": "startup",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "hold **/build/wasm/wwwroot/_framework/dotnet.js, open http://127.0.0.1:4321/web/survey/index.html, wait until the slow note is shown (about 8 s)",
+          "operation": "engine start-up",
+          "durationMs": 8984,
+          "observed": [
+            {
+              "atMs": 15,
+              "forMs": 34,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 49,
+              "forMs": 8024,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 8073,
+              "forMs": null,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+                "status: \"\""
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": []
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-survey-slow/desktop-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-survey-slow/desktop-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-survey-slow/tablet-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-survey-slow/tablet-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-survey-slow/mobile-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-survey-slow/mobile-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 3,
+            "4.5to7": 1
+          },
+          "lowest": [
+            {
+              "element": "p.forma-startup__slow",
+              "text": "Still starting. On a slow connection the engine can take up ",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Starting Signal: loading the survey engine",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 4
+          },
+          "lowest": [
+            {
+              "element": "p.forma-startup__slow",
+              "text": "Still starting. On a slow connection the engine can take up ",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Starting Signal: loading the survey engine",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 0,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": []
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/startup-survey-slow/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 4,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "startup-survey-failed-download",
+      "title": "survey page (web/survey/): start-up failed: the engine download is aborted",
+      "scenario": "startup",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "abort **/build/wasm/wwwroot/_framework/dotnet.js, open http://127.0.0.1:4321/web/survey/index.html",
+          "operation": "engine start-up",
+          "durationMs": 118,
+          "observed": [
+            {
+              "atMs": 15,
+              "forMs": 34,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 50,
+              "forMs": 42,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 91,
+              "forMs": null,
+              "shown": [
+                "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\"",
+                "kernel: faulted"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": []
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-survey-failed-download/desktop-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-survey-failed-download/desktop-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-survey-failed-download/tablet-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-survey-failed-download/tablet-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-survey-failed-download/mobile-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-survey-failed-download/mobile-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 2,
+            "4.5to7": 2
+          },
+          "lowest": [
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal could not start.",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The engine did not start. Reload this page to try again; rel",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 4
+          },
+          "lowest": [
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal could not start.",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The engine did not start. Reload this page to try again; rel",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 15.26,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 0,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": []
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/startup-survey-failed-download/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 4,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "startup-survey-failed-module",
+      "title": "survey page (web/survey/): start-up failed: a page module (web-kernel/limen-wasm.js) answers 404",
+      "scenario": "startup",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "answer web-kernel/limen-wasm.js with 404, open http://127.0.0.1:4321/web/survey/index.html",
+          "operation": "engine start-up",
+          "durationMs": 87,
+          "observed": [
+            {
+              "atMs": 14,
+              "forMs": 32,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 46,
+              "forMs": 8,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 54,
+              "forMs": null,
+              "shown": [
+                "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Survey",
+        "headings": []
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-survey-failed-module/desktop-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-survey-failed-module/desktop-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-survey-failed-module/tablet-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-survey-failed-module/tablet-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-survey-failed-module/mobile-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-survey-failed-module/mobile-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 2,
+            "4.5to7": 2
+          },
+          "lowest": [
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal could not start.",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The engine did not start. Reload this page to try again; rel",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 4
+          },
+          "lowest": [
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal could not start.",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The engine did not start. Reload this page to try again; rel",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 15.26,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 0,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": []
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/startup-survey-failed-module/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 4,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "startup-survey-timed-out",
+      "title": "survey page (web/survey/): start-up timed out: the 60 s watchdog fires (fake clock)",
+      "scenario": "startup",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/survey/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "install Playwright's fake clock, hold **/build/wasm/wwwroot/_framework/dotnet.js, open http://127.0.0.1:4321/web/survey/index.html, advance the clock 61 s",
+          "operation": "engine start-up",
+          "durationMs": 5072,
+          "observed": [
+            {
+              "atMs": 21,
+              "forMs": 33,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 54,
+              "forMs": 59983,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the survey engine\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 60037,
+              "forMs": null,
+              "shown": [
+                "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+                "status: \"\""
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": "The page's clock is Playwright's fake clock, advanced 61 s; CSS animations run on real time, so the slow note's 8 s reveal may not have run.",
+      "page": {
+        "title": "Signal · Survey",
+        "headings": []
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-survey-timed-out/desktop-light-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-survey-timed-out/desktop-dark-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-survey-timed-out/tablet-light-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-survey-timed-out/tablet-dark-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-survey-timed-out/mobile-light-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-survey-timed-out/mobile-dark-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The engine did not start. Reload this page to try again; reloading keeps the address, and with it any answers already in the link.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 2,
+            "4.5to7": 2
+          },
+          "lowest": [
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal is taking too long to start.",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The engine did not start. Reload this page to try again; rel",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 14.56,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 4,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 4
+          },
+          "lowest": [
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal is taking too long to start.",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The engine did not start. Reload this page to try again; rel",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 15.26,
+              "required": 3
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 0,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": []
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/startup-survey-timed-out/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 4,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "startup-admin-starting",
+      "title": "administrator console (web/admin/): start-up screen before the engine mounts (download held)",
+      "scenario": "startup",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/admin/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "hold **/build/wasm/wwwroot/_framework/dotnet.js (never answered), then open http://127.0.0.1:4321/web/admin/index.html",
+          "operation": "engine start-up",
+          "durationMs": 120,
+          "observed": [
+            {
+              "atMs": 22,
+              "forMs": 36,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 58,
+              "forMs": null,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "status: \"\""
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Administration",
+        "headings": [
+          "ADMINISTRATION"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-admin-starting/desktop-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-admin-starting/desktop-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-admin-starting/tablet-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-admin-starting/tablet-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-admin-starting/mobile-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-admin-starting/mobile-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 6,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 5,
+            "4.5to7": 1
+          },
+          "lowest": [
+            {
+              "element": "p.forma-startup__slow",
+              "text": "Still starting. On a slow connection the engine can take up ",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 9.23,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Starting Signal: loading the administrator console",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 6,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 6
+          },
+          "lowest": [
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 10.71,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-startup__slow",
+              "text": "Still starting. On a slow connection the engine can take up ",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Starting Signal: loading the administrator console",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 16.5,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 16.5,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 1,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Copy link"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/startup-admin-starting/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 5,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "startup-admin-slow",
+      "title": "administrator console (web/admin/): start-up screen still starting after Forma's 8 s slow-note delay (download held)",
+      "scenario": "startup",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/admin/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "hold **/build/wasm/wwwroot/_framework/dotnet.js, open http://127.0.0.1:4321/web/admin/index.html, wait until the slow note is shown (about 8 s)",
+          "operation": "engine start-up",
+          "durationMs": 8996,
+          "observed": [
+            {
+              "atMs": 22,
+              "forMs": 31,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 52,
+              "forMs": 8026,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 8078,
+              "forMs": null,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+                "status: \"\""
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Administration",
+        "headings": [
+          "ADMINISTRATION"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-admin-slow/desktop-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-admin-slow/desktop-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-admin-slow/tablet-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-admin-slow/tablet-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-admin-slow/mobile-light-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-admin-slow/mobile-dark-full.png",
+          "shown": [
+            "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "starting",
+            "hidden": false,
+            "slowNoteVisible": true,
+            "kernel": null
+          }
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 6,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 5,
+            "4.5to7": 1
+          },
+          "lowest": [
+            {
+              "element": "p.forma-startup__slow",
+              "text": "Still starting. On a slow connection the engine can take up ",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 9.23,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Starting Signal: loading the administrator console",
+              "ratio": 15.26,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 6,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 6
+          },
+          "lowest": [
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 10.71,
+              "required": 4.5
+            },
+            {
+              "element": "p.forma-startup__slow",
+              "text": "Still starting. On a slow connection the engine can take up ",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "span.forma-spinner__label",
+              "text": "Starting Signal: loading the administrator console",
+              "ratio": 15.26,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 16.5,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 16.5,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 1,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Copy link"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/startup-admin-slow/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 5,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "startup-admin-failed-download",
+      "title": "administrator console (web/admin/): start-up failed: the engine download is aborted",
+      "scenario": "startup",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/admin/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "abort **/build/wasm/wwwroot/_framework/dotnet.js, open http://127.0.0.1:4321/web/admin/index.html",
+          "operation": "engine start-up",
+          "durationMs": 136,
+          "observed": [
+            {
+              "atMs": 22,
+              "forMs": 29,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 51,
+              "forMs": 56,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 107,
+              "forMs": null,
+              "shown": [
+                "start-up screen: state \"failed\", \"Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\"",
+                "kernel: faulted"
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Administration",
+        "headings": [
+          "ADMINISTRATION"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-admin-failed-download/desktop-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-admin-failed-download/desktop-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-admin-failed-download/tablet-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-admin-failed-download/tablet-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-admin-failed-download/mobile-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-admin-failed-download/mobile-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\"",
+            "kernel: faulted"
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": "faulted"
+          }
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 6,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 4,
+            "4.5to7": 2
+          },
+          "lowest": [
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal could not start.",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The administrator console did not start. Reload this page to",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 9.23,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 13.68,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 6,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 6
+          },
+          "lowest": [
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 10.71,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal could not start.",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The administrator console did not start. Reload this page to",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 16.5,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 16.5,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 1,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Copy link"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/startup-admin-failed-download/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 6,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "startup-admin-failed-module",
+      "title": "administrator console (web/admin/): start-up failed: a page module (web-kernel/limen-wasm.js) answers 404",
+      "scenario": "startup",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/admin/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "answer web-kernel/limen-wasm.js with 404, open http://127.0.0.1:4321/web/admin/index.html",
+          "operation": "engine start-up",
+          "durationMs": 94,
+          "observed": [
+            {
+              "atMs": 22,
+              "forMs": 29,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 50,
+              "forMs": 9,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 59,
+              "forMs": null,
+              "shown": [
+                "start-up screen: state \"failed\", \"Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\""
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": null,
+      "page": {
+        "title": "Signal · Administration",
+        "headings": [
+          "ADMINISTRATION"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-admin-failed-module/desktop-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-admin-failed-module/desktop-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-admin-failed-module/tablet-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-admin-failed-module/tablet-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-admin-failed-module/mobile-light-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-admin-failed-module/mobile-dark-full.png",
+          "shown": [
+            "start-up screen: state \"failed\", \"Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "failed",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 6,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 4,
+            "4.5to7": 2
+          },
+          "lowest": [
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal could not start.",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The administrator console did not start. Reload this page to",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 9.23,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 13.68,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 6,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 6
+          },
+          "lowest": [
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 10.71,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal could not start.",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The administrator console did not start. Reload this page to",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 16.5,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 16.5,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 1,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Copy link"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/startup-admin-failed-module/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 6,
+            "failures": []
+          }
+        }
+      }
+    },
+    {
+      "id": "startup-admin-timed-out",
+      "title": "administrator console (web/admin/): start-up timed out: the 60 s watchdog fires (fake clock)",
+      "scenario": "startup",
+      "site": "checkout",
+      "url": "http://127.0.0.1:4321/web/admin/index.html",
+      "auth": {
+        "required": false,
+        "how": "none: the page needs no sign-in"
+      },
+      "reachedFrom": null,
+      "steps": [
+        {
+          "action": "install Playwright's fake clock, hold **/build/wasm/wwwroot/_framework/dotnet.js, open http://127.0.0.1:4321/web/admin/index.html, advance the clock 61 s",
+          "operation": "engine start-up",
+          "durationMs": 5090,
+          "observed": [
+            {
+              "atMs": 30,
+              "forMs": 29,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console Still starting. On a slow connection the engine can take up to a minute to download. | Still starting. On a slow connection the engine can take up to a minute to download. | Signal could not start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 59,
+              "forMs": 59980,
+              "shown": [
+                "start-up screen: state \"starting\", spinner, \"Starting Signal: loading the administrator console\"",
+                "status: \"\""
+              ]
+            },
+            {
+              "atMs": 60039,
+              "forMs": null,
+              "shown": [
+                "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The administrator console did not start. Reload this page to try again.\"",
+                "status: \"\""
+              ]
+            }
+          ]
+        }
+      ],
+      "notes": "The page's clock is Playwright's fake clock, advanced 61 s; CSS animations run on real time, so the slow note's 8 s reveal may not have run.",
+      "page": {
+        "title": "Signal · Administration",
+        "headings": [
+          "ADMINISTRATION"
+        ]
+      },
+      "shots": [
+        {
+          "viewport": "desktop",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-admin-timed-out/desktop-light-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "desktop",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-admin-timed-out/desktop-dark-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-admin-timed-out/tablet-light-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "tablet",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-admin-timed-out/tablet-dark-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "light",
+          "extent": "full",
+          "file": "screens/startup-admin-timed-out/mobile-light-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        },
+        {
+          "viewport": "mobile",
+          "scheme": "dark",
+          "extent": "full",
+          "file": "screens/startup-admin-timed-out/mobile-dark-full.png",
+          "shown": [
+            "start-up screen: state \"timed-out\", \"Signal is taking too long to start. The administrator console did not start. Reload this page to try again.\"",
+            "status: \"\""
+          ],
+          "verified": {
+            "state": "timed-out",
+            "hidden": false,
+            "slowNoteVisible": false,
+            "kernel": null
+          }
+        }
+      ],
+      "audit": {
+        "contrastLight": {
+          "checked": 6,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 4,
+            "4.5to7": 2
+          },
+          "lowest": [
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal is taking too long to start.",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The administrator console did not start. Reload this page to",
+              "ratio": 4.6,
+              "required": 4.5
+            },
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 9.23,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 13.68,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 13.68,
+              "required": 4.5
+            }
+          ]
+        },
+        "contrastDark": {
+          "checked": 6,
+          "unmeasurable": 0,
+          "failures": [],
+          "bands": {
+            "7plus": 6
+          },
+          "lowest": [
+            {
+              "element": "h1.echelon-app-bar__context.admin-bar__title",
+              "text": "Administration",
+              "ratio": 10.71,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-title.forma-startup__problem-title",
+              "text": "Signal is taking too long to start.",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "p#app-startup-problem-detail",
+              "text": "The administrator console did not start. Reload this page to",
+              "ratio": 13.29,
+              "required": 4.5
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 15.26,
+              "required": 3
+            },
+            {
+              "element": "span.forma-app-identity__name",
+              "text": "Signal",
+              "ratio": 16.5,
+              "required": 4.5
+            },
+            {
+              "element": "button#copy-link.forma-button",
+              "text": "Copy link",
+              "ratio": 16.5,
+              "required": 4.5
+            }
+          ]
+        },
+        "keyboard": {
+          "stops": 1,
+          "withoutIndicator": [],
+          "outOfDocumentOrder": [],
+          "sequence": [
+            "Copy link"
+          ]
+        },
+        "text200at320": {
+          "overflow": 0,
+          "offenders": []
+        },
+        "collapsedText": [],
+        "reducedMotion": {
+          "infinite": [],
+          "shimmer": 0
+        },
+        "forcedColors": {
+          "file": "screens/startup-admin-timed-out/desktop-forced-colors-viewport.png",
+          "contrast": {
+            "checked": 6,
+            "failures": []
+          }
+        }
+      }
+    }
+  ],
+  "unreached": [],
+  "browserVersion": "153.0.8010.12"
+}
