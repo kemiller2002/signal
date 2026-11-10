@@ -3411,10 +3411,10 @@
       "description": null,
       "tags": [],
       "priority": "medium",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-10T18:53:17.346Z",
-      "updatedAt": "2026-11-10T18:53:20.000Z",
+      "updatedAt": "2026-11-10T19:12:55.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
