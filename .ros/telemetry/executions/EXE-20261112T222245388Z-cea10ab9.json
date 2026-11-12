@@ -9,9 +9,9 @@
     "localId": "WI-0148"
   },
   "instanceId": "pxi-5fdaa9297e9a4b5bac07c7cd4c25a887",
-  "status": "active",
+  "status": "finalized",
   "startedAt": "2026-11-12T22:22:45.388Z",
-  "finalizedAt": null,
+  "finalizedAt": "2026-11-12T22:27:22.969Z",
   "identity": {
     "provider": "anthropic",
     "model": null,
@@ -319,13 +319,29 @@
     {
       "metricId": "time.wall_ms",
       "status": "derived",
-      "reason": "Praxis can derive this metric when its preconditions hold",
-      "discoveredAt": "2026-11-12T22:22:45.388Z",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-12T22:27:22.969Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "calculated",
+        "name": "ros",
+        "mechanism": "timestamp-difference"
+      },
+      "lastAssessedAt": "2026-11-12T22:27:22.969Z",
+      "recordedAt": "2026-11-12T22:27:22.969Z",
+      "history": [
+        {
+          "status": "derived",
+          "reason": "Praxis can derive this metric when its preconditions hold",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-11-12T22:22:45.388Z",
+          "lastAssessedAt": "2026-11-12T22:22:45.388Z",
+          "recordedAt": "2026-11-12T22:22:45.388Z"
+        }
+      ]
     },
     {
       "metricId": "time.active_ms",
@@ -374,13 +390,29 @@
     {
       "metricId": "time.blocked_ms",
       "status": "derived",
-      "reason": "Praxis can derive this metric when its preconditions hold",
-      "discoveredAt": "2026-11-12T22:22:45.388Z",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-12T22:27:22.969Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "calculated",
+        "name": "ros-work-lifecycle",
+        "mechanism": "block-resume-intervals"
+      },
+      "lastAssessedAt": "2026-11-12T22:27:22.969Z",
+      "recordedAt": "2026-11-12T22:27:22.969Z",
+      "history": [
+        {
+          "status": "derived",
+          "reason": "Praxis can derive this metric when its preconditions hold",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-11-12T22:22:45.388Z",
+          "lastAssessedAt": "2026-11-12T22:22:45.388Z",
+          "recordedAt": "2026-11-12T22:22:45.388Z"
+        }
+      ]
     },
     {
       "metricId": "time.human_interruption_ms",
@@ -841,134 +873,326 @@
     {
       "metricId": "git.ending_dirty_files",
       "status": "derived",
-      "reason": "Praxis can derive this metric when its preconditions hold",
-      "discoveredAt": "2026-11-12T22:22:45.388Z",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-12T22:27:22.969Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "ros-git",
+        "name": "git-status",
+        "mechanism": "porcelain-v1"
+      },
+      "lastAssessedAt": "2026-11-12T22:27:22.969Z",
+      "recordedAt": "2026-11-12T22:27:22.969Z",
+      "history": [
+        {
+          "status": "derived",
+          "reason": "Praxis can derive this metric when its preconditions hold",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-11-12T22:22:45.388Z",
+          "lastAssessedAt": "2026-11-12T22:22:45.388Z",
+          "recordedAt": "2026-11-12T22:22:45.388Z"
+        }
+      ]
     },
     {
       "metricId": "git.commits_created",
       "status": "derived",
-      "reason": "Praxis can derive this metric when its preconditions hold",
-      "discoveredAt": "2026-11-12T22:22:45.388Z",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-12T22:27:22.969Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "lastAssessedAt": "2026-11-12T22:27:22.969Z",
+      "recordedAt": "2026-11-12T22:27:22.969Z",
+      "history": [
+        {
+          "status": "derived",
+          "reason": "Praxis can derive this metric when its preconditions hold",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-11-12T22:22:45.388Z",
+          "lastAssessedAt": "2026-11-12T22:22:45.388Z",
+          "recordedAt": "2026-11-12T22:22:45.388Z"
+        }
+      ]
     },
     {
       "metricId": "git.files_added",
       "status": "derived",
-      "reason": "Praxis can derive this metric when its preconditions hold",
-      "discoveredAt": "2026-11-12T22:22:45.388Z",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-12T22:27:22.969Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "lastAssessedAt": "2026-11-12T22:27:22.969Z",
+      "recordedAt": "2026-11-12T22:27:22.969Z",
+      "history": [
+        {
+          "status": "derived",
+          "reason": "Praxis can derive this metric when its preconditions hold",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-11-12T22:22:45.388Z",
+          "lastAssessedAt": "2026-11-12T22:22:45.388Z",
+          "recordedAt": "2026-11-12T22:22:45.388Z"
+        }
+      ]
     },
     {
       "metricId": "git.files_modified",
       "status": "derived",
-      "reason": "Praxis can derive this metric when its preconditions hold",
-      "discoveredAt": "2026-11-12T22:22:45.388Z",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-12T22:27:22.969Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "lastAssessedAt": "2026-11-12T22:27:22.969Z",
+      "recordedAt": "2026-11-12T22:27:22.969Z",
+      "history": [
+        {
+          "status": "derived",
+          "reason": "Praxis can derive this metric when its preconditions hold",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-11-12T22:22:45.388Z",
+          "lastAssessedAt": "2026-11-12T22:22:45.388Z",
+          "recordedAt": "2026-11-12T22:22:45.388Z"
+        }
+      ]
     },
     {
       "metricId": "git.files_deleted",
       "status": "derived",
-      "reason": "Praxis can derive this metric when its preconditions hold",
-      "discoveredAt": "2026-11-12T22:22:45.388Z",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-12T22:27:22.969Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "lastAssessedAt": "2026-11-12T22:27:22.969Z",
+      "recordedAt": "2026-11-12T22:27:22.969Z",
+      "history": [
+        {
+          "status": "derived",
+          "reason": "Praxis can derive this metric when its preconditions hold",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-11-12T22:22:45.388Z",
+          "lastAssessedAt": "2026-11-12T22:22:45.388Z",
+          "recordedAt": "2026-11-12T22:22:45.388Z"
+        }
+      ]
     },
     {
       "metricId": "git.files_renamed",
       "status": "derived",
-      "reason": "Praxis can derive this metric when its preconditions hold",
-      "discoveredAt": "2026-11-12T22:22:45.388Z",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-12T22:27:22.969Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "lastAssessedAt": "2026-11-12T22:27:22.969Z",
+      "recordedAt": "2026-11-12T22:27:22.969Z",
+      "history": [
+        {
+          "status": "derived",
+          "reason": "Praxis can derive this metric when its preconditions hold",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-11-12T22:22:45.388Z",
+          "lastAssessedAt": "2026-11-12T22:22:45.388Z",
+          "recordedAt": "2026-11-12T22:22:45.388Z"
+        }
+      ]
     },
     {
       "metricId": "git.binary_files_changed",
       "status": "derived",
-      "reason": "Praxis can derive this metric when its preconditions hold",
-      "discoveredAt": "2026-11-12T22:22:45.388Z",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-12T22:27:22.969Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "lastAssessedAt": "2026-11-12T22:27:22.969Z",
+      "recordedAt": "2026-11-12T22:27:22.969Z",
+      "history": [
+        {
+          "status": "derived",
+          "reason": "Praxis can derive this metric when its preconditions hold",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-11-12T22:22:45.388Z",
+          "lastAssessedAt": "2026-11-12T22:22:45.388Z",
+          "recordedAt": "2026-11-12T22:22:45.388Z"
+        }
+      ]
     },
     {
       "metricId": "git.lines_added",
       "status": "derived",
-      "reason": "Praxis can derive this metric when its preconditions hold",
-      "discoveredAt": "2026-11-12T22:22:45.388Z",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-12T22:27:22.969Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "lastAssessedAt": "2026-11-12T22:27:22.969Z",
+      "recordedAt": "2026-11-12T22:27:22.969Z",
+      "history": [
+        {
+          "status": "derived",
+          "reason": "Praxis can derive this metric when its preconditions hold",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-11-12T22:22:45.388Z",
+          "lastAssessedAt": "2026-11-12T22:22:45.388Z",
+          "recordedAt": "2026-11-12T22:22:45.388Z"
+        }
+      ]
     },
     {
       "metricId": "git.lines_deleted",
       "status": "derived",
-      "reason": "Praxis can derive this metric when its preconditions hold",
-      "discoveredAt": "2026-11-12T22:22:45.388Z",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-12T22:27:22.969Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "lastAssessedAt": "2026-11-12T22:27:22.969Z",
+      "recordedAt": "2026-11-12T22:27:22.969Z",
+      "history": [
+        {
+          "status": "derived",
+          "reason": "Praxis can derive this metric when its preconditions hold",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-11-12T22:22:45.388Z",
+          "lastAssessedAt": "2026-11-12T22:22:45.388Z",
+          "recordedAt": "2026-11-12T22:22:45.388Z"
+        }
+      ]
     },
     {
       "metricId": "tests.added",
       "status": "derived",
-      "reason": "Praxis can derive this metric when its preconditions hold",
-      "discoveredAt": "2026-11-12T22:22:45.388Z",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-12T22:27:22.969Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "lastAssessedAt": "2026-11-12T22:27:22.969Z",
+      "recordedAt": "2026-11-12T22:27:22.969Z",
+      "history": [
+        {
+          "status": "derived",
+          "reason": "Praxis can derive this metric when its preconditions hold",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-11-12T22:22:45.388Z",
+          "lastAssessedAt": "2026-11-12T22:22:45.388Z",
+          "recordedAt": "2026-11-12T22:22:45.388Z"
+        }
+      ]
     },
     {
       "metricId": "tests.modified",
       "status": "derived",
-      "reason": "Praxis can derive this metric when its preconditions hold",
-      "discoveredAt": "2026-11-12T22:22:45.388Z",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-12T22:27:22.969Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "lastAssessedAt": "2026-11-12T22:27:22.969Z",
+      "recordedAt": "2026-11-12T22:27:22.969Z",
+      "history": [
+        {
+          "status": "derived",
+          "reason": "Praxis can derive this metric when its preconditions hold",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-11-12T22:22:45.388Z",
+          "lastAssessedAt": "2026-11-12T22:22:45.388Z",
+          "recordedAt": "2026-11-12T22:22:45.388Z"
+        }
+      ]
     },
     {
       "metricId": "tests.removed",
       "status": "derived",
-      "reason": "Praxis can derive this metric when its preconditions hold",
-      "discoveredAt": "2026-11-12T22:22:45.388Z",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-12T22:27:22.969Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "lastAssessedAt": "2026-11-12T22:27:22.969Z",
+      "recordedAt": "2026-11-12T22:27:22.969Z",
+      "history": [
+        {
+          "status": "derived",
+          "reason": "Praxis can derive this metric when its preconditions hold",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-11-12T22:22:45.388Z",
+          "lastAssessedAt": "2026-11-12T22:22:45.388Z",
+          "recordedAt": "2026-11-12T22:22:45.388Z"
+        }
+      ]
     },
     {
       "metricId": "tests.count_before",
@@ -1237,13 +1461,29 @@
     {
       "metricId": "documentation.files_changed",
       "status": "derived",
-      "reason": "Praxis can derive this metric when its preconditions hold",
-      "discoveredAt": "2026-11-12T22:22:45.388Z",
+      "reason": "normalized measurement recorded",
+      "discoveredAt": "2026-11-12T22:27:22.969Z",
       "source": {
-        "type": "environment",
-        "name": "runtime-identity",
-        "mechanism": "whitelisted-claude-environment"
-      }
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "lastAssessedAt": "2026-11-12T22:27:22.969Z",
+      "recordedAt": "2026-11-12T22:27:22.969Z",
+      "history": [
+        {
+          "status": "derived",
+          "reason": "Praxis can derive this metric when its preconditions hold",
+          "source": {
+            "type": "environment",
+            "name": "runtime-identity",
+            "mechanism": "whitelisted-claude-environment"
+          },
+          "discoveredAt": "2026-11-12T22:22:45.388Z",
+          "lastAssessedAt": "2026-11-12T22:22:45.388Z",
+          "recordedAt": "2026-11-12T22:22:45.388Z"
+        }
+      ]
     },
     {
       "metricId": "quality.false_leads",
@@ -1365,6 +1605,306 @@
       },
       "collectedAt": "2026-11-12T22:22:45.388Z",
       "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-a4bae1c087b086ce72714941",
+      "id": "time.wall_ms",
+      "value": 277581,
+      "unit": "milliseconds",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "calculated",
+        "name": "ros",
+        "mechanism": "timestamp-difference"
+      },
+      "collectedAt": "2026-11-12T22:27:22.969Z",
+      "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-a416d65de5f42af4c0cf1aab",
+      "id": "time.blocked_ms",
+      "value": 0,
+      "unit": "milliseconds",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "calculated",
+        "name": "ros-work-lifecycle",
+        "mechanism": "block-resume-intervals"
+      },
+      "collectedAt": "2026-11-12T22:27:22.969Z",
+      "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-b3d0378b9ec39fb538d957d5",
+      "id": "git.ending_dirty_files",
+      "value": 0,
+      "unit": "count",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "maximum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "ros-git",
+        "name": "git-status",
+        "mechanism": "porcelain-v1"
+      },
+      "collectedAt": "2026-11-12T22:27:22.969Z",
+      "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-9d55cf8b0d95c9d5a7e257e7",
+      "id": "git.commits_created",
+      "value": 1,
+      "unit": "count",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "collectedAt": "2026-11-12T22:27:22.969Z",
+      "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-84c99cde071ee8d8c95c2360",
+      "id": "git.files_added",
+      "value": 3,
+      "unit": "count",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "collectedAt": "2026-11-12T22:27:22.969Z",
+      "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-49cd4176019d6628f348b58c",
+      "id": "git.files_modified",
+      "value": 4,
+      "unit": "count",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "collectedAt": "2026-11-12T22:27:22.969Z",
+      "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-f1e9dff5c9513a092b1feeb5",
+      "id": "git.files_deleted",
+      "value": 0,
+      "unit": "count",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "collectedAt": "2026-11-12T22:27:22.969Z",
+      "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-cb85017aa741aaf9a62d5825",
+      "id": "git.files_renamed",
+      "value": 0,
+      "unit": "count",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "collectedAt": "2026-11-12T22:27:22.969Z",
+      "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-f8cc7281849a3753dbfbad1e",
+      "id": "git.binary_files_changed",
+      "value": 0,
+      "unit": "count",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "collectedAt": "2026-11-12T22:27:22.969Z",
+      "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-755f1f08c22fa7864fff25c9",
+      "id": "git.lines_added",
+      "value": 199,
+      "unit": "lines",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "collectedAt": "2026-11-12T22:27:22.969Z",
+      "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-679675ba5786224db428d222",
+      "id": "git.lines_deleted",
+      "value": 15,
+      "unit": "lines",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "collectedAt": "2026-11-12T22:27:22.969Z",
+      "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-39a807ff7d866aac14155cd0",
+      "id": "tests.added",
+      "value": 1,
+      "unit": "count",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "collectedAt": "2026-11-12T22:27:22.969Z",
+      "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-83fe1aeea485f2d4c18a34bc",
+      "id": "tests.modified",
+      "value": 2,
+      "unit": "count",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "collectedAt": "2026-11-12T22:27:22.969Z",
+      "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-641da05cce41a3f57467158c",
+      "id": "tests.removed",
+      "value": 0,
+      "unit": "count",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "collectedAt": "2026-11-12T22:27:22.969Z",
+      "schemaVersion": "1.0.0"
+    },
+    {
+      "measurementId": "MEAS-dd4c544c02310d3eef731f0e",
+      "id": "documentation.files_changed",
+      "value": 2,
+      "unit": "count",
+      "currency": null,
+      "quality": "derived",
+      "confidence": null,
+      "scope": "execution",
+      "aggregation": "sum",
+      "dimensions": {},
+      "pricing": null,
+      "source": {
+        "type": "ros-git",
+        "name": "git-diff",
+        "mechanism": "git-diff-from-clean-execution-baseline"
+      },
+      "collectedAt": "2026-11-12T22:27:22.969Z",
+      "schemaVersion": "1.0.0"
     }
   ],
   "rawTelemetry": [],
@@ -1377,6 +1917,16 @@
         "name": "ros",
         "mechanism": "work-lifecycle"
       }
+    },
+    {
+      "type": "execution.finalized",
+      "occurredAt": "2026-11-12T22:27:22.969Z",
+      "source": {
+        "type": "ros-clock",
+        "name": "ros",
+        "mechanism": "work-lifecycle"
+      },
+      "eventId": "TEVT-2797090caac5714df9638574"
     }
   ],
   "repository": {
@@ -1388,8 +1938,37 @@
       "dirty": false,
       "dirtyPaths": []
     },
-    "end": null,
-    "changeSummary": null
+    "end": {
+      "available": true,
+      "repository": "echelon-signal",
+      "branch": "claude/fides-requirements-security-38f9h5",
+      "commit": "3c4b68814005d5b1ec5844e04df34b9df06555ad",
+      "dirty": false,
+      "dirtyPaths": []
+    },
+    "changeSummary": {
+      "available": true,
+      "mechanism": "git-diff-from-clean-execution-baseline",
+      "startCommit": "31376a4d41ae9c567dd8d2fc6f64e93b3cfe30ab",
+      "endCommit": "3c4b68814005d5b1ec5844e04df34b9df06555ad",
+      "branch": "claude/fides-requirements-security-38f9h5",
+      "commits": 1,
+      "counts": {
+        "added": 3,
+        "modified": 4,
+        "deleted": 0,
+        "renamed": 0
+      },
+      "linesAdded": 199,
+      "linesDeleted": 15,
+      "binaryFiles": 0,
+      "tests": {
+        "added": 1,
+        "modified": 2,
+        "removed": 0
+      },
+      "documentationFilesChanged": 2
+    }
   },
   "scope": {
     "initial": {},
@@ -1402,7 +1981,8 @@
     "requirements": [],
     "acceptanceCriteria": [],
     "commits": [
-      "31376a4d41ae9c567dd8d2fc6f64e93b3cfe30ab"
+      "31376a4d41ae9c567dd8d2fc6f64e93b3cfe30ab",
+      "3c4b68814005d5b1ec5844e04df34b9df06555ad"
     ],
     "pullRequests": [],
     "experiments": [],

@@ -3518,10 +3518,10 @@
         "signal,sign-in,fides,deployment"
       ],
       "priority": "high",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-12T22:22:43.955Z",
-      "updatedAt": "2026-11-12T22:22:44.000Z",
+      "updatedAt": "2026-11-12T22:27:20.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
