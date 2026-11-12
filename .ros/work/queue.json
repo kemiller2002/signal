@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 148,
+  "nextSeq": 149,
   "items": [
     {
       "id": "WI-0001",
@@ -3499,6 +3499,29 @@
       "attachments": [],
       "createdAt": "2026-11-10T20:50:02.207Z",
       "updatedAt": "2026-11-10T20:50:02.207Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0148",
+      "title": "Turn on real sign-in for the production Pages site: deployment configuration (Fides exchange auth.echelonfoundry.com, shared Echelon GitHub App, data location, first administrator), policy connect-src, banner, and the recorded acceptance of the Pages framing risk while the owner is the only user",
+      "description": null,
+      "tags": [
+        "signal,sign-in,fides,deployment"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-12T22:22:43.955Z",
+      "updatedAt": "2026-11-12T22:22:44.000Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",

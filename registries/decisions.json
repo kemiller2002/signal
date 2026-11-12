@@ -1238,6 +1238,51 @@
     "version": "1.0.0"
   },
   {
+    "created": "2026-11-12",
+    "id": "DF-SIGNAL-2026-0027",
+    "owners": [
+      "signal"
+    ],
+    "path": "research/decisions/DF-SIGNAL-2026-0027--pages-framing-risk-accepted-while-the-owner-is-the-only-user.md",
+    "provenance": {
+      "contributions": {
+        "EXE-20261112T222245388Z-cea10ab9": {
+          "actor": {
+            "id": "anthropic/claude-code",
+            "kind": "agent",
+            "model": "unknown",
+            "provider": "anthropic",
+            "runtime": "claude-code"
+          },
+          "at": "2026-11-12T22:26:53.131Z",
+          "operations": [
+            "created"
+          ],
+          "reason": "Owner accepted the Pages framing risk while the only user (WI-0148)"
+        }
+      }
+    },
+    "related_documents": [
+      "docs/deployment.md",
+      "deploy/pages/site.json",
+      "deploy/pages/signal.deployment.production.json"
+    ],
+    "review_cycle": "on-trigger",
+    "status": "accepted",
+    "superseded_by": [],
+    "supersedes": [],
+    "tags": [
+      "security",
+      "deployment",
+      "pages",
+      "sign-in",
+      "fides"
+    ],
+    "title": "Real sign-in on GitHub Pages is accepted without frame-ancestors while the owner is the only person who signs in",
+    "updated": "2026-11-12",
+    "version": "1.0.0"
+  },
+  {
     "created": "2026-10-05",
     "id": "DF-SIGNAL-FND-2026-0001",
     "owners": [
