@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-10T20:30:36.000Z",
+  "updatedAt": "2026-11-12T22:27:20.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -5226,6 +5226,47 @@
       ],
       "completedAt": "2026-11-10T20:30:36.000Z",
       "conclusion": "Live-count empty check, held-back and neutral not-scored reasons; CI green at 3d8d044; capture visual-evidence/baseline-3d8d044"
+    },
+    {
+      "id": "WI-0148",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "deploy/pages/signal.deployment.production.json"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/ProductionDeploymentTests.fs"
+        }
+      ],
+      "updatedAt": "2026-11-12T22:27:20.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261112T222245388Z-cea10ab9"
+      ],
+      "latestCheckpoint": {
+        "id": "da110191088567411ea736cc",
+        "recordedAt": "2026-11-12T22:27:17.000Z",
+        "executionId": "EXE-20261112T222245388Z-cea10ab9",
+        "repository": "echelon-signal",
+        "branch": "claude/fides-requirements-security-38f9h5",
+        "commit": "3c4b68814005d5b1ec5844e04df34b9df06555ad",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "claude/fides-requirements-security-38f9h5",
+        "remoteCommit": "3c4b68814005d5b1ec5844e04df34b9df06555ad",
+        "summary": "Production deployment configuration, policy, banner, framing-risk decision and tests pushed",
+        "nextAction": "Owner merges; Pages republishes; owner signs in at /web/admin/",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-12T22:27:20.000Z"
     }
   ]
 }

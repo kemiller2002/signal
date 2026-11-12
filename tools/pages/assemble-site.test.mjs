@@ -28,7 +28,7 @@ test("the published page has no inline script", () => {
 
 test("the banner is the first thing in <body>, with its stylesheet", () => {
   const published = publishPage(page, site);
-  assert.match(published, /<body[^>]*>\n<p class="pages-demo-banner" role="note" data-pages-banner>Demo/);
+  assert.match(published, /<body[^>]*>\n<p class="pages-demo-banner" role="note" data-pages-banner>Preview/);
   assert.match(published, /<link rel="stylesheet" href="\.\/pages\.css" \/>/);
 });
 
@@ -50,8 +50,14 @@ test("the root page sends the browser to the landing page by a relative address,
   assert.doesNotMatch(root, /<script/);
 });
 
-test("the Pages site configures no sign-in or data location", () => {
-  assert.equal(site.deployment, undefined);
+// WI-0148, DF-SIGNAL-2026-0027: real sign-in is on for the owner. The site
+// names its deployment configuration, which exists and is published beside
+// the administrator page, where the page reads signal.deployment.json.
+test("the Pages site names its deployment configuration, published beside the administrator page", async () => {
+  const { existsSync } = await import("node:fs");
+  assert.equal(site.deployment.from, "deploy/pages/signal.deployment.production.json");
+  assert.equal(site.deployment.as, "admin/signal.deployment.json");
+  assert.ok(existsSync(new URL(`../../${site.deployment.from}`, import.meta.url)));
 });
 
 // WI-0068: the administrator page was published without the policy.

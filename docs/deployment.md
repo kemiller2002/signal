@@ -35,19 +35,22 @@ build and verify the site but never deploy it.
   the owner's site, and it grants no licence to anyone else. Its Echelon
   Foundry logos are not in `dist/` and are not published; Signal uses its
   own mark (`web/brand/`).
-- **Demo mode.** Signal has no sign-in and no storage yet. The page is the
-  assessment as it runs locally: answers are held by the engine in the
-  browser tab and are gone on reload. Nothing is sent anywhere, and there
-  is no offline queue (it is off by requirement). The page shows the banner
-  "Demo — data stays in this browser; GitHub sign-in not configured". The
-  repository holds no secret for Pages, and needs none: the site is public.
+- **Sign-in (since WI-0148).** The administrator page signs in through
+  Fides: the Echelon exchange at `https://auth.echelonfoundry.com`, the shared
+  `Echelon (production)` GitHub App, application `echelon-signal-production`,
+  redirect `https://signal.echelonfoundry.com/web/admin/`. Its data lives in
+  `kemiller2002/echelon-organization-administration` (branch `main`, folder
+  `signal`), and the first administrator is GitHub account `737074`
+  (`deploy/pages/signal.deployment.production.json`). The assessment page is
+  unchanged: respondents' answers stay in the browser tab. Only the owner
+  signs in for now (DF-SIGNAL-2026-0027).
 - **Configuration is file-driven.** `deploy/pages/site.json` holds the
   banner and the Content-Security-Policy. When Signal gains a deployment
   configuration (sign-in through Fides, a data location), the site names it
   there as `"deployment": { "from": "deploy/pages/<file>", "as": "<name>" }`
   and the assembly publishes it beside the page.
 
-**Turning on real sign-in later** changes `deploy/pages/` only: add the
+**Turning on real sign-in** changes `deploy/pages/` only: add the
 deployment configuration as above (a public GitHub App client id and the
 Fides exchange's origin; never a secret), add the exchange's origin and
 `https://api.github.com` to the policy's `connect-src`, and remove or reword
@@ -61,9 +64,9 @@ origin only, `'wasm-unsafe-eval'` for the .NET WebAssembly runtime, no
 inline script or style, `object-src 'none'`, `base-uri 'self'`.
 Known deviation: `frame-ancestors` (and `X-Frame-Options`) cannot be
 delivered by a meta element, so on Pages another site can frame the page.
-With no session or stored data that is low risk; before real sign-in, host
-where `frame-ancestors 'none'` can be sent as a header, or accept the risk
-with a recorded decision.
+Real sign-in is on, and the owner accepted that risk while they are the only
+person who signs in (DF-SIGNAL-2026-0027); before anyone else signs in, host
+where `frame-ancestors 'none'` can be sent as a header.
 
 **Enabling Pages.** The deploy job runs `actions/configure-pages` with
 `enablement: true`. If Pages is not enabled and the workflow's token may not

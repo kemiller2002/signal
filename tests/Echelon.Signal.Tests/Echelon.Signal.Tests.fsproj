@@ -114,6 +114,7 @@
     <Compile Include="RoutesTests.fs" />
     <Compile Include="RouteSchemaTests.fs" />
     <Compile Include="ArchitectureTests.fs" />
+    <Compile Include="ProductionDeploymentTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

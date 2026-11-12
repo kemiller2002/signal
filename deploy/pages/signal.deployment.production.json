@@ -1,0 +1,32 @@
+{
+  "environment": "production",
+  "environmentName": "production",
+  "identity": {
+    "exchange": "https://auth.echelonfoundry.com",
+    "application": "echelon-signal-production",
+    "provider": "github",
+    "clientId": "Iv23li8vHlFMwX0w4U3v",
+    "redirectUri": "https://signal.echelonfoundry.com/web/admin/"
+  },
+  "profiles": [
+    {
+      "id": "primary",
+      "label": "Signal data",
+      "provider": "github",
+      "location": {
+        "owner": "kemiller2002",
+        "repository": "echelon-organization-administration",
+        "branch": "main",
+        "basePath": "signal"
+      }
+    }
+  ],
+  "datasets": [
+    {
+      "id": "ds_signal",
+      "label": "Signal",
+      "profile": "primary",
+      "administrators": ["737074"]
+    }
+  ]
+}
