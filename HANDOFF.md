@@ -152,6 +152,12 @@ The behaviour and data under the owner-approved "foundry ledger" refinement. It 
 - `ReportBuilder.saved` also compares the template pin.
 - Test knobs added: `Browser.HoldWakes`/`HeldWakes`, `Page.HoldNextCommit(after)`, `Page.ReceiveThrows()`.
 
+## echelon-current 1.42.0 (WI-0151, 2026-11-25)
+
+- Conditor 0.10.29 `upgrade --current` against the 1.42.0 linux-x64 set (`sha256:6be3bc97…`, plan `sha256:ab6c5ee1…`): no component version changed; the registry authority and lock move from 1.39.0 to 1.42.0. The only 1.42.0 change Signal consumes is Aegis 2.0.2, already pinned (WI-0150). Forma 1.0.1 and echelon-theme 1.1.0 were already current. Second-plan drift: none; `conditor drift --fail-on fail` exits 0.
+- Unlike earlier upgrades, the plan's workstation effects were applied to this session's own home (a disposable cloud container), not an isolated `--home`.
+- Evidence: `dotnet test` 732/732, `limen verify --strict` passed, `ui:conformance:unit` 6/6, modernization coverage current. Playwright was left to CI (no page or package changed).
+
 ## Echelon application layer adopted (WI-0118, SIG-ECHELON-APP-001, 2026-11-10)
 
 - echelon-current 1.39.0 through Conditor 0.10.25 (`upgrade --current`, isolated `--home`, plan `sha256:36cd12ca…`): Echelon theme 1.0.0 -> 1.1.0 only. The upgrade re-locked the theme descriptor; `conditor init` (run once) left the lock byte-identical. `conditor verify` passes.
