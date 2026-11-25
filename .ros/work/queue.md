@@ -165,4 +165,4 @@
 | WI-0147 | Test Releases.shown with no recorded release (signal#142 review): drive an anonymous group (minimum above 1) with accepted contributions and Released = None through Releases.shown and the admin summary, asserting the held-back reason, instead of pairing an empty shown state with a live count in SectionScoreTests | captured |  | medium |
 | WI-0148 | Turn on real sign-in for the production Pages site: deployment configuration (Fides exchange auth.echelonfoundry.com, shared Echelon GitHub App, data location, first administrator), policy connect-src, banner, and the recorded acceptance of the Pages framing risk while the owner is the only user | complete | signal,sign-in,fides,deployment | high |
 | WI-0149 | Upgrade Aegis 1.0.0 -> 2.0.0 (echelon-current 1.40.0) | complete |  | medium |
-| WI-0150 | Upgrade Aegis 2.0.1 -> 2.0.2 (detached capture no longer blocks) | ready |  | medium |
+| WI-0150 | Upgrade Aegis 2.0.1 -> 2.0.2 (detached capture no longer blocks) | complete |  | medium |
