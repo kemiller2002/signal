@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-25T12:56:03.000Z",
+  "updatedAt": "2026-11-25T13:04:49.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -5271,34 +5271,45 @@
     {
       "id": "WI-0149",
       "type": "task",
-      "state": "active",
-      "semanticState": "active",
-      "evidence": [],
-      "updatedAt": "2026-11-25T12:56:03.000Z",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "Directory.Packages.props"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/FoundationsConformanceTests.fs"
+        }
+      ],
+      "updatedAt": "2026-11-25T13:04:49.000Z",
       "telemetryExecutionIds": [
         "EXE-20261125T123559735Z-b94afa82"
       ],
       "latestCheckpoint": {
-        "id": "a3af43aa114c4cf63d721bec",
-        "recordedAt": "2026-11-25T12:38:45.000Z",
+        "id": "d7f904a9dea1cd143c03305f",
+        "recordedAt": "2026-11-25T13:04:46.000Z",
         "executionId": "EXE-20261125T123559735Z-b94afa82",
         "repository": "echelon-signal",
         "branch": "claude/vigila-implementation-jdeps1",
-        "commit": "efc3fdbf72a9f4f2a3474a3043742ecfcf352149",
+        "commit": "63afef3e8b302dcc359cb4e11e10b8d2a91570eb",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/signal"
         },
         "remoteBranch": "claude/vigila-implementation-jdeps1",
-        "remoteCommit": "efc3fdbf72a9f4f2a3474a3043742ecfcf352149",
-        "summary": "Aegis pins bumped to 2.0.0; restore fails NU1109 in Echelon.Signal.Browser because Aegis 2.0.0 requires FSharp.Core >= 11.0.101 (known 2.0.0 packaging defect)",
-        "nextAction": "Retarget the pins to Aegis 2.0.1 when released, rerun build.yml steps, then complete",
+        "remoteCommit": "63afef3e8b302dcc359cb4e11e10b8d2a91570eb",
+        "summary": "Aegis pins and foundations.json retargeted to 2.0.1 and pushed; build clean, 732 tests passed, foundations verify passed",
+        "nextAction": "Complete WI-0149, rebuild registry, validate, push Praxis state",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
         }
       },
-      "blockReason": "Waiting on Aegis 2.0.1: Aegis 2.0.0 requires FSharp.Core >= 11.0.101, causing NU1109 restore failure"
+      "blockReason": "Waiting on Aegis 2.0.1: Aegis 2.0.0 requires FSharp.Core >= 11.0.101, causing NU1109 restore failure",
+      "completedAt": "2026-11-25T13:04:49.000Z",
+      "conclusion": "Aegis pins and foundations.json retargeted to 2.0.1 and pushed; build clean, 732 tests passed, foundations verify passed"
     }
   ]
 }
