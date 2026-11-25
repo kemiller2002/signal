@@ -1,2 +1,3 @@
 {"entry":"transition","transition":"execution.start","state":"active","origin":"work-transition","originReference":"work.begin","actor":"anthropic/claude-code","actorKind":"agent","at":"2026-11-25T12:36:00.849Z"}
 {"entry":"transition","transition":"work.block","state":"blocked","reason":"Waiting on Aegis 2.0.1: Aegis 2.0.0 requires FSharp.Core >= 11.0.101, causing NU1109 restore failure","actor":"anthropic/claude-code","actorKind":"agent","at":"2026-11-25T12:38:48.525Z"}
+{"entry":"transition","transition":"work.resume","state":"active","reason":null,"actor":"anthropic/claude-code","actorKind":"agent","at":"2026-11-25T12:56:04.765Z"}
