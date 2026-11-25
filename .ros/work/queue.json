@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 150,
+  "nextSeq": 151,
   "items": [
     {
       "id": "WI-0001",
@@ -3543,6 +3543,27 @@
       "attachments": [],
       "createdAt": "2026-11-25T12:35:53.070Z",
       "updatedAt": "2026-11-25T13:04:49.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0150",
+      "title": "Upgrade Aegis 2.0.1 -> 2.0.2 (detached capture no longer blocks)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-25T15:45:18.635Z",
+      "updatedAt": "2026-11-25T15:45:23Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
