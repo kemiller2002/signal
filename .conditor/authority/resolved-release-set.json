@@ -2,8 +2,8 @@
   "schema": "echelon.resolved-release-set/v1",
   "profile": {
     "id": "echelon-current",
-    "version": "1.39.0",
-    "sha256": "460f02a163d5e8272995e6cffbe478dd267b36b21d843be24d8512a12c58febf"
+    "version": "1.42.0",
+    "sha256": "7f4b25b0a1730a4f4b7c74301aa3d71e454311ad92a4364265d9dc6c03243b84"
   },
   "platform": "linux-x64",
   "resolver": {
@@ -11,7 +11,7 @@
     "version": "0.1.0"
   },
   "catalogSnapshot": {
-    "sha256": "04ae9457bb32f6af43692d668141cf9a243362b3cf3cc948bb3d8cc9437f51df"
+    "sha256": "459db46f1669dabf8374e13dd685ebdd8cd25aa620242f2d1a607d033736ad7c"
   },
   "components": [
     {
@@ -310,29 +310,29 @@
       "systemId": "aegis",
       "role": "project-binding",
       "required": true,
-      "version": "1.0.0",
+      "version": "2.0.2",
       "repository": "kemiller2002/aegis",
-      "tag": "nuget:EchelonFoundry.Aegis.Core@1.0.0",
-      "commit": "56935c889b4f5cbf0b8046d3c2078f205cdb20c7",
+      "tag": "nuget:EchelonFoundry.Aegis.Core@2.0.2",
+      "commit": "711e02603da02cb05731ddfa7f45f2e553273fab",
       "releaseStage": "stable",
       "lifecycleState": "active",
       "distributionClass": "nuget-library",
       "executable": null,
       "releaseManifest": {
         "schema": "echelon.release/v2",
-        "sha256": "4530cfa3396c1e57d3e1a6500c661cd2d520236e852d1d9e88aa44c385d0bd6b"
+        "sha256": "ec8d1004560e9735901d966574ac0f220344a2161cac696b59c2a22b463d5f5c"
       },
       "distribution": {
         "mechanism": "nuget",
         "package": "EchelonFoundry.Aegis.Core",
-        "url": "https://api.nuget.org/v3-flatcontainer/echelonfoundry.aegis.core/1.0.0/echelonfoundry.aegis.core.1.0.0.nupkg"
+        "url": "https://api.nuget.org/v3-flatcontainer/echelonfoundry.aegis.core/2.0.2/echelonfoundry.aegis.core.2.0.2.nupkg"
       },
       "artifacts": [
         {
-          "name": "EchelonFoundry.Aegis.Core.1.0.0.nupkg",
+          "name": "EchelonFoundry.Aegis.Core.2.0.2.nupkg",
           "purpose": "package",
           "platform": null,
-          "sha256": "24255d245463f1ce819ce98f10bc5f6a062f8b3342d0bf4eee00fef9a45a835d"
+          "sha256": "56342207b7db3384f970c3953a64cfd25db859b0419c5e00382a85841126da4e"
         }
       ]
     },

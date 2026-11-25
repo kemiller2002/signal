@@ -1,14 +1,14 @@
 {
   "schemaVersion": 4,
   "project": "signal",
-  "manifestSha256": "ffaa25e55f5651d79cbeae1c38855f0312e86ab154986546df3fde4a83a092dd",
+  "manifestSha256": "f64637ae7756e98c8b0f24d2eb6f9f6421d36d58e0f27020a6f4dff72e2029f5",
   "manifest": {
     "schemaVersion": 1,
     "name": "signal",
     "registryAuthority": {
       "kind": "resolved-release-set",
       "path": ".conditor/authority/resolved-release-set.json",
-      "sha256": "b6510138864cb3c42ee79542b8bd3995150ce4b4ef7a19cb6d831fcdcdaf1cfe"
+      "sha256": "6be3bc97fbdd314abc4c712c2b1b47c1a18487995d9e1b9db445b4d141a8ee8a"
     },
     "components": [
       {
