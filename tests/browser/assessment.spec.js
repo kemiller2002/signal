@@ -1,6 +1,6 @@
 // The assessment page (web/) end to end: DOM event -> Limen kernel -> WASM
 // shim -> F# engine -> view -> DOM.
-import { test, expect, choice, resultRows } from "./support.js";
+import { test, expect, choice, resultRows, expectConsoleError } from "./support.js";
 
 const ITEMS = Array.from({ length: 15 }, (_, i) => `CORE-${String(i + 1).padStart(3, "0")}`);
 
@@ -152,6 +152,29 @@ test("a damaged link restores nothing and says so, without an operational fault"
   await expect(page.locator("#resume-notice-message")).toContainText("integrity check");
   await expect(page.locator("#progress")).toHaveText("0 of 15 answered");
   await expect(page.locator("#operational-fault")).toHaveCount(0);
+});
+
+// The WASM host is single-threaded. Aegis 2.0.1's detached capture waited
+// synchronously for the fault record, which froze the page on its first
+// operational fault; 2.0.2 records it without waiting. A message the page
+// never sends (an answer code no radio offers) is that first fault here.
+test("an operational fault is shown, and the page keeps responding", async ({ assessment: page }) => {
+  expectConsoleError(page, /SIGNAL\.BOUNDARY\.MESSAGE_INVALID/);
+  await choice(page, "CORE-002", "4").evaluate((input) => { input.value = "7"; });
+  await choice(page, "CORE-002", "7").click();
+
+  const fault = page.locator("#operational-fault");
+  await expect(fault).toBeVisible();
+  await expect(fault).toHaveAttribute("role", "alert");
+  await expect(fault.locator(".forma-fault__message")).toHaveText(
+    "Signal could not read a message from the page. Your answers are unchanged.");
+  await expect(fault.locator("code")).toHaveText(/^AG-/);
+  await expect(page.locator("#progress")).toHaveText("0 of 15 answered");
+
+  // Responsive: the next ordinary answer is applied, and the fault clears.
+  await answer(page, "CORE-001", "3");
+  await expect(page.locator("#progress")).toHaveText("1 of 15 answered");
+  await expect(fault).toHaveCount(0);
 });
 
 // LURL-002 / ID-002: an anonymous invitation link carries the instance while

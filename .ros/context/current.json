@@ -4,7 +4,7 @@
   "repository": "echelon-signal",
   "actor": "claude",
   "startedAt": "2026-08-31T18:55:58.931Z",
-  "updatedAt": "2026-11-12T22:27:20.000Z",
+  "updatedAt": "2026-11-25T16:20:30Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -5267,6 +5267,90 @@
         }
       },
       "completedAt": "2026-11-12T22:27:20.000Z"
+    },
+    {
+      "id": "WI-0149",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "Directory.Packages.props"
+        },
+        {
+          "type": "tests",
+          "path": "tests/Echelon.Signal.Tests/FoundationsConformanceTests.fs"
+        }
+      ],
+      "updatedAt": "2026-11-25T13:04:49.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261125T123559735Z-b94afa82"
+      ],
+      "latestCheckpoint": {
+        "id": "d7f904a9dea1cd143c03305f",
+        "recordedAt": "2026-11-25T13:04:46.000Z",
+        "executionId": "EXE-20261125T123559735Z-b94afa82",
+        "repository": "echelon-signal",
+        "branch": "claude/vigila-implementation-jdeps1",
+        "commit": "63afef3e8b302dcc359cb4e11e10b8d2a91570eb",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "claude/vigila-implementation-jdeps1",
+        "remoteCommit": "63afef3e8b302dcc359cb4e11e10b8d2a91570eb",
+        "summary": "Aegis pins and foundations.json retargeted to 2.0.1 and pushed; build clean, 732 tests passed, foundations verify passed",
+        "nextAction": "Complete WI-0149, rebuild registry, validate, push Praxis state",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "blockReason": "Waiting on Aegis 2.0.1: Aegis 2.0.0 requires FSharp.Core >= 11.0.101, causing NU1109 restore failure",
+      "completedAt": "2026-11-25T13:04:49.000Z",
+      "conclusion": "Aegis pins and foundations.json retargeted to 2.0.1 and pushed; build clean, 732 tests passed, foundations verify passed"
+    },
+    {
+      "id": "WI-0150",
+      "type": "task",
+      "state": "complete",
+      "semanticState": "complete",
+      "evidence": [
+        {
+          "type": "implementation",
+          "path": "Directory.Packages.props"
+        },
+        {
+          "type": "tests",
+          "path": "tests/browser/assessment.spec.js"
+        }
+      ],
+      "updatedAt": "2026-11-25T16:20:30Z",
+      "telemetryExecutionIds": [
+        "EXE-20261125T154524759Z-c05c32b9"
+      ],
+      "latestCheckpoint": {
+        "id": "0f5dd82f81af682d7b7a9ec1",
+        "recordedAt": "2026-11-25T16:20:28Z",
+        "executionId": "EXE-20261125T154524759Z-c05c32b9",
+        "repository": "echelon-signal",
+        "branch": "claude/vigila-implementation-jdeps1",
+        "commit": "716d27dc6ab4dacddb8178913db4431d799ac484",
+        "remote": {
+          "name": "origin",
+          "url": "https://github.com/kemiller2002/signal"
+        },
+        "remoteBranch": "claude/vigila-implementation-jdeps1",
+        "remoteCommit": "716d27dc6ab4dacddb8178913db4431d799ac484",
+        "summary": "Aegis pinned to 2.0.2; conformance tests updated; browser test proves a fault is shown and the page stays responsive (fails on 2.0.1, passes on 2.0.2)",
+        "nextAction": "Complete WI-0150, rebuild registry, validate, push Praxis state",
+        "verification": {
+          "status": "verified",
+          "mechanism": "git-remote-observation"
+        }
+      },
+      "completedAt": "2026-11-25T16:20:30Z"
     }
   ]
 }
