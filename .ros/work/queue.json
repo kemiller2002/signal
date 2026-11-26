@@ -3602,10 +3602,10 @@
       "description": null,
       "tags": [],
       "priority": "medium",
-      "status": "ready",
+      "status": "complete",
       "attachments": [],
       "createdAt": "2026-11-26T01:03:12.649Z",
-      "updatedAt": "2026-11-26T01:03:20Z",
+      "updatedAt": "2026-11-26T01:28:47Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
