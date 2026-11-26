@@ -167,3 +167,4 @@
 | WI-0149 | Upgrade Aegis 1.0.0 -> 2.0.0 (echelon-current 1.40.0) | complete |  | medium |
 | WI-0150 | Upgrade Aegis 2.0.1 -> 2.0.2 (detached capture no longer blocks) | complete |  | medium |
 | WI-0151 | Upgrade to echelon-current 1.42.0 (registry authority 1.39.0 -> 1.42.0) | complete |  | medium |
+| WI-0152 | Upgrade to echelon-current 1.43.0 (Praxis 3.26.0, Arca 0.7.1) | complete |  | medium |
