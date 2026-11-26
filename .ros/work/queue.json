@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "repository": "echelon-signal",
-  "nextSeq": 152,
+  "nextSeq": 153,
   "items": [
     {
       "id": "WI-0001",
@@ -3585,6 +3585,27 @@
       "attachments": [],
       "createdAt": "2026-11-25T17:50:14.952Z",
       "updatedAt": "2026-11-25T18:00:52.000Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "WI-0152",
+      "title": "Upgrade to echelon-current 1.43.0 (Praxis 3.26.0, Arca 0.7.1)",
+      "description": null,
+      "tags": [],
+      "priority": "medium",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-11-26T01:03:12.649Z",
+      "updatedAt": "2026-11-26T01:03:20Z",
       "createdBy": "unknown",
       "createdByActor": {
         "kind": "agent",
